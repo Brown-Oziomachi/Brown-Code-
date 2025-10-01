@@ -13,6 +13,7 @@ import {
 import Navbar from "./Navbar";
 import FloatingContact from "./FloatingContact";
 import FirebaseChat from "./FirebaseChat";
+import Testimonials from "./Testimonials";
 
 export default function Portfolio() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -158,7 +159,7 @@ export default function Portfolio() {
       >
         <div className="max-w-6xl mx-auto w-full">
           <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center">
-            Featured Projects
+            My Achieved Projects
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
@@ -191,7 +192,6 @@ export default function Portfolio() {
           </div>
         </div>
       </section>
-
       {/* Skills Section */}
       <section
         id="skills"
@@ -273,6 +273,7 @@ export default function Portfolio() {
         </div>
       </section>
 
+      <Testimonials />
       {/* Contact Section */}
       <section
         id="contact"
@@ -286,23 +287,23 @@ export default function Portfolio() {
           </p>
           <div className="flex justify-center gap-6 mb-12">
             <a
-              href="https://github.com"
-              target="_blank"
+              href="https://github.com/Brown-Oziomachi"
+              target="_self"
               rel="noopener noreferrer"
               className="p-4 bg-slate-800/50 rounded-full hover:bg-purple-600/30 transition-all transform hover:scale-110"
             >
               <Github size={32} />
             </a>
             <a
-              href="https://linkedin.com"
-              target="_blank"
+              href="www.linkedin.com/in/brownoziomachi72a5a3229"
+              target="_self"
               rel="noopener noreferrer"
               className="p-4 bg-slate-800/50 rounded-full hover:bg-purple-600/30 transition-all transform hover:scale-110"
             >
               <Linkedin size={32} />
             </a>
             <a
-              href="mailto:your.email@example.com"
+              href="mailto:browncemmanuel@gmail.com"
               className="p-4 bg-slate-800/50 rounded-full hover:bg-purple-600/30 transition-all transform hover:scale-110"
             >
               <Mail size={32} />

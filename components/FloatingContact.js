@@ -18,8 +18,8 @@ export default function FloatingContact({ onChatOpen }) {
           <div className="absolute bottom-20 right-0 flex flex-col gap-3 mb-2">
             {/* WhatsApp */}
             <a
-              href="https://wa.me/1234567890"
-              target="_blank"
+              href="https://wa.me/qr/RX4M5D4PGB7CO1"
+              target="_self"
               rel="noopener noreferrer"
               className="flex items-center justify-center w-12 h-12 bg-green-500 rounded-full shadow-lg hover:scale-110 transition-transform animate-fade-in"
               title="WhatsApp"
@@ -35,7 +35,7 @@ export default function FloatingContact({ onChatOpen }) {
 
             {/* Email */}
             <a
-              href="mailto:your.email@example.com"
+              href="mailto:browncemmanuel@gmail.com"
               className="flex items-center justify-center w-12 h-12 bg-red-500 rounded-full shadow-lg hover:scale-110 transition-transform animate-fade-in"
               title="Email"
             >

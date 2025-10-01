@@ -1,0 +1,4 @@
+if (latest && !latest.isAdmin) {
+  const audio = new Audio("/notify.mp3");
+  audio.play();
+}
