@@ -2,7 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 export const metadata = {
-  title: "Brown code | News & media company",
+  title: "Brown code | Sofware Developer",
   icons: {
     icon: "/man.png",
     shortcut: "/man.png",
