@@ -86,6 +86,11 @@ export default function Portfolio() {
         className="min-h-screen flex items-center justify-center px-4 pt-16"
       >
         <div className="max-w-4xl mx-auto text-center">
+              <img
+                src="/code.png"
+                alt="Profile"
+                className="relative w-90 h-60 mx-auto"
+              />
           <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
             Full Stack
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
