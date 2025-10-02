@@ -288,32 +288,32 @@ export default function FirebaseChat({ isOpen, onClose }) {
               >
                 <Send size={20} />
               </button>
-            </div>
-            {showPopup && (
-              <div
-                style={{
-                  position: "fixed",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  background: "purple",
-                  border: "1px solid #ccc",
-                  padding: "20px",
-                    backgroundColor: "purple",
-                  borderRadius: "10px"
-                }}
+          {showPopup && (
+            <div
+              style={{
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                background: "purple",
+                border: "1px solid #ccc",
+                padding: "20px",
+                  backgroundColor: "purple",
+                borderRadius: "10px"
+              }}
+            >
+              <p>
+                Only <span className="text-purple-400 font-bold">Brown Code</span> can delete this message. Relax and continue with your chat.
+              </p>
+              <button
+                className="mt-5 bg-gradient-to-r from-purple-600 to-pink-600 py-1 px-7"
+                onClick={() => setShowPopup(false)}
               >
-                <p>
-                  Only <span className="text-purple-400 font-bold">Brown Code</span> can delete this message. Relax and continue with your chat.
-                </p>
-                <button
-                  className="mt-5 bg-gradient-to-r from-purple-600 to-pink-600 py-1 px-7"
-                  onClick={() => setShowPopup(false)}
-                >
-                  Close
-                </button>
-              </div>
-            )}
+                Close
+              </button>
+            </div>
+                )}
+      </div>
           </form>
         </>
       )}
