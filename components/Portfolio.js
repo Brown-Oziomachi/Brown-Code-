@@ -70,6 +70,25 @@ export default function Portfolio() {
     }
   };
 
+   const mediaList = [
+     { type: "image", src: "/code.png" },
+     { type: "image", src: "/brown.png" },
+     { type: "image", src: "/brocode.png" },
+     { type: "video", src: "/react-3.mp4" }, // local video
+    //  { type: "video", src: "/demo2.mp4" },
+   ];
+
+   const [currentIndex, setCurrentIndex] = useState(0);
+
+   useEffect(() => {
+     const interval = setInterval(() => {
+       setCurrentIndex((prev) => (prev + 1) % mediaList.length);
+     }, 3000); // change every 3 seconds
+     return () => clearInterval(interval);
+   }, []);
+
+   const currentMedia = mediaList[currentIndex];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
       {/* Navbar Component */}
@@ -87,11 +106,23 @@ export default function Portfolio() {
         className="min-h-screen flex items-center justify-center px-4 pt-16"
       >
         <div className="max-w-4xl mx-auto text-center">
+          <div className="relative w-100 h-80 mx-auto">
+            {currentMedia.type === "image" ? (
               <img
-                src="/code.png"
+                src={currentMedia.src}
                 alt="Profile"
-                className="relative w-90 h-60 mx-auto"
+                className="w-full h-full "
               />
+            ) : (
+              <video
+                src={currentMedia.src}
+                className="w-full h-full "
+                autoPlay
+                muted
+                loop
+              />
+            )}
+          </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
             Full Stack
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -363,7 +394,9 @@ export default function Portfolio() {
       {/* Footer */}
       <footer className="border-t border-slate-800 py-8">
         <div className="max-w-6xl mx-auto px-4 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Brown Code. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Brown Code. All rights reserved.
+          </p>
         </div>
       </footer>
 
