@@ -48,7 +48,7 @@ export default function Portfolio() {
     {
       title: "Web App Editor/Cyclopedia",
       description:
-        "An app editor the The Cyclopedia News Site/ Unauthorized",
+        "An app editor for The Cyclopedia News Site/ Unauthorized",
       tech: ["React", "Python"],
       link: "#",
     },
