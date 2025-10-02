@@ -151,7 +151,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-24 right-6 w-cover max-w-[calc(100vw-1rem)] h-[800px] lg:h-150 mt-10 bg-slate-900 rounded-2xl shadow-2xl z-50 flex flex-col border border-purple-500/50">
+    <div className="fixed bottom-24 right-6 w-cover max-w-[calc(100vw-4rem)] h-[700px] lg:h-150 mt-10 bg-slate-900 rounded-2xl shadow-2xl z-50 flex flex-col border border-purple-500/50">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 rounded-t-2xl flex items-center justify-between">
         <div className="flex items-center gap-3">
