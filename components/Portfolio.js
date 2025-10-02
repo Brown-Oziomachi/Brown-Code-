@@ -14,13 +14,14 @@ import Navbar from "./Navbar";
 import FloatingContact from "./FloatingContact";
 import FirebaseChat from "./FirebaseChat";
 import Testimonials from "./Testimonials";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function Portfolio() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-
+  const [isExpanded, setIsExpanded] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -135,19 +136,54 @@ export default function Portfolio() {
           </div>
 
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
-            <p className="text-lg text-gray-300 leading-relaxed mb-6">
-              My name is Brown Oziomachi. I'm a passionate full stack web
-              developer with expertise in building modern, responsive, and
-              user-friendly web applications. With a strong foundation in both
-              frontend and backend technologies, I create seamless digital
-              experiences that solve real-world problems.
-            </p>
-            <p className="text-lg text-gray-300 leading-relaxed">
-              I specialize in JavaScript ecosystems, with extensive experience
-              in React, Node.js, and various database technologies. I'm
-              committed to writing clean, maintainable code and staying updated
-              with the latest industry trends and best practices.
-            </p>
+            {/* Text Container */}
+            <div className="space-y-6 mb-6">
+              <p className="text-lg text-gray-300 leading-relaxed">
+                My name is Brown Oziomachi. I'm a passionate full stack web
+                developer with expertise in building modern, responsive, and
+                user-friendly web applications. With a strong foundation in both
+                frontend and backend technologies, I create seamless digital
+                experiences that solve real-world problems.
+              </p>
+
+              <div
+                className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                  isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  I specialize in JavaScript ecosystems, with extensive
+                  experience in React, Node.js, and various database
+                  technologies. I'm committed to writing clean, maintainable
+                  code and staying updated with the latest industry trends and
+                  best practices.
+                </p>
+              </div>
+            </div>
+
+            {/* Read More/Less Button */}
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-all font-medium hover:gap-3 group"
+            >
+              {isExpanded ? (
+                <>
+                  <span>Show Less</span>
+                  <ChevronUp
+                    size={20}
+                    className="group-hover:-translate-y-1 transition-transform"
+                  />
+                </>
+              ) : (
+                <>
+                  <span>Read More</span>
+                  <ChevronDown
+                    size={20}
+                    className="group-hover:translate-y-1 transition-transform"
+                  />
+                </>
+              )}
+            </button>
           </div>
         </div>
       </section>
@@ -321,7 +357,7 @@ export default function Portfolio() {
       {/* Footer */}
       <footer className="border-t border-slate-800 py-8">
         <div className="max-w-6xl mx-auto px-4 text-center text-gray-400">
-          <p>&copy; 2025 Full Stack Developer. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Brown Code. All rights reserved.</p>
         </div>
       </footer>
 
