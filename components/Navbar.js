@@ -20,6 +20,7 @@ export default function Navbar({
     "contact",
     "testimonials",
     "blog",
+    "advert"
   ];
 
   return (

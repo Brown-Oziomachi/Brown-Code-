@@ -22,6 +22,7 @@ export default function Portfolio() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -40,15 +41,15 @@ export default function Portfolio() {
     },
     {
       title: "The Cyclopedia /News Hub",
-      description: "The platform where news are been read",
+      description: "A news platform",
       tech: ["React", "Next.js", "firebase", "Tailwind CSS"],
       link: "https://cyclopedia-media-hub.vercel.app",
     },
     {
-      title: "Analytics Dashboard",
+      title: "Web App Editor/Cyclopedia",
       description:
-        "Data visualization platform with interactive charts and reports",
-      tech: ["React", "D3.js", "Python", "FastAPI"],
+        "An app editor the The Cyclopedia News Site/ Unauthorized",
+      tech: ["React", "Python"],
       link: "#",
     },
   ];
@@ -56,8 +57,8 @@ export default function Portfolio() {
   const skills = {
     frontend: ["React", "HTML", "CSS", "Tailwind CSS", "Next.js"],
     backend: ["Node.js", "Python"],
-    database: ["PostgreSQL", "MongoDB", "Firebase", "MySQL"],
-    tools: ["Git", "Docker", "AWS", "CI/CD", "Webpack"],
+    database: [ "MongoDB", "Firebase", "MySQL"],
+    tools: ["Git"],
   };
 
   const scrollToSection = (id) => {

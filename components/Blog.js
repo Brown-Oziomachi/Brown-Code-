@@ -4,6 +4,7 @@ import { useState } from "react";
 const articles = [
   {
     title: "Why You Need a Website",
+    PostedBY: "Brown Code",
     preview:
       "A website builds credibility and makes your work accessible to the world...",
     content: `In today's digital era, having a website is no longer optional. 
@@ -13,6 +14,8 @@ const articles = [
   },
   {
     title: "Importance of a Personal Portfolio",
+    PostedBY: "Brown Code",
+
     preview:
       "Your portfolio is your story—showing employers or clients what you can do...",
     content: `A personal portfolio is more than just a collection of your work. 
@@ -22,6 +25,8 @@ const articles = [
   },
   {
     title: "Why Branding Matters Online",
+    PostedBY: "Brown Code",
+
     preview:
       "Your brand is how people perceive you. Consistent branding makes you memorable...",
     content: `Branding is not just about logos and colors—it’s about creating an identity. 
@@ -30,6 +35,7 @@ const articles = [
   },
   {
     title: "Future-Proofing Your Career Online",
+    PostedBY: "Brown Code",
     preview:
       "In a digital-first world, an online presence opens doors to unlimited opportunities...",
     content: `The job market is rapidly evolving, and having an online presence future-proofs your career. 
@@ -38,7 +44,7 @@ const articles = [
   },
 ];
 
-export default function KnowledgeHub() {
+export default function KnowledgeHub({}) {
   const [selected, setSelected] = useState(null);
 
   return (
@@ -62,6 +68,8 @@ export default function KnowledgeHub() {
               className="bg-purple-900 rounded-2xl p-6 shadow-lg hover:shadow-xl transition"
             >
               <h3 className="text-xl font-semibold mb-4">{article.title}</h3>
+              <h3 className="text-sm font-semibold mb-4 text-gray-500">PostedBY: {article.PostedBY}</h3>
+
               <p className="text-gray-300 mb-4">{article.preview}</p>
               <button
                 onClick={() => setSelected(article)}
