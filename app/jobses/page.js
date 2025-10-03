@@ -102,7 +102,7 @@ export default function JobsPage() {
         </div>
         <button
           onClick={handleBack}
-          className="mt-10 border px-10 py-3 cursor-pointer bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg"
+          className="mt-10 px-10 py-3 cursor-pointer bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg"
         >
           Back
         </button>
