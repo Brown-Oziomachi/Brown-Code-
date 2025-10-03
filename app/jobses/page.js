@@ -1,0 +1,113 @@
+// app/jobs/page.jsx
+"use client";
+
+import { Sparkles, Home, Briefcase, Clock, GraduationCap } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+export default function JobsPage() {
+      const router = useRouter();
+
+  const jobOptions = [
+    {
+      title: "JobCopilot (Auto Apply)",
+      description:
+        "Discover and Apply to hundreds of jobs automatically",
+      icon: <Sparkles size={24} className="text-purple-400" />,
+      href: "https://jobcopilot.com/?linkId=lp_494205&sourceId=brown-oziomachi&tenantId=jobcopilot",
+      external: true,
+      gradient: "from-purple-500/20 to-pink-500/20",
+    },
+    {
+         title: "FinalRound AI",
+         description:
+           "FinalRoundAI excels in preparing job seekers for the final stages of the hiring process",
+         icon: <Home size={20} className="text-blue-400" />,
+         href: "https://www.finalroundai.com/?via=browncode",
+         external: true, // Add this!
+         gradient: "from-blue-500/20 to-cyan-500/20",
+       },
+       {
+         title: "Purchase a domain at HostAfrica",
+         description: "Find the perfect domain for your business!",
+         icon: <Briefcase size={24} className="text-green-400" />,
+         href: "https://my.hostafrica.com/aff.php?aff=2657",
+         external: true,
+         gradient: "from-green-500/20 to-emerald-500/20",
+       },
+    {
+      title: "Part-time Jobs",
+      description: "Flexible schedules perfect for work-life balance",
+      icon: <Clock size={24} className="text-orange-400" />,
+      href: "https://jobcopilot.com/?linkId=lp_494205&sourceId=brown-oziomachi&tenantId=jobcopilot",
+      external: true,
+      gradient: "from-orange-500/20 to-amber-500/20",
+    },
+    {
+      title: "Internships",
+      description: "Launch your career with hands-on learning experiences",
+      icon: <GraduationCap size={24} className="text-indigo-400" />,
+      href: "https://jobcopilot.com/?linkId=lp_494205&sourceId=brown-oziomachi&tenantId=jobcopilot",
+      external: true,
+      gradient: "from-indigo-500/20 to-purple-500/20",
+    },
+  ];
+
+  const JobCard = ({ job }) => (
+    <a
+      href={job.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`group relative p-6 rounded-xl bg-black/80 bg-gradient-to-br ${job.gradient} 
+      hover:scale-105 transition-all duration-300 border border-gray-700/50 
+      hover:border-gray-500 flex flex-col gap-4`}
+    >
+      <div className="flex items-center gap-3 ">
+        <div className="p-3 bg-slate-800/50 rounded-lg">{job.icon}</div>
+        <h3 className="text-lg font-semibold text-white group-hover:text-purple-300 transition-colors">
+          {job.title}
+        </h3>
+      </div>
+      <p className="text-sm text-gray-400 leading-relaxed">{job.description}</p>
+    </a>
+    );
+    
+    const handleBack = () => {
+        router.push("/")
+    }
+
+  return (
+    <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white py-20 px-6">
+      <div className="max-w-6xl mx-auto ">
+          <section
+        id="jobs"
+        className=""
+        style={{
+          backgroundImage: 
+            "url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
+        }}
+      >
+        <h1 className="text-4xl md:text-5xl font-bold text-center mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          Explore Online Job Opportunities
+        </h1>
+        <p className="text-center text-gray-400 max-w-2xl mx-auto mb-12">
+          Find flexible online jobs, internships, and AI-powered career tools
+          that fit your goals. Click any option to start your journey today!
+        </p>
+
+        {/* Job Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {jobOptions.map((job, idx) => (
+            <JobCard key={idx} job={job} />
+          ))}
+        </div>
+        <button
+          onClick={handleBack}
+          className="mt-10 border px-10 py-3 cursor-pointer bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg"
+        >
+          Back
+        </button>
+        </section>
+      </div>
+    </main>
+  );
+}

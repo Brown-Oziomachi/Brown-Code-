@@ -22,6 +22,22 @@ export default function Portfolio() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+ const [showPopup, setShowPopup] = useState(false);
+
+    useEffect(() => {
+    // Check if user has already seen popup
+    const hasSeenPopup = localStorage.getItem("jobsPopupSeen");
+
+    if (!hasSeenPopup) {
+      // Show popup after 10 seconds
+      const timer = setTimeout(() => {
+        setShowPopup(true);
+        localStorage.setItem("jobsPopupSeen", "true"); // Mark as seen
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -346,6 +362,36 @@ export default function Portfolio() {
         </div>
       </section>
 
+      {/* Jobs Section */}
+      <section
+        id="jobs"
+        className="min-h-screen flex items-center justify-center px-4 py-20 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
+        }}
+      >
+        <div className="max-w-4xl mx-auto text-center bg-black/60 p-10 rounded-2xl">
+          <h2 className="text-4xl md:text-5xl font-bold mb-8 text-purple-400">
+            Online Jobs & Opportunities
+          </h2>
+          <p className="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
+            Online jobs are a powerful way to build your career and earn from
+            anywhere in the world. They give you flexibility, access to
+            international opportunities, and the ability to learn new skills
+            while working. Whether you’re a student, freelancer, or professional
+            looking to grow, online jobs can help you achieve your goals.
+          </p>
+
+          <a
+            href="/jobses"
+            className="inline-block px-10 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full font-semibold text-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all transform hover:scale-105"
+          >
+            Explore Job Opportunities
+          </a>
+        </div>
+      </section>
+
       <Testimonials />
       {/* Contact Section */}
       <section
@@ -390,6 +436,50 @@ export default function Portfolio() {
           </a>
         </div>
       </section>
+
+  {showPopup && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          {/* Popup Content */}
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full mx-4 overflow-hidden">
+            {/* Close button */}
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-3 right-3 text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded-full text-sm"
+            >
+              ✕
+            </button>
+
+            {/* Jobs Section */}
+            <section
+              id="jobs"
+              className="min-h-[70vh] flex items-center justify-center px-4 py-10 bg-cover bg-center bg-no-repeat rounded-2xl"
+              style={{
+                backgroundImage:
+                  "url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
+              }}
+            >
+              <div className="max-w-2xl mx-auto text-center bg-black/60 p-8 rounded-2xl">
+                <h2 className="text-3xl md:text-4xl font-bold mb-6 text-purple-400">
+                  Online Jobs & Opportunities
+                </h2>
+                <p className="text-md md:text-lg text-gray-200 mb-6 leading-relaxed">
+                  Online jobs are a powerful way to build your career and earn
+                  from anywhere in the world. They give you flexibility, access
+                  to international opportunities, and the ability to learn new
+                  skills while working.
+                </p>
+
+                <a
+                  href="/jobses"
+                  className="inline-block px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full font-semibold text-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all transform hover:scale-105"
+                >
+                  Explore Job Opportunities
+                </a>
+              </div>
+            </section>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-slate-800 py-8">

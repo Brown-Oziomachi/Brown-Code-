@@ -32,7 +32,7 @@ export default function Navbar({
     "contact",
     "testimonials",
     "blog",
-    "advert",
+    // "advert",
   ];
 
  const jobOptions = [
@@ -55,11 +55,11 @@ export default function Navbar({
      gradient: "from-blue-500/20 to-cyan-500/20",
    },
    {
-     title: "Full-time Jobs",
-     description: "Career positions with stability and comprehensive benefits",
-     icon: <Briefcase size={20} className="text-green-400" />,
-     href: "https://jobcopilot.com/?linkId=lp_494205&sourceId=brown-oziomachi&tenantId=jobcopilot",
-     external: true, // Add this!
+     title: "Purchase a domain at HostAfrica",
+     description: "Find the perfect domain for your business!",
+     icon: <Briefcase size={24} className="text-green-400" />,
+     href: "https://my.hostafrica.com/aff.php?aff=2657",
+     external: true,
      gradient: "from-green-500/20 to-emerald-500/20",
    },
    {
