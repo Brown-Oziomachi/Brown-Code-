@@ -15,7 +15,6 @@ import FloatingContact from "./FloatingContact";
 import FirebaseChat from "./FirebaseChat";
 import Testimonials from "./Testimonials";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import GoogleAd from "./GoogleAd";
 
 export default function Portfolio() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -124,11 +123,6 @@ export default function Portfolio() {
               />
             )}
           </div>
-          <GoogleAd
-            slot="0987654321"
-            format="rectangle"
-            style={{ display: "block", width: "300px", height: "250px" }}
-          />
           <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
             Full Stack
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
