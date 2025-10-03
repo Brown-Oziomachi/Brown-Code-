@@ -4,9 +4,9 @@ import "./globals.css";
 export const metadata = {
   title: "Brown code | Sofware Developer",
   icons: {
-    icon: "/man.png",
-    shortcut: "/man.png",
-    apple: "/man.png",
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
   },
 };
 
