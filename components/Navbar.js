@@ -45,33 +45,33 @@ export default function Navbar({
       external: true,
       gradient: "from-purple-500/20 to-pink-500/20",
     },
-    {
-      title: "FinalRound AI",
-      description:
-        "FinalRoundAI excels in preparing job seekers for the final stages of the hiring process",
-      icon: <Home size={20} className="text-blue-400" />,
-      href: "/https://www.finalroundai.com/?via=browncode",
-      gradient: "from-blue-500/20 to-cyan-500/20",
-    },
+  {
+  title: "FinalRound AI",
+  description:
+    "FinalRoundAI excels in preparing job seekers for the final stages of the hiring process",
+  icon: <Home size={20} className="text-blue-400" />,
+  href: "https://www.finalroundai.com/?via=browncode",
+  gradient: "from-blue-500/20 to-cyan-500/20",
+}
     {
       title: "Full-time Jobs",
       description: "Career positions with stability and comprehensive benefits",
       icon: <Briefcase size={20} className="text-green-400" />,
-      href: "/jobs/fulltime",
+      href: "/https://jobcopilot.com/?linkId=lp_494205&sourceId=brown-oziomachi&tenantId=jobcopilot",
       gradient: "from-green-500/20 to-emerald-500/20",
     },
     {
       title: "Part-time Jobs",
       description: "Flexible schedules perfect for work-life balance",
       icon: <Clock size={20} className="text-orange-400" />,
-      href: "/jobs/parttime",
+      href: "/https://jobcopilot.com/?linkId=lp_494205&sourceId=brown-oziomachi&tenantId=jobcopilot",
       gradient: "from-orange-500/20 to-amber-500/20",
     },
     {
       title: "Internships",
       description: "Launch your career with hands-on learning experiences",
       icon: <GraduationCap size={20} className="text-indigo-400" />,
-      href: "/jobs/internships",
+      href: "/https://jobcopilot.com/?linkId=lp_494205&sourceId=brown-oziomachi&tenantId=jobcopilot",
       gradient: "from-indigo-500/20 to-purple-500/20",
     },
   ];
@@ -102,7 +102,7 @@ export default function Navbar({
       return (
         <a
           href={job.href}
-          target="_blank"
+          target="_self"
           rel="noopener noreferrer"
           onClick={onClick}
         >
