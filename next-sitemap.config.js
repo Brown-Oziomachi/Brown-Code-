@@ -9,7 +9,5 @@ module.exports = {
     await config.transform(config, '/'),
     await config.transform(config, '/blog'),
     await config.transform(config, '/jobses'),
-    await config.transform(config, '/admin'),
-    await config.transform(config, '/admin/dashboard'),
   ],
 };
