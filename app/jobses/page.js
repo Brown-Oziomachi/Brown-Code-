@@ -35,21 +35,21 @@ export default function JobsPage() {
          gradient: "from-green-500/20 to-emerald-500/20",
        },
     {
-      title: "Part-time Jobs",
-      description: "Flexible schedules perfect for work-life balance",
+      title: "eSkilled ",
+      description: "AI Course Creator - Your Powerful Online Course Maker",
       icon: <Clock size={24} className="text-orange-400" />,
-      href: "https://jobcopilot.com/?linkId=lp_494205&sourceId=brown-oziomachi&tenantId=jobcopilot",
+      href: "https://aicoursecreator.eskilled.io/?fpr=brown99",
       external: true,
       gradient: "from-orange-500/20 to-amber-500/20",
     },
     {
-      title: "Internships",
-      description: "Launch your career with hands-on learning experiences",
-      icon: <GraduationCap size={24} className="text-indigo-400" />,
-      href: "https://jobcopilot.com/?linkId=lp_494205&sourceId=brown-oziomachi&tenantId=jobcopilot",
-      external: true,
-      gradient: "from-indigo-500/20 to-purple-500/20",
-    },
+     title: "Prove your knowledge | Answer questions and earn money",
+     description: "Launch your career with hands-on learning experiences",
+     icon: <GraduationCap size={20} className="text-indigo-400" />,
+     href: "https://www.swagbucks.com/p/register?rb=202240461&rp=1",
+     external: true, // Add this!
+     gradient: "from-indigo-500/20 to-purple-500/20",
+   },
   ];
 
   const JobCard = ({ job }) => (
