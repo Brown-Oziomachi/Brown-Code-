@@ -2,7 +2,7 @@
 
 const testimonials = [
   {
-    name: "Sarah Johnson",
+    name: "Sarah Johnson J",
     role: "Product Manager",
     feedback:
       "Working with Brown was a fantastic experience. The chat platform is smooth, responsive, and professional!",
