@@ -1,23 +1,6 @@
-const { articles } = require("./data/articles");
-
-/** @type {import('next-sitemap').IConfig} */
+// next-sitemap.config.js
 module.exports = {
-  siteUrl: "https://www.browncode.name.ng",
-  outDir: "./public",
+  siteUrl: 'https://browncode.name.ng',
   generateRobotsTxt: true,
-  changefreq: "daily",
-  priority: 0.7,
-  additionalPaths: async (config) => {
-    const paths = [
-      "/",
-      "/blog",
-      "/jobses"
-    ].map((path) => config.transform(config, path));
+}
 
-    const articlePaths = articles.map((article) =>
-      config.transform(config, `/blog/${article.slug}`)
-    );
-
-    return [...paths, ...articlePaths];
-  },
-};

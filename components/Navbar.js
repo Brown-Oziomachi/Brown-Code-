@@ -255,7 +255,7 @@ export default function Navbar({
                   className="capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-300 hover:text-white flex items-center gap-1"
                 >
                   <Newspaper size={16} className="mr-1" />
-                  Read News{" "}
+                  News{" "}
                   <ChevronDown
                     size={14}
                     className={`transition-transform duration-300 ${
