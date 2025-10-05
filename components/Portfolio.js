@@ -407,15 +407,15 @@ export default function Portfolio() {
           <div className="flex justify-center gap-6 mb-12">
             <a
               href="https://github.com/Brown-Oziomachi"
-              target="_self"
+              target="_blank"
               rel="noopener noreferrer"
               className="p-4 bg-slate-800/50 rounded-full hover:bg-purple-600/30 transition-all transform hover:scale-110"
             >
               <Github size={32} />
             </a>
             <a
-              href="www.linkedin.com/in/brownoziomachi72a5a3229"
-              target="_self"
+              href="https://www.linkedin.com/in/brownoziomachi72a5a3229"
+              target="_blank"
               rel="noopener noreferrer"
               className="p-4 bg-slate-800/50 rounded-full hover:bg-purple-600/30 transition-all transform hover:scale-110"
             >
@@ -437,7 +437,7 @@ export default function Portfolio() {
         </div>
       </section>
 
-  {showPopup && (
+      {showPopup && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
           {/* Popup Content */}
           <div className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full mx-4 overflow-hidden">

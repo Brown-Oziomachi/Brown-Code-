@@ -1,16 +1,31 @@
-"use client"
+"use client";
 
 import { useRouter } from "next/navigation";
 import { articles } from "../data/article";
 import { ArrowLeft, Clock, User } from "lucide-react";
-import Image from "next/image";
 
 export default function BlogList() {
   const router = useRouter();
 
   const handleBack = () => {
-    router.push("/")
-  }
+    router.push("/");
+  };
+
+  // Helper to format date
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  // Helper to estimate reading time
+  const getReadingTime = (content) => {
+    const words = content.split(" ").length;
+    return Math.max(1, Math.ceil(words / 200)); // 200 wpm average
+  };
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white py-20 px-4 md:px-8 lg:px-12">
@@ -26,7 +41,8 @@ export default function BlogList() {
             What You Must Know
           </h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Insights and strategies to build your digital presence and future-proof your career
+            Insights and strategies to build your digital presence and
+            future-proof your career
           </p>
         </div>
 
@@ -38,8 +54,8 @@ export default function BlogList() {
               className="group relative bg-gradient-to-br from-slate-900/50 to-purple-900/30 backdrop-blur-sm rounded-2xl overflow-hidden border border-purple-500/10 hover:border-purple-500/30 transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20"
               style={{
                 animationDelay: `${index * 100}ms`,
-                animation: 'fadeInUp 0.6s ease-out forwards',
-                opacity: 0
+                animation: "fadeInUp 0.6s ease-out forwards",
+                opacity: 0,
               }}
             >
               {/* Image Section */}
@@ -52,7 +68,7 @@ export default function BlogList() {
                 />
                 <div className="absolute top-4 right-4 z-20">
                   <span className="bg-purple-600/90 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
-                    New
+                    {formatDate(article.datePublished)}
                   </span>
                 </div>
               </div>
@@ -67,7 +83,7 @@ export default function BlogList() {
                   </div>
                   <div className="flex items-center gap-1">
                     <Clock size={14} />
-                    <span>5 min read</span>
+                    <span>{getReadingTime(article.content)} min read</span>
                   </div>
                 </div>
 

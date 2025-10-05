@@ -101,7 +101,7 @@ Economic uncertainty and industry disruptions are constant. Your online presence
 
 Being proactive about your digital footprint ensures you remain relevant, competitive, and in control of your career trajectory in an increasingly digital world.`,
     image:
-      "https://images.unsplash.com/photo-1531497865148-7791e23d72d7?auto=format&fit=crop&w=1024&q=80",
+      "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1024&q=80",
   },
   {
     title: "Your First Website: A Complete Beginner's Guide",
@@ -135,7 +135,7 @@ Before going live, test on multiple devices, optimize images for web, add SEO-fr
 
 Remember: your first website doesn't need to be perfect—it needs to exist. You can always improve it over time.`,
     image:
-      "https://images.unsplash.com/photo-1581091215367-6f0e45edb8a7?auto=format&fit=crop&w=1024&q=80",
+      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1024&q=80",
   },
   {
     title: "SEO Fundamentals: Getting Found Online",
@@ -201,7 +201,7 @@ Track which content resonates through comments, shares, and direct messages from
 
 Remember: content marketing is a marathon, not a sprint. The compound effect of consistent, valuable content creates opportunities that may not appear for months—but when they do, they're often the best ones.`,
     image:
-      "https://images.unsplash.com/photo-1581093588401-15e0a3e6a127?auto=format&fit=crop&w=1024&q=80",
+      "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=1024&q=80",
   },
   {
     title: "Networking in the Digital Era",
@@ -235,6 +235,6 @@ Digital connections require maintenance. When someone reaches out or engages mea
 
 The goal of digital networking is often offline relationships. Video calls, virtual coffee chats, or in-person meetings (when possible) strengthen digital connections and create lasting professional relationships.`,
     image:
-      "https://images.unsplash.com/photo-1611078486164-21a3efc1ec32?auto=format&fit=crop&w=1024&q=80",
+      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1024&q=80",
   },
 ];
