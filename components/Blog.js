@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Navbar from "./Navbar";
 
 const articles = [
   {
@@ -44,12 +45,19 @@ const articles = [
   },
 ];
 
-export default function KnowledgeHub({}) {
+export default function KnowledgeHub({ isScrolled, isMenuOpen, setIsMenuOpen, activeSection, scrollToSection }) {
   const [selected, setSelected] = useState(null);
 
   return (
     <section className=" bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white py-16 px-6 md:px-12">
       <div className="max-w-6xl mx-auto text-center">
+           <Navbar
+                isScrolled={isScrolled}
+                isMenuOpen={isMenuOpen}
+                setIsMenuOpen={setIsMenuOpen}
+                activeSection={activeSection}
+                scrollToSection={scrollToSection}
+              />
         <a
           href="/"
           className="block text-2xl mb-10  bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"

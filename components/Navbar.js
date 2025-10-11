@@ -30,6 +30,7 @@ export default function Navbar({
   const [isNewsOpenMobile, setIsNewsOpenMobile] = useState(false);
   const newsRef = useRef(null);
   const jobRef = useRef(null);
+  const navRef = useRef(null)
 
   const navItems = [
     "home",
@@ -179,6 +180,20 @@ export default function Navbar({
       </Link>
     );
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (navRef.current && !navRef.current.contains(event.target)) {
+        setIsMenuOpen(false)
+      }
+    }
+    if (setIsMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    };
+  }, [isMenuOpen])
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -348,7 +363,8 @@ export default function Navbar({
       {/* Mobile Menu Drawer (other nav items) */}
       {isMenuOpen && (
         <div
-          className="md:hidden bg-slate-900/95 backdrop-blur-sm">
+          ref={navRef}
+          className="md:hidden bg-slate-900/95 backdrop-blur-sm overflow-hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) =>
               item === "blog" ? (
@@ -433,7 +449,7 @@ export default function Navbar({
 
       {/* Full Screen Mobile Job Dropdown */}
       {isJobOpenMobile && (
-        <div className="md:hidden fixed inset-0 top-16 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-50">
+        <div className="md:hidden fixed inset-0  top-16 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-50">
           <div className="px-4 py-8">
             <div className="mb-6">
               <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
