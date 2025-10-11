@@ -1,22 +1,38 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MessageCircle, Mail, X } from "lucide-react";
 
 export default function FloatingContact({ onChatOpen }) {
   const [showContactIcons, setShowContactIcons] = useState(false);
+  const contactRef = useRef(null)
 
   const handleChatClick = () => {
     onChatOpen();
     setShowContactIcons(false);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if(contactRef.current && !contactRef.current.contains(event.target)){
+        setShowContactIcons(false)
+      }
+    }
+    if(showContactIcons){
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+
+  }, [showContactIcons])
+
   return (
     <div className="fixed bottom-6 right-6 z-50">
       <div className="relative">
-        {/* Contact Options */}
         {showContactIcons && (
-          <div className="absolute bottom-20 right-0 flex flex-col gap-3 mb-2">
-            {/* WhatsApp */}
+          <div
+          ref={contactRef}
+            className="absolute bottom-20 right-0 flex flex-col gap-3 mb-2">
             <a
               href="https://wa.me/qr/RX4M5D4PGB7CO1"
               target="_self"

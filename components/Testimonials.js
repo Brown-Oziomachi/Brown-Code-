@@ -14,7 +14,7 @@ const testimonials = [
       "The portfolio and custom features exceeded my expectations. Great communication and execution.",
   },
   {
-    name: "Victor Eruka",
+    name: "Victor Erukpe",
     role: "Furniture /DrWood",
     feedback:
       "I loved the attention to detail and clean design. Highly recommend Brown for web development projects.",
@@ -24,7 +24,7 @@ const testimonials = [
 export default function Testimonials() {
   return (
     <section
-      id="testimonials" // 👈 match the Navbar scrollToSection("testimonials")
+      id="testimonials" 
       className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white py-16 px-6 md:px-12"
     >
       <div className="max-w-6xl mx-auto text-center">

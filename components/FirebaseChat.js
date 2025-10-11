@@ -30,6 +30,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
   const [showPopup, setShowPopup] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
+  const messageRef = useRef(null)
 
   // Auto-scroll
   const scrollToBottom = () => {
@@ -50,6 +51,20 @@ export default function FirebaseChat({ isOpen, onClose }) {
       }, 2000); // Show after 2 seconds
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (messageRef.current && !messageRef.current.contains(event.target)) {
+        setAdmin(false)
+      }
+    }
+    if (showPopup) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [showPopup])
 
   // Auto-hide welcome popup after 10 seconds
   useEffect(() => {
@@ -180,7 +195,9 @@ export default function FirebaseChat({ isOpen, onClose }) {
       <>
         {/* Welcome Popup */}
         {showWelcome && (
-          <div className="fixed bottom-24 right-6 w-80 bg-gradient-to-br from-purple-900 via-slate-900 to-pink-900 rounded-2xl shadow-2xl z-50 border border-purple-500/50 animate-bounce">
+          <div
+            ref={messageRef}
+            className="fixed bottom-24 right-6 w-80 bg-gradient-to-br from-purple-900 via-slate-900 to-pink-900 rounded-2xl shadow-2xl z-50 border border-purple-500/50 animate-bounce">
             <div className="p-4">
               <div className="flex items-start gap-3 mb-3">
                 <img
@@ -279,7 +296,9 @@ export default function FirebaseChat({ isOpen, onClose }) {
 
       {/* If guest name not set */}
       {!isNameSet && !admin ? (
-        <div className="flex-1 flex items-center justify-center p-6">
+        <div
+          ref={messageRef}
+          className="flex-1 flex items-center justify-center p-6">
           <form onSubmit={handleSetName} className="w-full space-y-4">
             <input
               type="text"
@@ -312,27 +331,24 @@ export default function FirebaseChat({ isOpen, onClose }) {
                 return (
                   <div
                     key={msg.id}
-                    className={`flex flex-col ${
-                      isOwnMessage ? "items-end" : "items-start"
-                    }`}
+                    className={`flex flex-col ${isOwnMessage ? "items-end" : "items-start"
+                      }`}
                   >
                     <span
-                      className={`text-xs mb-1 px-2 ${
-                        isFromAdmin
+                      className={`text-xs mb-1 px-2 ${isFromAdmin
                           ? "text-red-400 font-bold"
                           : "text-purple-400"
-                      }`}
+                        }`}
                     >
                       {msg.userName}
                     </span>
                     <div
-                      className={`rounded-2xl px-4 py-2 max-w-[80%] ${
-                        isFromAdmin
+                      className={`rounded-2xl px-4 py-2 max-w-[80%] ${isFromAdmin
                           ? "bg-red-600 text-white"
                           : isOwnMessage
-                          ? "bg-purple-600 text-white"
-                          : "bg-slate-800 text-gray-200"
-                      }`}
+                            ? "bg-purple-600 text-white"
+                            : "bg-slate-800 text-gray-200"
+                        }`}
                     >
                       <p className="text-sm break-words">{msg.text}</p>
                     </div>
@@ -375,7 +391,9 @@ export default function FirebaseChat({ isOpen, onClose }) {
 
       {/* Delete Permission Popup */}
       {showPopup && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60]">
+        <div
+          ref={messageRef}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60]">
           <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 border border-purple-500 p-6 rounded-xl max-w-sm mx-4">
             <p className="text-white text-center mb-4">
               Only <span className="text-purple-400 font-bold">Brown Code</span>{" "}

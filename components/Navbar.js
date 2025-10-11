@@ -1,7 +1,7 @@
 // Navbar.jsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Menu,
@@ -28,6 +28,8 @@ export default function Navbar({
   const [isJobOpenMobile, setIsJobOpenMobile] = useState(false);
   const [isNewsOpen, setIsNewsOpen] = useState(false);
   const [isNewsOpenMobile, setIsNewsOpenMobile] = useState(false);
+  const newsRef = useRef(null);
+  const jobRef = useRef(null);
 
   const navItems = [
     "home",
@@ -178,6 +180,33 @@ export default function Navbar({
     );
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (jobRef.current && !jobRef.current.contains(event.target)) {
+        setIsJobOpen(false)
+      }
+    };
+    if (isJobOpen) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isJobOpen])
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (newsRef.current && !newsRef.current.contains(event.target)) {
+        setIsNewsOpen(false)
+      }
+    }
+    if (isNewsOpen) {
+     document.addEventListener("mousedown", handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isNewsOpen])
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 ${
@@ -190,9 +219,11 @@ export default function Navbar({
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
+            <a href="/">
             <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               {"<BROWN CODE />"}
             </span>
+            </a>
           </div>
 
           {/* Desktop Menu */}
@@ -316,7 +347,8 @@ export default function Navbar({
 
       {/* Mobile Menu Drawer (other nav items) */}
       {isMenuOpen && (
-        <div className="md:hidden bg-slate-900/95 backdrop-blur-sm">
+        <div
+          className="md:hidden bg-slate-900/95 backdrop-blur-sm">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) =>
               item === "blog" ? (
@@ -347,7 +379,9 @@ export default function Navbar({
 
       {/* Full Screen Desktop Job Dropdown */}
       {isJobOpen && (
-        <div className="hidden md:block fixed inset-x-0 top-16 bg-slate-900/98 backdrop-blur-lg border-t border-gray-700/50 shadow-2xl">
+        <div
+        ref={jobRef}
+          className="hidden md:block fixed inset-x-0 top-16 bg-slate-900/98 backdrop-blur-lg border-t border-gray-700/50 shadow-2xl">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="mb-8">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
@@ -372,7 +406,9 @@ export default function Navbar({
 
       {/* Full Screen Desktop News Dropdown */}
       {isNewsOpen && (
-        <div className="hidden md:block fixed inset-x-0 top-16 bg-slate-900/98 backdrop-blur-lg border-t border-gray-700/50 shadow-2xl">
+        <div
+          ref={newsRef}
+          className="hidden md:block fixed inset-x-0 top-16 bg-slate-900/98 backdrop-blur-lg border-t border-gray-700/50 shadow-2xl">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="mb-8">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
@@ -422,7 +458,8 @@ export default function Navbar({
 
       {/* Full Screen Mobile News Dropdown */}
       {isNewsOpenMobile && (
-        <div className="md:hidden fixed inset-0 top-16 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-50">
+        <div
+          className="md:hidden fixed inset-0 top-16 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-50">
           <div className="px-4 py-8">
             <div className="mb-6">
               <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">

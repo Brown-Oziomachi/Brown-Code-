@@ -22,9 +22,10 @@ export default function Portfolio() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
- const [showPopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
-    useEffect(() => {
+  
+  useEffect(() => {
     // Check if user has already seen popup
     const hasSeenPopup = localStorage.getItem("jobsPopupSeen");
 
@@ -73,7 +74,7 @@ export default function Portfolio() {
   const skills = {
     frontend: ["React", "HTML", "CSS", "Tailwind CSS", "Next.js"],
     backend: ["Node.js", "Python"],
-    database: [ "MongoDB", "Firebase", "MySQL"],
+    database: ["MongoDB", "Firebase", "MySQL"],
     tools: ["Git"],
   };
 
@@ -86,24 +87,25 @@ export default function Portfolio() {
     }
   };
 
-   const mediaList = [
-     { type: "image", src: "/code.png" },
-     { type: "image", src: "/brown.png" },
-     { type: "image", src: "/brocode.png" },
-     { type: "video", src: "/react-3.mp4" }, // local video
+  const mediaList = [
+    { type: "image", src: "/code.png" },
+    { type: "image", src: "/brown.png" },
+    { type: "image", src: "/brocode.png" },
+    { type: "video", src: "/react-3.mp4" }, // local video
     //  { type: "video", src: "/demo2.mp4" },
-   ];
+  ];
 
-   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-   useEffect(() => {
-     const interval = setInterval(() => {
-       setCurrentIndex((prev) => (prev + 1) % mediaList.length);
-     }, 3000); // change every 3 seconds
-     return () => clearInterval(interval);
-   }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % mediaList.length);
+    }, 4000); // change every 3 seconds
+    return () => clearInterval(interval);
+  }, []);
 
-   const currentMedia = mediaList[currentIndex];
+  const currentMedia = mediaList[currentIndex];
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
@@ -166,7 +168,6 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* About Section */}
       <section
         id="about"
         className="min-h-screen flex items-center justify-center px-4 py-20"
@@ -176,7 +177,6 @@ export default function Portfolio() {
             About Me
           </h2>
 
-          {/* Profile Image */}
           <div className="flex justify-center mb-12">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
@@ -189,7 +189,6 @@ export default function Portfolio() {
           </div>
 
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
-            {/* Text Container */}
             <div className="space-y-6 mb-6">
               <p className="text-lg text-gray-300 leading-relaxed">
                 My name is Brown Oziomachi. I'm a passionate full stack web
@@ -200,9 +199,8 @@ export default function Portfolio() {
               </p>
 
               <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                  isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-                }`}
+                className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                  }`}
               >
                 <p className="text-lg text-gray-300 leading-relaxed">
                   I specialize in JavaScript ecosystems, with extensive
@@ -214,7 +212,6 @@ export default function Portfolio() {
               </div>
             </div>
 
-            {/* Read More/Less Button */}
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-all font-medium hover:gap-3 group"
@@ -393,7 +390,6 @@ export default function Portfolio() {
       </section>
 
       <Testimonials />
-      {/* Contact Section */}
       <section
         id="contact"
         className="min-h-screen flex items-center justify-center px-4 py-20"
