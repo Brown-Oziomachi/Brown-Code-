@@ -16,6 +16,8 @@ import {
   Globe,
   TrendingUp,
 } from "lucide-react";
+import ViewBlogs from "@/app/view/page";
+import { articles } from "@/app/data/article";
 
 export default function Navbar({
   isScrolled,
@@ -235,7 +237,7 @@ export default function Navbar({
           {/* Logo */}
           <div className="flex-shrink-0">
             <a href="/">
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               {"<BROWN CODE />"}
             </span>
             </a>
@@ -273,7 +275,9 @@ export default function Navbar({
               )}
 
               {/* Desktop Find Job Dropdown */}
-              <div className="relative">
+              <div
+              ref={jobRef}
+                className="relative">
                 <button
                   onClick={() => {
                     setIsJobOpen(!isJobOpen);
@@ -292,7 +296,9 @@ export default function Navbar({
               </div>
 
               {/* Desktop Read News Dropdown */}
-              <div className="relative">
+              <div
+                ref={navRef}
+                className="relative">
                 <button
                   onClick={() => {
                     setIsNewsOpen(!isNewsOpen);
@@ -310,11 +316,15 @@ export default function Navbar({
                   />
                 </button>
               </div>
+              <ViewBlogs articles={articles} />
+
             </div>
           </div>
 
           {/* Mobile Right Side (Menu + Find Job + News) */}
-          <div className="md:hidden flex items-center gap-2">
+          <div
+          ref={jobRef}
+            className="md:hidden flex items-center gap-2">
             {/* Mobile Find Job */}
             <button
               onClick={() => {
@@ -348,6 +358,7 @@ export default function Navbar({
                 }`}
               />
             </button>
+            <ViewBlogs articles={articles} />
 
             {/* Mobile menu button */}
             <button
@@ -357,6 +368,7 @@ export default function Navbar({
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
+
         </div>
       </div>
 
@@ -389,7 +401,13 @@ export default function Navbar({
                 </button>
               )
             )}
+          <div>
+              <h1 className="text-center text-xl">Search Blog</h1>
+              <hr />
+          <ViewBlogs articles={articles} />
           </div>
+          </div>
+
         </div>
       )}
 
@@ -449,7 +467,9 @@ export default function Navbar({
 
       {/* Full Screen Mobile Job Dropdown */}
       {isJobOpenMobile && (
-        <div className="md:hidden fixed inset-0  top-16 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-50">
+        <div 
+        ref={jobRef}
+          className="md:hidden  bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-50">
           <div className="px-4 py-8">
             <div className="mb-6">
               <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
@@ -475,7 +495,8 @@ export default function Navbar({
       {/* Full Screen Mobile News Dropdown */}
       {isNewsOpenMobile && (
         <div
-          className="md:hidden fixed inset-0 top-16 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-50">
+        ref={newsRef}
+          className="md:hidden bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-50">
           <div className="px-4 py-8">
             <div className="mb-6">
               <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
@@ -495,6 +516,7 @@ export default function Navbar({
               ))}
             </div>
           </div>
+          
         </div>
       )}
     </nav>

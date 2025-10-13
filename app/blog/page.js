@@ -3,9 +3,33 @@
 import { useRouter } from "next/navigation";
 import { articles } from "../data/article";
 import { ArrowLeft, Clock, User } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function BlogList() {
   const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("")
+  const [fitteredArticles, setFitteredArticles] = useState(articles)
+  const [isSearching, setIsSearching] = useState(false)
+
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      setIsSearching(true);
+
+      const fitterd = articles.filter((article) => {
+        const searchLower = searchTerm.toLowerCase();
+
+        return (
+          article.content.toLowerCase().includes(searchLower) ||
+          article.postedBy.toLowerCase().includes(searchLower) ||
+          article.title.toLowerCase().includes(searchLower)
+        );
+
+      });
+      setFitteredArticles(articles)
+      setIsSearching(false)
+    }, 300)
+    return() => clearTimeout(timeOutId)
+}, [searchTerm])
 
   const handleBack = () => {
     router.push("/");
@@ -45,7 +69,8 @@ export default function BlogList() {
           </p>
         </div>
 
-        {/* Articles Grid */}
+        
+        
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-12">
           {articles.map((article, index) => (
             <article
@@ -57,7 +82,6 @@ export default function BlogList() {
                 opacity: 0,
               }}
             >
-              {/* Image Section */}
               <div className="relative h-48 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10" />
                 <img
@@ -72,9 +96,7 @@ export default function BlogList() {
                 </div>
               </div>
 
-              {/* Content Section */}
               <div className="p-6 space-y-4">
-                {/* Meta Info */}
                 <div className="flex items-center gap-4 text-xs text-gray-400">
                   <div className="flex items-center gap-1">
                     <User size={14} />
@@ -86,7 +108,6 @@ export default function BlogList() {
                   </div>
                 </div>
 
-                {/* Title */}
                 <h3 className="text-xl font-bold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-400 group-hover:bg-clip-text transition-all duration-300">
                   {article.title}
                 </h3>
@@ -96,7 +117,6 @@ export default function BlogList() {
                   {article.preview}
                 </p>
 
-                {/* Read More Button */}
                 <a
                   href={`/blog/${article.slug}`}
                   className="inline-flex items-center gap-2 text-sm font-semibold text-purple-400 hover:text-purple-300 transition-colors group/link"
@@ -118,7 +138,6 @@ export default function BlogList() {
                 </a>
               </div>
 
-              {/* Hover Glow Effect */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600/5 to-pink-600/5" />
               </div>
@@ -126,7 +145,6 @@ export default function BlogList() {
           ))}
         </div>
 
-        {/* Back Button */}
         <div className="flex justify-center">
           <button
             onClick={handleBack}
@@ -138,7 +156,6 @@ export default function BlogList() {
         </div>
       </div>
 
-      {/* Add keyframes for animation */}
       <style jsx>{`
         @keyframes fadeInUp {
           from {
