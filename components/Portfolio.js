@@ -50,30 +50,29 @@ export default function Portfolio() {
 
   const projects = [
     {
-      title: "E-Commerce Platform",
-      description:
-        "Full-stack e-commerce solution with React, Node.js, and Firebase",
-      tech: ["React", "Node.js", "PostgreSQL", "Stripe"],
-      link: "#",
+      title: "E-Commerce Platform | Yotapoint",
+      description:"Find products from multiple merchants. Buy phones, gadgets, shoes, clothes, furnitures, and a lot more",
+      tech: ["React","Next.js", "Tailwind CSS", "Node.js", "Firebase", "FlutterWave"],
+      link: "https://yotapoint.com/",
     },
     {
-      title: "The Cyclopedia /News Hub",
+      title: "The Cyclopedia | News Hub",
       description: "A news platform",
       tech: ["React", "Next.js", "firebase", "Tailwind CSS"],
-      link: "https://cyclopedia-media-hub.vercel.app",
+      link: "https://www.thecyclopedia.com.ng/",
     },
     {
-      title: "Web App Editor/Cyclopedia",
+      title: "IJ Stitches",
       description:
-        "An app editor for The Cyclopedia News Site/ Unauthorized",
-      tech: ["React", "Python"],
-      link: "#",
+        "IJ STITCHES Tailor — your go-to place for custom-made clothing, quality stitching, and personalized tailoring services.",
+      tech: ["React", "Next.js", "Tailwind CSS"],
+      link: "https://ij-stitches.vercel.app/main",
     },
   ];
 
   const skills = {
-    frontend: ["React", "HTML", "CSS", "Tailwind CSS", "Next.js"],
-    backend: ["Node.js", "Python"],
+    frontend: ["HTML", "CSS", "JavaScript", "Tailwind CSS", "React", "Next.js"],
+    backend: ["Node.js",],
     database: ["MongoDB", "Firebase", "MySQL"],
     tools: ["Git"],
   };
