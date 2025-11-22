@@ -8,7 +8,10 @@ export const metadata = {
         "budget-friendly web developer",
         "cheap website design Abuja",
         "affordable software developer",
-        "low cost website development Nigeria"
+        "low cost website development Nigeria",
+        "software developers",
+        "web developers",
+        "website developer"
     ],
 };
 
