@@ -83,9 +83,9 @@ export default function ViewBlogs({ articles }) {
                     />
 
                     {/* Modal Content */}
-                    <div className="fixed inset-0 mt-50 items-center justify-center z-50 p-4 pointer-events-none">
+                    <div className="fixed inset-0 mt-50 z-50 p-4 pointer-events-none">
                         <div
-                            className="bg-purple-200 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col pointer-events-auto"
+                            className="bg-purple-200 mx-auto rounded-2xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col pointer-events-auto"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Header */}
