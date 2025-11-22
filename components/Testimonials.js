@@ -31,7 +31,7 @@ export default function Testimonials() {
   return (
     <section
       id="testimonials" 
-      className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white py-16 px-6 md:px-12"
+      className="bg-black text-white py-16 px-6 md:px-12"
     >
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-12">
