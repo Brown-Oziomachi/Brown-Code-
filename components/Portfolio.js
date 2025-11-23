@@ -156,6 +156,7 @@ export default function Portfolio() {
                 Full Stack Developer • React / Next.js
               </span>
             </div>
+            <img src="/man.png" alt="Profile" className="relative w-90 lg:h-100 h-130 object-cover shadow-2xl" />
 
             <h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
               Brown Oziomachi —{" "}
@@ -304,8 +305,8 @@ export default function Portfolio() {
             <div className="flex flex-col lg:flex-row gap-6 items-center">
               <div className="flex-shrink-0">
                 <div className="relative group">
-                  <div className="absolute -inset-1 rounded-full blur opacity-80 bg-gradient-to-r from-purple-600 to-pink-500 transform -translate-x-1 -translate-y-1 group-hover:scale-105 transition" />
-                  <img src="/man.png" alt="Profile" className="relative w-40 h-40 rounded-full object-cover border-4 border-slate-800 shadow-2xl" />
+                  <div className="absolute -inset-1 blur opacity-80 bg-gradient-to-r from-purple-600 to-pink-500 transform -translate-x-1 -translate-y-1 group-hover:scale-105 transition" />
+                  <img src="/soft.png" alt="Profile" className="relative w-90 lg:h-100 h-130 object-cover border-4 border-slate-800 shadow-2xl" />
                 </div>
               </div>
 
