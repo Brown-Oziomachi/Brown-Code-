@@ -1,13 +1,57 @@
+"use client";
+
 import Head from "next/head";
 import { articles } from "@/app/data/article";
+import { ArrowLeft, Calendar, Clock, User, Share2, Bookmark, Twitter, Linkedin, Facebook } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function ArticlePage({ params }) {
+  const router = useRouter();
   const { slug } = params;
   const article = articles.find((a) => a.slug === slug);
 
   if (!article) {
-    return <div>No article found</div>;
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="text-6xl">📄</div>
+          <h2 className="text-3xl font-bold text-white">Article Not Found</h2>
+          <p className="text-gray-400">The article you're looking for doesn't exist.</p>
+          <button
+            onClick={() => router.push("/blog")}
+            className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:scale-105 transition-transform"
+          >
+            Back to Blog
+          </button>
+        </div>
+      </div>
+    );
   }
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const getReadingTime = (content) => {
+    const words = content.split(" ").length;
+    return Math.max(1, Math.ceil(words / 200));
+  };
+
+  const shareUrl = `https://browncode.name.ng/blog/${article.slug}`;
+
+  const handleShare = (platform) => {
+    const urls = {
+      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(article.title)}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`
+    };
+    window.open(urls[platform], '_blank', 'width=600,height=400');
+  };
 
   return (
     <>
@@ -37,48 +81,167 @@ export default function ArticlePage({ params }) {
               "@type": "Organization",
               name: "BrownCode",
             },
-            datePublished: "2025-10-04", // Optional: make dynamic later
+            datePublished: article.datePublished || "2025-10-04",
             mainEntityOfPage: {
               "@type": "WebPage",
-              "@id": `https://browncode.name.ng/blog/${article.slug}`,
+              "@id": shareUrl,
             },
           }),
         }}
       />
 
-      <section className="bg-black text-white py-16 px-6 md:px-12">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
-          <h3 className="text-sm font-semibold mb-4 text-gray-500">
-            Posted by: {article.postedBy}
-          </h3>
+      <article className="min-h-screen bg-black text-white">
+        {/* Hero Section */}
+        <div className="relative">
+          {/* Background Image with Overlay */}
+          <div className="relative h-[60vh] md:h-[70vh] overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/80 to-slate-950 z-10" />
+            <img
+              src={article.image}
+              alt={article.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
 
-          <img
-            src={article.image}
-            alt={article.title}
-            className="w-full rounded-lg mb-6 shadow-lg"
-          />
-
-          <p className="text-gray-300 whitespace-pre-line mb-10">
-            {article.content}
-          </p>
-        </div>
-        <div>
-          <a
-            href="/blog"
-            className="mt-20 px-10 py-3 cursor-pointer bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg"
+          {/* Floating Back Button */}
+          <button
+            onClick={() => router.push("/blog")}
+            className="absolute top-8 left-8 z-20 flex items-center gap-2 px-5 py-3 bg-slate-900/80 backdrop-blur-md border border-purple-500/30 rounded-xl text-white font-semibold hover:bg-slate-800/80 hover:border-purple-500/50 transition-all duration-300 hover:scale-105 shadow-xl"
           >
-            Back
-          </a>
+            <ArrowLeft size={18} />
+            <span className="hidden sm:inline">Back</span>
+          </button>
+
+          {/* Article Header - Overlapping the image */}
+          <div className="relative z-20 -mt-32 md:-mt-40">
+            <div className="max-w-4xl mx-auto px-6 md:px-12">
+              <div className="bg-gradient-to-br from-slate-900/95 to-purple-900/40 backdrop-blur-xl border border-purple-500/20 rounded-3xl p-8 md:p-12 shadow-2xl">
+                {/* Category Badge */}
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/40 px-4 py-2 rounded-full text-sm font-semibold text-purple-300 mb-6">
+                  <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+                  Featured Article
+                </div>
+
+                {/* Title */}
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+                  {article.title}
+                </h1>
+
+                {/* Meta Information */}
+                <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-8">
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold text-white">
+                      {article.postedBy.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5 text-white font-semibold">
+                        <User size={14} className="text-purple-400" />
+                        {article.postedBy}
+                      </div>
+                      <div className="text-xs text-gray-500">Author</div>
+                    </div>
+                  </div>
+
+                  <div className="hidden sm:block w-px h-10 bg-purple-500/20" />
+
+                
+
+                  <div className="flex items-center gap-2">
+                    <Clock size={16} className="text-purple-400" />
+                    <span>{getReadingTime(article.content)} min read</span>
+                  </div>
+                </div>
+
+                {/* Preview Text */}
+                <p className="text-lg text-gray-300 leading-relaxed border-l-4 border-purple-500 pl-6 mb-8">
+                  {article.preview}
+                </p>
+
+                {/* Action Buttons */}
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-3">
+                   
+
+                    <div className="relative group">
+                      <button className="flex items-center gap-2 px-4 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 rounded-xl transition-all duration-300 hover:scale-105">
+                        <Share2 size={16} />
+                        <span className="text-sm font-semibold">Share</span>
+                      </button>
+
+                      {/* Share Dropdown */}
+                      <div className="absolute top-full mt-2 left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-30">
+                        <div className="bg-slate-900 border border-purple-500/30 rounded-xl p-2 shadow-xl backdrop-blur-xl min-w-[160px]">
+                          <button
+                            onClick={() => handleShare('twitter')}
+                            className="w-full flex items-center gap-3 px-4 py-2 hover:bg-purple-600/20 rounded-lg transition-colors text-left"
+                          >
+                            <Twitter size={16} className="text-blue-400" />
+                            <span className="text-sm">Twitter</span>
+                          </button>
+                          <button
+                            onClick={() => handleShare('linkedin')}
+                            className="w-full flex items-center gap-3 px-4 py-2 hover:bg-purple-600/20 rounded-lg transition-colors text-left"
+                          >
+                            <Linkedin size={16} className="text-blue-500" />
+                            <span className="text-sm">LinkedIn</span>
+                          </button>
+                          <button
+                            onClick={() => handleShare('facebook')}
+                            className="w-full flex items-center gap-3 px-4 py-2 hover:bg-purple-600/20 rounded-lg transition-colors text-left"
+                          >
+                            <Facebook size={16} className="text-blue-600" />
+                            <span className="text-sm">Facebook</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
+
+        {/* Article Content */}
+        <div className="max-w-4xl mx-auto px-6 md:px-12 py-16">
+          <div className="prose prose-lg prose-invert max-w-none">
+            <div className="text-gray-300 text-lg leading-relaxed space-y-6 whitespace-pre-line">
+              {article.content.split('\n\n').map((paragraph, index) => (
+                <p key={index} className="mb-6 first-letter:text-5xl first-letter:font-bold first-letter:text-purple-400 first-letter:mr-2 first-letter:float-left">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom CTA Section */}
+        <div className="max-w-4xl mx-auto px-6 md:px-12 pb-20">
+          <div className="bg-gradient-to-br from-purple-900/40 to-pink-900/20 border border-purple-500/30 rounded-3xl p-8 md:p-12 text-center backdrop-blur-sm">
+            <h3 className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+              Enjoyed this article?
+            </h3>
+            <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
+              Explore more insights and strategies to build your digital presence
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <button
+                onClick={() => router.push("/blog")}
+                className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl font-bold text-white shadow-xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105"
+              >
+                <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
+                More Articles
+              </button>
+              <button
+                onClick={() => router.push("/")}
+                className="px-8 py-4 bg-slate-900/80 hover:bg-slate-800 border border-purple-500/30 hover:border-purple-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
+              >
+                Back to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
     </>
   );
-}
-
-// Static generation for each article
-export async function generateStaticParams() {
-  return articles.map((article) => ({
-    slug: article.slug,
-  }));
 }
