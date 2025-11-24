@@ -10,6 +10,7 @@ import {
   Layers,
   Monitor,
   Star,
+  ArrowRight,
 } from "lucide-react";
 import Navbar from "./Navbar";
 import FloatingContact from "./FloatingContact";
@@ -17,17 +18,6 @@ import FirebaseChat from "./FirebaseChat";
 import Testimonials from "./Testimonials";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Link from "next/link";
-
-/**
- * Unified portfolio combining:
- * - Apple-style minimal
- * - Futuristic neon/cyber accents
- * - Soft modern rounded cards
- * - Professional agency layout (skills with bars)
- * - Ultra-clean grid
- *
- * Keeps your purple gradient theme and existing functionality.
- */
 
 export default function Portfolio() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -40,7 +30,7 @@ export default function Portfolio() {
 
   // media carousel (keeps your media list and timing)
   const mediaList = [
-    { type: "image", src: "/code.png" },
+    { type: "image", src: "/bc.png" },
     { type: "image", src: "/brown.png" },
     { type: "image", src: "/brocode.png" },
     { type: "video", src: "/react-3.mp4" },
@@ -156,7 +146,7 @@ export default function Portfolio() {
                 Full Stack Developer • React / Next.js
               </span>
             </div>
-            <img src="/man.png" alt="Profile" className="relative w-90 lg:h-100 h-130 object-cover shadow-2xl" />
+            <img src="/cod.png" alt="Profile" className="relative w-150 lg:h-200 h-170 object-cover shadow-2xl" />
 
             <h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
               Brown Oziomachi —{" "}
@@ -183,7 +173,7 @@ export default function Portfolio() {
                 onClick={() => scrollToSection("contact")}
                 className="px-6 py-3 rounded-full border-2 border-purple-400/40 hover:bg-purple-400/10 transition"
               >
-                Contact Me
+                Let's roll
               </button>
 
               <a
@@ -290,7 +280,7 @@ export default function Portfolio() {
                 href="/projects"
                 className="px-4 py-2 rounded-full border border-slate-700 hover:bg-slate-800/40 transition"
               >
-                See all projects
+                Show Me More
               </a>
             </div>
           </div>
@@ -378,9 +368,12 @@ export default function Portfolio() {
               </article>
             ))}
           </div>
+          <div className="flex gap-3 items-center justify-center mt-10">
           <Link href="/projects">
-          <h1 className="mt-10 text-center text-purple-400 cursor-pointer">See All Projects</h1>
+            <h1 className=" text-center text-purple-400 cursor-pointer">Show Me More</h1>
           </Link>
+            <ArrowRight className="text-purple-400"/>
+          </div>
         </div>
       </section>
 
@@ -481,7 +474,7 @@ export default function Portfolio() {
             <a href="mailto:browncemmanuel@gmail.com" className="p-3 rounded-full bg-slate-800/50 hover:bg-purple-600/30 transition"><Mail size={24} /></a>
           </div>
 
-          <a href="/contact" className="inline-block px-10 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 font-semibold hover:scale-105 transform transition">Send Message</a>
+          <a href="/contact" className="inline-block px-10 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 font-semibold hover:scale-105 transform transition">Let's roll</a>
         </div>
       </section>
 

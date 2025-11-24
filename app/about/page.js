@@ -76,19 +76,17 @@ export default function AboutMePage() {
 
     return (
         <div className="min-h-screen bg-black text-white">
-            {/* Background Effects */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute w-96 h-96 bg-purple-500/10 rounded-full blur-3xl -top-48 -left-48 animate-pulse"></div>
                 <div className="absolute w-96 h-96 bg-pink-500/10 rounded-full blur-3xl -bottom-48 -right-48 animate-pulse"></div>
                 <div className="absolute w-96 h-96 bg-purple-500/5 rounded-full blur-3xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
             </div>
 
-            {/* Navigation Bar */}
             <nav className="relative z-10 border-b border-purple-500/20 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
-                        <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                            Brown Code
+                        <div className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            {"<Brown Code />"}
                         </div>
                         <a
                             href="/"
@@ -101,7 +99,6 @@ export default function AboutMePage() {
                 </div>
             </nav>
 
-            {/* Hero Section with Image */}
             <div className="relative z-10 max-w-7xl mx-auto px-4 py-12 md:py-20">
                 <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
                     {/* Image Section */}

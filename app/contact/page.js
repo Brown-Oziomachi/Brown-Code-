@@ -116,8 +116,8 @@ ${formData.message}
             <nav className="relative z-10 border-b border-purple-500/20 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
-                        <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                            Brown Code
+                        <div className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            {"<Brown Code />"}
                         </div>
                         <a
                             href="/"

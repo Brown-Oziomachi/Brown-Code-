@@ -32,15 +32,15 @@ export default function Navbar({
   const [isNewsOpenMobile, setIsNewsOpenMobile] = useState(false);
   const newsRef = useRef(null);
   const jobRef = useRef(null);
-  const navRef = useRef(null)
+  const navRef = useRef(null);
 
   const navItems = [
     "home",
     "about",
     "projects",
     "skills",
-    "contact",
     "testimonials",
+    "contact",
     "blog",
   ];
 
@@ -92,7 +92,8 @@ export default function Navbar({
   const newsOptions = [
     {
       title: "Politics News",
-      description: "Navigate the world of governance, elections, secret deals, and politicalmaneuvers that influence global direction. See what lies behind the decisions made in your name",
+      description:
+        "Navigate the world of governance, elections, secret deals, and political maneuvers that influence global direction. See what lies behind the decisions made in your name",
       icon: <Sparkles size={20} className="text-blue-400" />,
       href: "https://cyclopedia-media-hub.vercel.app/politics",
       gradient: "from-blue-500/20 to-cyan-500/20",
@@ -100,7 +101,8 @@ export default function Navbar({
     },
     {
       title: "Religion News",
-      description: "Explore ancient scriptures, divine mysteries, and the role of religionin shaping societies and ideologies. A closer look at beliefs that unite — and divide — billions.",
+      description:
+        "Explore ancient scriptures, divine mysteries, and the role of religion in shaping societies and ideologies. A closer look at beliefs that unite — and divide — billions.",
       icon: <TrendingUp size={20} className="text-green-400" />,
       href: "https://cyclopedia-media-hub.vercel.app/religion",
       gradient: "from-green-500/20 to-emerald-500/20",
@@ -186,236 +188,283 @@ export default function Navbar({
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (navRef.current && !navRef.current.contains(event.target)) {
-        setIsMenuOpen(false)
+        setIsMenuOpen(false);
       }
-    }
-    if (setIsMenuOpen) {
-      document.addEventListener("mousedown", handleClickOutside)
+    };
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
     }
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isMenuOpen])
+  }, [isMenuOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (jobRef.current && !jobRef.current.contains(event.target)) {
-        setIsJobOpen(false)
+        setIsJobOpen(false);
       }
     };
     if (isJobOpen) {
-      document.addEventListener("mousedown", handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside);
     }
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [isJobOpen])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isJobOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (newsRef.current && !newsRef.current.contains(event.target)) {
-        setIsNewsOpen(false)
+        setIsNewsOpen(false);
       }
-    }
+    };
     if (isNewsOpen) {
-     document.addEventListener("mousedown", handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside);
     }
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [isNewsOpen])
-  return (
-    <nav
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-slate-900/95 backdrop-blur-sm shadow-lg"
-          : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <a href="/">
-            <span className="text-sm font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              {"<BROWN CODE />"}
-            </span>
-            </a>
-          </div>
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isNewsOpen]);
 
-          {/* Desktop Menu */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+  return (
+    <>
+      <nav
+        className={`fixed w-full z-50 transition-all duration-300 ${isScrolled
+            ? "bg-slate-900/95 backdrop-blur-sm shadow-lg"
+            : "bg-transparent"
+          }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <a href="/">
+                <span className="text-sm font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  {"<BROWN CODE />"}
+                </span>
+              </a>
+            </div>
+
+            {/* Desktop Menu */}
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-8">
+                {navItems.map((item) =>
+                  item === "blog" ? (
+                    <Link
+                      key={item}
+                      href="/blog"
+                      className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
+                          ? "text-purple-400"
+                          : "text-gray-300 hover:text-white"
+                        }`}
+                    >
+                      {item}
+                    </Link>
+                  ) : (
+                    <button
+                      key={item}
+                      onClick={() => scrollToSection(item)}
+                      className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
+                          ? "text-purple-400"
+                          : "text-gray-300 hover:text-white"
+                        }`}
+                    >
+                      {item}
+                    </button>
+                  )
+                )}
+
+                {/* Desktop Find Job Dropdown */}
+                <div ref={jobRef} className="relative">
+                  <button
+                    onClick={() => {
+                      setIsJobOpen(!isJobOpen);
+                      setIsNewsOpen(false);
+                    }}
+                    className="capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-300 hover:text-white flex items-center gap-1"
+                  >
+                    Find Job{" "}
+                    <ChevronDown
+                      size={14}
+                      className={`transition-transform duration-300 ${isJobOpen ? "rotate-180" : ""
+                        }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Desktop Read News Dropdown */}
+                <div ref={newsRef} className="relative">
+                  <button
+                    onClick={() => {
+                      setIsNewsOpen(!isNewsOpen);
+                      setIsJobOpen(false);
+                    }}
+                    className="capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-300 hover:text-white flex items-center gap-1"
+                  >
+                    <Newspaper size={16} className="mr-1" />
+                    News{" "}
+                    <ChevronDown
+                      size={14}
+                      className={`transition-transform duration-300 ${isNewsOpen ? "rotate-180" : ""
+                        }`}
+                    />
+                  </button>
+                </div>
+                <ViewBlogs articles={articles} />
+              </div>
+            </div>
+
+            {/* Mobile Right Side (Menu + Find Job + News) */}
+            <div className="md:hidden flex items-center gap-2">
+              {/* Mobile Find Job */}
+              <button
+                onClick={() => {
+                  setIsJobOpenMobile(!isJobOpenMobile);
+                  setIsNewsOpenMobile(false);
+                  setIsMenuOpen(false);
+                }}
+                className="capitalize px-2 py-2 rounded-md text-xs font-medium text-gray-300 hover:text-white flex items-center gap-1"
+              >
+                Jobs{" "}
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform duration-300 ${isJobOpenMobile ? "rotate-180" : ""
+                    }`}
+                />
+              </button>
+
+              {/* Mobile Read News */}
+              <button
+                onClick={() => {
+                  setIsNewsOpenMobile(!isNewsOpenMobile);
+                  setIsJobOpenMobile(false);
+                  setIsMenuOpen(false);
+                }}
+                className="capitalize px-2 py-2 rounded-md text-xs font-medium text-gray-300 hover:text-white flex items-center gap-1"
+              >
+                <Newspaper size={14} />
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform duration-300 ${isNewsOpenMobile ? "rotate-180" : ""
+                    }`}
+                />
+              </button>
+              <ViewBlogs articles={articles} />
+
+              {/* Mobile menu button */}
+              <button
+                onClick={() => {
+                  setIsMenuOpen(!isMenuOpen);
+                  setIsJobOpenMobile(false);
+                  setIsNewsOpenMobile(false);
+                }}
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none"
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu Side Drawer */}
+      {isMenuOpen && (
+        <>
+          {/* Backdrop Overlay */}
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+            onClick={() => setIsMenuOpen(false)}
+          />
+
+          {/* Side Drawer */}
+          <div
+            ref={navRef}
+            className="fixed top-0 right-0 h-full w-80 max-w-[55vw] bg-black backdrop-blur-xl shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-out overflow-y-auto"
+            style={{
+              animation: "slideInRight 0.3s ease-out",
+            }}
+          >
+            {/* Close Button */}
+            <div className="flex justify-between items-center p-4 border-b border-gray-700">
+              <h2 className="text-xl font-bold text-white">Developer</h2>
+              <button
+                onClick={() => setIsMenuOpen(false)}
+                className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+                aria-label="Close menu"
+              >
+                <svg
+                  className="w-6 h-6 text-gray-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Navigation Items */}
+            <div className="px-4 pt-4 pb-3 space-y-2">
               {navItems.map((item) =>
                 item === "blog" ? (
                   <Link
                     key={item}
                     href="/blog"
-                    className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      activeSection === item
-                        ? "text-purple-400"
-                        : "text-gray-300 hover:text-white"
-                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="capitalize block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
                   >
                     {item}
                   </Link>
                 ) : (
                   <button
                     key={item}
-                    onClick={() => scrollToSection(item)}
-                    className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      activeSection === item
-                        ? "text-purple-400"
-                        : "text-gray-300 hover:text-white"
-                    }`}
+                    onClick={() => {
+                      scrollToSection(item);
+                      setIsMenuOpen(false);
+                    }}
+                    className="capitalize block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
                   >
                     {item}
                   </button>
                 )
               )}
-
-              {/* Desktop Find Job Dropdown */}
-              <div
-              ref={jobRef}
-                className="relative">
-                <button
-                  onClick={() => {
-                    setIsJobOpen(!isJobOpen);
-                    setIsNewsOpen(false);
-                  }}
-                  className="capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-300 hover:text-white flex items-center gap-1"
-                >
-                  Find Job{" "}
-                  <ChevronDown
-                    size={14}
-                    className={`transition-transform duration-300 ${
-                      isJobOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {/* Desktop Read News Dropdown */}
-              <div
-                ref={navRef}
-                className="relative">
-                <button
-                  onClick={() => {
-                    setIsNewsOpen(!isNewsOpen);
-                    setIsJobOpen(false);
-                  }}
-                  className="capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-300 hover:text-white flex items-center gap-1"
-                >
-                  <Newspaper size={16} className="mr-1" />
-                  News{" "}
-                  <ChevronDown
-                    size={14}
-                    className={`transition-transform duration-300 ${
-                      isNewsOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-              </div>
-              <ViewBlogs articles={articles} />
-
             </div>
           </div>
 
-          {/* Mobile Right Side (Menu + Find Job + News) */}
-          <div
-          ref={jobRef}
-            className="md:hidden flex items-center gap-2">
-            {/* Mobile Find Job */}
-            <button
-              onClick={() => {
-                setIsJobOpenMobile(!isJobOpenMobile);
-                setIsNewsOpenMobile(false);
-              }}
-              className="capitalize px-2 py-2 rounded-md text-xs font-medium text-gray-300 hover:text-white flex items-center gap-1"
-            >
-              Jobs{" "}
-              <ChevronDown
-                size={14}
-                className={`transition-transform duration-300 ${
-                  isJobOpenMobile ? "rotate-180" : ""
-                }`}
-              />
-            </button>
+            {/* Search Blog Section
+            <div className="px-4 pt-4 border-t border-gray-700">
+              <h3 className="text-lg font-semibold text-white mb-3">
+                Search Blog
+              </h3>
+              <ViewBlogs articles={articles} />
+            </div> */}
 
-            {/* Mobile Read News */}
-            <button
-              onClick={() => {
-                setIsNewsOpenMobile(!isNewsOpenMobile);
-                setIsJobOpenMobile(false);
-              }}
-              className="capitalize px-2 py-2 rounded-md text-xs font-medium text-gray-300 hover:text-white flex items-center gap-1"
-            >
-              <Newspaper size={14} />
-              <ChevronDown
-                size={14}
-                className={`transition-transform duration-300 ${
-                  isNewsOpenMobile ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-            <ViewBlogs articles={articles} />
-
-            {/* Mobile menu button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none"
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-
-        </div>
-      </div>
-
-      {/* Mobile Menu Drawer (other nav items) */}
-      {isMenuOpen && (
-        <div
-          ref={navRef}
-          className="md:hidden bg-slate-900/95 backdrop-blur-sm overflow-hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navItems.map((item) =>
-              item === "blog" ? (
-                <Link
-                  key={item}
-                  href="/blog"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="capitalize block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
-                >
-                  {item}
-                </Link>
-              ) : (
-                <button
-                  key={item}
-                  onClick={() => {
-                    scrollToSection(item);
-                    setIsMenuOpen(false);
-                  }}
-                  className="capitalize block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700"
-                >
-                  {item}
-                </button>
-              )
-            )}
-          <div>
-              <h1 className="text-center text-xl">Search Blog</h1>
-              <hr />
-          <ViewBlogs articles={articles} />
-          </div>
-          </div>
-
-        </div>
+          {/* CSS Animation */}
+          <style jsx>{`
+            @keyframes slideInRight {
+              from {
+                transform: translateX(100%);
+              }
+              to {
+                transform: translateX(0);
+              }
+            }
+          `}</style>
+        </>
       )}
 
       {/* Full Screen Desktop Job Dropdown */}
       {isJobOpen && (
         <div
-        ref={jobRef}
-          className="hidden md:block fixed inset-x-0 top-16 bg-slate-900/98 backdrop-blur-lg border-t border-gray-700/50 shadow-2xl">
+          ref={jobRef}
+          className="hidden md:block fixed inset-x-0 top-16 bg-slate-900/98 backdrop-blur-lg border-t border-gray-700/50 shadow-2xl z-40"
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="mb-8">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
@@ -442,7 +491,8 @@ export default function Navbar({
       {isNewsOpen && (
         <div
           ref={newsRef}
-          className="hidden md:block fixed inset-x-0 top-16 bg-slate-900/98 backdrop-blur-lg border-t border-gray-700/50 shadow-2xl">
+          className="hidden md:block fixed inset-x-0 top-16 bg-slate-900/98 backdrop-blur-lg border-t border-gray-700/50 shadow-2xl z-40"
+        >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="mb-8">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
@@ -467,58 +517,73 @@ export default function Navbar({
 
       {/* Full Screen Mobile Job Dropdown */}
       {isJobOpenMobile && (
-        <div 
-        ref={jobRef}
-          className="md:hidden  bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-50">
-          <div className="px-4 py-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-                Find Your Next Opportunity
-              </h2>
-              <p className="text-gray-400 text-sm">
-                Explore various job options tailored to your career goals
-              </p>
-            </div>
-            <div className="space-y-4">
-              {jobOptions.map((job, index) => (
-                <JobCard
-                  key={index}
-                  job={job}
-                  onClick={() => setIsJobOpenMobile(false)}
-                />
-              ))}
+        <>
+          {/* Backdrop */}
+          <div
+            className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            style={{ top: "64px" }}
+            onClick={() => setIsJobOpenMobile(false)}
+          />
+
+          {/* Dropdown Content */}
+          <div className="md:hidden fixed left-0 right-0 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-40 shadow-2xl max-h-[calc(100vh-64px)]" style={{ top: "64px" }}>
+            <div className="px-4 py-8">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                  Find Your Next Opportunity
+                </h2>
+                <p className="text-gray-400 text-sm">
+                  Explore various job options tailored to your career goals
+                </p>
+              </div>
+              <div className="space-y-4">
+                {jobOptions.map((job, index) => (
+                  <JobCard
+                    key={index}
+                    job={job}
+                    onClick={() => setIsJobOpenMobile(false)}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Full Screen Mobile News Dropdown */}
       {isNewsOpenMobile && (
-        <div
-        ref={newsRef}
-          className="md:hidden bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-50">
-          <div className="px-4 py-8">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-                Stay Informed
-              </h2>
-              <p className="text-gray-400 text-sm">
-                Read the latest news from around the world
-              </p>
-            </div>
-            <div className="space-y-4">
-              {newsOptions.map((news, index) => (
-                <NewsCard
-                  key={index}
-                  news={news}
-                  onClick={() => setIsNewsOpenMobile(false)}
-                />
-              ))}
+        <>
+          {/* Backdrop */}
+          <div
+            className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            style={{ top: "64px" }}
+            onClick={() => setIsNewsOpenMobile(false)}
+          />
+
+          {/* Dropdown Content */}
+          <div className="md:hidden fixed left-0 right-0 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-40 shadow-2xl max-h-[calc(100vh-64px)]" style={{ top: "64px" }}>
+            <div className="px-4 py-8">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
+                  Stay Informed
+                </h2>
+                <p className="text-gray-400 text-sm">
+                  Read the latest news from around the world
+                </p>
+              </div>
+              <div className="space-y-4">
+                {newsOptions.map((news, index) => (
+                  <NewsCard
+                    key={index}
+                    news={news}
+                    onClick={() => setIsNewsOpenMobile(false)}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-          
-        </div>
+        </>
       )}
-    </nav>
+    </>
   );
 }
