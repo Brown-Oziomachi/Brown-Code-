@@ -146,7 +146,7 @@ export default function Portfolio() {
                 Full Stack Developer • React / Next.js
               </span>
             </div>
-            <img src="/cod.png" alt="Profile" className="relative w-150 lg:h-200 h-170 object-cover shadow-2xl" />
+            <img src="/cod2.png" alt="Profile" className="relative w-150 lg:h-200 h-170 object-cover shadow-2xl" />
 
             <h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
               Brown Oziomachi —{" "}
