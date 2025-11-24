@@ -456,7 +456,7 @@ export default function Portfolio() {
         <div className="max-w-4xl mx-auto text-center bg-black/50 p-10 rounded-2xl">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-purple-300">Online Jobs & Opportunities</h2>
           <p className="text-gray-200 mb-6">Online jobs are a powerful way to build your career and earn from anywhere in the world. Explore opportunities that match your skills.</p>
-          <a href="/jobses" className="inline-block px-8 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 font-semibold hover:scale-105 transform transition">Explore Opportunities</a>
+          <a href="/jobs" className="inline-block px-8 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 font-semibold hover:scale-105 transform transition">Explore Opportunities</a>
         </div>
       </section>
 

@@ -162,9 +162,7 @@ export default function BlogList() {
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
                     />
                     <div className="absolute top-4 right-4 z-20">
-                      <span className="bg-purple-600/95 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
-                        {formatDate(article.datePublished)}
-                      </span>
+                      
                     </div>
                   </div>
 

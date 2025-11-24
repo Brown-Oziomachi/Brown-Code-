@@ -4,11 +4,16 @@ import Head from "next/head";
 import { articles } from "@/app/data/article";
 import { ArrowLeft, Calendar, Clock, User, Share2, Bookmark, Twitter, Linkedin, Facebook } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState, use } from "react";
 
 export default function ArticlePage({ params }) {
   const router = useRouter();
-  const { slug } = params;
+
+  // Unwrap the params Promise using React.use()
+  const { slug } = use(params);
+
   const article = articles.find((a) => a.slug === slug);
+  const [showShare, setShowShare] = useState(false);
 
   if (!article) {
     return (
@@ -144,8 +149,6 @@ export default function ArticlePage({ params }) {
 
                   <div className="hidden sm:block w-px h-10 bg-purple-500/20" />
 
-                
-
                   <div className="flex items-center gap-2">
                     <Clock size={16} className="text-purple-400" />
                     <span>{getReadingTime(article.content)} min read</span>
@@ -160,40 +163,42 @@ export default function ArticlePage({ params }) {
                 {/* Action Buttons */}
                 <div className="flex flex-wrap items-center gap-4">
                   <div className="flex items-center gap-3">
-                   
-
-                    <div className="relative group">
-                      <button className="flex items-center gap-2 px-4 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 rounded-xl transition-all duration-300 hover:scale-105">
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowShare(!showShare)}
+                        className="flex items-center gap-2 px-4 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 rounded-xl transition-all duration-300 hover:scale-105"
+                      >
                         <Share2 size={16} />
                         <span className="text-sm font-semibold">Share</span>
                       </button>
 
-                      {/* Share Dropdown */}
-                      <div className="absolute top-full mt-2 left-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-30">
-                        <div className="bg-slate-900 border border-purple-500/30 rounded-xl p-2 shadow-xl backdrop-blur-xl min-w-[160px]">
+                      {showShare && (
+                        <div className="absolute top-full mt-2 left-0 bg-slate-900 border border-purple-500/30 rounded-xl p-2 shadow-xl backdrop-blur-xl min-w-[160px] z-30">
                           <button
-                            onClick={() => handleShare('twitter')}
+                            onClick={() => handleShare("twitter")}
                             className="w-full flex items-center gap-3 px-4 py-2 hover:bg-purple-600/20 rounded-lg transition-colors text-left"
                           >
                             <Twitter size={16} className="text-blue-400" />
                             <span className="text-sm">Twitter</span>
                           </button>
+
                           <button
-                            onClick={() => handleShare('linkedin')}
+                            onClick={() => handleShare("linkedin")}
                             className="w-full flex items-center gap-3 px-4 py-2 hover:bg-purple-600/20 rounded-lg transition-colors text-left"
                           >
                             <Linkedin size={16} className="text-blue-500" />
                             <span className="text-sm">LinkedIn</span>
                           </button>
+
                           <button
-                            onClick={() => handleShare('facebook')}
+                            onClick={() => handleShare("facebook")}
                             className="w-full flex items-center gap-3 px-4 py-2 hover:bg-purple-600/20 rounded-lg transition-colors text-left"
                           >
                             <Facebook size={16} className="text-blue-600" />
                             <span className="text-sm">Facebook</span>
                           </button>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -212,6 +217,12 @@ export default function ArticlePage({ params }) {
                 </p>
               ))}
             </div>
+            <button
+              onClick={() => router.push("/contact")}
+              className="px-8 py-4 bg-slate-900/80 hover:bg-slate-800 border border-purple-500/30 hover:border-purple-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
+            >
+              Let's roll
+            </button>
           </div>
         </div>
 

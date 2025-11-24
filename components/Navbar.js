@@ -42,6 +42,7 @@ export default function Navbar({
     "testimonials",
     "contact",
     "blog",
+    "scam-Checker",
   ];
 
   const jobOptions = [
@@ -247,35 +248,35 @@ export default function Navbar({
             </div>
 
             {/* Desktop Menu */}
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-8">
-                {navItems.map((item) =>
-                  item === "blog" ? (
-                    <Link
-                      key={item}
-                      href="/blog"
-                      className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
+                  <div className="hidden md:block">
+                    <div className="ml-10 flex items-baseline space-x-8">
+                    {navItems.map((item) =>
+                      item === "blog" || item === "scam-Checker" ? (
+                      <Link
+                        key={item}
+                        href={`/${item}`}
+                        className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
                           ? "text-purple-400"
                           : "text-gray-300 hover:text-white"
                         }`}
-                    >
-                      {item}
-                    </Link>
-                  ) : (
-                    <button
-                      key={item}
-                      onClick={() => scrollToSection(item)}
-                      className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
+                      >
+                        {item}
+                      </Link>
+                      ) : (
+                      <button
+                        key={item}
+                        onClick={() => scrollToSection(item)}
+                        className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
                           ? "text-purple-400"
                           : "text-gray-300 hover:text-white"
                         }`}
-                    >
-                      {item}
-                    </button>
-                  )
-                )}
+                      >
+                        {item}
+                      </button>
+                      )
+                    )}
 
-                {/* Desktop Find Job Dropdown */}
+                    {/* Desktop Find Job Dropdown */}
                 <div ref={jobRef} className="relative">
                   <button
                     onClick={() => {
@@ -284,7 +285,7 @@ export default function Navbar({
                     }}
                     className="capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-300 hover:text-white flex items-center gap-1"
                   >
-                    Find Job{" "}
+                    Jobs{" "}
                     <ChevronDown
                       size={14}
                       className={`transition-transform duration-300 ${isJobOpen ? "rotate-180" : ""
@@ -410,21 +411,21 @@ export default function Navbar({
             </div>
 
             {/* Navigation Items */}
-            <div className="px-4 pt-4 pb-3 space-y-2">
-              {navItems.map((item) =>
-                item === "blog" ? (
-                  <Link
-                    key={item}
-                    href="/blog"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="capitalize block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
-                  >
-                    {item}
-                  </Link>
-                ) : (
-                  <button
-                    key={item}
-                    onClick={() => {
+                  <div className="px-4 pt-4 pb-3 space-y-2">
+                    {navItems.map((item) =>
+                      item === "blog" || item === "scam-Checker" ? (
+                      <Link
+                      key={item}
+                      href={`/${item}`}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="capitalize block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
+                      >
+                      {item}
+                      </Link>
+                    ) : (
+                      <button
+                      key={item}
+                      onClick={() => {
                       scrollToSection(item);
                       setIsMenuOpen(false);
                     }}
@@ -435,7 +436,18 @@ export default function Navbar({
                 )
               )}
             </div>
-          </div>
+            <hr/>
+          <div className="p-5 mt-3 space-y-3">
+              <h1 className="text-sm md:text-sm font-bold text-gray-100 leading-snug">
+                Your competitors with websites are getting <span className="text-purple-600">YOUR customers.</span>
+              </h1>
+
+              <h2 className="inline-block bg-purple-600 text-white font-semibold px-3  py-2 rounded-full shadow-md hover:bg-purple-700 transition">
+               <Link href="/contact" className="block text-sm"> Let's work together </Link>
+              </h2>
+            </div>
+
+            </div>
 
             {/* Search Blog Section
             <div className="px-4 pt-4 border-t border-gray-700">
