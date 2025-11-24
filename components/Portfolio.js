@@ -492,12 +492,21 @@ export default function Portfolio() {
         </div>
       )}
 
-      {/* FOOTER */}
       <footer className="border-t border-slate-800/40 py-8">
-        <div className="max-w-6xl mx-auto px-4 text-center text-gray-400">
+        <div className="max-w-6xl mx-auto px-4 text-center text-gray-400 space-y-2">
           <p>&copy; {new Date().getFullYear()} Brown Code. All rights reserved.</p>
+          <p>
+            <a
+              href="/sitemap-html"
+              className="text-purple-400 hover:text-purple-300 underline"
+            >
+              Sitemap
+            </a>
+          </p>
         </div>
       </footer>
+
+
 
       {/* Floating contact + Chat */}
       <FloatingContact onChatOpen={() => setIsChatOpen(true)} />
