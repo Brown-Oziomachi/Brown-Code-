@@ -23,7 +23,7 @@ const testimonials = [
     name: "Joel Onyi",
     role: "IJ Stitches",
     feedback:
-      "WOrking with Brown Code was amazing. He really understood the vision of IJ Stitches and delivered a website that perfectly represents my brand. From the design to the responsiveness, everything was done with excellence. I'm grateful for his work and i'll definitely work with him again and also recommend him to others",
+      "Working with Brown Code was amazing. He really understood the vision of IJ Stitches and delivered a website that perfectly represents my brand. From the design to the responsiveness, everything was done with excellence. I'm grateful for his work and i'll definitely work with him again and also recommend him to others",
   },
 ];
 
