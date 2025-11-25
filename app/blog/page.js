@@ -102,26 +102,41 @@ export default function BlogList() {
       <section className="min-h-screen bg-black text-white pt-32 pb-20 px-4 md:px-8 lg:px-12">
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
-          <div className="text-center mb-12 space-y-6">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-white text-sm font-semibold px-6 py-2.5 rounded-full backdrop-blur-sm">
-              <Sparkles size={16} className="text-purple-400" />
-              Knowledge Base
-            </div>
+        <div className="relative w-full h-[420px] md:h-[500px] lg:h-[550px] rounded-2xl overflow-hidden shadow-2xl">
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent leading-tight">
-              Build. Learn. Grow.
-            </h1>
+  {/* Background Image */}
+  <img
+    src="/image.png"
+    alt="Header illustration"
+    className="absolute inset-0 w-900 h-full "
+  />
 
-            <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-              Expert insights on web development, digital strategy, and business growth—crafted by developers, for ambitious professionals.
-            </p>
-          </div>
+  <div className="absolute inset-0 bg-black/70"></div>
+
+  {/* Text Content on Image */}
+  <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-16 max-w-4xl">
+    
+    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/30 to-pink-500/30 border border-purple-500/40 text-white text-sm font-semibold px-6 py-2.5 rounded-full backdrop-blur-sm w-fit">
+      <Sparkles size={16} className="text-purple-300" />
+      Knowledge Base
+    </div>
+
+    <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent leading-tight mt-6">
+      Build. Learn. Grow.
+    </h1>
+
+    <p className="text-gray-200 text-lg md:text-xl max-w-2xl leading-relaxed mt-4">
+      Expert insights on web development, digital strategy, and business growth—crafted by developers, for ambitious professionals.
+    </p>
+  </div>
+</div>
+
 
           {/* Category Filter */}
-          <div className="flex justify-center gap-4 mb-12">
+          <div className="flex justify-center gap-1 mb-12 text-sm mt-10">
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === 'all'
+              className={`flex items-center gap-2 px-2 py-1 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === 'all'
                   ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/30'
                   : 'bg-slate-900/50 text-gray-400 hover:text-white border border-purple-500/20 hover:border-purple-500/40'
                 }`}
@@ -132,7 +147,7 @@ export default function BlogList() {
 
             <button
               onClick={() => setSelectedCategory('business')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === 'business'
+              className={`flex items-center gap-2 px-2 py-1 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === 'business'
                   ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/30'
                   : 'bg-slate-900/50 text-gray-400 hover:text-white border border-purple-500/20 hover:border-purple-500/40'
                 }`}
@@ -143,7 +158,7 @@ export default function BlogList() {
 
             <button
               onClick={() => setSelectedCategory('tech')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === 'tech'
+              className={`flex items-center gap-2 px-2 py-1 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === 'tech'
                   ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-lg shadow-purple-500/30'
                   : 'bg-slate-900/50 text-gray-400 hover:text-white border border-purple-500/20 hover:border-purple-500/40'
                 }`}
@@ -297,60 +312,82 @@ export default function BlogList() {
             Let's roll
           </button>
 
-          {/* CTA Section - Build with Brown Code */}
-          <div className="mb-16 relative overflow-hidden rounded-3xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-pink-600/20 to-blue-600/20 backdrop-blur-sm" />
-            <div className="relative z-10 bg-gradient-to-br from-slate-900/90 to-purple-900/50 border border-purple-500/30 rounded-3xl p-8 md:p-12 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 mb-6">
-                <Code2 size={32} className="text-white" />
+          {(() => {
+            const generalArticles = articles.filter(
+              (a) =>
+                !businessArticles.some((b) => b.slug === a.slug) &&
+                !techArticles.some((t) => t.slug === a.slug)
+            );
+
+            const Section = ({ title, items }) => (
+              <div className="mb-12">
+                <h2 className="text-2xl md:text-3xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-pink-200">
+                  {title} <span className="text-gray-400 text-base font-medium">· {items.length}</span>
+                </h2>
+
+                {items.length > 0 ? (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {items.map((article) => (
+                      <a
+                        key={article.slug}
+                        href={`/blog/${article.slug}`}
+                        className="group block rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02] bg-slate-900/60 border border-purple-500/10"
+                      >
+                        <div className="relative h-48">
+                          <img
+                            src={article.image}
+                            alt={article.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+                          <span className="absolute top-3 left-3 inline-block bg-purple-600 text-white text-xs font-semibold px-3 py-1 rounded">
+                            {getCategoryBadge(article.slug).label}
+                          </span>
+                        </div>
+
+                        <div className="p-4">
+                          <h3 className="text-lg font-bold text-white mb-2 line-clamp-2">
+                            {article.title}
+                          </h3>
+                          <p className="text-gray-400 text-sm mb-3 line-clamp-2">
+                            {article.preview}
+                          </p>
+
+                          <div className="flex items-center justify-between text-xs text-gray-400">
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-1.5">
+                                <User size={12} className="text-purple-400" />
+                                <span className="font-medium">{article.postedBy}</span>
+                              </div>
+                              <div className="w-1 h-1 rounded-full bg-gray-500" />
+                              <div className="flex items-center gap-1.5">
+                                <Clock size={12} className="text-purple-400" />
+                                <span>{getReadingTime(article.content)} min</span>
+                              </div>
+                            </div>
+
+                            <div className="text-right">
+                              <span className="text-gray-500 text-xs">{article.date ?? ""}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-400">No articles in this section.</p>
+                )}
               </div>
+            );
 
-              <h3 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-                Ready to Build Your Digital Presence?
-              </h3>
-
-              <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
-                Don't let your business stay invisible online. Let Brown Code craft a professional website that attracts customers, builds credibility, and grows with your ambitions.
-              </p>
-
-              <div className="flex flex-wrap justify-center gap-4">
-                <button
-                  onClick={() => router.push("/contact")}
-                  className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl font-bold text-white shadow-xl shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
-                >
-                  Start Your Project
-                  <svg
-                    className="w-5 h-5 transition-transform group-hover:translate-x-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    />
-                  </svg>
-                </button>
-
-                <button
-                  onClick={() => router.push("/projects")}
-                  className="px-8 py-4 bg-slate-800/80 hover:bg-slate-700 border border-purple-500/30 hover:border-purple-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
-                >
-                  View Our Work
-                </button>
+            return (
+              <div className="mb-16">
+                <Section title="Tech Insights" items={techArticles} />
+                <Section title="Business Growth" items={businessArticles} />
+                <Section title="General" items={generalArticles} />
               </div>
-
-              <div className="mt-8 pt-8 border-t border-purple-500/20">
-                <p className="text-sm text-gray-400">
-                  <span className="text-purple-400 font-semibold">Trusted by businesses across Nigeria</span> · Fast delivery · Transparent pricing · No hidden fees
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Back Button */}
+            );
+          })()}
           <div className="flex justify-center">
             <button
               onClick={handleBack}
