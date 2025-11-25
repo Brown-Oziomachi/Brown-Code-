@@ -31,7 +31,7 @@ export default function PortfolioScamChecker() {
             <div className="min-h-screen bg-black text-white p-4 md:p-8 pt-32">
                 <div className="max-w-4xl mx-auto">
                     {/* Title */}
-                    <div className="text-center mb-8 lg:not-first:mt-20">
+                    <div className="text-center mb-8 lg:mt-20">
                         <h2 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
                             🤔 Beware of Scam?
                         </h2>

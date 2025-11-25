@@ -277,10 +277,10 @@ export default function Portfolio() {
                 <Mail size={16} /> Let's talk
               </a>
               <a
-                href="/projects"
+                href="/banner"
                 className="px-4 py-2 rounded-full border border-slate-700 hover:bg-slate-800/40 transition"
               >
-                Show Me More
+                Show banner
               </a>
             </div>
           </div>
