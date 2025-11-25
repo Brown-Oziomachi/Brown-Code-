@@ -99,7 +99,7 @@ export default function ArticlePage({ params }) {
         {/* Hero Section */}
         <div className="relative">
           {/* Background Image with Overlay */}
-          <div className="relative h-[60vh] md:h-[70vh] overflow-hidden">
+          <div className="relative h-[60vh] md:h-[50vh] overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/80 to-slate-950 z-10" />
             <img
               src={article.image}
@@ -120,7 +120,7 @@ export default function ArticlePage({ params }) {
           {/* Article Header - Overlapping the image */}
           <div className="relative z-20 -mt-32 md:-mt-40">
             <div className="max-w-4xl mx-auto px-6 md:px-12">
-              <div className="bg-gradient-to-br from-slate-900/95 to-purple-900/40 backdrop-blur-xl border border-purple-500/20 rounded-3xl p-8 md:p-12 shadow-2xl">
+              <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-xl p-8 md:p-12 shadow-2xl">
                 {/* Category Badge */}
                 <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/40 px-4 py-2 rounded-full text-sm font-semibold text-purple-300 mb-6">
                   <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
@@ -128,35 +128,35 @@ export default function ArticlePage({ params }) {
                 </div>
 
                 {/* Title */}
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+                <h1 className="text-xl md:text-xl lg:text-5xl font-bold mb-6 leading-tight bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
                   {article.title}
                 </h1>
 
                 {/* Meta Information */}
                 <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-8">
                   <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center font-bold text-white">
-                      {article.postedBy.charAt(0)}
-                    </div>
+                   
                     <div>
                       <div className="flex items-center gap-1.5 text-white font-semibold">
-                        <User size={14} className="text-purple-400" />
-                        {article.postedBy}
+                        <img src="/cod2.png" alt="Author" className="w-30 h-20 rounded-full mr-1" />
                       </div>
-                      <div className="text-xs text-gray-500">Author</div>
+                      <span className="ml-5">
+                        {article.postedBy}
+                      </span>
                     </div>
-                  </div>
-
-                  <div className="hidden sm:block w-px h-10 bg-purple-500/20" />
-
                   <div className="flex items-center gap-2">
                     <Clock size={16} className="text-purple-400" />
                     <span>{getReadingTime(article.content)} min read</span>
                   </div>
+                    
+                  </div>
+
+                  <div className="hidden sm:block w-px h-10 bg-purple-500/20" />
+
                 </div>
 
                 {/* Preview Text */}
-                <p className="text-lg text-gray-300 leading-relaxed border-l-4 border-purple-500 pl-6 mb-8">
+                <p className="text-sm text-gray-300 leading-relaxed border-l-4 border-purple-500 pl-6 mb-8">
                   {article.preview}
                 </p>
 
@@ -210,9 +210,9 @@ export default function ArticlePage({ params }) {
         {/* Article Content */}
         <div className="max-w-4xl mx-auto px-6 md:px-12 py-16">
           <div className="prose prose-lg prose-invert max-w-none">
-            <div className="text-gray-300 text-lg leading-relaxed space-y-6 whitespace-pre-line">
+            <div className="text-gray-300 text-sm leading-relaxed space-y-6 whitespace-pre-line">
               {article.content.split('\n\n').map((paragraph, index) => (
-                <p key={index} className="mb-6 first-letter:text-5xl first-letter:font-bold first-letter:text-purple-400 first-letter:mr-2 first-letter:float-left">
+                <p key={index} className="mb-6 font-medium">
                   {paragraph}
                 </p>
               ))}
