@@ -11,7 +11,6 @@ import {
     limit,
     getDocs,
 } from "firebase/firestore";
-import ViewMoreSearchPopup from "../view/page";
 import { db2 } from "@/config/firebase.config2";
 import Navbar from "@/components/Navbar";
 

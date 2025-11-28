@@ -16,7 +16,6 @@ import {
   Globe,
   TrendingUp,
 } from "lucide-react";
-import ViewBlogs from "@/app/view/page";
 import { articles } from "@/app/data/article";
 
 export default function Navbar({
@@ -43,7 +42,7 @@ export default function Navbar({
     "contact",
     "blog",
     "tech-news",
-    "scam-Checker",
+    "scam-checker",
   ];
 
   const jobOptions = [
@@ -93,9 +92,9 @@ export default function Navbar({
 
   const newsOptions = [
     {
-      title: "Politics News",
+      title: "Tech News",
       description:
-        "Navigate the world of governance, elections, secret deals, and political maneuvers that influence global direction. See what lies behind the decisions made in your name",
+        "Oversharing with AI: How your ChatGPT conversations could be used against you",
       icon: <Sparkles size={20} className="text-blue-400" />,
       href: "https://cyclopedia-media-hub.vercel.app/politics",
       gradient: "from-blue-500/20 to-cyan-500/20",
@@ -323,7 +322,6 @@ export default function Navbar({
                     />
                   </button>
                 </div>
-                <ViewBlogs articles={articles} />
               </div>
             </div>
 
@@ -362,7 +360,6 @@ export default function Navbar({
                     }`}
                 />
               </button>
-              <ViewBlogs articles={articles} />
 
               {/* Mobile menu button */}
               <button
