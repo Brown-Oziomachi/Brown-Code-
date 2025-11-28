@@ -41,7 +41,6 @@ export default function Navbar({
         "contact",
         "blog",
         "tech-news",
-        "scam-checker",
     ];
 
     const jobOptions = [
@@ -95,24 +94,24 @@ export default function Navbar({
             description:
                 "Oversharing with AI: How your ChatGPT conversations could be used against you",
             icon: <Sparkles size={20} className="text-blue-400" />,
-            href: "https://cyclopedia-media-hub.vercel.app/politics",
+            href: "https://browncode.name.ng/news/oversharing-with-ai-how-your-chatgpt-conversations-could-be-used-against-you--sygqIVJl6xs5jo47WwQw",
             gradient: "from-blue-500/20 to-cyan-500/20",
             category: "technology",
         },
         {
-            title: "Religion News",
+            title: "Tech News",
             description:
-                "Explore ancient scriptures, divine mysteries, and the role of religion in shaping societies and ideologies. A closer look at beliefs that unite — and divide — billions.",
+                "China Warns of Catastrophic Consequences from Unregulated AI Development in U.S.",
             icon: <TrendingUp size={20} className="text-green-400" />,
-            href: "https://cyclopedia-media-hub.vercel.app/religion",
+            href: "https://browncode.name.ng/news/china-warns-of-catastrophic-consequences-from-unregulated-ai-development-in-u-s--WSHJ3fcktdE5wlKY5lZQ",
             gradient: "from-green-500/20 to-emerald-500/20",
             category: "business",
         },
         {
-            title: "World News",
-            description: "Global events and international updates",
+            title: "Tech News",
+            description: "Nearly two-thirds of young adults fear AI will take their jobs",
             icon: <Globe size={20} className="text-purple-400" />,
-            href: "https://cyclopedia-media-hub.vercel.app/global",
+            href: "https://browncode.name.ng/news/nearly-two-thirds-of-young-adults-fear-ai-will-take-their-jobs--73sOIQLizN4Vs3O65pa2",
             gradient: "from-purple-500/20 to-pink-500/20",
             category: "general",
         },
@@ -120,7 +119,7 @@ export default function Navbar({
 
     // Helper function to determine if item should be a link
     const isLinkItem = (item) => {
-        return ["blog", "tech-news", "scam-checker"].includes(item);
+        return ["blog", "tech-news",].includes(item);
     };
 
     // Helper function to format display text
