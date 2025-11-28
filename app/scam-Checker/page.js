@@ -1,14 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { AlertTriangle, CheckCircle } from "lucide-react";
 
 export default function PortfolioScamChecker() {
+    const router = useRouter();
+
     // Navbar state
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [activeSection, setActiveSection] = useState("portfolioScam");
+    const [activeSection, setActiveSection] = useState("scam-checker");
 
     // Scroll listener for navbar effect
     useEffect(() => {
@@ -16,6 +19,11 @@ export default function PortfolioScamChecker() {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    // Navigation function for navbar sections
+    const scrollToSection = (sectionId) => {
+        router.push(`/#${sectionId}`);
+    };
 
     return (
         <>
@@ -25,6 +33,7 @@ export default function PortfolioScamChecker() {
                 isMenuOpen={isMenuOpen}
                 setIsMenuOpen={setIsMenuOpen}
                 activeSection={activeSection}
+                scrollToSection={scrollToSection}
             />
 
             {/* Main Content */}
@@ -84,10 +93,10 @@ export default function PortfolioScamChecker() {
 
                                     <div
                                         className={`p-4 shadow-md max-w-md rounded-2xl ${msg.from === "client"
-                                                ? "bg-purple-700 text-white rounded-tr-none"
-                                                : msg.isRedFlag
-                                                    ? "bg-red-100 border-2 border-red-500 text-gray-800 rounded-tl-none"
-                                                    : "bg-slate-800 text-gray-300 rounded-tl-none"
+                                            ? "bg-purple-700 text-white rounded-tr-none"
+                                            : msg.isRedFlag
+                                                ? "bg-red-100 border-2 border-red-500 text-gray-800 rounded-tl-none"
+                                                : "bg-slate-800 text-gray-300 rounded-tl-none"
                                             }`}
                                     >
                                         <p className="font-medium mb-1">
