@@ -43,7 +43,7 @@ export default function Navbar({
     "contact",
     "blog",
     "tech-news",
-    "scam-checker",
+    "scam-Checker",
   ];
 
   const jobOptions = [
@@ -119,6 +119,16 @@ export default function Navbar({
       category: "general",
     },
   ];
+
+  // Helper function to determine if item should be a link
+  const isLinkItem = (item) => {
+    return ["blog", "tech-news", "scam-Checker"].includes(item);
+  };
+
+  // Helper function to format display text
+  const formatDisplayText = (item) => {
+    return item.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+  };
 
   const JobCard = ({ job, onClick }) => {
     const content = (
@@ -199,7 +209,7 @@ export default function Navbar({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isMenuOpen]);
+  }, [isMenuOpen, setIsMenuOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -241,43 +251,43 @@ export default function Navbar({
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <a href="/">
+              <Link href="/">
                 <span className="text-sm font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                   {"<BROWN CODE />"}
                 </span>
-              </a>
+              </Link>
             </div>
 
             {/* Desktop Menu */}
-                  <div className="hidden md:block">
-                    <div className="ml-10 flex items-baseline space-x-8">
-                    {navItems.map((item) =>
-                      item === "blog" || item === "scam-Checker" ? (
-                      <Link
-                        key={item}
-                        href={`/${item}`}
-                        className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-8">
+                {navItems.map((item) =>
+                  isLinkItem(item) ? (
+                    <Link
+                      key={item}
+                      href={`/${item}`}
+                      className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
                           ? "text-purple-400"
                           : "text-gray-300 hover:text-white"
                         }`}
-                      >
-                        {item}
-                      </Link>
-                      ) : (
-                      <button
-                        key={item}
-                        onClick={() => scrollToSection(item)}
-                        className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
+                    >
+                      {formatDisplayText(item)}
+                    </Link>
+                  ) : (
+                    <button
+                      key={item}
+                      onClick={() => scrollToSection(item)}
+                      className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
                           ? "text-purple-400"
                           : "text-gray-300 hover:text-white"
                         }`}
-                      >
-                        {item}
-                      </button>
-                      )
-                    )}
+                    >
+                      {item}
+                    </button>
+                  )
+                )}
 
-                    {/* Desktop Find Job Dropdown */}
+                {/* Desktop Find Job Dropdown */}
                 <div ref={jobRef} className="relative">
                   <button
                     onClick={() => {
@@ -382,51 +392,39 @@ export default function Navbar({
           {/* Side Drawer */}
           <div
             ref={navRef}
-            className="fixed top-0 right-0 h-full w-80 max-w-[55vw] bg-black backdrop-blur-xl shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-out overflow-y-auto"
+            className="fixed top-0 right-0 h-full w-80 max-w-[55vw] backdrop-blur-xl shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-out overflow-y-auto"
             style={{
               animation: "slideInRight 0.3s ease-out",
             }}
           >
             {/* Close Button */}
             <div className="flex justify-between items-center p-4 border-b border-gray-700">
-              <h2 className="text-xl font-bold text-white">Developer</h2>
+              <h2 className="text-xl font-bold text-white">Brown Code</h2>
               <button
                 onClick={() => setIsMenuOpen(false)}
                 className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
                 aria-label="Close menu"
               >
-                <svg
-                  className="w-6 h-6 text-gray-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <X size={24} className="text-gray-300" />
               </button>
             </div>
 
             {/* Navigation Items */}
-                  <div className="px-4 pt-4 pb-3 space-y-2">
-                    {navItems.map((item) =>
-                      item === "blog" || item === "scam-Checker" || item === "tech-news" ?(
-                      <Link
-                      key={item}
-                      href={`/${item}`}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="capitalize block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
-                      >
-                      {item}
-                      </Link>
-                    ) : (
-                      <button
-                      key={item}
-                      onClick={() => {
+            <div className="px-4 pt-4 pb-3 space-y-2">
+              {navItems.map((item) =>
+                isLinkItem(item) ? (
+                  <Link
+                    key={item}
+                    href={`/${item}`}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="capitalize block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
+                  >
+                    {formatDisplayText(item)}
+                  </Link>
+                ) : (
+                  <button
+                    key={item}
+                    onClick={() => {
                       scrollToSection(item);
                       setIsMenuOpen(false);
                     }}
@@ -437,26 +435,22 @@ export default function Navbar({
                 )
               )}
             </div>
-            <hr/>
-          <div className="p-5 mt-3 space-y-3">
+            <hr className="border-gray-700" />
+            <div className="p-5 mt-3 space-y-3">
               <h1 className="text-sm md:text-sm font-bold text-gray-100 leading-snug">
-                Your competitors with websites are getting <span className="text-purple-600">YOUR customers.</span>
+                Your competitors with websites are getting{" "}
+                <span className="text-purple-600">YOUR customers.</span>
               </h1>
 
-              <h2 className="inline-block bg-purple-600 text-white font-semibold px-3  py-2 rounded-full shadow-md hover:bg-purple-700 transition">
-               <Link href="/contact" className="block text-sm"> Let's work together </Link>
-              </h2>
+              <Link
+                href="/contact"
+                onClick={() => setIsMenuOpen(false)}
+                className="inline-block bg-purple-600 text-white font-semibold px-3 py-2 rounded-full shadow-md hover:bg-purple-700 transition"
+              >
+                <span className="block text-sm">Let's work together</span>
+              </Link>
             </div>
-
-            </div>
-
-            {/* Search Blog Section
-            <div className="px-4 pt-4 border-t border-gray-700">
-              <h3 className="text-lg font-semibold text-white mb-3">
-                Search Blog
-              </h3>
-              <ViewBlogs articles={articles} />
-            </div> */}
+          </div>
 
           {/* CSS Animation */}
           <style jsx>{`
@@ -539,7 +533,10 @@ export default function Navbar({
           />
 
           {/* Dropdown Content */}
-          <div className="md:hidden fixed left-0 right-0 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-40 shadow-2xl max-h-[calc(100vh-64px)]" style={{ top: "64px" }}>
+          <div
+            className="md:hidden fixed left-0 right-0 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-40 shadow-2xl max-h-[calc(100vh-64px)]"
+            style={{ top: "64px" }}
+          >
             <div className="px-4 py-8">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
@@ -574,7 +571,10 @@ export default function Navbar({
           />
 
           {/* Dropdown Content */}
-          <div className="md:hidden fixed left-0 right-0 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-40 shadow-2xl max-h-[calc(100vh-64px)]" style={{ top: "64px" }}>
+          <div
+            className="md:hidden fixed left-0 right-0 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-40 shadow-2xl max-h-[calc(100vh-64px)]"
+            style={{ top: "64px" }}
+          >
             <div className="px-4 py-8">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
