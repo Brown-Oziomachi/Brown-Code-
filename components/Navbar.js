@@ -16,7 +16,6 @@ import {
   Globe,
   TrendingUp,
 } from "lucide-react";
-import { articles } from "@/app/data/article";
 
 export default function Navbar({
   isScrolled,
@@ -121,7 +120,7 @@ export default function Navbar({
 
   // Helper function to determine if item should be a link
   const isLinkItem = (item) => {
-    return ["blog", "tech-news", "scam-Checker"].includes(item);
+    return ["blog", "tech-news", "scam-checker"].includes(item);
   };
 
   // Helper function to format display text
@@ -172,29 +171,38 @@ export default function Navbar({
   };
 
   const NewsCard = ({ news, onClick }) => {
-    return (
-      <Link href={news.href} onClick={onClick}>
-        <div
-          className={`group relative p-6 rounded-xl bg-gradient-to-br ${news.gradient} hover:scale-105 transition-all duration-300 cursor-pointer border border-gray-700/50 hover:border-gray-600 h-full`}
-        >
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="flex-shrink-0 p-3 bg-slate-800/50 rounded-lg">
-                {news.icon}
-              </div>
-              <h3 className="text-lg font-semibold text-white group-hover:text-blue-300 transition-colors">
-                {news.title}
-              </h3>
+    const isExternal = news.href.startsWith("http");
+
+    const content = (
+      <div
+        className={`group relative p-6 rounded-xl bg-gradient-to-br ${news.gradient} hover:scale-105 transition-all duration-300 cursor-pointer border border-gray-700/50 hover:border-gray-600 h-full`}
+      >
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex-shrink-0 p-3 bg-slate-800/50 rounded-lg">
+              {news.icon}
             </div>
-            <p className="text-sm text-gray-400 leading-relaxed">
-              {news.description}
-            </p>
+            <h3 className="text-lg font-semibold text-white group-hover:text-blue-300 transition-colors">
+              {news.title}
+            </h3>
           </div>
-          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 via-cyan-500/0 to-blue-500/0 group-hover:from-blue-500/10 group-hover:via-cyan-500/10 group-hover:to-blue-500/10 transition-all duration-300" />
+          <p className="text-sm text-gray-400 leading-relaxed">{news.description}</p>
         </div>
-      </Link>
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 via-cyan-500/0 to-blue-500/0 group-hover:from-blue-500/10 group-hover:via-cyan-500/10 group-hover:to-blue-500/10 transition-all duration-300" />
+      </div>
     );
+
+    if (isExternal) {
+      return (
+        <a href={news.href} target="_blank" rel="noopener noreferrer" onClick={onClick}>
+          {content}
+        </a>
+      );
+    }
+
+    return <Link href={news.href} onClick={onClick}>{content}</Link>;
   };
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
