@@ -1,14 +1,9 @@
-# Allow all search engines full access
+# *
 User-agent: *
 Allow: /
 
-# Crawl-delay (optional, helps if server load is an issue)
-# Crawl-delay: 10
+# Host
+Host: https://browncode.name.ng
 
-# Disallow admin or private pages if any (example)
-# Disallow: /admin/
-# Disallow: /login/
-# Disallow: /dashboard/
-
-# Sitemap location
+# Sitemaps
 Sitemap: https://browncode.name.ng/sitemap.xml

@@ -22,9 +22,9 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { db, auth } from "@/config/firebase.config";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { auth1, db1 } from "@/config/firebase.config1";
 
 export default function AdminDashboard() {
   const [messages, setMessages] = useState([]);
@@ -47,7 +47,7 @@ export default function AdminDashboard() {
 
   // Check admin auth
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
+    const unsub = onAuthStateChanged(auth1, (user) => {
       if (user && user.email === "browncemmanuel@gmail.com") {
         setAdmin(user);
         setLoading(false);
@@ -63,7 +63,7 @@ export default function AdminDashboard() {
   // Fetch all messages
   useEffect(() => {
     const q = query(
-      collection(db, "chat-messages"),
+      collection(db1, "chat-messages"),
       orderBy("timestamp", "asc")
     );
 
@@ -122,7 +122,7 @@ export default function AdminDashboard() {
     if (!newMessage.trim() || !selectedConversation) return;
 
     try {
-      await addDoc(collection(db, "chat-messages"), {
+      await addDoc(collection(db1, "chat-messages"), {
         text: newMessage.trim(),
         userName: "Admin",
         isAdmin: true,
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
   const handleDeleteMessage = async (messageId) => {
     if (window.confirm("Delete this message?")) {
       try {
-        await deleteDoc(doc(db, "chat-messages", messageId));
+        await deleteDoc(doc(db1, "chat-messages", messageId));
       } catch (error) {
         console.error("Error deleting message:", error);
       }
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
   // Clear all messages
   const handleClearAllMessages = async () => {
     if (window.confirm("Delete ALL messages? This cannot be undone.")) {
-      const snapshot = await getDocs(collection(db, "chat-messages"));
+      const snapshot = await getDocs(collection(db1, "chat-messages"));
       await Promise.all(snapshot.docs.map((doc) => deleteDoc(doc.ref)));
       alert("All messages cleared!");
       setSelectedConversation(null);
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
 
   // Logout
   const handleLogout = async () => {
-    await signOut(auth);
+    await signOut(auth1);
     router.push("/admin");
   };
 

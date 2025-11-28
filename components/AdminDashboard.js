@@ -1,9 +1,9 @@
 "use client";
-import { auth } from "@/config/firebase.config";
 import React, { useState, useEffect } from "react";
 import { Lock, Mail, Eye, EyeOff } from "lucide-react";
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { auth1 } from "@/config/firebase.config1";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -15,7 +15,7 @@ export default function AdminLogin() {
 
   // ✅ Redirect if already logged in
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth1, (user) => {
       if (user?.email === "browncemmanuel@gmail.com") {
         router.push("/admin/dashboard");
       }
@@ -30,7 +30,7 @@ export default function AdminLogin() {
 
     try {
       const userCredential = await signInWithEmailAndPassword(
-        auth,
+        auth1,
         email,
         password
       );
@@ -40,7 +40,7 @@ export default function AdminLogin() {
         router.push("/admin/dashboard");
       } else {
         setError("Unauthorized access. Admin only.");
-        await auth.signOut();
+        await auth1.signOut();
       }
     } catch (err) {
       if (err.code === "auth/user-not-found") {
