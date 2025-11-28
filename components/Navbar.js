@@ -42,7 +42,8 @@ export default function Navbar({
     "testimonials",
     "contact",
     "blog",
-    "scam-Checker",
+    "tech-news",
+    "scam-checker",
   ];
 
   const jobOptions = [
@@ -413,7 +414,7 @@ export default function Navbar({
             {/* Navigation Items */}
                   <div className="px-4 pt-4 pb-3 space-y-2">
                     {navItems.map((item) =>
-                      item === "blog" || item === "scam-Checker" ? (
+                      item === "blog" || item === "scam-Checker" || item === "tech-news" ?(
                       <Link
                       key={item}
                       href={`/${item}`}

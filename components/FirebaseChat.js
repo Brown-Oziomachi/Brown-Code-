@@ -12,12 +12,12 @@ import {
   getDocs,
   serverTimestamp,
 } from "firebase/firestore";
-import { db, auth } from "@/config/firebase.config";
 import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
+import { auth1, db1 } from "@/config/firebase.config1";
 
 export default function FirebaseChat({ isOpen, onClose }) {
   const [messages, setMessages] = useState([]);
@@ -79,7 +79,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
   // Fetch messages
   useEffect(() => {
     const q = query(
-      collection(db, "chat-messages"),
+      collection(db1, "chat-messages"),
       orderBy("timestamp", "asc"),
       limit(100)
     );
@@ -96,7 +96,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
 
   // Watch Auth state
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
+    const unsub = onAuthStateChanged(auth1, (user) => {
       if (user && user.email === "browncemmanuel@gmail.com") {
         setAdmin(user);
         setUserName("Brown Code");
@@ -131,7 +131,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
     if (!newMessage.trim() || !userName) return;
 
     try {
-      await addDoc(collection(db, "chat-messages"), {
+      await addDoc(collection(db1, "chat-messages"), {
         text: newMessage.trim(),
         userName: userName,
         isAdmin: !!admin,
@@ -154,7 +154,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
   };
 
   const handleAdminLogout = async () => {
-    await signOut(auth);
+    await signOut(auth1);
     setUserName("");
     setIsNameSet(false);
   };
@@ -162,7 +162,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
   // Clear all messages (admin only)
   const handleClearAllMessages = async () => {
     if (!admin) return setShowPopup(true);
-    const snapshot = await getDocs(collection(db, "chat-messages"));
+    const snapshot = await getDocs(collection(db1, "chat-messages"));
     await Promise.all(snapshot.docs.map((doc) => deleteDoc(doc.ref)));
     alert("Messages cleared!");
   };

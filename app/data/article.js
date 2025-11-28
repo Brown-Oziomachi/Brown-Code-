@@ -725,7 +725,8 @@ In summary, a portfolio is not just a collection of your work; it is a powerful 
 `,
     image:
       "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1024&q=80",
-  }
+  },
 
+  
 ];
 
