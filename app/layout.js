@@ -14,7 +14,7 @@ export const metadata = {
     siteName: "Brown Code",
     images: [
       {
-        url: "https://browncode.name.ng/cod2.png", // <-- upload this image in /public
+        url: "https://browncode.name.ng/logoo.png", // <-- upload this image in /public
         width: 1200,
         height: 630,
         alt: "Brown Code Portfolio Preview",
@@ -30,7 +30,7 @@ export const metadata = {
     title: "Brown Code — Software Developer",
     description:
       "Get a professional website for your business and grow your brand online.",
-    images: ["https://browncode.name.ng/cod2.png"],
+    images: ["https://browncode.name.ng/logoo.png"],
   },
 
   verification: {
