@@ -103,24 +103,20 @@ const TechnologyPage = () => {
 
             <main className="w-full">
                 {/* ===== HERO SECTION (Portfolio Style, No Image) ===== */}
-                <section className="w-full py-32 text-center bg-black text-white px-4">
-                    <p className="uppercase tracking-wider text-xs font-semibold text-blue-300 mb-3">
-                        Tech Insights
+                <section className="w-full py-20 text-center bg-black text-white px-4">
+                    <p className="uppercase tracking-wider text-xl underline font-semibold text-blue-300 mb-3">
+                        Tech News
                     </p>
 
-                    <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-                        Tomorrow's World, Built Today
-                    </h1>
-
-                    <p className="max-w-2xl mx-auto text-gray-300 text-sm md:text-lg leading-relaxed">
-                        Explore ideas, innovation, and deep-tech insights that shape the digital future.
+                    <p className=" mx-auto text-gray-300 text-sm md:text-lg leading-relaxed">
+                        Explore ideas, innovation, and deep-tech insights that shape the digital future. <br />
                         Thoughtfully curated articles covering AI, software engineering, web development,
                         clean energy tech, and the technologies transforming our world.
                     </p>
                 </section>
 
                 {/* ===== POSTS SECTION ===== */}
-                <div className="max-w-7xl mx-auto py-14 px-4">
+                <div className="max-w-7xl mx-auto py- px-4">
                     {loading ? (
                         <p className="text-center py-10">Loading latest articles...</p>
                     ) : posts.length === 0 ? (
@@ -208,7 +204,7 @@ const TechnologyPage = () => {
                                                     <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500"></div>
                                                 )}
                                             </div>
-                                            <div className="flex-1">
+                                            <div className="flex-1 max-md:-mt-5">
                                                 <p className="text-xs text-blue-600 font-semibold mb-2 uppercase tracking-wider">
                                                     {post.category || "Coding"}
                                                 </p>
