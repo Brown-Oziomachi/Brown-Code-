@@ -246,12 +246,6 @@ export default function NewsDetails() {
                         </div>
                     )}
 
-                    {readingTime > 0 && (
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
-                            {readingTime} min read
-                        </span>
-                    )}
-
                     <div className="flex-1"></div>
 
                     {/* Share Button */}
