@@ -3,7 +3,7 @@ import Script from "next/script";
 
 export const metadata = {
   title: "Brown code | Software Developer",
-  icons: { icon: "/logoo.png", shortcut: "/logoo.png", apple: "/logoo.png" },
+  icons: { icon: "/logo.png", shortcut: "/logo.png", apple: "/logo.png" },
 
   // ✅ Open Graph added here
   openGraph: {
