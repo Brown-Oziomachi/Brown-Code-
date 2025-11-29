@@ -221,7 +221,7 @@ export default function NewsDetails() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 mt-10"
+                    className="text-4xl md:text-5xl lg:text-6xl text-center font-extrabold leading-tight mb-6 mt-10"
                 >
                     {article.title}
                 </motion.h1>
@@ -234,8 +234,7 @@ export default function NewsDetails() {
                     className="flex flex-wrap items-center gap-4 mb-8 pb-8 border-b border-gray-200 dark:border-gray-700"
                 >
                     {article.createdAt && (
-                        <div className="flex items-center gap-2 text-sm">
-                            <Clock className="h-4 w-4" />
+                        <div className="flex items-center gap-2 text-sm text-purple-400">
                             <time dateTime={article.createdAt.toDate().toISOString()}>
                                 {article.createdAt.toDate().toLocaleDateString("en-US", {
                                     year: "numeric",
@@ -259,7 +258,7 @@ export default function NewsDetails() {
                         </button>
 
                         {showShareMenu && (
-                            <div className="absolute top-full right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl p-3 flex flex-col gap-2 text-sm z-50">
+                            <div className="absolute top-full right-0 mt-2 w-56 bg-black shadow-2xl p-3 flex flex-col gap-2 text-sm z-50">
                                 <a
                                     href={`https://twitter.com/intent/tweet?url=${window.location.href}&text=${encodeURIComponent(
                                         article.title
@@ -350,7 +349,7 @@ export default function NewsDetails() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
-                        className="text-xl md:text-2xl font-medium leading-relaxed mb-10 border-l-4 border-blue-600 pl-4"
+                        className="text-xl md:text-2xl font-medium leading-relaxed mb-10 border-l-4 border-purple-600 pl-4"
                     >
                         {article.subtitle}
                     </motion.p>
@@ -363,7 +362,7 @@ export default function NewsDetails() {
                     transition={{ delay: 0.5 }}
                     className="mb-16"
                 >
-                    <BlogDisplay body={article.body} className="py-5"/>
+                    <BlogDisplay body={article.body}/>
                 </motion.div>
 
                 {/* Newsletter CTA */}
@@ -371,18 +370,18 @@ export default function NewsDetails() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
-                    className="relative overflow-hidden rounded-3xl mb-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                    className="relative overflow-hidden mb-16 bg-"
                 >
-                    <div className="relative py-16 px-8 text-center">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                    <div className="relative py-6 px-8 text-center">
+                        <h2 className="text-2xl md:text-2xl font-bold mb-4">
                             Stay Informed
                         </h2>
-                        <p className="text-lg max-w-2xl mx-auto mb-8">
+                        <p className="text-sm items-center justify-center mb-4">
                             Get the latest news and analysis delivered to your inbox.
                         </p>
                         <Link
                             href="https://thecyclopedia.substack.com/subscribe"
-                            className="inline-block bg-white text-blue-600 font-bold px-8 py-4 rounded-full hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-xl"
+                            className="inline-block bg-white text-purple-600 font-bold px-4 py-2 rounded-full hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-xl"
                         >
                             Subscribe Now
                         </Link>
@@ -403,7 +402,7 @@ export default function NewsDetails() {
                                     href={`/news/${createFullSlug(related.title, related.id)}`}
                                     className="group"
                                 >
-                                    <article className="rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 bg-black">
+                                    <article className=" overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 bg-black">
                                         {related.imageUrl && (
                                             <div className="relative h-48 overflow-hidden">
                                                 <img
