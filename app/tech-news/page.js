@@ -57,7 +57,7 @@ const TechnologyPage = () => {
                     postsRef,
                     where("category", "==", "technology"),
                     orderBy("createdAt", "desc"),
-                    limit(6)
+                    limit(50)
                 );
 
                 let querySnapshot;
