@@ -30,10 +30,10 @@ export default function Portfolio() {
 
   // media carousel (keeps your media list and timing)
   const mediaList = [
-    { type: "image", src: "/bc.png" },
-    { type: "image", src: "/brown.png" },
-    { type: "image", src: "/brocode.png" },
-    { type: "video", src: "/react-3.mp4" },
+    // { type: "image", src: "/bc.png" },
+    // { type: "image", src: "/brown.png" },
+    // { type: "image", src: "/brocode.png" },
+    { type: "video", src: "/videologo.mp4" },
   ];
 
   useEffect(() => {
