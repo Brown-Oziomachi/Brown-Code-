@@ -180,7 +180,7 @@ export default function NewsDetails() {
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mb-4"></div>
-                    <p className="text-lg font-semibold">Loading article...</p>
+                    <p className="text-lg font-semibold">Loading News...</p>
                 </div>
             </div>
         );
@@ -369,7 +369,7 @@ export default function NewsDetails() {
                     transition={{ delay: 0.5 }}
                     className="mb-16"
                 >
-                    <BlogDisplay body={article.body} />
+                    <BlogDisplay body={article.body} className="py-5"/>
                 </motion.div>
 
                 {/* Newsletter CTA */}
