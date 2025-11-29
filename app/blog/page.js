@@ -86,7 +86,7 @@ export default function BlogList() {
     if (techArticles.some(a => a.slug === slug)) {
       return { label: "Tech", color: "bg-purple-600" };
     }
-    return { label: "General", color: "bg-gray-600" };
+    return { label: "Tech", color: "bg-purple-600" };
   };
 
   return (
