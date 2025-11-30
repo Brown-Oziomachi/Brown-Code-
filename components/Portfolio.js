@@ -66,27 +66,37 @@ export default function Portfolio() {
   // Projects (you can expand)
   const projects = [
     {
-      title: "E-Commerce Platform | Yotapoint",
-      description:
-        "Find products from multiple merchants. Buy phones, gadgets, shoes, clothes, furniture, and more.",
-      tech: ["React", "Next.js", "Tailwind CSS", "Node.js", "Firebase"],
-      link: "https://yotapoint.com/",
-      image: "/yotapoint-thumb.png",
+      id: 1,
+      title: "Cyclopedia News Website",
+      description: "Enterprise news platform featuring real-time content delivery, advanced filtering algorithms, and multimedia integration with optimized video streaming.",
+      image: "/the.jpg",
+      link: "https://www.thecyclopedia.com.ng",
+      // github: "https://github.com/yourusername/cyclopedia",
+      tags: ["Next.js", "React", "Video Streaming"],
+      year: "2024",
+      role: "Full Stack Developer"
     },
     {
-      title: "The Cyclopedia | News Hub",
-      description: "A fast, modern news & media platform.",
-      tech: ["React", "Next.js", "Firebase", "Tailwind CSS"],
-      link: "https://www.thecyclopedia.com.ng/",
-      image: "/cyclopedia-thumb.png",
+      id: 2,
+      title: "E-Commerce Store/Yotapoint",
+      description: "Scalable e-commerce solution with secure payment integration, inventory management system, and comprehensive admin dashboard.",
+      image: "/yota.jpg",
+      link: "https://yotapoint.com/feeds",
+      // github: "https://github.com/yourusername/yotapoint",
+      tags: ["E-Commerce", "Payment Gateway", "Admin Panel"],
+      year: "2024",
+      role: "Lead Developer"
     },
     {
-      title: "IJ Stitches — Tailoring Platform",
-      description:
-        "Custom-made clothing, quality stitching, and personalized tailoring services.",
-      tech: ["React", "Next.js", "Tailwind CSS"],
+      id: 3,
+      title: "IJ Stitches Portfolio",
+      description: "Performance-optimized portfolio with advanced animations, accessibility compliance, and responsive design architecture.",
+      image: "/ijs.jpg",
       link: "https://ij-stitches.vercel.app/main",
-      image: "/ij-thumb.png",
+      // github: "https://github.com/yourusername/ij-stitches",
+      tags: ["React", "GSAP", "Performance"],
+      year: "2024",
+      role: "Frontend Architect"
     },
   ];
 
@@ -325,53 +335,122 @@ export default function Portfolio() {
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">Projects</h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, i) => (
+          <div className="space-y-8">
+            {projects.map((project, index) => (
               <article
-                key={i}
-                className="group relative rounded-2xl overflow-hidden transform transition hover:scale-105 shadow-xl hover:shadow-2xl bg-slate-800/50 ring-1 ring-slate-800/40"
-                style={{ perspective: 1000 }}
-                aria-labelledby={`proj-title-${i}`}
+                key={project.id}
+                className="group bg-zinc-900/30 border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-all duration-300 z-0"
               >
-                <div className="absolute inset-0 pointer-events-none">
-                  {/* neon corner */}
-                  <div className="absolute -top-6 -left-10 w-48 h-48 bg-gradient-to-tr from-purple-600/10 to-pink-500/6 blur-3xl opacity-80 rotate-45 transform"></div>
-                </div>
+                <div className="grid md:grid-cols-5 gap-0 z-0">
+                  {/* Image */}
+                  <div className="md:col-span-2 relative h-64 md:h-auto overflow-hidden bg-zinc-900 z-0">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-0"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/80 to-transparent"></div>
 
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 id={`proj-title-${i}`} className="text-xl font-semibold text-purple-300">{project.title}</h3>
-                    <div className="inline-flex items-center gap-2 text-sm text-gray-300">
-                      <Monitor size={16} /> Live
+                    {/* Project Number */}
+                    <div className="absolute top-6 left-6 w-12 h-12 rounded-full bg-zinc-950/90 border border-zinc-700 flex items-center justify-center">
+                      <span className="text-lg font-mono text-zinc-400">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
                     </div>
                   </div>
 
-                  <p className="text-gray-300 mb-4">{project.description}</p>
+                  {/* Content */}
+                  <div className="md:col-span-3 p-8 flex flex-col justify-between">
+                    <div>
+                      {/* Meta */}
+                      <div className="flex items-center gap-4 text-xs text-zinc-500 mb-4">
+                        <span className="flex items-center gap-2">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                          {project.role}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-2">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          {project.year}
+                        </span>
+                      </div>
 
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.tech.map((t, idx) => (
-                      <span key={idx} className="px-3 py-1 rounded-full text-sm bg-gradient-to-r from-slate-800/30 to-slate-900/30 text-purple-200 ring-1 ring-slate-800/20">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
+                      {/* Title & Description */}
+                      <h2 className="text-2xl font-semibold text-zinc-100 mb-3 group-hover:text-white transition-colors">
+                        {project.title}
+                      </h2>
+                      <p className="text-zinc-400 leading-relaxed mb-6">
+                        {project.description}
+                      </p>
 
-                  <div className="flex items-center justify-between">
-                    <a href={project.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-purple-300 hover:text-purple-200 transition">
-                      View Project <ExternalLink size={14} />
-                    </a>
-                    <a href={project.link} className="px-3 py-1 rounded-full border border-slate-700 text-sm hover:bg-slate-800/40 transition">
-                      Visit
-                    </a>
+                      {/* Tech Stack */}
+                      <div className="flex flex-wrap gap-2">
+                        {project.tags.map((tag, i) => (
+                          <span
+                            key={i}
+                            className="px-3 py-1 text-xs font-medium bg-zinc-800/50 text-zinc-300 rounded border border-zinc-700/50"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Action */}
+                    <div className="flex items-center gap-4 mt-8">
+                      {project.link ? (
+                        <>
+                          <a
+                            href={project.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 text-sm font-medium transition-all"
+                          >
+                            View Live Site
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
+                        </>
+                      ) : (
+                        <>
+                          {project.github ? (
+                            <a
+                              href={project.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-zinc-700 hover:bg-zinc-800 text-zinc-300 text-sm font-medium transition-all"
+                            >
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                              </svg>
+                              View Code
+                            </a>
+                          ) : (
+                            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-800/50 border border-zinc-700 text-zinc-500 text-sm font-medium">
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                              </svg>
+                              Under NDA
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </article>
             ))}
           </div>
+
           <div className="flex gap-3 items-center justify-center mt-10">
-          <Link href="/projects">
-            <h1 className=" text-center text-purple-400 cursor-pointer">Show Me More</h1>
-          </Link>
+            <Link href="/projects">
+              <h1 className="text-center text-purple-400 cursor-pointer">Show Me More</h1>
+            </Link>
             <ArrowRight className="text-purple-400"/>
           </div>
         </div>
