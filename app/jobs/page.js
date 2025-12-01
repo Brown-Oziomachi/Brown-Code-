@@ -88,7 +88,7 @@ export default function JobsPage() {
           setIsMenuOpen={setIsMenuOpen}
           activeSection={activeSection}
       />
-      <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white py-20 px-6">
+      <main className="min-h-screen bg-black text-white py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <section
             id="jobs"
@@ -97,7 +97,7 @@ export default function JobsPage() {
                 "url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')",
             }}
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-center mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold text-center mb-6  bg-gradient-to-r from-cyan-600 to-cyan-800-600 bg-clip-text text-transparent lg:mt-20">
               Explore Online Job Opportunities
             </h1>
 
@@ -116,7 +116,7 @@ export default function JobsPage() {
 
             <button
               onClick={handleBack}
-              className="mt-10 px-10 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg cursor-pointer"
+              className="mt-10 px-10 py-3  bg-gradient-to-r from-cyan-600 to-cyan-800-600 rounded-lg cursor-pointer"
             >
               Back
             </button>

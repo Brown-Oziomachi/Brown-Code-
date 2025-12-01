@@ -32,8 +32,8 @@ export default function Portfolio() {
   const mediaList = [
     // { type: "image", src: "/bc.png" },
     // { type: "image", src: "/brown.png" },
-    // { type: "image", src: "/brocode.png" },
-    { type: "video", src: "/videologo.mp4" },
+    { type: "image", src: "/cod2.png" },
+    // { type: "video", src: "/videologo.mp4" },
   ];
 
   useEffect(() => {
@@ -151,16 +151,18 @@ export default function Portfolio() {
           {/* Left: Text */}
           <div className="lg:col-span-6 space-y-6">
             <div className="inline-flex items-center gap-3 bg-slate-800/30 backdrop-blur rounded-full px-4 py-2 ring-1 ring-purple-600/30">
-              <Star className="text-pink-400" size={18} />
+              <Star className="text-cyan-400" size={18} />
               <span className="text-sm text-purple-200 font-medium">
                 Full Stack Developer • React / Next.js
               </span>
             </div>
-            <img src="/cod2.png" alt="Profile" className="relative w-150 lg:h-200 h-200 object-cover shadow-2xl" />
+            <div className="bg-black/50 mask-b-from-40 shadow-black mask-r-from-40 mask-t-from-40 mask-l-from-40%">
+            <img src="/logoo.png" alt="Profile" className="relative  shadow-2xl" />
+            </div>
 
             <h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
               Brown Oziomachi —{" "}
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-cyan-400 to-cyan-950 bg-clip-text text-transparent">
                 Crafting scalable & striking web apps
               </span>
             </h1>
@@ -174,21 +176,21 @@ export default function Portfolio() {
             <div className="flex flex-wrap gap-4">
               <button
                 onClick={() => scrollToSection("projects")}
-                className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 font-semibold shadow-lg hover:scale-105 transform transition"
+                className="px-6 py-3 rounded-full bg-gradient-to-r from-cyan-600 to-cyan-800-600 font-semibold shadow-lg hover:scale-105 transform transition"
               >
                 View Projects
               </button>
 
               <button
                 onClick={() => scrollToSection("contact")}
-                className="px-6 py-3 rounded-full border-2 border-purple-400/40 hover:bg-purple-400/10 transition"
+                className="px-6 py-3 rounded-full border-2 border-cyan-400/40 hover:bg-purple-400/10 transition"
               >
                 Let's roll
               </button>
 
               <a
                 href="/cv"
-                className="px-6 py-3 rounded-full border-2 border-pink-400/30 hover:bg-pink-400/10 transition inline-flex items-center gap-2"
+                className="px-6 py-3 rounded-full border-2 bg-gradient-to-r from-cyan-950-900 to-cyan-600 border-pink-400/30 hover:bg-pink-400/10 transition inline-flex items-center gap-2"
               >
                 Resume
                 <ExternalLink size={14} />
@@ -197,7 +199,7 @@ export default function Portfolio() {
 
             {/* Small neon badges (futuristic) */}
             <div className="mt-4 flex flex-wrap gap-2">
-              <span className="px-3 py-1 rounded-full bg-gradient-to-r from-purple-700/30 to-pink-700/20 text-sm text-purple-200 ring-1 ring-purple-600/20">
+              <span className="px-3 py-1 rounded-full bg-gradient-to-r from-cyan-700/30 to-cyan-700/20 text-sm text-purple-200 ring-1 ring-purple-600/20">
                 Remote-friendly
               </span>
               <span className="px-3 py-1 rounded-full bg-slate-800/40 text-sm text-pink-200 ring-1 ring-pink-600/20">
@@ -212,7 +214,7 @@ export default function Portfolio() {
           {/* Right: Image / video carousel with glass card */}
           <div className="lg:col-span-6">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-slate-800/60 bg-gradient-to-tr from-slate-900/30 to-slate-800/20 p-1">
-              <div className="bg-gradient-to-br from-slate-900/90 via-purple-900/60 to-transparent rounded-3xl overflow-hidden">
+              <div className="bg-gradient-to-br from-cyan-900/90 via-cyan-900/60 to-transparent rounded-3xl overflow-hidden">
                 <div className="relative h-96 w-full">
                   {currentMedia.type === "image" ? (
                     <img
@@ -242,9 +244,8 @@ export default function Portfolio() {
 
                   {/* Media overlay info */}
                   <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-4">
-                    <div className="bg-black/50 backdrop-blur px-3 py-1 rounded-full text-sm text-gray-200">
-                      <span className="font-medium">Currently: </span>
-                      {currentMedia.type === "image" ? "Portfolio image" : "Project clip"}
+                    <div className="bg-cyan-600/50 backdrop-blur px-3 py-1 rounded-full text-xs text-gray-200 ">
+                      <span className="font-medium">Brown Oziomachi | Web Developer</span>
                     </div>
                     <div className="flex gap-2">
                       <a
@@ -271,9 +272,9 @@ export default function Portfolio() {
 
                 {/* subtle tech list below media */}
                 <div className="p-4 flex flex-wrap gap-2 bg-slate-900/60">
-                  <span className="px-3 py-1 rounded-full bg-purple-600/20 text-sm text-purple-200">React</span>
-                  <span className="px-3 py-1 rounded-full bg-pink-600/20 text-sm text-pink-200">Next.js</span>
-                  <span className="px-3 py-1 rounded-full bg-blue-600/20 text-sm text-blue-200">Firebase</span>
+                  <span className="px-3 py-1 rounded-full bg-cyan-600/20 text-sm text-purple-200">React</span>
+                  <span className="px-3 py-1 rounded-full bg-cyan-900/20 text-sm text-pink-200">Next.js</span>
+                  <span className="px-3 py-1 rounded-full bg-cyan-300/20 text-sm text-blue-200">Firebase</span>
                 </div>
               </div>
             </div>
@@ -282,13 +283,13 @@ export default function Portfolio() {
             <div className="mt-4 flex gap-3 items-center">
               <a
                 href="/contact"
-                className="px-4 py-2 rounded-full bg-purple-600/80 hover:scale-105 transform transition inline-flex items-center gap-2"
+                className="px-4 py-2 rounded-full  bg-gradient-to-r from-cyan-600 to-cyan-800-600 hover:scale-105 transform transition inline-flex items-center gap-2"
               >
                 <Mail size={16} /> Let's talk
               </a>
               <a
                 href="/banner"
-                className="px-4 py-2 rounded-full border border-slate-700 hover:bg-slate-800/40 transition"
+                className="px-4 py-2 rounded-full border  bg-gradient-to-r from-cyan-900-600 to-cyan-600 hover:bg-slate-800/40 transition"
               >
                 Show banner
               </a>
@@ -305,7 +306,7 @@ export default function Portfolio() {
             <div className="flex flex-col lg:flex-row gap-6 items-center">
               <div className="flex-shrink-0">
                 <div className="relative group">
-                  <div className="absolute -inset-1 blur opacity-80 bg-gradient-to-r from-purple-600 to-pink-500 transform -translate-x-1 -translate-y-1 group-hover:scale-105 transition" />
+                  <div className="absolute -inset-1 blur opacity-80 bg-gradient-to-r from-cyan-600 to-cyan-900 transform -translate-x-1 -translate-y-1 group-hover:scale-105 transition" />
                   <img src="/soft.png" alt="Profile" className="relative w-90 lg:h-100 h-130 object-cover border-4 border-slate-800 shadow-2xl" />
                 </div>
               </div>
@@ -319,9 +320,9 @@ export default function Portfolio() {
                 <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
                 </div>
 
-                <button onClick={() => setIsExpanded(!isExpanded)} className="mt-4 inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition font-medium">
+                <button onClick={() => setIsExpanded(!isExpanded)} className="mt-4 inline-flex items-center gap-2 text-cyan-400 hover:text-purple-300 transition font-medium">
                   {isExpanded ? <>Show Less <ChevronUp size={18} />
-                  <div><a href="/about">MORE ABOUT ME</a></div>
+                    <div><a href="/about" className=" bg-gradient-to-r from-cyan-400 to-cyan-950 bg-clip-text text-transparent">MORE ABOUT ME</a></div>
                   </> : <>Read More <ChevronDown size={18} /></>}
                 </button>
               </div>
@@ -449,9 +450,9 @@ export default function Portfolio() {
 
           <div className="flex gap-3 items-center justify-center mt-10">
             <Link href="/projects">
-              <h1 className="text-center text-purple-400 cursor-pointer">Show Me More</h1>
+              <h1 className="text-center  bg-gradient-to-r from-cyan-600 to-cyan-800 bg-clip-text text-transparent cursor-pointer">Show Me More</h1>
             </Link>
-            <ArrowRight className="text-purple-400"/>
+            <ArrowRight className="text-cyan-400 animate-pulse"/>
           </div>
         </div>
       </section>
@@ -464,7 +465,7 @@ export default function Portfolio() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-slate-800/50 rounded-2xl p-6 shadow">
               <div className="flex items-center gap-3 mb-4">
-                <Code size={26} className="text-purple-400" />
+                <Code size={26} className="text-cyan-400" />
                 <h3 className="text-xl font-bold">Frontend</h3>
               </div>
               <div className="space-y-3">
@@ -475,7 +476,7 @@ export default function Portfolio() {
                       <span>{s.pct}%</span>
                     </div>
                     <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" style={{ width: `${s.pct}%` }} />
+                      <div className="h-2 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-900" style={{ width: `${s.pct}%` }} />
                     </div>
                   </div>
                 ))}
@@ -484,7 +485,7 @@ export default function Portfolio() {
 
             <div className="bg-slate-800/50 rounded-2xl p-6 shadow">
               <div className="flex items-center gap-3 mb-4">
-                <Layers size={26} className="text-pink-400" />
+                <Layers size={26} className="text-cyan-400" />
                 <h3 className="text-xl font-bold">Backend</h3>
               </div>
               <div className="space-y-3">
@@ -495,7 +496,7 @@ export default function Portfolio() {
                       <span>{s.pct}%</span>
                     </div>
                     <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500" style={{ width: `${s.pct}%` }} />
+                      <div className="h-2 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-900" style={{ width: `${s.pct}%` }} />
                     </div>
                   </div>
                 ))}
@@ -533,9 +534,9 @@ export default function Portfolio() {
         backgroundPosition: "center"
       }}>
         <div className="max-w-4xl mx-auto text-center bg-black/50 p-10 rounded-2xl">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-purple-300">Online Jobs & Opportunities</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-cyan-600">Online Jobs & Opportunities</h2>
           <p className="text-gray-200 mb-6">Online jobs are a powerful way to build your career and earn from anywhere in the world. Explore opportunities that match your skills.</p>
-          <a href="/jobs" className="inline-block px-8 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 font-semibold hover:scale-105 transform transition">Explore Opportunities</a>
+          <a href="/jobs" className="inline-block px-8 py-3 rounded-full  bg-gradient-to-r from-cyan-600 to-cyan-800-600 hover:bg-gradient-to-r from-cyan-900-600 to-cyan-600 font-semibold hover:scale-105 transform transition">Explore Opportunities</a>
         </div>
       </section>
 
@@ -553,7 +554,7 @@ export default function Portfolio() {
             <a href="mailto:browncemmanuel@gmail.com" className="p-3 rounded-full bg-slate-800/50 hover:bg-purple-600/30 transition"><Mail size={24} /></a>
           </div>
 
-          <a href="/contact" className="inline-block px-10 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 font-semibold hover:scale-105 transform transition">Let's roll</a>
+          <a href="/contact" className="inline-block px-10 py-3 rounded-full  bg-gradient-to-r from-cyan-600 to-cyan-800-600 font-semibold hover:scale-105 transform transition">Let's roll</a>
         </div>
       </section>
 
@@ -565,7 +566,7 @@ export default function Portfolio() {
             <div className="p-8">
               <h3 className="text-2xl font-bold mb-4">Online Jobs & Opportunities</h3>
               <p className="text-gray-700 mb-6">Find flexible remote roles and freelance gigs to grow your experience and income.</p>
-              <a href="/jobses" className="inline-block px-6 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold">Explore Jobs</a>
+              <a href="/jobses" className="inline-block px-6 py-2 rounded-full  bg-gradient-to-r from-cyan-600 to-cyan-800-600 text-white font-semibold">Explore Jobs</a>
             </div>
           </div>
         </div>
@@ -577,7 +578,7 @@ export default function Portfolio() {
           <p>
             <a
               href="/sitemap-html"
-              className="text-purple-400 hover:text-purple-300 underline"
+              className="text-cyan-400 hover:text-purple-300 underline"
             >
               Sitemap
             </a>

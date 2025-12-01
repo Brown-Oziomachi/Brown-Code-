@@ -116,12 +116,12 @@ ${formData.message}
             <nav className="relative z-10 border-b border-purple-500/20 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
-                        <div className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-cyan-400 bg-clip-text text-transparent">
                             {"<Brown Code />"}
                         </div>
                         <a
                             href="/"
-                            className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-xl border border-purple-500/30 hover:bg-purple-500/30 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-xl hover:bg-purple-500/30 transition-colors"
                         >
                             <ArrowLeft size={20} />
                             <span>Back to Home</span>
@@ -136,13 +136,13 @@ ${formData.message}
                     {/* Left Side - Info */}
                     <div className="space-y-8">
                         <div>
-                            <span className="text-purple-400 font-semibold text-sm tracking-wider uppercase">
+                            <span className="text-cyan-400 font-semibold text-sm tracking-wider uppercase">
                                 Get In Touch
                             </span>
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mt-2 mb-4">
                                 Let's Work
                                 <br />
-                                <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                                <span className="bg-gradient-to-r from-cyan-400 via-cyan-900 to-cyan-900 bg-clip-text text-transparent">
                                     Together
                                 </span>
                             </h1>
@@ -153,9 +153,9 @@ ${formData.message}
 
                         {/* Contact Info Cards */}
                         <div className="space-y-4">
-                            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all">
+                            <div className="bg-cyan-950/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
                                         <Mail size={24} className="text-purple-400" />
                                     </div>
                                     <div>
@@ -165,9 +165,9 @@ ${formData.message}
                                 </div>
                             </div>
 
-                            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all">
+                            <div className="bg-cyan-900/50 backdrop-blur-xl rounded-2xl p-6 border border-cyan-500/20 hover:border-purple-500/40 transition-all">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
                                         <Phone size={24} className="text-pink-400" />
                                     </div>
                                     <div>
@@ -177,9 +177,9 @@ ${formData.message}
                                 </div>
                             </div>
 
-                            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all">
+                            <div className="bg-cyan-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
                                         <CheckCircle size={24} className="text-blue-400" />
                                     </div>
                                     <div>
@@ -191,23 +191,23 @@ ${formData.message}
                         </div>
 
                         {/* Feature List */}
-                        <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-2xl p-6 border border-purple-500/20">
+                        <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-2xl p-6 border border-purple-500/20">
                             <h3 className="font-bold mb-4">Why Contact Me?</h3>
                             <ul className="space-y-3">
                                 <li className="flex items-center gap-3">
-                                    <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                                    <div className="w-2 h-2 bg-cyan-800 rounded-full"></div>
                                     <span className="text-gray-300">Custom web solutions tailored to your needs</span>
                                 </li>
                                 <li className="flex items-center gap-3">
-                                    <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+                                    <div className="w-2 h-2 bg-cyan-700 rounded-full"></div>
                                     <span className="text-gray-300">Professional and timely communication</span>
                                 </li>
                                 <li className="flex items-center gap-3">
-                                    <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                                    <div className="w-2 h-2 bg-cyan-600 rounded-full"></div>
                                     <span className="text-gray-300">Competitive pricing and quality work</span>
                                 </li>
                                 <li className="flex items-center gap-3">
-                                    <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
+                                    <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
                                     <span className="text-gray-300">Long-term support and maintenance</span>
                                 </li>
                             </ul>
@@ -216,8 +216,8 @@ ${formData.message}
 
                     {/* Right Side - Form */}
                     <div className="relative">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl blur-xl opacity-20"></div>
-                        <div className="relative bg-slate-800/80 backdrop-blur-xl rounded-3xl p-8 border border-purple-500/20">
+                        <div className="absolute -inset-1 bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-3xl blur-xl opacity-20"></div>
+                        <div className="relative bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 backdrop-blur-xl rounded-3xl p-8 ">
                             <h2 className="text-2xl font-bold mb-6">Send Me a Message</h2>
 
                             <div className="space-y-6">
@@ -339,7 +339,7 @@ ${formData.message}
                                 {/* Submit Button */}
                                 <button
                                     onClick={handleSubmit}
-                                    className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all transform hover:scale-105 flex items-center justify-center gap-2 group"
+                                    className="w-full py-4  bg-gradient-to-r from-cyan-600 to-cyan-800-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all transform hover:scale-105 flex items-center justify-center gap-2 group"
                                 >
                                     <span>Send via WhatsApp</span>
                                     <Send size={20} className="group-hover:translate-x-1 transition-transform" />

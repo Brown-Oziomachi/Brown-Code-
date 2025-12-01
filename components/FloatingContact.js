@@ -61,7 +61,7 @@ export default function FloatingContact({ onChatOpen }) {
             {/* Platform Chat */}
             <button
               onClick={handleChatClick}
-              className="flex items-center justify-center w-12 h-12 bg-purple-600 rounded-full shadow-lg hover:scale-110 transition-transform animate-fade-in"
+              className="flex items-center justify-center w-12 h-12  bg-gradient-to-r from-cyan-600 to-cyan-800-600 rounded-full shadow-lg hover:scale-110 transition-transform animate-fade-in"
               title="Chat on Platform"
             >
               <MessageCircle className="w-6 h-6 text-white" />
@@ -72,7 +72,7 @@ export default function FloatingContact({ onChatOpen }) {
         {/* Main Contact Button */}
         <button
           onClick={() => setShowContactIcons(!showContactIcons)}
-          className="flex items-center justify-center w-14 h-14 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all"
+          className="flex items-center justify-center w-14 h-14  bg-gradient-to-r from-cyan-600 to-cyan-800-600 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all"
         >
           {showContactIcons ? (
             <X className="w-6 h-6 text-white" />

@@ -85,12 +85,12 @@ export default function AboutMePage() {
             <nav className="relative z-10 border-b border-purple-500/20 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-4 py-4">
                     <div className="flex items-center justify-between">
-                        <div className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        <div className="text-xl font-bold  bg-gradient-to-r from-cyan-600 to-cyan-600 bg-clip-text text-transparent">
                             {"<Brown Code />"}
                         </div>
                         <a
                             href="/"
-                            className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-xl border border-purple-500/30 hover:bg-purple-500/30 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-xl  hover:bg-purple-500/30 transition-colors"
                         >
                             <ArrowLeft size={20} />
                             <span>Back to Home</span>
@@ -104,7 +104,7 @@ export default function AboutMePage() {
                     {/* Image Section */}
                     <div className="relative order-1 md:order-1">
                         <div className="relative group">
-                            <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 rounded-3xl blur-2xl opacity-30 group-hover:opacity-50 transition duration-1000 animate-pulse"></div>
+                            <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 via-cyan-600 to-cyan-600 rounded-3xl blur-2xl opacity-30 group-hover:opacity-50 transition duration-1000 animate-pulse"></div>
                             <div className="relative bg-slate-800/50 backdrop-blur-xl p-4 border border-purple-500/20 overflow-hidden">
                                 <img
                                     src="/brown.jpg"
@@ -116,13 +116,13 @@ export default function AboutMePage() {
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <h3 className="font-bold text-lg">Brown Oziomachi</h3>
-                                            <p className="text-purple-400 text-sm">Full Stack Developer</p>
+                                            <p className="text-cyan-400 text-sm">Full Stack Developer</p>
                                         </div>
                                         <div className="flex gap-2">
-                                            <a href="https://github.com/Brown-Oziomachi" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors">
+                                            <a href="https://github.com/Brown-Oziomachi" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors">
                                                 <Github size={18} />
                                             </a>
-                                            <a href="https://www.linkedin.com/in/brownoziomachi72a5a3229" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors">
+                                            <a href="https://www.linkedin.com/in/brownoziomachi72a5a3229" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors">
                                                 <Linkedin size={18} />
                                             </a>
                                         </div>
@@ -134,15 +134,15 @@ export default function AboutMePage() {
                         {/* Quick Stats */}
                         <div className="grid grid-cols-3 gap-4 mt-6">
                             <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-4 border border-purple-500/20 text-center">
-                                <div className="text-2xl font-bold text-purple-400">2+</div>
+                                <div className="text-2xl font-bold text-cyan-400">2+</div>
                                 <div className="text-xs text-gray-400 mt-1">Years Exp</div>
                             </div>
                             <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-4 border border-pink-500/20 text-center">
-                                <div className="text-2xl font-bold text-pink-400">5+</div>
+                                <div className="text-2xl font-bold text-cyan-400">5+</div>
                                 <div className="text-xs text-gray-400 mt-1">Projects</div>
                             </div>
                             <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-4 border border-purple-500/20 text-center">
-                                <div className="text-2xl font-bold text-purple-400">100%</div>
+                                <div className="text-2xl font-bold text-cyan-400">100%</div>
                                 <div className="text-xs text-gray-400 mt-1">Satisfied</div>
                             </div>
                         </div>
@@ -150,13 +150,13 @@ export default function AboutMePage() {
 
                     {/* Text Section */}
                     <div className="order-2 md:order-2">
-                        <span className="text-purple-400 font-semibold text-sm tracking-wider uppercase">
+                        <span className="text-cyan-400 font-semibold text-sm tracking-wider uppercase">
                             About Me
                         </span>
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mt-2 mb-6">
                             Passionate
                             <br />
-                            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                            <span className=" bg-gradient-to-r from-cyan-600 to-cyan-800 bg-clip-text text-transparent">
                                 Developer
                             </span>
                         </h1>
@@ -177,13 +177,13 @@ export default function AboutMePage() {
                         <div className="flex gap-4 flex-wrap">
                             <a
                                 href="/contact"
-                                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl font-semibold hover:shadow-2xl hover:shadow-purple-500/50 transition-all transform hover:scale-105"
+                                className="px-8 py-4  bg-gradient-to-r from-cyan-600 to-cyan-800-600 rounded-2xl font-semibold hover:shadow-2xl hover:shadow-purple-500/50 transition-all transform hover:scale-105"
                             >
                                 Get In Touch
                             </a>
                             <a
                                 href="/cv"
-                                className="inline-flex items-center gap-2 px-8 py-4 border-2 border-purple-400/50 rounded-2xl font-semibold hover:bg-purple-400/10 hover:border-purple-400 transition-all"
+                                className="inline-flex items-center gap-2 px-8 py-4 border-2 border-cyan-400/50 rounded-2xl font-semibold hover:bg-purple-400/10 hover:border-purple-400 transition-all"
                             >
                                 <Download size={20} />
                                 Download CV
@@ -194,11 +194,11 @@ export default function AboutMePage() {
 
                 {/* Tabs Section */}
                 <div className="mb-12">
-                    <div className="flex gap-4 border-b border-purple-500/20 mb-8 overflow-x-auto">
+                    <div className="flex gap-4 border-b border-cyan-500/20 mb-8 overflow-x-auto">
                         <button
                             onClick={() => setActiveTab('story')}
                             className={`px-6 py-3 font-semibold whitespace-nowrap transition-all ${activeTab === 'story'
-                                    ? 'text-purple-400 border-b-2 border-purple-400'
+                                    ? 'text-cyan-400 border-b-2 border-cyan-900'
                                     : 'text-gray-400 hover:text-purple-300'
                                 }`}
                         >
@@ -207,7 +207,7 @@ export default function AboutMePage() {
                         <button
                             onClick={() => setActiveTab('skills')}
                             className={`px-6 py-3 font-semibold whitespace-nowrap transition-all ${activeTab === 'skills'
-                                    ? 'text-purple-400 border-b-2 border-purple-400'
+                                    ? 'text-cyan-400 border-b-2 border-cyan-900'
                                     : 'text-gray-400 hover:text-purple-300'
                                 }`}
                         >
@@ -216,7 +216,7 @@ export default function AboutMePage() {
                         <button
                             onClick={() => setActiveTab('journey')}
                             className={`px-6 py-3 font-semibold whitespace-nowrap transition-all ${activeTab === 'journey'
-                                    ? 'text-purple-400 border-b-2 border-purple-400'
+                                    ? 'text-cyan-400 border-b-2 border-cyan-900'
                                     : 'text-gray-400 hover:text-purple-300'
                                 }`}
                         >
@@ -225,7 +225,7 @@ export default function AboutMePage() {
                         <button
                             onClick={() => setActiveTab('values')}
                             className={`px-6 py-3 font-semibold whitespace-nowrap transition-all ${activeTab === 'values'
-                                    ? 'text-purple-400 border-b-2 border-purple-400'
+                                    ? 'text-cyan-400 border-b-2 border-cyan-900'
                                     : 'text-gray-400 hover:text-purple-300'
                                 }`}
                         >
@@ -240,7 +240,7 @@ export default function AboutMePage() {
                             <div className="grid md:grid-cols-2 gap-8 animate-fade-in">
                                 <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-purple-500/20">
                                     <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                                        <div className="w-1 h-8 bg-gradient-to-b from-purple-400 to-pink-400 rounded-full"></div>
+                                        <div className="w-1 h-8 bg-gradient-to-t from-cyan-400 to-cyan-800 rounded-full"></div>
                                         The Beginning
                                     </h3>
                                     <p className="text-gray-300 leading-relaxed mb-4">
@@ -253,7 +253,7 @@ export default function AboutMePage() {
 
                                 <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-purple-500/20">
                                     <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                                        <div className="w-1 h-8 bg-gradient-to-b from-pink-400 to-purple-400 rounded-full"></div>
+                                        <div className="w-1 h-8 bg-gradient-to-b from-cyan-400 to-cyan-900 rounded-full"></div>
                                         Today
                                     </h3>
                                     <p className="text-gray-300 leading-relaxed mb-4">
@@ -264,7 +264,7 @@ export default function AboutMePage() {
                                     </p>
                                 </div>
 
-                                <div className="md:col-span-2 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-3xl p-8 border border-purple-500/20">
+                                <div className="md:col-span-2 bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-3xl p-8">
                                     <h3 className="text-2xl font-bold mb-4">What Drives Me</h3>
                                     <p className="text-gray-300 leading-relaxed mb-6">
                                         I'm driven by the challenge of solving complex problems and the satisfaction of seeing a project come to life. There's something magical about turning an idea into a functional, beautiful web application that people can use and enjoy.
@@ -272,7 +272,7 @@ export default function AboutMePage() {
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         {interests.map((interest, index) => (
                                             <div key={index} className="flex items-center gap-3 bg-slate-800/50 rounded-xl p-3 border border-purple-500/20">
-                                                <div className="text-purple-400">{interest.icon}</div>
+                                                <div className="text-cyan-400">{interest.icon}</div>
                                                 <span className="text-sm font-medium">{interest.text}</span>
                                             </div>
                                         ))}
@@ -293,7 +293,7 @@ export default function AboutMePage() {
 
                                 <div className="space-y-6">
                                     {skills.map((skill, index) => (
-                                        <div key={index} className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20">
+                                        <div key={index} className="bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 backdrop-blur-xl rounded-2xl p-6">
                                             <div className="flex justify-between items-center mb-3">
                                                 <span className="font-semibold">{skill.name}</span>
                                                 <span className="text-purple-400 font-bold">{skill.level}%</span>
@@ -309,13 +309,13 @@ export default function AboutMePage() {
                                 </div>
 
                                 <div className="grid md:grid-cols-3 gap-6 mt-8">
-                                    <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 text-center">
-                                        <Code size={40} className="text-purple-400 mx-auto mb-3" />
+                                    <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 backdrop-blur-xl rounded-2xl p-6  text-center">
+                                        <Code size={40} className="text-cyan-400 mx-auto mb-3" />
                                         <h4 className="font-bold mb-2">Frontend</h4>
                                         <p className="text-sm text-gray-400">React, Next.js, Tailwind CSS, HTML, CSS, JavaScript</p>
                                     </div>
-                                    <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-pink-500/20 text-center">
-                                        <Briefcase size={40} className="text-pink-400 mx-auto mb-3" />
+                                    <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 backdrop-blur-xl rounded-2xl p-6 text-center">
+                                        <Briefcase size={40} className="text-cyan-400 mx-auto mb-3" />
                                         <h4 className="font-bold mb-2">Backend</h4>
                                         <div className='flex gap-1 items-center justify-center'>
                                         <p className="text-sm text-gray-400">Node.js,</p>
@@ -323,8 +323,8 @@ export default function AboutMePage() {
                                         </div>
 
                                     </div>
-                                    <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 text-center">
-                                        <Award size={40} className="text-purple-400 mx-auto mb-3" />
+                                    <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 backdrop-blur-xl rounded-2xl p-6 text-center">
+                                        <Award size={40} className="text-cyan-400 mx-auto mb-3" />
                                         <h4 className="font-bold mb-2">Database</h4>
                                         <p className="text-sm text-gray-400">MongoDB, Firebase, MySQL</p>
                                     </div>
@@ -344,21 +344,20 @@ export default function AboutMePage() {
 
                                 <div className="relative">
                                     {/* Timeline line */}
-                                    <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500"></div>
+                                    <div className="absolute left-8 top-0 bottom-0 w-0.5  bg-gradient-to-r from-cyan-600 to-cyan-800-600 border-1 border-cyan-400"></div>
 
                                     <div className="space-y-8">
                                         {timeline.map((item, index) => (
                                             <div key={index} className="relative pl-20">
                                                 {/* Timeline dot */}
-                                                <div className="absolute left-6 top-6 w-5 h-5 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full border-4 border-slate-900"></div>
-
+                                                <div className="absolute left-6 top-6 w-5 h-5 bg-gradient-to-br from-can-500 to-cyan-800 rounded-full border-4 border-cyan-700"></div>
                                                 <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all">
                                                     <div className="flex items-start justify-between mb-3">
                                                         <div>
-                                                            <div className="text-purple-400 font-bold text-sm mb-1">{item.year}</div>
+                                                            <div className="text-cyan-400 font-bold text-sm mb-1">{item.year}</div>
                                                             <h4 className="text-xl font-bold">{item.title}</h4>
                                                         </div>
-                                                        <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400">
+                                                        <div className="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center text-cyan-400">
                                                             {item.icon}
                                                         </div>
                                                     </div>
@@ -384,7 +383,7 @@ export default function AboutMePage() {
                                 <div className="grid md:grid-cols-2 gap-6">
                                     {values.map((value, index) => (
                                         <div key={index} className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-purple-500/20 hover:border-purple-500/40 transition-all group">
-                                            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                            <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-900 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                                                 {value.icon}
                                             </div>
                                             <h4 className="text-xl font-bold mb-3">{value.title}</h4>
@@ -401,7 +400,7 @@ export default function AboutMePage() {
                                     <div className="flex gap-4 flex-wrap">
                                         <a
                                             href="/contact"
-                                            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-semibold hover:shadow-xl hover:shadow-purple-500/50 transition-all transform hover:scale-105"
+                                            className="inline-flex items-center gap-2 px-6 py-3  bg-gradient-to-r from-cyan-600 to-cyan-800-600 rounded-xl font-semibold hover:shadow-xl hover:shadow-purple-500/50 transition-all transform hover:scale-105"
                                         >
                                             <Mail size={20} />
                                             Contact Me
@@ -410,7 +409,7 @@ export default function AboutMePage() {
                                             href="https://github.com/Brown-Oziomachi"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 px-6 py-3 border-2 border-purple-400/50 rounded-xl font-semibold hover:bg-purple-400/10 hover:border-purple-400 transition-all"
+                                            className="inline-flex items-center gap-2 px-6 py-3 border-2 border-cyan-400/50 rounded-xl font-semibold hover:bg-purple-400/10 hover:border-purple-400 transition-all"
                                         >
                                             <Github size={20} />
                                             View GitHub

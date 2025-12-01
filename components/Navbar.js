@@ -258,7 +258,7 @@ export default function Navbar({
                         {/* Logo */}
                         <div className="flex-shrink-0">
                             <Link href="/">
-                                <span className="text-sm font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                                <span className="text-sm font-bold bg-gradient-to-r from-cyan-300 to-cyan-400 bg-clip-text text-transparent">
                                     {"<BROWN CODE />"}
                                 </span>
                             </Link>
@@ -273,7 +273,7 @@ export default function Navbar({
                                             key={item}
                                             href={`/${item}`}
                                             className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
-                                                ? "text-purple-400"
+                                                ? "text-cyan-400"
                                                 : "text-gray-300 hover:text-white"
                                                 }`}
                                         >
@@ -284,7 +284,7 @@ export default function Navbar({
                                             key={item}
                                             onClick={() => scrollToSection(item)}
                                             className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
-                                                ? "text-purple-400"
+                                                ? "text-cyan-400"
                                                 : "text-gray-300 hover:text-white"
                                                 }`}
                                         >
@@ -443,13 +443,13 @@ export default function Navbar({
                         <div className="p-5 mt-3 space-y-3">
                             <h1 className="text-sm md:text-sm font-bold text-gray-100 leading-snug">
                                 Your competitors with websites are getting{" "}
-                                <span className="text-purple-600">YOUR customers.</span>
+                                <span className="text-cyan-600">YOUR customers.</span>
                             </h1>
 
                             <Link
                                 href="/contact"
                                 onClick={() => setIsMenuOpen(false)}
-                                className="inline-block bg-purple-600 text-white font-semibold px-3 py-2 rounded-full shadow-md hover:bg-purple-700 transition"
+                                className="inline-block  bg-gradient-to-r from-cyan-600 to-cyan-800-600 text-white font-semibold px-3 py-2 rounded-full shadow-md hover:bg-purple-700 transition"
                             >
                                 <span className="block text-sm">Let's work together</span>
                             </Link>
@@ -478,7 +478,7 @@ export default function Navbar({
                 >
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                         <div className="mb-8">
-                            <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+                            <h2 className="text-3xl font-bold  bg-gradient-to-r from-cyan-600 to-cyan-800-600 bg-clip-text text-transparent mb-2">
                                 Find Your Next Opportunity
                             </h2>
                             <p className="text-gray-400">

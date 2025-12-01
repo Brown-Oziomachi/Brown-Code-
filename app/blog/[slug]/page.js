@@ -111,7 +111,7 @@ export default function ArticlePage({ params }) {
           {/* Floating Back Button */}
           <button
             onClick={() => router.push("/blog")}
-            className="absolute top-8 left-8 z-20 flex items-center gap-2 px-5 py-3 bg-slate-900/80 backdrop-blur-md border border-purple-500/30 rounded-xl text-white font-semibold hover:bg-slate-800/80 hover:border-purple-500/50 transition-all duration-300 hover:scale-105 shadow-xl"
+            className="absolute top-8 left-8 z-20 flex items-center gap-2 px-5 py-3 bg-cyan-900/80 backdrop-blur-md border border-purple-500/30 rounded-xl text-white font-semibold hover:bg-slate-800/80 hover:border-purple-500/50 transition-all duration-300 hover:scale-105 shadow-xl"
           >
             <ArrowLeft size={18} />
             <span className="hidden sm:inline">Back</span>
@@ -120,10 +120,10 @@ export default function ArticlePage({ params }) {
           {/* Article Header - Overlapping the image */}
           <div className="relative z-20 -mt-32 md:-mt-40">
             <div className="max-w-4xl mx-auto px-6 md:px-12">
-              <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-xl p-8 md:p-12 shadow-2xl">
+              <div className="bg-gradient-to-r from-cyan-500/20 to-cyan-500/20 backdrop-blur-xl p-8 md:p-12 shadow-2xl">
                 {/* Category Badge */}
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/40 px-4 py-2 rounded-full text-sm font-semibold text-purple-300 mb-6">
-                  <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/20 to-cyan-500/20 border border-cyan-500/40 px-4 py-2 rounded-full text-sm font-semibold text-purple-300 mb-6">
+                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
                   Featured Article
                 </div>
 
@@ -145,7 +145,7 @@ export default function ArticlePage({ params }) {
                       </span>
                     </div>
                   <div className="flex items-center gap-2">
-                    <Clock size={16} className="text-purple-400" />
+                    <Clock size={16} className="text-cyan-400" />
                     <span>{getReadingTime(article.content)} min read</span>
                   </div>
                     
@@ -156,7 +156,7 @@ export default function ArticlePage({ params }) {
                 </div>
 
                 {/* Preview Text */}
-                <p className="text-sm text-gray-300 leading-relaxed border-l-4 border-purple-500 pl-6 mb-8">
+                <p className="text-sm text-gray-300 leading-relaxed border-l-4 border-cyan-500 pl-6 mb-8">
                   {article.preview}
                 </p>
 
@@ -166,14 +166,14 @@ export default function ArticlePage({ params }) {
                     <div className="relative">
                       <button
                         onClick={() => setShowShare(!showShare)}
-                        className="flex items-center gap-2 px-4 py-2 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 rounded-xl transition-all duration-300 hover:scale-105"
+                        className="flex items-center gap-2 px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 border border-purple-500/30 rounded-xl transition-all duration-300 hover:scale-105"
                       >
                         <Share2 size={16} />
                         <span className="text-sm font-semibold">Share</span>
                       </button>
 
                       {showShare && (
-                        <div className="absolute top-full mt-2 left-0 bg-slate-900 border border-purple-500/30 rounded-xl p-2 shadow-xl backdrop-blur-xl min-w-[160px] z-30">
+                        <div className="absolute top-full mt-2 left-0 bg-slate-900 border border-cyan-500/30 rounded-xl p-2 shadow-xl backdrop-blur-xl min-w-[160px] z-30">
                           <button
                             onClick={() => handleShare("twitter")}
                             className="w-full flex items-center gap-3 px-4 py-2 hover:bg-purple-600/20 rounded-lg transition-colors text-left"
@@ -219,7 +219,7 @@ export default function ArticlePage({ params }) {
             </div>
             <button
               onClick={() => router.push("/contact")}
-              className="px-8 py-4 bg-slate-900/80 hover:bg-slate-800 border border-purple-500/30 hover:border-purple-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
+              className="px-8 py-4  bg-gradient-to-r from-cyan-600 to-cyan-800-600 hover:bg-slate-800 border border-purple-500/30 hover:border-purple-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
             >
               Let's roll
             </button>
@@ -228,7 +228,7 @@ export default function ArticlePage({ params }) {
 
         {/* Bottom CTA Section */}
         <div className="max-w-4xl mx-auto px-6 md:px-12 pb-20">
-          <div className="bg-gradient-to-br from-purple-900/40 to-pink-900/20 border border-purple-500/30 rounded-3xl p-8 md:p-12 text-center backdrop-blur-sm">
+          <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-3xl p-8 md:p-12 text-center backdrop-blur-sm">
             <h3 className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
               Enjoyed this article?
             </h3>
@@ -238,14 +238,14 @@ export default function ArticlePage({ params }) {
             <div className="flex flex-wrap justify-center gap-4">
               <button
                 onClick={() => router.push("/blog")}
-                className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl font-bold text-white shadow-xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105"
+                className="group flex items-center gap-3 px-8 py-4  bg-gradient-to-r from-cyan-600 to-cyan-800-600 hover:from-cyan-600 hover:to-can-900 rounded-xl font-bold text-white shadow-xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105"
               >
                 <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
                 More Articles
               </button>
               <button
                 onClick={() => router.push("/")}
-                className="px-8 py-4 bg-slate-900/80 hover:bg-slate-800 border border-purple-500/30 hover:border-purple-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
+                className="px-8 py-4 bg-slate-900/80 hover:bg-slate-800 border border-cyan-500/30 hover:border-purple-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
               >
                 Back to Home
               </button>
