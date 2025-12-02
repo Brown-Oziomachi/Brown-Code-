@@ -104,7 +104,7 @@ const TechnologyPage = () => {
             <main className="w-full">
                 {/* ===== HERO SECTION (Portfolio Style, No Image) ===== */}
                 <section className="w-full py-20 text-center bg-black text-white px-4">
-                    <p className="uppercase tracking-wider text-xl underline font-semibold text-blue-300 mb-3">
+                    <p className="uppercase tracking-wider text-xl underline font-semibold text-cyan-600 mb-3">
                         Tech News
                     </p>
 
@@ -118,7 +118,7 @@ const TechnologyPage = () => {
                 {/* ===== POSTS SECTION ===== */}
                 <div className="max-w-7xl mx-auto py- px-4">
                     {loading ? (
-                        <p className="text-center py-10">Loading latest articles...</p>
+                        <p className="text-center py-10">Loading latest News...</p>
                     ) : posts.length === 0 ? (
                         <p className="text-center text-gray-500">No posts found.</p>
                     ) : (
@@ -142,14 +142,14 @@ const TechnologyPage = () => {
                                                     }}
                                                 />
                                             ) : (
-                                                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600"></div>
+                                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-600 to-cyan-600"></div>
                                             )}
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent"></div>
-                                            <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                                            <div className="absolute bottom-0 left-0 right-0 p-6 text-cyan-600">
                                                 <p className="text-xs font-semibold mb-2 uppercase tracking-wider">
                                                     {post.category || "Tech"}
                                                 </p>
-                                                <h3 className="text-2xl font-bold mb-3 group-hover:text-blue-300 transition">
+                                                <h3 className="text-2xl font-bold mb-3 group-hover:text-cyan-500 transition">
                                                     {post.title}
                                                 </h3>
                                                 <div className="flex items-center gap-2 text-xs text-gray-300">
@@ -205,10 +205,10 @@ const TechnologyPage = () => {
                                                 )}
                                             </div>
                                             <div className="flex-1 max-md:-mt-5">
-                                                <p className="text-xs text-blue-600 font-semibold mb-2 uppercase tracking-wider">
+                                                <p className="text-xs text-cyan-600 font-semibold mb-2 uppercase tracking-wider">
                                                     {post.category || "Coding"}
                                                 </p>
-                                                <h3 className="text-xl font-bold mb-2 group-hover:text-blue-700 transition text-gray-100">
+                                                <h3 className="text-xl font-bold mb-2 group-hover:text-cyan-700 transition text-gray-100">
                                                     {post.title}
                                                 </h3>
                                                 <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -246,17 +246,17 @@ const TechnologyPage = () => {
                                     <h2 className="text-2xl md:text-3xl font-bold text-gray-100 mb-6">
                                         More Articles
                                     </h2>
-                                    <div className="space-y-6">
+                                    <div className="space-y-6 border-t border-cyan-200">
                                         {remainingPosts.map((post) => (
                                             <Link
                                                 key={post.id}
                                                 href={`/news/${createFullSlug(post.title, post.id)}`}
-                                                className="group block p-6 border-b border-gray-200
+                                                className="group block p-6 border-b border-cyan-200
                                             hover:bg-gray-50 transition duration-200"
                                             >
                                                 <div className="flex items-start justify-between gap-4">
                                                     <div className="flex-1">
-                                                        <h3 className="text-xl font-bold mb-2 group-hover:text-blue-700 transition text-gray-100">
+                                                        <h3 className="text-xl font-bold mb-2 group-hover:text-cyan-700 transition text-white">
                                                             {post.title}
                                                         </h3>
 
@@ -271,7 +271,7 @@ const TechnologyPage = () => {
                                                         </p>
                                                     </div>
 
-                                                    <span className="text-xs text-blue-600 font-semibold uppercase whitespace-nowrap">
+                                                    <span className="text-xs text-cyan-600 font-semibold uppercase whitespace-nowrap">
                                                         Tech
                                                     </span>
                                                 </div>

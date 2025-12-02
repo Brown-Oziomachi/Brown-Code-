@@ -81,12 +81,12 @@ export default function BlogList() {
 
   const getCategoryBadge = (slug) => {
     if (businessArticles.some(a => a.slug === slug)) {
-      return { label: "Business", color: "bg-blue-600" };
+      return { label: "Business", color: "bg-cyan-400" };
     }
     if (techArticles.some(a => a.slug === slug)) {
-      return { label: "Tech", color: "bg-purple-600" };
+      return { label: "Tech", color: "bg-cyan-700" };
     }
-    return { label: "Tech", color: "bg-purple-600" };
+    return { label: "General", color: "bg-cyan-900" };
   };
 
   return (
@@ -116,12 +116,12 @@ export default function BlogList() {
   {/* Text Content on Image */}
   <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-16 max-w-4xl">
     
-    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/30 to-pink-500/30 border border-purple-500/40 text-white text-sm font-semibold px-6 py-2.5 rounded-full backdrop-blur-sm w-fit">
-      <Sparkles size={16} className="text-purple-300" />
+    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/30 to-cyan-500/30 border border-cyan-800/40 text-white text-sm font-semibold px-6 py-2.5 rounded-full backdrop-blur-sm w-fit">
+      <Sparkles size={16} className="text-cyan-300" />
       Knowledge Base
     </div>
 
-    <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent leading-tight mt-6">
+    <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-cyan-200 to-cyan-900 bg-clip-text text-transparent leading-tight mt-6">
       Build. Learn. Grow.
     </h1>
 
@@ -137,8 +137,8 @@ export default function BlogList() {
             <button
               onClick={() => setSelectedCategory('all')}
               className={`flex items-center gap-2 px-2 py-1 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === 'all'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/30'
-                  : 'bg-slate-900/50 text-gray-400 hover:text-white border border-purple-500/20 hover:border-purple-500/40'
+                  ? 'bg-gradient-to-r from-cyan-600 to-cyan-600 text-white shadow-lg shadow-purple-500/30'
+                  : 'bg-slate-900/50 text-gray-400 hover:text-white border border-cyan-500/20 hover:border-cyan-500/40'
                 }`}
             >
               <TrendingUp size={18} />
@@ -148,7 +148,7 @@ export default function BlogList() {
             <button
               onClick={() => setSelectedCategory('business')}
               className={`flex items-center gap-2 px-2 py-1 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === 'business'
-                  ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/30'
+                  ? 'bg-gradient-to-r from-cyan-900 to-cyan-600 text-white shadow-lg shadow-blue-500/30'
                   : 'bg-slate-900/50 text-gray-400 hover:text-white border border-purple-500/20 hover:border-purple-500/40'
                 }`}
             >
@@ -159,7 +159,7 @@ export default function BlogList() {
             <button
               onClick={() => setSelectedCategory('tech')}
               className={`flex items-center gap-2 px-2 py-1 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === 'tech'
-                  ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-lg shadow-purple-500/30'
+                  ? 'bg-gradient-to-r from-cyan-600 to-cyan-600 text-white shadow-lg shadow-purple-500/30'
                   : 'bg-slate-900/50 text-gray-400 hover:text-white border border-purple-500/20 hover:border-purple-500/40'
                 }`}
             >
@@ -171,15 +171,15 @@ export default function BlogList() {
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto mb-16">
             <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur-xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-cyan-600 rounded-2xl blur-xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
               <div className="relative flex items-center">
-                <Search className="absolute left-5 w-5 h-5 text-gray-400 group-hover:text-purple-400 transition-colors" />
+                <Search className="absolute left-5 w-5 h-5 text-gray-400 group-hover:text-cyan-400 transition-colors" />
                 <input
                   type="text"
                   placeholder="Search articles by title, author, or content..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-14 pr-6 py-4 bg-slate-900/80 backdrop-blur-sm border border-purple-500/20 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+                  className="w-full pl-14 pr-6 py-4  backdrop-blur-sm border border-cyan-500 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
                 />
                 {searchTerm && (
                   <button
@@ -221,7 +221,7 @@ export default function BlogList() {
                   <a
                     key={article.slug}
                     href={`/blog/${article.slug}`}
-                    className="group relative block rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/20"
+                    className="group relative block rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.06] hover:shadow-2xl hover:shadow-purple-500/20"
                     style={{
                       animationDelay: `${index * 100}ms`,
                       animation: "fadeInUp 0.6s ease-out forwards",
@@ -250,7 +250,7 @@ export default function BlogList() {
                       {/* Content - Bottom Section */}
                       <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
                         {/* Title */}
-                        <h3 className="text-white text-xl md:text-2xl font-bold leading-tight mb-3 line-clamp-2 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-purple-300 group-hover:to-pink-300 group-hover:bg-clip-text transition-all duration-300">
+                        <h3 className="text-white text-xl md:text-2xl font-bold leading-tight mb-3 line-clamp-2 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-cyan-300 group-hover:to-cyan-800 group-hover:bg-clip-text transition-all duration-300">
                           {article.title}
                         </h3>
 
@@ -263,12 +263,12 @@ export default function BlogList() {
                         <div className="flex items-center justify-between text-xs text-gray-400">
                           <div className="flex items-center gap-3">
                             <div className="flex items-center gap-1.5">
-                              <User size={12} className="text-purple-400" />
-                              <span className="font-medium">{article.postedBy}</span>
+                              <User size={12} className="text-cyan-400" />
+                              <span className="font-medium text-cyan-800">{article.postedBy}</span>
                             </div>
                             <div className="w-1 h-1 rounded-full bg-gray-500" />
                             <div className="flex items-center gap-1.5">
-                              <Clock size={12} className="text-purple-400" />
+                              <Clock size={12} className="text-cyan-400" />
                               <span>{getReadingTime(article.content)} min</span>
                             </div>
                           </div>
@@ -276,7 +276,7 @@ export default function BlogList() {
                       </div>
 
                       {/* Hover Border Effect */}
-                      <div className="absolute inset-0 border-2 border-transparent group-hover:border-purple-500/50 rounded-2xl transition-all duration-500 pointer-events-none" />
+                      <div className="absolute inset-0 border-2 border-transparent group-hover:border-cyan-500/50 rounded-2xl transition-all duration-500 pointer-events-none" />
                     </div>
                   </a>
                 );
@@ -284,8 +284,8 @@ export default function BlogList() {
             </div>
           ) : (
             <div className="text-center py-20">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-500/10 border border-purple-500/20 mb-6">
-                <Search size={32} className="text-purple-400" />
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-6">
+                <Search size={32} className="text-cyan-400" />
               </div>
               <h3 className="text-2xl font-bold text-white mb-3">
                 No articles found
@@ -298,7 +298,7 @@ export default function BlogList() {
                   setSearchTerm("");
                   setSelectedCategory("all");
                 }}
-                className="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-xl font-semibold text-white transition-colors"
+                className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-xl font-semibold text-white transition-colors"
               >
                 Clear Filters
               </button>
@@ -307,91 +307,16 @@ export default function BlogList() {
 
           <button
             onClick={() => router.push("/contact")}
-            className="px-8 py-4 mb-10 bg-slate-800/80 hover:bg-slate-700 border border-purple-500/30 hover:border-purple-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
+            className="px-8 py-4 mb-10 bg-slate-800/80 hover:bg-slate-700 border border-cyan-500/30 hover:border-cyan-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
           >
             Let's roll
           </button>
 
-          {(() => {
-            const generalArticles = articles.filter(
-              (a) =>
-                !businessArticles.some((b) => b.slug === a.slug) &&
-                !techArticles.some((t) => t.slug === a.slug)
-            );
-
-            const Section = ({ title, items }) => (
-              <div className="mb-12">
-                <h2 className="text-2xl md:text-3xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-pink-200">
-                  {title} <span className="text-gray-400 text-base font-medium">· {items.length}</span>
-                </h2>
-
-                {items.length > 0 ? (
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {items.map((article) => (
-                      <a
-                        key={article.slug}
-                        href={`/blog/${article.slug}`}
-                        className="group block rounded-2xl overflow-hidden transition-all duration-300 hover:scale-[1.02] bg-slate-900/60 border border-purple-500/10"
-                      >
-                        <div className="relative h-48">
-                          <img
-                            src={article.image}
-                            alt={article.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
-                          <span className="absolute top-3 left-3 inline-block bg-purple-600 text-white text-xs font-semibold px-3 py-1 rounded">
-                            {getCategoryBadge(article.slug).label}
-                          </span>
-                        </div>
-
-                        <div className="p-4">
-                          <h3 className="text-lg font-bold text-white mb-2 line-clamp-2">
-                            {article.title}
-                          </h3>
-                          <p className="text-gray-400 text-sm mb-3 line-clamp-2">
-                            {article.preview}
-                          </p>
-
-                          <div className="flex items-center justify-between text-xs text-gray-400">
-                            <div className="flex items-center gap-3">
-                              <div className="flex items-center gap-1.5">
-                                <User size={12} className="text-purple-400" />
-                                <span className="font-medium">{article.postedBy}</span>
-                              </div>
-                              <div className="w-1 h-1 rounded-full bg-gray-500" />
-                              <div className="flex items-center gap-1.5">
-                                <Clock size={12} className="text-purple-400" />
-                                <span>{getReadingTime(article.content)} min</span>
-                              </div>
-                            </div>
-
-                            <div className="text-right">
-                              <span className="text-gray-500 text-xs">{article.date ?? ""}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-400">No articles in this section.</p>
-                )}
-              </div>
-            );
-
-            return (
-              <div className="mb-16">
-                <Section title="Tech Insights" items={techArticles} />
-                <Section title="Business Growth" items={businessArticles} />
-                <Section title="General" items={generalArticles} />
-              </div>
-            );
-          })()}
+         
           <div className="flex justify-center">
             <button
               onClick={handleBack}
-              className="group flex items-center gap-3 px-10 py-4 bg-slate-900/80 hover:bg-slate-800 border border-purple-500/30 hover:border-purple-500/50 rounded-2xl font-bold text-white transition-all duration-300 hover:scale-105"
+              className="group flex items-center gap-3 px-10 py-4 bg-cyan-900/80 hover:bg-cyan-800 border border-cyan-500/30 hover:border-cyan-500/50 rounded-2xl font-bold text-white transition-all duration-300 hover:scale-105"
             >
               <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1.5" />
               Back to Home
