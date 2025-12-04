@@ -30,12 +30,13 @@ export default function FirebaseChat({ isOpen, onClose }) {
   const [showPopup, setShowPopup] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [hasSeenWelcome, setHasSeenWelcome] = useState(false);
-  const messageRef = useRef(null)
+  const messageRef = useRef(null);
 
   // Auto-scroll
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -48,23 +49,23 @@ export default function FirebaseChat({ isOpen, onClose }) {
         setShowWelcome(true);
         setHasSeenWelcome(true);
         localStorage.setItem("chatWelcomeShown", "true");
-      }, 2000); // Show after 2 seconds
+      }, 2000);
     }
   }, [isOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (messageRef.current && !messageRef.current.contains(event.target)) {
-        setAdmin(false)
+        setShowPopup(false);
       }
-    }
+    };
     if (showPopup) {
-      document.addEventListener("mousedown", handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside);
     }
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [showPopup])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showPopup]);
 
   // Auto-hide welcome popup after 10 seconds
   useEffect(() => {
@@ -76,21 +77,46 @@ export default function FirebaseChat({ isOpen, onClose }) {
     }
   }, [showWelcome]);
 
-  // Fetch messages
+  // Fetch messages with real-time updates
   useEffect(() => {
     const q = query(
       collection(db1, "chat-messages"),
       orderBy("timestamp", "asc"),
       limit(100)
     );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const messageList = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setMessages(messageList);
-      setLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const messageList = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        // Merge with optimistic updates, removing duplicates
+        setMessages((prev) => {
+          const tempMessages = prev.filter((msg) => msg.id.startsWith("temp-"));
+          const realMessages = messageList;
+
+          // Remove temp messages that now have real counterparts
+          const filteredTemp = tempMessages.filter((temp) => {
+            return !realMessages.some(
+              (real) =>
+                real.text === temp.text &&
+                real.userName === temp.userName &&
+                Math.abs(new Date(real.userTimestamp) - new Date(temp.userTimestamp)) < 5000
+            );
+          });
+
+          return [...realMessages, ...filteredTemp];
+        });
+
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching messages:", error);
+        setLoading(false);
+      }
+    );
     return () => unsubscribe();
   }, []);
 
@@ -125,23 +151,58 @@ export default function FirebaseChat({ isOpen, onClose }) {
     }
   }, [admin]);
 
-  // Send message
+  // Send message with optimistic update
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !userName) return;
 
+    const messageText = newMessage.trim();
+    const tempId = `temp-${Date.now()}`;
+    const currentTime = new Date().toISOString();
+
+    // Optimistic update - add message immediately to UI
+    const optimisticMessage = {
+      id: tempId,
+      text: messageText,
+      userName: userName,
+      isAdmin: !!admin,
+      userTimestamp: currentTime,
+      timestamp: null,
+    };
+
+    setMessages((prev) => [...prev, optimisticMessage]);
+    setNewMessage("");
+
     try {
-      await addDoc(collection(db1, "chat-messages"), {
-        text: newMessage.trim(),
+      const messageData = {
+        text: messageText,
         userName: userName,
         isAdmin: !!admin,
         timestamp: serverTimestamp(),
-        userTimestamp: new Date().toISOString(),
-      });
-      setNewMessage("");
+        userTimestamp: currentTime,
+      };
+
+      await addDoc(collection(db1, "chat-messages"), messageData);
     } catch (error) {
       console.error("Error sending message:", error);
-      alert("Failed to send message.");
+      console.error("Error code:", error.code);
+      console.error("Error message:", error.message);
+
+      // Remove optimistic message on error
+      setMessages((prev) => prev.filter((msg) => msg.id !== tempId));
+      setNewMessage(messageText); // Restore message text
+
+      // Show more specific error message
+      let errorMessage = "Failed to send message.";
+      if (error.code === "permission-denied") {
+        errorMessage = "Permission denied. Please check Firebase rules.";
+      } else if (error.code === "unavailable") {
+        errorMessage = "Firebase is unavailable. Check your connection.";
+      } else if (error.message) {
+        errorMessage = `Error: ${error.message}`;
+      }
+
+      alert(errorMessage);
     }
   };
 
@@ -154,17 +215,36 @@ export default function FirebaseChat({ isOpen, onClose }) {
   };
 
   const handleAdminLogout = async () => {
-    await signOut(auth1);
-    setUserName("");
-    setIsNameSet(false);
+    try {
+      await signOut(auth1);
+      setUserName("");
+      setIsNameSet(false);
+      localStorage.removeItem("chatUserName");
+    } catch (error) {
+      console.error("Error signing out:", error);
+      alert("Failed to sign out.");
+    }
   };
 
   // Clear all messages (admin only)
   const handleClearAllMessages = async () => {
-    if (!admin) return setShowPopup(true);
-    const snapshot = await getDocs(collection(db1, "chat-messages"));
-    await Promise.all(snapshot.docs.map((doc) => deleteDoc(doc.ref)));
-    alert("Messages cleared!");
+    if (!admin) {
+      setShowPopup(true);
+      return;
+    }
+
+    if (!confirm("Are you sure you want to delete all messages?")) {
+      return;
+    }
+
+    try {
+      const snapshot = await getDocs(collection(db1, "chat-messages"));
+      await Promise.all(snapshot.docs.map((doc) => deleteDoc(doc.ref)));
+      alert("Messages cleared!");
+    } catch (error) {
+      console.error("Error clearing messages:", error);
+      alert("Failed to clear messages.");
+    }
   };
 
   // Format timestamp
@@ -187,7 +267,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
     }
   };
 
-  // Count unread messages (messages from admin that user hasn't seen)
+  // Count unread messages
   const unreadCount = messages.filter((msg) => msg.isAdmin && !isOpen).length;
 
   if (!isOpen) {
@@ -195,22 +275,20 @@ export default function FirebaseChat({ isOpen, onClose }) {
       <>
         {/* Welcome Popup */}
         {showWelcome && (
-          <div
-            ref={messageRef}
-            className="fixed bottom-24 right-6 w-80 bg-gradient-to-br from-purple-900 via-slate-900 to-pink-900 rounded-2xl shadow-2xl z-50 border border-purple-500/50 animate-bounce">
+          <div className="fixed bottom-24 right-6 w-80 bg-gradient-to-r from-cyan-600 to-cyan-800 rounded-2xl shadow-2xl z-50 border border-cyan-500/50 animate-bounce">
             <div className="p-4">
               <div className="flex items-start gap-3 mb-3">
                 <img
                   src="/man.png"
                   alt="Brown Code"
-                  className="h-12 w-12 rounded-full border-2 border-purple-400"
+                  className="h-12 w-12 rounded-full border-2 border-cyan-400"
                 />
                 <div className="flex-1">
                   <h4 className="text-white font-semibold text-sm">
                     Brown Code
                   </h4>
                   <p className="text-gray-300 text-xs mt-1">
-                    Hello! 👋 I'm Brown Code. How may I help you today?
+                    Hello! I'm Brown Code. How may I help you today?
                   </p>
                 </div>
                 <button
@@ -221,21 +299,17 @@ export default function FirebaseChat({ isOpen, onClose }) {
                 </button>
               </div>
               <button
-                onClick={() => {
-                  setShowWelcome(false);
-                  // Open chat here if you have a function to open it
-                }}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg py-2 text-sm font-semibold hover:opacity-90 transition-opacity"
+                onClick={() => setShowWelcome(false)}
+                className="w-full bg-gradient-to-r from-cyan-600 to-cyan-800 text-white rounded-lg py-2 text-sm font-semibold hover:opacity-90 transition-opacity"
               >
                 Start Chat
               </button>
             </div>
-            {/* Triangle pointer */}
-            <div className="absolute bottom-[-8px] right-8 w-4 h-4 bg-purple-900 transform rotate-45 border-r border-b border-purple-500/50"></div>
+            <div className="absolute bottom-[-8px] right-8 w-4 h-4 bg-cyan-900 transform rotate-45 border-r border-b border-cyan-500/50"></div>
           </div>
         )}
 
-        {/* Message Count Badge (shows when there are unread messages) */}
+        {/* Message Count Badge */}
         {unreadCount > 0 && (
           <div className="fixed bottom-20 right-12 bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center z-50 animate-pulse">
             {unreadCount}
@@ -246,9 +320,9 @@ export default function FirebaseChat({ isOpen, onClose }) {
   }
 
   return (
-    <div className="fixed bottom-24 right-6 w-cover max-w-[calc(100vw-4rem)] h-[600px] lg:h-100 mt-10 bg-slate-900 rounded-2xl shadow-2xl z-50 flex flex-col border border-purple-500/50">
+    <div className="fixed bottom-24 right-6 w-full max-w-md h-[600px] lg:h-[700px] bg-cyan-950 rounded-2xl shadow-2xl z-50 flex flex-col border border-purple-500/50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 rounded-t-2xl flex items-center justify-between">
+      <div className="bg-gradient-to-r from-cyan-600 to-cyan-800 p-4 rounded-t-2xl flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
             <MessageCircle className="w-5 h-5 text-white" />
@@ -268,6 +342,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
             <button
               onClick={handleAdminLogout}
               className="text-white hover:bg-white/20 rounded-full p-1"
+              title="Logout"
             >
               <LogOut size={18} />
             </button>
@@ -275,6 +350,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
             <a
               href="/admin"
               className="text-white hover:bg-white/20 rounded-full p-1"
+              title="Admin Login"
             >
               <LogIn size={18} />
             </a>
@@ -282,12 +358,14 @@ export default function FirebaseChat({ isOpen, onClose }) {
           <button
             onClick={handleClearAllMessages}
             className="text-white hover:bg-white/20 rounded-full p-1"
+            title="Clear Messages"
           >
             <Trash2 size={18} />
           </button>
           <button
             onClick={onClose}
             className="text-white hover:bg-white/20 rounded-full p-1"
+            title="Close"
           >
             <X size={20} />
           </button>
@@ -296,9 +374,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
 
       {/* If guest name not set */}
       {!isNameSet && !admin ? (
-        <div
-          ref={messageRef}
-          className="flex-1 flex items-center justify-center p-6">
+        <div className="flex-1 flex items-center justify-center p-6">
           <form onSubmit={handleSetName} className="w-full space-y-4">
             <input
               type="text"
@@ -310,7 +386,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
             />
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg py-3 font-semibold"
+              className="w-full bg-gradient-to-r from-cyan-600 to-cyan-800 text-white rounded-lg py-3 font-semibold"
             >
               Start Chatting
             </button>
@@ -337,7 +413,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
                     <span
                       className={`text-xs mb-1 px-2 ${isFromAdmin
                           ? "text-red-400 font-bold"
-                          : "text-purple-400"
+                          : "text-cyan-400"
                         }`}
                     >
                       {msg.userName}
@@ -365,22 +441,23 @@ export default function FirebaseChat({ isOpen, onClose }) {
           {/* Input */}
           <form
             onSubmit={handleSendMessage}
-            className="p-4 border-t border-slate-700"
+            className="p-4 border-t border-slate-700 bg-cyan-950"
           >
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <input
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder={
-                  admin ? "Reply as Brown code..." : "Type a message..."
+                  admin ? "Reply as Brown Code..." : "Type a message..."
                 }
-                className="flex-1 bg-slate-800 text-white rounded-full px-4 py-2"
+                className="flex-1 bg-slate-800 text-white rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-text"
+                autoComplete="off"
               />
               <button
                 type="submit"
                 disabled={!newMessage.trim()}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full p-2 disabled:opacity-50"
+                className="bg-gradient-to-r from-cyan-600 to-cyan-800 text-white rounded-full p-3 disabled:opacity-50 hover:opacity-90 transition-opacity flex-shrink-0"
               >
                 <Send size={20} />
               </button>
@@ -391,16 +468,17 @@ export default function FirebaseChat({ isOpen, onClose }) {
 
       {/* Delete Permission Popup */}
       {showPopup && (
-        <div
-          ref={messageRef}
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60]">
-          <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 border border-purple-500 p-6 rounded-xl max-w-sm mx-4">
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[60]">
+          <div
+            ref={messageRef}
+            className="bg-gradient-to-r from-cyan-600 to-cyan-800 border border-cyan-500 p-6 rounded-xl max-w-sm mx-4"
+          >
             <p className="text-white text-center mb-4">
-              Only <span className="text-purple-400 font-bold">Brown Code</span>{" "}
+              Only <span className="text-cyan-400 font-bold">Brown Code</span>{" "}
               can delete messages. Relax and continue with your chat.
             </p>
             <button
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 py-2 px-7 rounded-lg text-white font-semibold"
+              className="w-full bg-gradient-to-r from-cyan-600 to-cyan-800 py-2 px-7 rounded-lg text-white font-semibold"
               onClick={() => setShowPopup(false)}
             >
               Close

@@ -200,7 +200,7 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
           <p className="text-gray-400">Loading...</p>
         </div>
       </div>
@@ -210,7 +210,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 shadow-lg">
+      <div className="bg-gradient-to-r from-cyan-600 to-cyan-800-600  p-4 shadow-lg">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <MessageCircle className="w-8 h-8" />
@@ -240,21 +240,21 @@ export default function AdminDashboard() {
       <div className="bg-slate-900 border-b border-slate-800 p-4">
         <div className="max-w-7xl mx-auto grid grid-cols-3 gap-4">
           <div className="bg-slate-800/50 rounded-lg p-4 flex items-center gap-3">
-            <Users className="w-8 h-8 text-purple-400" />
+            <Users className="w-8 h-8 text-cyan-400" />
             <div>
               <p className="text-2xl font-bold">{conversations.length}</p>
               <p className="text-sm text-gray-400">Active Users</p>
             </div>
           </div>
           <div className="bg-slate-800/50 rounded-lg p-4 flex items-center gap-3">
-            <MessageCircle className="w-8 h-8 text-pink-400" />
+            <MessageCircle className="w-8 h-8 text-cyan-400" />
             <div>
               <p className="text-2xl font-bold">{messages.length}</p>
               <p className="text-sm text-gray-400">Total Messages</p>
             </div>
           </div>
           <div className="bg-slate-800/50 rounded-lg p-4 flex items-center gap-3">
-            <Clock className="w-8 h-8 text-blue-400" />
+            <Clock className="w-8 h-8 text-cyan-400" />
             <div>
               <p className="text-2xl font-bold">
                 {messages.filter((m) => !m.isAdmin).length}
@@ -291,14 +291,15 @@ export default function AdminDashboard() {
                   <button
                     key={conv.userName}
                     onClick={() => setSelectedConversation(conv)}
-                    className={`w-full p-4 border-b border-slate-800 hover:bg-slate-800/50 transition text-left ${selectedConversation?.userName === conv.userName
-                        ? "bg-purple-600/20 border-l-4 border-l-purple-600"
+                    className={`w-full p-4 border-b border-slate-800 hover:bg-slate-800/50 transition text-left ${
+                      selectedConversation?.userName === conv.userName
+                        ? "bg-cyan-600/20 border-l-4 border-l-cyan-600"
                         : ""
-                      }`}
+                    }`}
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
+                        <div className="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center">
                           <span className="font-bold">
                             {conv.userName.charAt(0).toUpperCase()}
                           </span>
@@ -330,7 +331,7 @@ export default function AdminDashboard() {
                 {/* Chat Header */}
                 <div className="p-4 border-b border-slate-800 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 bg-cyan-600 rounded-full flex items-center justify-center">
                       <span className="text-lg font-bold">
                         {selectedConversation.userName.charAt(0).toUpperCase()}
                       </span>
@@ -352,13 +353,15 @@ export default function AdminDashboard() {
                   {getConversationMessages().map((msg) => (
                     <div
                       key={msg.id}
-                      className={`flex flex-col ${msg.isAdmin ? "items-end" : "items-start"
-                        }`}
+                      className={`flex flex-col ${
+                        msg.isAdmin ? "items-end" : "items-start"
+                      }`}
                     >
                       <div className="flex items-center gap-2 mb-1">
                         <span
-                          className={`text-xs font-semibold ${msg.isAdmin ? "text-red-400" : "text-purple-400"
-                            }`}
+                          className={`text-xs font-semibold ${
+                            msg.isAdmin ? "text-red-400" : "text-cyan-400"
+                          }`}
                         >
                           {msg.userName}
                         </span>
@@ -368,10 +371,11 @@ export default function AdminDashboard() {
                       </div>
                       <div className="flex items-start gap-2">
                         <div
-                          className={`rounded-2xl px-4 py-2 max-w-[80%] ${msg.isAdmin
+                          className={`rounded-2xl px-4 py-2 max-w-[80%] ${
+                            msg.isAdmin
                               ? "bg-red-600 text-white rounded-br-sm"
                               : "bg-slate-800 text-gray-200 rounded-bl-sm"
-                            }`}
+                          }`}
                         >
                           <p className="text-sm break-words">{msg.text}</p>
                         </div>
@@ -398,12 +402,12 @@ export default function AdminDashboard() {
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder={`Reply to ${selectedConversation.userName}...`}
-                      className="flex-1 bg-slate-800 text-white rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="flex-1 bg-slate-800 text-white rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     />
                     <button
                       type="submit"
                       disabled={!newMessage.trim()}
-                      className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full p-3 hover:shadow-lg transition disabled:opacity-50"
+                      className="bg-gradient-to-r from-cyan-600 to-cyan-600 text-white rounded-full p-3 hover:shadow-lg transition disabled:opacity-50"
                     >
                       <Send size={20} />
                     </button>
