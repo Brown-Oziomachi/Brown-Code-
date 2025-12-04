@@ -234,7 +234,7 @@ export default function NewsDetails() {
                         transition={{ delay: 0.3 }}
                         className="mb-6 flex items-center gap-2"
                     >
-                        <Link href="/contact" className="text-sm font-semibold mr-4 text-gray-800 dark:text-gray-200">
+                        <Link href="/about" className="text-sm font-semibold mr-4 text-gray-800 dark:text-gray-200">
                         <p className="text-sm font-semibold mb-1 text-cyan-600">BROWN CODE</p>
                         </Link>
                         <div className="text-cyan-600">|</div>
