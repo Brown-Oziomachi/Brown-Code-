@@ -287,12 +287,12 @@ export default function Portfolio() {
               >
                 <Mail size={16} /> Let's talk
               </a>
-              <a
+              {/* <a
                 href="/banner"
                 className="px-4 py-2 rounded-full border  bg-gradient-to-r from-cyan-900-600 to-cyan-600 hover:bg-slate-800/40 transition"
               >
                 Show banner
-              </a>
+              </a> */}
             </div>
           </div>
         </div>

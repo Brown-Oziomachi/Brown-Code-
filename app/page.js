@@ -1,14 +1,7 @@
-// App.js - Entry Point
-import React from "react";
+// app/page.js
+
 import ContactForm from "./contact/page";
 
-export default function App() {
-  return (
-    <>
-      <div>
-        <ContactForm />
-      </div>
-    </>
-  );
+export default function Home() {
+  return <ContactForm />;
 }
-

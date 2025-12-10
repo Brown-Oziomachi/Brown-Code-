@@ -76,7 +76,7 @@ export default function JobsPage() {
   );
 
   const handleBack = () => {
-    router.push("/");
+    router.push("/portfolio");
   };
 
   return (

@@ -120,7 +120,7 @@ ${formData.message}
                             {"<Brown Code />"}
                         </div>
                         <a
-                            href="/"
+                            href="/portfolio"
                             className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-xl hover:bg-purple-500/30 transition-colors"
                         >
                             <ArrowLeft size={20} />

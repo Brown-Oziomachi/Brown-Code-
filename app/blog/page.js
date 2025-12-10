@@ -67,7 +67,7 @@ export default function BlogList() {
   }, []);
 
   const handleBack = () => {
-    router.push("/");
+    router.push("/portfolio");
   };
 
   const scrollToSection = (sectionId) => {

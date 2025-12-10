@@ -78,7 +78,7 @@ export default function ProjectsPage() {
         }, []);
     
         const handleBack = () => {
-            router.push("/");
+            router.push("/portfolio");
         };
     
         const scrollToSection = (sectionId) => {

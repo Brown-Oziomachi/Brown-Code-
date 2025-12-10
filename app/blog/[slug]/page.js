@@ -244,7 +244,7 @@ export default function ArticlePage({ params }) {
                 More Articles
               </button>
               <button
-                onClick={() => router.push("/")}
+                onClick={() => router.push("/portfolio")}
                 className="px-8 py-4 bg-slate-900/80 hover:bg-slate-800 border border-cyan-500/30 hover:border-purple-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
               >
                 Back to Home
