@@ -156,7 +156,7 @@ ${formData.message}
                             <div className="bg-cyan-950/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all">
                                 <div className="flex items-start gap-4">
                                     <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <Mail size={24} className="text-purple-400" />
+                                        <Mail size={24} className="text-cyan-500" />
                                     </div>
                                     <div>
                                         <h3 className="font-bold mb-1">Email</h3>
@@ -168,7 +168,7 @@ ${formData.message}
                             <div className="bg-cyan-900/50 backdrop-blur-xl rounded-2xl p-6 border border-cyan-500/20 hover:border-purple-500/40 transition-all">
                                 <div className="flex items-start gap-4">
                                     <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <Phone size={24} className="text-pink-400" />
+                                        <Phone size={24} className="text-cyan-500" />
                                     </div>
                                     <div>
                                         <h3 className="font-bold mb-1">WhatsApp</h3>
@@ -180,7 +180,7 @@ ${formData.message}
                             <div className="bg-cyan-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all">
                                 <div className="flex items-start gap-4">
                                     <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <CheckCircle size={24} className="text-blue-400" />
+                                        <CheckCircle size={24} className="text-cyan-500" />
                                     </div>
                                     <div>
                                         <h3 className="font-bold mb-1">Response Time</h3>
@@ -227,7 +227,7 @@ ${formData.message}
                                         Full Name <span className="text-red-400">*</span>
                                     </label>
                                     <div className="relative">
-                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-400">
+                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-500/50">
                                             <User size={20} />
                                         </div>
                                         <input
@@ -235,8 +235,8 @@ ${formData.message}
                                             name="name"
                                             value={formData.name}
                                             onChange={handleChange}
-                                            className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.name ? 'border-red-500' : 'border-purple-500/30'
-                                                } rounded-xl focus:border-purple-500 focus:outline-none transition-colors text-white placeholder-gray-500`}
+                                            className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.name ? 'border-red-500' : 'border-cyan-500/30'
+                                                } rounded-xl focus:border-cyan-500 focus:outline-none transition-colors text-white placeholder-gray-500`}
                                             placeholder="John Doe"
                                         />
                                     </div>
@@ -251,7 +251,7 @@ ${formData.message}
                                         Email Address <span className="text-red-400">*</span>
                                     </label>
                                     <div className="relative">
-                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-400">
+                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-500/50">
                                             <Mail size={20} />
                                         </div>
                                         <input
@@ -259,8 +259,8 @@ ${formData.message}
                                             name="email"
                                             value={formData.email}
                                             onChange={handleChange}
-                                            className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.email ? 'border-red-500' : 'border-purple-500/30'
-                                                } rounded-xl focus:border-purple-500 focus:outline-none transition-colors text-white placeholder-gray-500`}
+                                            className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.email ? 'border-red-500' : 'border-cyan-500/30'
+                                                } rounded-xl focus:border-cyan-500 focus:outline-none transition-colors text-white placeholder-gray-500`}
                                             placeholder="john@example.com"
                                         />
                                     </div>
@@ -275,7 +275,7 @@ ${formData.message}
                                         Phone Number <span className="text-red-400">*</span>
                                     </label>
                                     <div className="relative">
-                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-400">
+                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-500/50">
                                             <Phone size={20} />
                                         </div>
                                         <input
@@ -283,8 +283,8 @@ ${formData.message}
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleChange}
-                                            className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.phone ? 'border-red-500' : 'border-purple-500/30'
-                                                } rounded-xl focus:border-purple-500 focus:outline-none transition-colors text-white placeholder-gray-500`}
+                                            className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.phone ? 'border-red-500' : 'border-cyan-500/30'
+                                                } rounded-xl focus:border-cyan-500 focus:outline-none transition-colors text-white placeholder-gray-500`}
                                             placeholder="+234 801 234 5678"
                                         />
                                     </div>
@@ -299,7 +299,7 @@ ${formData.message}
                                         Subject <span className="text-red-400">*</span>
                                     </label>
                                     <div className="relative">
-                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-400">
+                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-500/50">
                                             <MessageSquare size={20} />
                                         </div>
                                         <input
@@ -307,8 +307,8 @@ ${formData.message}
                                             name="subject"
                                             value={formData.subject}
                                             onChange={handleChange}
-                                            className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.subject ? 'border-red-500' : 'border-purple-500/30'
-                                                } rounded-xl focus:border-purple-500 focus:outline-none transition-colors text-white placeholder-gray-500`}
+                                            className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.subject ? 'border-red-500' : 'border-cyan-500/30'
+                                                } rounded-xl focus:border-cyan-500 focus:outline-none transition-colors text-white placeholder-gray-500`}
                                             placeholder="Project Inquiry"
                                         />
                                     </div>
@@ -327,8 +327,8 @@ ${formData.message}
                                         value={formData.message}
                                         onChange={handleChange}
                                         rows={5}
-                                        className={`w-full px-4 py-3 bg-slate-900/50 border ${errors.message ? 'border-red-500' : 'border-purple-500/30'
-                                            } rounded-xl focus:border-purple-500 focus:outline-none transition-colors text-white placeholder-gray-500 resize-none`}
+                                        className={`w-full px-4 py-3 bg-slate-900/50 border ${errors.message ? 'border-red-500' : 'border-cyan-500/30'
+                                            } rounded-xl focus:border-cyan-500 focus:outline-none transition-colors text-white placeholder-gray-500 resize-none`}
                                         placeholder="Tell me about your project..."
                                     ></textarea>
                                     {errors.message && (

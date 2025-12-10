@@ -145,7 +145,8 @@ export default function AdminLogin() {
                       r="10"
                       stroke="currentColor"
                       strokeWidth="4"
-                    ></circle>
+                    >
+                    </circle>
                     <path
                       className="opacity-75"
                       fill="currentColor"

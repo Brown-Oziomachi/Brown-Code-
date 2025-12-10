@@ -1,12 +1,12 @@
 // App.js - Entry Point
-import Portfolio from "@/components/Portfolio";
 import React from "react";
+import ContactForm from "./contact/page";
 
 export default function App() {
   return (
     <>
       <div>
-        <Portfolio />
+        <ContactForm />
       </div>
     </>
   );
