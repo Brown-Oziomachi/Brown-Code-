@@ -2,12 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import {
-    doc,
-    getDoc,
-    collection,
-    getDocs,
-} from "firebase/firestore";
-import {
     Share,
     LinkIcon,
     Clock,
@@ -18,7 +12,6 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRouter, useParams } from "next/navigation";
-import { db2 } from "@/config/firebase.config2";
 import Navbar from "@/components/Navbar";
 
 // Utility functions
@@ -60,10 +53,26 @@ export default function NewsDetails() {
     const [showShareMenu, setShowShareMenu] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [readingTime, setReadingTime] = useState(0);
+    const [firebaseReady, setFirebaseReady] = useState(false);
     const menuRef = useRef(null);
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeSection, setActiveSection] = useState("blog");
+
+    // Initialize Firebase on mount
+    useEffect(() => {
+        const initFirebase = async () => {
+            try {
+                await import("@/config/firebase.config2");
+                setFirebaseReady(true);
+            } catch (error) {
+                console.error("Failed to initialize Firebase:", error);
+                setIsLoading(false);
+            }
+        };
+
+        initFirebase();
+    }, []);
 
     // Calculate reading time
     useEffect(() => {
@@ -74,13 +83,16 @@ export default function NewsDetails() {
         }
     }, [article]);
 
-    // Fetch article
+    // Fetch article after Firebase is ready
     useEffect(() => {
-        if (!slugParam) return;
+        if (!slugParam || !firebaseReady) return;
 
         async function fetchArticle() {
             try {
                 setIsLoading(true);
+                const { db2 } = await import("@/config/firebase.config2");
+                const { doc, getDoc } = await import("firebase/firestore");
+
                 const docId = extractIdFromSlug(slugParam);
                 const articleRef = doc(db2, "blogs", docId);
                 const articleDoc = await getDoc(articleRef);
@@ -97,7 +109,7 @@ export default function NewsDetails() {
         }
 
         fetchArticle();
-    }, [slugParam]);
+    }, [slugParam, firebaseReady]);
 
     // Update URL with full slug
     useEffect(() => {
@@ -135,12 +147,15 @@ export default function NewsDetails() {
         router.push(`/#${sectionId}`);
     };
 
-    // Fetch related technology articles
+    // Fetch related articles after Firebase is ready
     useEffect(() => {
-        if (!article) return;
+        if (!article || !firebaseReady) return;
 
         async function fetchRelated() {
             try {
+                const { db2 } = await import("@/config/firebase.config2");
+                const { collection, getDocs } = await import("firebase/firestore");
+
                 const snapshot = await getDocs(collection(db2, "blogs"));
                 const allArticles = snapshot.docs
                     .map((doc) => ({ id: doc.id, ...doc.data() }))
@@ -156,7 +171,7 @@ export default function NewsDetails() {
         }
 
         fetchRelated();
-    }, [article]);
+    }, [article, firebaseReady]);
 
     const handleShareClick = () => setShowShareMenu(!showShareMenu);
 
@@ -165,7 +180,7 @@ export default function NewsDetails() {
         alert("Link copied to clipboard!");
     };
 
-    if (isLoading) {
+    if (!firebaseReady || isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
@@ -235,7 +250,7 @@ export default function NewsDetails() {
                         className="mb-6 flex items-center gap-2"
                     >
                         <Link href="/about" className="text-sm font-semibold mr-4 text-gray-800 dark:text-gray-200">
-                        <p className="text-sm font-semibold mb-1 text-cyan-600">BROWN CODE</p>
+                            <p className="text-sm font-semibold mb-1 text-cyan-600">BROWN CODE</p>
                         </Link>
                         <div className="text-cyan-600">|</div>
                         {article.createdAt && (
@@ -267,7 +282,7 @@ export default function NewsDetails() {
                             className="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center hover:opacity-80 transition-opacity"
                         >
                             <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                             </svg>
                         </a>
                         <a
@@ -327,7 +342,7 @@ export default function NewsDetails() {
                         transition={{ delay: 0.7 }}
                         className="mb-16"
                     >
-                        <BlogDisplay body={article.body}/>
+                        <BlogDisplay body={article.body} />
                     </motion.div>
 
                     {/* Newsletter CTA */}

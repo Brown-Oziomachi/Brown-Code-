@@ -2,11 +2,9 @@
 
 import { Suspense } from "react";
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
-import { db2 } from "@/config/firebase.config2";
 
 const formatTimestamp = (timestamp) => {
     if (!timestamp) return "Unknown Date";
@@ -39,12 +37,13 @@ const formatTimestamp = (timestamp) => {
     return "Unknown Date";
 };
 
-
-// Immediately redirect client-side to home so users cannot access this page
-if (typeof window !== "undefined") {
-    // Use replace so the page isn't kept in history (prevents back navigation)
-    window.location.replace("/");
-}
+const createFullSlug = (title, id) => {
+    const slug = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    return `${slug}-${id}`;
+};
 
 const BlogPage = () => {
     const router = useRouter();
@@ -53,28 +52,39 @@ const BlogPage = () => {
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [showContentType, setShowContentType] = useState("blog");
+    const [firebaseReady, setFirebaseReady] = useState(false);
     const [adShown, setAdShown] = useState({
         video: false,
         reel: false,
     });
 
-    const handleClick = (type) => {
-        if (type === "reel" && !adShown[type]) {
-            window.open("https://otieu.com/4/9366150", "_blank");
-            setAdShown((prev) => ({ ...prev, [type]: true }));
-            return;
-        }
-        handleContentTypeChange(type);
-    };
+    const genres = ["Cyclopedia"];
 
-    const genres = [
-        "Cyclopedia"
-    ];
-
+    // Initialize Firebase on mount
     useEffect(() => {
+        const initFirebase = async () => {
+            try {
+                await import("@/config/firebase.config2");
+                setFirebaseReady(true);
+            } catch (error) {
+                console.error("Failed to initialize Firebase:", error);
+                setLoading(false);
+            }
+        };
+
+        initFirebase();
+    }, []);
+
+    // Fetch blogs after Firebase is ready
+    useEffect(() => {
+        if (!firebaseReady) return;
+
         const fetchBlogs = async () => {
             setLoading(true);
             try {
+                const { db2 } = await import("@/config/firebase.config2");
+                const { collection, getDocs } = await import("firebase/firestore");
+
                 const querySnapshot = await getDocs(collection(db2, "blogs"));
                 const blogs = querySnapshot.docs.map((doc) => ({
                     id: doc.id,
@@ -100,7 +110,16 @@ const BlogPage = () => {
         };
 
         fetchBlogs();
-    }, [showContentType]);
+    }, [firebaseReady, showContentType]);
+
+    const handleClick = (type) => {
+        if (type === "reel" && !adShown[type]) {
+            window.open("https://otieu.com/4/9366150", "_blank");
+            setAdShown((prev) => ({ ...prev, [type]: true }));
+            return;
+        }
+        handleContentTypeChange(type);
+    };
 
     const handleContentTypeChange = (type) => {
         setShowContentType(type);
@@ -164,20 +183,23 @@ const BlogPage = () => {
     };
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 20000);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    useEffect(() => {
         try {
             (window.adsbygoogle = window.adsbygoogle || []).push({});
         } catch (e) {
             console.error("Adsense error:", e);
         }
     }, []);
+
+    if (!firebaseReady || loading) {
+        return (
+            <div className="min-h-screen bg-black flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-14 h-14 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-gray-400">Loading...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -303,8 +325,7 @@ const BlogPage = () => {
                     </header>
 
                     {/* Posts */}
-                    {!loading &&
-                        filteredPosts.length > 0 &&
+                    {filteredPosts.length > 0 &&
                         showContentType !== "gallery" && (
                             <section className="lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
                                 {filteredPosts.map((post) => (
@@ -392,13 +413,7 @@ const BlogPage = () => {
                             </section>
                         )}
 
-                    {loading && (
-                        <div className="flex justify-center items-center h-[30vh]">
-                            <div className="w-14 h-14 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
-                        </div>
-                    )}
-
-                    {!loading && filteredPosts.length === 0 && (
+                    {filteredPosts.length === 0 && (
                         <p className="text-center text-gray-400 mt-10">No posts found.</p>
                     )}
                 </div>
@@ -428,4 +443,3 @@ const BlogPage = () => {
 };
 
 export default BlogPage;
-
