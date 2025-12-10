@@ -128,7 +128,7 @@ export default function NewsDetails() {
     }, []);
 
     const handleBack = () => {
-        router.push("/");
+        router.push("/portfolio");
     };
 
     const scrollToSection = (sectionId) => {
