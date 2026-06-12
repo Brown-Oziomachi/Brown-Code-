@@ -9,6 +9,12 @@ import {
   Users,
   Clock,
   CheckCircle,
+  Activity,
+  Terminal,
+  Cpu,
+  Radio,
+  Inbox,
+  ShieldAlert,
 } from "lucide-react";
 import {
   collection,
@@ -20,11 +26,14 @@ import {
   getDocs,
   serverTimestamp,
   doc,
-  updateDoc,
 } from "firebase/firestore";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { auth1, db1 } from "@/config/firebase.config1";
+
+// ── Read admin email from env ─────────────────────────────────────────────────
+// Add to .env.local:  NEXT_PUBLIC_ADMIN_EMAIL=your@email.com
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
 export default function AdminDashboard() {
   const [messages, setMessages] = useState([]);
@@ -37,46 +46,37 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   // Auto-scroll
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Check admin auth
+  // Auth guard
   useEffect(() => {
     const unsub = onAuthStateChanged(auth1, (user) => {
-      if (user && user.email === "browncemmanuel@gmail.com") {
+      if (user && ADMIN_EMAIL && user.email === ADMIN_EMAIL) {
         setAdmin(user);
-        setLoading(false);
       } else {
         setAdmin(null);
-        setLoading(false);
         router.push("/admin");
       }
+      setLoading(false);
     });
     return () => unsub();
   }, [router]);
 
-  // Fetch all messages
+  // Live message feed
   useEffect(() => {
     const q = query(
       collection(db1, "chat-messages"),
-      orderBy("timestamp", "asc")
+      orderBy("timestamp", "asc"),
     );
+    const unsub = onSnapshot(q, (snapshot) => {
+      const list = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+      setMessages(list);
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const messageList = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setMessages(messageList);
-
-      // Group messages by user
+      // Group into conversations by userName
       const grouped = {};
-      messageList.forEach((msg) => {
+      list.forEach((msg) => {
         if (!msg.isAdmin) {
           if (!grouped[msg.userName]) {
             grouped[msg.userName] = {
@@ -84,7 +84,6 @@ export default function AdminDashboard() {
               messages: [],
               lastMessage: msg.text,
               lastTimestamp: msg.userTimestamp,
-              unread: !msg.read,
             };
           }
           grouped[msg.userName].messages.push(msg);
@@ -92,35 +91,26 @@ export default function AdminDashboard() {
           grouped[msg.userName].lastTimestamp = msg.userTimestamp;
         }
       });
-
       setConversations(Object.values(grouped));
 
-      // 🔔 Detect the latest non-admin message
-      const latest = messageList[messageList.length - 1];
+      // Notification on new inbound message
+      const latest = list[list.length - 1];
       if (latest && !latest.isAdmin) {
-        // Play notification sound
-        const audio = new Audio("/notify.mp3"); // put notify.mp3 in /public
-        audio.play().catch(() => { });
-
-        // Show push notification if allowed
+        new Audio("/notify.mp3").play().catch(() => {});
         if (Notification.permission === "granted") {
-          new Notification("New Message", {
+          new Notification("New Payload", {
             body: `${latest.userName}: ${latest.text}`,
-            icon: "/icon.png", // optional icon in /public
+            icon: "/icon.png",
           });
         }
       }
     });
-
-    return () => unsubscribe();
+    return () => unsub();
   }, []);
 
-
-  // Send admin reply
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !selectedConversation) return;
-
     try {
       await addDoc(collection(db1, "chat-messages"), {
         text: newMessage.trim(),
@@ -131,260 +121,329 @@ export default function AdminDashboard() {
         userTimestamp: new Date().toISOString(),
       });
       setNewMessage("");
-    } catch (error) {
-      console.error("Error sending message:", error);
-      alert("Failed to send message.");
+    } catch (err) {
+      console.error("Send error:", err);
     }
   };
 
-  // Delete specific message
-  const handleDeleteMessage = async (messageId) => {
-    if (window.confirm("Delete this message?")) {
-      try {
-        await deleteDoc(doc(db1, "chat-messages", messageId));
-      } catch (error) {
-        console.error("Error deleting message:", error);
-      }
+  const handleDeleteMessage = async (id) => {
+    if (!window.confirm("Delete this payload?")) return;
+    try {
+      await deleteDoc(doc(db1, "chat-messages", id));
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  // Clear all messages
-  const handleClearAllMessages = async () => {
-    if (window.confirm("Delete ALL messages? This cannot be undone.")) {
-      const snapshot = await getDocs(collection(db1, "chat-messages"));
-      await Promise.all(snapshot.docs.map((doc) => deleteDoc(doc.ref)));
-      alert("All messages cleared!");
-      setSelectedConversation(null);
-    }
+  const handleClearAll = async () => {
+    if (!window.confirm("PURGE ALL MESSAGES? This cannot be undone.")) return;
+    const snap = await getDocs(collection(db1, "chat-messages"));
+    await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)));
+    setSelectedConversation(null);
   };
 
-  // Logout
   const handleLogout = async () => {
     await signOut(auth1);
     router.push("/admin");
   };
 
-  // Format timestamp
-  const formatTimestamp = (timestamp) => {
-    if (!timestamp) return "";
-    const date = new Date(timestamp);
-    return date.toLocaleString();
+  const relativeTime = (ts) => {
+    if (!ts) return "";
+    const diff = Date.now() - new Date(ts).getTime();
+    const m = Math.floor(diff / 60000);
+    const h = Math.floor(diff / 3600000);
+    const d = Math.floor(diff / 86400000);
+    if (m < 1) return "NOW";
+    if (m < 60) return `${m}m`;
+    if (h < 24) return `${h}h`;
+    return `${d}d`;
   };
 
-  const formatRelativeTime = (timestamp) => {
-    if (!timestamp) return "";
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffInMs = now - date;
-    const diffInMins = Math.floor(diffInMs / (1000 * 60));
-    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-    if (diffInMins < 1) return "Just now";
-    if (diffInMins < 60) return `${diffInMins}m ago`;
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    return `${diffInDays}d ago`;
-  };
-
-  // Get messages for selected conversation
-  const getConversationMessages = () => {
+  const convMessages = () => {
     if (!selectedConversation) return [];
     return messages.filter(
-      (msg) =>
-        msg.userName === selectedConversation.userName ||
-        (msg.isAdmin && msg.replyTo === selectedConversation.userName)
+      (m) =>
+        m.userName === selectedConversation.userName ||
+        (m.isAdmin && m.replyTo === selectedConversation.userName),
     );
   };
 
-  if (!admin) {
+  // ── Loading / auth guard screens ─────────────────────────────────────────
+  if (loading)
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading...</p>
+      <div className="min-h-screen bg-[#050811] flex items-center justify-center font-mono">
+        <div className="text-center space-y-4">
+          <div className="w-10 h-10 border border-cyan-500/40 border-t-cyan-500 rounded-full animate-spin mx-auto" />
+          <p className="text-xs text-slate-500 tracking-widest uppercase animate-pulse">
+            AUTHENTICATING_SESSION…
+          </p>
         </div>
       </div>
     );
-  }
+
+  if (!admin) return null;
+
+  // ── Stat tiles ────────────────────────────────────────────────────────────
+  const stats = [
+    {
+      label: "ACTIVE_THREADS",
+      value: conversations.length,
+      icon: <Users size={14} className="text-cyan-500" />,
+    },
+    {
+      label: "TOTAL_PAYLOADS",
+      value: messages.length,
+      icon: <MessageCircle size={14} className="text-cyan-500" />,
+    },
+    {
+      label: "INBOUND_MSGS",
+      value: messages.filter((m) => !m.isAdmin).length,
+      icon: <Inbox size={14} className="text-cyan-500" />,
+    },
+    {
+      label: "OUTBOUND_MSGS",
+      value: messages.filter((m) => m.isAdmin).length,
+      icon: <Radio size={14} className="text-cyan-500" />,
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-cyan-600 to-cyan-800-600  p-4 shadow-lg">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <div className="min-h-screen bg-[#050811] text-slate-400 font-mono antialiased selection:bg-cyan-500/20 selection:text-cyan-300 relative overflow-x-hidden">
+      {/* Engineering grid background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b0d_1px,transparent_1px),linear-gradient(to_bottom,#1e293b0d_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none z-0" />
+
+      {/* ── Header bar ──────────────────────────────────────────────────────── */}
+      <header className="relative z-20 border-b border-slate-900 bg-[#050811]/90 backdrop-blur-sm px-4 sm:px-8 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <MessageCircle className="w-8 h-8" />
-            <div>
-              <h1 className="text-xl font-bold">Brown Code Chat Dashboard</h1>
-              <p className="text-sm text-white/80">
-                Manage customer conversations
-              </p>
+            <div className="flex gap-1 items-center">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-700" />
             </div>
+            <span className="text-[10px] font-bold text-slate-500 tracking-widest uppercase">
+              // COMM_DASHBOARD
+            </span>
+            <span className="hidden sm:inline text-[10px] font-bold text-cyan-400 tracking-widest uppercase">
+              Brown Code
+            </span>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-sm font-semibold">{admin.email}</p>
-              <p className="text-xs text-white/70">Administrator</p>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 bg-emerald-950/20 border border-emerald-900/40 rounded-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[9px] font-bold text-emerald-400 tracking-widest">
+                SESSION_ACTIVE
+              </span>
             </div>
             <button
               onClick={handleLogout}
-              className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition"
+              className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-800 hover:border-red-500/30 hover:text-red-400 text-slate-400 text-[10px] font-bold uppercase tracking-widest transition-all rounded-sm"
             >
-              <LogOut size={20} />
+              <LogOut size={11} /> DISCONNECT()
             </button>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Stats Bar */}
-      <div className="bg-slate-900 border-b border-slate-800 p-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-3 gap-4">
-          <div className="bg-slate-800/50 rounded-lg p-4 flex items-center gap-3">
-            <Users className="w-8 h-8 text-cyan-400" />
-            <div>
-              <p className="text-2xl font-bold">{conversations.length}</p>
-              <p className="text-sm text-gray-400">Active Users</p>
+      {/* ── Stats strip ─────────────────────────────────────────────────────── */}
+      <div className="relative z-10 border-b border-slate-900 px-4 sm:px-8 py-4">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3">
+          {stats.map((s) => (
+            <div
+              key={s.label}
+              className="bg-[#0b132b]/20 border border-slate-800/60 p-4 rounded relative"
+            >
+              <div className="absolute top-0 left-4 -translate-y-1/2 bg-[#050811] px-1.5 text-[9px] font-bold text-cyan-400 tracking-widest uppercase">
+                {s.label}
+              </div>
+              <div className="flex items-end justify-between mt-1">
+                <span className="text-2xl font-black text-white">
+                  {s.value}
+                </span>
+                {s.icon}
+              </div>
             </div>
-          </div>
-          <div className="bg-slate-800/50 rounded-lg p-4 flex items-center gap-3">
-            <MessageCircle className="w-8 h-8 text-cyan-400" />
-            <div>
-              <p className="text-2xl font-bold">{messages.length}</p>
-              <p className="text-sm text-gray-400">Total Messages</p>
-            </div>
-          </div>
-          <div className="bg-slate-800/50 rounded-lg p-4 flex items-center gap-3">
-            <Clock className="w-8 h-8 text-cyan-400" />
-            <div>
-              <p className="text-2xl font-bold">
-                {messages.filter((m) => !m.isAdmin).length}
-              </p>
-              <p className="text-sm text-gray-400">Customer Messages</p>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-4">
-        <div className="grid grid-cols-3 gap-4 h-[calc(100vh-280px)]">
-          {/* Conversations List */}
-          <div className="bg-slate-900 rounded-lg border border-slate-800 overflow-hidden flex flex-col">
-            <div className="p-4 border-b border-slate-800 flex items-center justify-between">
-              <h2 className="font-semibold text-lg">Conversations</h2>
+      {/* ── Main grid ───────────────────────────────────────────────────────── */}
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-6">
+        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-6">
+          <Terminal size={13} className="text-cyan-500" /> LIVE_COMM_ROUTING //
+          MESSAGE_THREADS
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-[calc(100vh-340px)] min-h-[480px]">
+          {/* ── Conversation list ────────────────────────────────────────────── */}
+          <div className="lg:col-span-4 bg-[#0b132b]/20 border border-slate-800/60 rounded relative flex flex-col overflow-hidden">
+            {/* Panel label */}
+            <div className="absolute top-0 left-5 -translate-y-1/2 bg-[#050811] px-2 text-[9px] font-bold text-cyan-400 tracking-widest uppercase z-10">
+              01 // THREAD_INDEX
+            </div>
+
+            {/* Panel header */}
+            <div className="flex items-center justify-between px-4 pt-5 pb-3 border-b border-slate-900">
+              <div className="flex items-center gap-2">
+                <Users size={12} className="text-cyan-500" />
+                <span className="text-[10px] font-bold text-slate-300 tracking-wider uppercase">
+                  {conversations.length} Thread
+                  {conversations.length !== 1 ? "s" : ""}
+                </span>
+              </div>
               <button
-                onClick={handleClearAllMessages}
-                className="p-2 text-red-400 hover:bg-red-400/10 rounded-lg transition"
-                title="Clear all messages"
+                onClick={handleClearAll}
+                title="Purge all messages"
+                className="flex items-center gap-1.5 px-2 py-1 text-[9px] font-bold text-red-400/60 hover:text-red-400 hover:bg-red-400/5 border border-transparent hover:border-red-900/40 uppercase tracking-widest transition-all rounded-sm"
               >
-                <Trash2 size={18} />
+                <Trash2 size={10} /> PURGE_ALL()
               </button>
             </div>
+
+            {/* Thread list */}
             <div className="flex-1 overflow-y-auto">
               {conversations.length === 0 ? (
-                <div className="p-8 text-center text-gray-500">
-                  <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>No conversations yet</p>
+                <div className="flex flex-col items-center justify-center h-full gap-3 text-center px-4">
+                  <Inbox size={28} className="text-slate-700" />
+                  <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">
+                    NO_ACTIVE_THREADS
+                  </p>
+                  <p className="text-[10px] text-slate-700">
+                    Awaiting inbound payloads…
+                  </p>
                 </div>
               ) : (
-                conversations.map((conv) => (
-                  <button
-                    key={conv.userName}
-                    onClick={() => setSelectedConversation(conv)}
-                    className={`w-full p-4 border-b border-slate-800 hover:bg-slate-800/50 transition text-left ${
-                      selectedConversation?.userName === conv.userName
-                        ? "bg-cyan-600/20 border-l-4 border-l-cyan-600"
-                        : ""
-                    }`}
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center">
-                          <span className="font-bold">
+                conversations.map((conv) => {
+                  const isActive =
+                    selectedConversation?.userName === conv.userName;
+                  return (
+                    <button
+                      key={conv.userName}
+                      onClick={() => setSelectedConversation(conv)}
+                      className={`w-full px-4 py-3 border-b border-slate-900 text-left transition-all group ${
+                        isActive
+                          ? "bg-cyan-950/20 border-l-2 border-l-cyan-500"
+                          : "hover:bg-slate-900/40 border-l-2 border-l-transparent"
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        {/* Avatar */}
+                        <div className="w-8 h-8 bg-[#0b132b] border border-slate-800 flex items-center justify-center flex-shrink-0 rounded-sm">
+                          <span
+                            className={`text-xs font-black ${isActive ? "text-cyan-400" : "text-slate-400"}`}
+                          >
                             {conv.userName.charAt(0).toUpperCase()}
                           </span>
                         </div>
-                        <div>
-                          <p className="font-semibold">{conv.userName}</p>
-                          <p className="text-xs text-gray-400">
-                            {conv.messages.length} messages
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-center mb-0.5">
+                            <span
+                              className={`text-[11px] font-black uppercase tracking-tight ${isActive ? "text-cyan-400" : "text-slate-300"}`}
+                            >
+                              {conv.userName}
+                            </span>
+                            <span className="text-[9px] text-slate-600 font-bold tracking-widest">
+                              {relativeTime(conv.lastTimestamp)}
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-slate-500 truncate">
+                            {conv.lastMessage}
                           </p>
+                          <div className="text-[9px] text-slate-700 mt-0.5 font-bold tracking-widest">
+                            {conv.messages.length} MSG
+                            {conv.messages.length !== 1 ? "S" : ""}
+                          </div>
                         </div>
                       </div>
-                      <span className="text-xs text-gray-500">
-                        {formatRelativeTime(conv.lastTimestamp)}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-400 truncate">
-                      {conv.lastMessage}
-                    </p>
-                  </button>
-                ))
+                    </button>
+                  );
+                })
               )}
             </div>
           </div>
 
-          {/* Chat Area */}
-          <div className="col-span-2 bg-slate-900 rounded-lg border border-slate-800 flex flex-col">
+          {/* ── Chat pane ───────────────────────────────────────────────────── */}
+          <div className="lg:col-span-8 bg-[#0b132b]/20 border border-slate-800/60 rounded relative flex flex-col overflow-hidden">
+            <div className="absolute top-0 left-5 -translate-y-1/2 bg-[#050811] px-2 text-[9px] font-bold text-cyan-400 tracking-widest uppercase z-10">
+              02 // ACTIVE_STREAM
+            </div>
+
             {selectedConversation ? (
               <>
-                {/* Chat Header */}
-                <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+                {/* Chat header */}
+                <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-900">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-cyan-600 rounded-full flex items-center justify-center">
-                      <span className="text-lg font-bold">
+                    <div className="w-9 h-9 bg-[#0b132b] border border-cyan-900/40 flex items-center justify-center rounded-sm">
+                      <span className="text-sm font-black text-cyan-400">
                         {selectedConversation.userName.charAt(0).toUpperCase()}
                       </span>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg">
-                        {selectedConversation.userName}
-                      </h3>
-                      <p className="text-sm text-gray-400">
-                        {selectedConversation.messages.length} messages
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-black text-white uppercase tracking-tight">
+                          {selectedConversation.userName}
+                        </span>
+                        <span className="text-[9px] font-bold text-emerald-400 bg-emerald-950/20 border border-emerald-900/30 px-1.5 py-0.5 rounded-sm tracking-widest">
+                          CONNECTED
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-500 tracking-widest">
+                        {selectedConversation.messages.length} INBOUND_PAYLOAD
+                        {selectedConversation.messages.length !== 1 ? "S" : ""}
                       </p>
                     </div>
                   </div>
-                  <CheckCircle className="text-green-400" size={20} />
+                  <CheckCircle size={14} className="text-emerald-400" />
                 </div>
 
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                  {getConversationMessages().map((msg) => (
+                <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+                  {convMessages().map((msg) => (
                     <div
                       key={msg.id}
-                      className={`flex flex-col ${
-                        msg.isAdmin ? "items-end" : "items-start"
-                      }`}
+                      className={`flex flex-col ${msg.isAdmin ? "items-end" : "items-start"}`}
                     >
+                      {/* Meta row */}
                       <div className="flex items-center gap-2 mb-1">
                         <span
-                          className={`text-xs font-semibold ${
-                            msg.isAdmin ? "text-red-400" : "text-cyan-400"
-                          }`}
+                          className={`text-[9px] font-bold tracking-widest uppercase ${msg.isAdmin ? "text-cyan-400" : "text-slate-500"}`}
                         >
-                          {msg.userName}
+                          {msg.isAdmin
+                            ? "// ADMIN_REPLY"
+                            : `// ${msg.userName}`}
                         </span>
-                        <span className="text-xs text-gray-500">
-                          {formatRelativeTime(msg.userTimestamp)}
+                        <span className="text-[9px] text-slate-700">
+                          {relativeTime(msg.userTimestamp)}
                         </span>
                       </div>
-                      <div className="flex items-start gap-2">
+
+                      {/* Bubble */}
+                      <div className="flex items-start gap-2 group">
+                        {!msg.isAdmin && (
+                          <button
+                            onClick={() => handleDeleteMessage(msg.id)}
+                            className="opacity-0 group-hover:opacity-100 p-1 text-slate-700 hover:text-red-400 transition-all mt-1"
+                          >
+                            <Trash2 size={11} />
+                          </button>
+                        )}
                         <div
-                          className={`rounded-2xl px-4 py-2 max-w-[80%] ${
+                          className={`px-4 py-2.5 max-w-[75%] text-xs leading-relaxed font-sans border ${
                             msg.isAdmin
-                              ? "bg-red-600 text-white rounded-br-sm"
-                              : "bg-slate-800 text-gray-200 rounded-bl-sm"
+                              ? "bg-cyan-950/30 border-cyan-900/40 text-cyan-200 rounded-sm rounded-br-none"
+                              : "bg-slate-900 border-slate-800 text-slate-300 rounded-sm rounded-bl-none"
                           }`}
                         >
-                          <p className="text-sm break-words">{msg.text}</p>
+                          {msg.text}
                         </div>
-                        <button
-                          onClick={() => handleDeleteMessage(msg.id)}
-                          className="p-1 text-gray-500 hover:text-red-400 transition opacity-0 hover:opacity-100"
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                        {msg.isAdmin && (
+                          <button
+                            onClick={() => handleDeleteMessage(msg.id)}
+                            className="opacity-0 group-hover:opacity-100 p-1 text-slate-700 hover:text-red-400 transition-all mt-1"
+                          >
+                            <Trash2 size={11} />
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -394,37 +453,59 @@ export default function AdminDashboard() {
                 {/* Input */}
                 <form
                   onSubmit={handleSendMessage}
-                  className="p-4 border-t border-slate-800"
+                  className="px-5 py-4 border-t border-slate-900"
                 >
-                  <div className="flex gap-2">
+                  <div className="flex items-center gap-2 bg-slate-950 border border-slate-800 px-3 py-2 rounded-sm focus-within:border-cyan-900/60 transition-colors">
+                    <span className="text-[10px] font-bold text-cyan-500 tracking-widest flex-shrink-0">
+                      ›_
+                    </span>
                     <input
                       type="text"
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder={`Reply to ${selectedConversation.userName}...`}
-                      className="flex-1 bg-slate-800 text-white rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                      placeholder={`TRANSMIT_TO // ${selectedConversation.userName}…`}
+                      className="flex-1 bg-transparent text-xs text-slate-300 placeholder-slate-700 outline-none font-mono"
                     />
                     <button
                       type="submit"
                       disabled={!newMessage.trim()}
-                      className="bg-gradient-to-r from-cyan-600 to-cyan-600 text-white rounded-full p-3 hover:shadow-lg transition disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-500 hover:bg-cyan-400 disabled:bg-slate-800 disabled:text-slate-600 text-slate-950 font-black text-[9px] uppercase tracking-widest transition-all rounded-sm disabled:cursor-not-allowed"
                     >
-                      <Send size={20} />
+                      <Send size={10} /> SEND()
                     </button>
                   </div>
                 </form>
               </>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-gray-500">
-                <div className="text-center">
-                  <MessageCircle className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg">Select a conversation to reply</p>
+              /* Empty state */
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-center space-y-4 px-8">
+                  <div className="w-14 h-14 bg-[#0b132b]/40 border border-slate-800/60 flex items-center justify-center mx-auto rounded">
+                    <MessageCircle size={22} className="text-slate-700" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                      NO_STREAM_SELECTED
+                    </p>
+                    <p className="text-[10px] text-slate-700">
+                      Select a thread from the index to open its payload stream.
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-center gap-1">
+                    {[0, 1, 2].map((i) => (
+                      <span
+                        key={i}
+                        className="w-1 h-1 rounded-full bg-cyan-500/40 animate-pulse"
+                        style={{ animationDelay: `${i * 0.2}s` }}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

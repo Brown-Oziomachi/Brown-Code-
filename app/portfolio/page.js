@@ -1,6 +1,6 @@
 
-import Portfolio from "@/components/Portfolio";
+import PortfolioClient from "./portfolio";
 
 export default function PortfolioPage() {
-    return <Portfolio />;
+    return <PortfolioClient />;
 }

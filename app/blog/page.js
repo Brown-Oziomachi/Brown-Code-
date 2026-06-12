@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { articles } from "../data/article";
-import { ArrowLeft, Clock, User, Search, Sparkles, TrendingUp, Code2, Briefcase } from "lucide-react";
+import { ArrowLeft, Clock, User, Search, Terminal, Cpu, Database, Binary } from "lucide-react";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 
@@ -17,11 +17,11 @@ export default function BlogList() {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   // Categorize articles
-  const businessArticles = articles.filter(a =>
+  const architectureArticles = articles.filter(a =>
     ['why-you-need-a-website', 'importance-of-a-personal-portfolio', 'why-branding-matters-online', 'future-proofing-your-career-online'].includes(a.slug)
   );
 
-  const techArticles = articles.filter(a =>
+  const engineeringArticles = articles.filter(a =>
     ['how-to-build-your-first-website', 'seo-fundamentals-getting-found', 'content-marketing-personal-brands', 'networking-digital-era'].includes(a.slug)
   );
 
@@ -31,14 +31,12 @@ export default function BlogList() {
 
       let filtered = articles;
 
-      // Filter by category first
-      if (selectedCategory === 'business') {
-        filtered = businessArticles;
-      } else if (selectedCategory === 'tech') {
-        filtered = techArticles;
+      if (selectedCategory === 'architecture') {
+        filtered = architectureArticles;
+      } else if (selectedCategory === 'engineering') {
+        filtered = engineeringArticles;
       }
 
-      // Then apply search
       if (searchTerm) {
         const searchLower = searchTerm.toLowerCase();
         filtered = filtered.filter((article) => {
@@ -61,7 +59,6 @@ export default function BlogList() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -80,13 +77,13 @@ export default function BlogList() {
   };
 
   const getCategoryBadge = (slug) => {
-    if (businessArticles.some(a => a.slug === slug)) {
-      return { label: "Business", color: "bg-cyan-400" };
+    if (architectureArticles.some(a => a.slug === slug)) {
+      return { label: "System Architecture", color: "border-cyan-500/30 text-cyan-400 bg-cyan-950/30" };
     }
-    if (techArticles.some(a => a.slug === slug)) {
-      return { label: "Tech", color: "bg-cyan-700" };
+    if (engineeringArticles.some(a => a.slug === slug)) {
+      return { label: "Core Engineering", color: "border-emerald-500/30 text-emerald-400 bg-emerald-950/30" };
     }
-    return { label: "General", color: "bg-cyan-900" };
+    return { label: "Documentation", color: "border-slate-700 text-slate-400 bg-slate-900/40" };
   };
 
   return (
@@ -99,112 +96,96 @@ export default function BlogList() {
         scrollToSection={scrollToSection}
       />
 
-      <section className="min-h-screen bg-black text-white pt-32 pb-20 px-4 md:px-8 lg:px-12">
+      <section className="min-h-screen bg-[#030712] text-slate-100 pt-32 pb-20 px-4 md:px-8 lg:px-12 font-mono selection:bg-cyan-500/30 selection:text-cyan-200">
         <div className="max-w-7xl mx-auto">
-          {/* Header Section */}
-        <div className="relative w-full h-[420px] md:h-[500px] lg:h-[550px] rounded-2xl overflow-hidden shadow-2xl">
 
-  {/* Background Image */}
-  <img
-    src="/image.png"
-    alt="Header illustration"
-    className="absolute inset-0 w-900 h-full "
-  />
+          {/* Developer / Engineering Header Section */}
+          <div className="relative w-full rounded-2xl border border-slate-800 bg-slate-950/40 backdrop-blur-md overflow-hidden p-6 md:p-12 shadow-2xl mb-12">
+            <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none hidden md:block">
+              <Binary size={240} />
+            </div>
 
-  <div className="absolute inset-0 bg-black/70"></div>
+            <div className="relative z-10 max-w-4xl">
+              <div className="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 text-cyan-400 text-xs px-4 py-1.5 rounded-md tracking-wider uppercase mb-6">
+                <Terminal size={14} className="animate-pulse" />
+                stdout // technical_logs
+              </div>
 
-  {/* Text Content on Image */}
-  <div className="relative z-10 h-full flex flex-col justify-center px-6 md:px-16 max-w-4xl">
-    
-    <div className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/30 to-cyan-500/30 border border-cyan-800/40 text-white text-sm font-semibold px-6 py-2.5 rounded-full backdrop-blur-sm w-fit">
-      <Sparkles size={16} className="text-cyan-300" />
-      Knowledge Base
-    </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-4">
+                ENGINEERING_<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">INSIGHTS</span>
+              </h1>
 
-    <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-white via-cyan-200 to-cyan-900 bg-clip-text text-transparent leading-tight mt-6">
-      Build. Learn. Grow.
-    </h1>
+              <p className="text-slate-400 text-base md:text-lg max-w-2xl leading-relaxed font-sans">
+                Deep dives into systems architecture, production grade compilation structures, digital infrastructure optimization, and cleaner design patterns.
+              </p>
+            </div>
+          </div>
 
-    <p className="text-gray-200 text-lg md:text-xl max-w-2xl leading-relaxed mt-4">
-      Expert insights on web development, digital strategy, and business growth—crafted by developers, for ambitious professionals.
-    </p>
-  </div>
-</div>
-
-
-          {/* Category Filter */}
-          <div className="flex justify-center gap-1 mb-12 text-sm mt-10">
+          {/* Technical Filter Pipeline */}
+          <div className="flex flex-wrap items-center justify-start gap-3 mb-10 border-b border-slate-900 pb-6 text-xs">
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`flex items-center gap-2 px-2 py-1 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === 'all'
-                  ? 'bg-gradient-to-r from-cyan-600 to-cyan-600 text-white shadow-lg shadow-purple-500/30'
-                  : 'bg-slate-900/50 text-gray-400 hover:text-white border border-cyan-500/20 hover:border-cyan-500/40'
+              className={`flex items-center gap-2 px-4 py-2 border rounded-md transition-all duration-200 ${selectedCategory === 'all'
+                ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 shadow-sm'
+                : 'bg-transparent border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
                 }`}
             >
-              <TrendingUp size={18} />
-              All Articles
+              <Cpu size={14} />
+              ALL_MODULES()
             </button>
 
             <button
-              onClick={() => setSelectedCategory('business')}
-              className={`flex items-center gap-2 px-2 py-1 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === 'business'
-                  ? 'bg-gradient-to-r from-cyan-900 to-cyan-600 text-white shadow-lg shadow-blue-500/30'
-                  : 'bg-slate-900/50 text-gray-400 hover:text-white border border-purple-500/20 hover:border-purple-500/40'
+              onClick={() => setSelectedCategory('architecture')}
+              className={`flex items-center gap-2 px-4 py-2 border rounded-md transition-all duration-200 ${selectedCategory === 'architecture'
+                ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 shadow-sm'
+                : 'bg-transparent border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
                 }`}
             >
-              <Briefcase size={18} />
-              Business Growth
+              <Database size={14} />
+              SYS_ARCH
             </button>
 
             <button
               onClick={() => setSelectedCategory('tech')}
-              className={`flex items-center gap-2 px-2 py-1 rounded-xl font-semibold transition-all duration-300 ${selectedCategory === 'tech'
-                  ? 'bg-gradient-to-r from-cyan-600 to-cyan-600 text-white shadow-lg shadow-purple-500/30'
-                  : 'bg-slate-900/50 text-gray-400 hover:text-white border border-purple-500/20 hover:border-purple-500/40'
+              className={`flex items-center gap-2 px-4 py-2 border rounded-md transition-all duration-200 ${selectedCategory === 'tech'
+                ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 shadow-sm'
+                : 'bg-transparent border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
                 }`}
             >
-              <Code2 size={18} />
-              Tech Insights
+              <Terminal size={14} />
+              CORE_ENG
             </button>
           </div>
 
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-16">
-            <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-cyan-600 rounded-2xl blur-xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
-              <div className="relative flex items-center">
-                <Search className="absolute left-5 w-5 h-5 text-gray-400 group-hover:text-cyan-400 transition-colors" />
-                <input
-                  type="text"
-                  placeholder="Search articles by title, author, or content..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-14 pr-6 py-4  backdrop-blur-sm border border-cyan-500 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-                />
-                {searchTerm && (
-                  <button
-                    onClick={() => setSearchTerm("")}
-                    className="absolute right-5 text-gray-400 hover:text-white transition-colors text-sm font-medium"
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
+          {/* CLI Search Shell */}
+          <div className="max-w-3xl mb-16">
+            <div className="relative flex items-center bg-slate-950 border border-slate-800 rounded-lg focus-within:border-cyan-500/50 transition-all duration-200">
+              <span className="pl-4 text-cyan-500 select-none text-xs font-bold">$ grep -ri</span>
+              <input
+                type="text"
+                placeholder="search queries or technical parameters..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-transparent pl-3 pr-16 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-4 text-xs text-slate-500 hover:text-cyan-400 transition-colors"
+                >
+                  [ESC]
+                </button>
+              )}
             </div>
 
-            {/* Search Results Count */}
             {searchTerm && (
-              <div className="mt-4 text-center">
-                <p className="text-gray-400 text-sm">
+              <div className="mt-2 text-left pl-1">
+                <p className="text-slate-500 text-xs">
                   {isSearching ? (
-                    "Searching..."
+                    "Analyzing records..."
                   ) : (
                     <>
-                      Found{" "}
-                      <span className="text-purple-400 font-semibold">
-                        {filteredArticles.length}
-                      </span>{" "}
-                      {filteredArticles.length === 1 ? "article" : "articles"}
+                      Query returned <span className="text-emerald-400">{filteredArticles.length}</span> matching matrix blocks
                     </>
                   )}
                 </p>
@@ -212,114 +193,91 @@ export default function BlogList() {
             )}
           </div>
 
-          {/* Articles Grid */}
+          {/* Dev Node/Articles Grid */}
           {filteredArticles.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
               {filteredArticles.map((article, index) => {
-                const category = getCategoryBadge(article.slug);
+                const badge = getCategoryBadge(article.slug);
                 return (
                   <a
                     key={article.slug}
                     href={`/blog/${article.slug}`}
-                    className="group relative block rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.06] hover:shadow-2xl hover:shadow-purple-500/20"
+                    className="group flex flex-col justify-between bg-slate-950/40 border border-slate-900 rounded-xl overflow-hidden hover:border-cyan-500/40 transition-all duration-300"
                     style={{
-                      animationDelay: `${index * 100}ms`,
-                      animation: "fadeInUp 0.6s ease-out forwards",
+                      animationDelay: `${index * 50}ms`,
+                      animation: "fadeInUp 0.4s ease-out forwards",
                       opacity: 0,
                     }}
                   >
-                    {/* Image Background with Overlay */}
-                    <div className="relative h-96 overflow-hidden">
-                      {/* Background Image */}
-                      <img
-                        src={article.image}
-                        alt={article.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-
-                      {/* Dark Gradient Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/20" />
-
-                      {/* Category Badge - Top Left */}
-                      <div className="absolute top-4 left-4 z-10">
-                        <span className={`inline-block ${category.color} text-white text-xs font-bold px-3 py-1.5 rounded uppercase tracking-wide shadow-lg`}>
-                          {category.label}
+                    <div className="p-6">
+                      {/* Meta Node Classification */}
+                      <div className="flex items-center justify-between mb-4">
+                        <span className={`text-[10px] uppercase px-2 py-0.5 rounded border ${badge.color}`}>
+                          {badge.label}
                         </span>
+                        <span className="text-[10px] text-slate-600">ID: {article.slug.slice(0, 7)}</span>
                       </div>
 
-                      {/* Content - Bottom Section */}
-                      <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                        {/* Title */}
-                        <h3 className="text-white text-xl md:text-2xl font-bold leading-tight mb-3 line-clamp-2 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-cyan-300 group-hover:to-cyan-800 group-hover:bg-clip-text transition-all duration-300">
-                          {article.title}
-                        </h3>
+                      {/* Technical Title */}
+                      <h3 className="text-white text-lg font-bold leading-snug mb-3 group-hover:text-cyan-400 transition-colors duration-200">
+                        {article.title}
+                      </h3>
 
-                        {/* Preview Text */}
-                        <p className="text-gray-300 text-sm leading-relaxed line-clamp-2 mb-4">
-                          {article.preview}
-                        </p>
+                      {/* Abstract / Preview */}
+                      <p className="text-slate-400 text-xs font-sans leading-relaxed line-clamp-3 mb-4">
+                        {article.preview}
+                      </p>
+                    </div>
 
-                        {/* Meta Info */}
-                        <div className="flex items-center justify-between text-xs text-gray-400">
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1.5">
-                              <User size={12} className="text-cyan-400" />
-                              <span className="font-medium text-cyan-800">{article.postedBy}</span>
-                            </div>
-                            <div className="w-1 h-1 rounded-full bg-gray-500" />
-                            <div className="flex items-center gap-1.5">
-                              <Clock size={12} className="text-cyan-400" />
-                              <span>{getReadingTime(article.content)} min</span>
-                            </div>
-                          </div>
-                        </div>
+                    {/* Node Footer metrics */}
+                    <div className="px-6 py-4 border-t border-slate-900/60 bg-slate-950/60 flex items-center justify-between text-[11px] text-slate-500">
+                      <div className="flex items-center gap-1.5">
+                        <User size={12} className="text-slate-600" />
+                        <span className="text-slate-400">{article.postedBy}</span>
                       </div>
-
-                      {/* Hover Border Effect */}
-                      <div className="absolute inset-0 border-2 border-transparent group-hover:border-cyan-500/50 rounded-2xl transition-all duration-500 pointer-events-none" />
+                      <div className="flex items-center gap-1.5">
+                        <Clock size={12} className="text-slate-600" />
+                        <span>EST_TIME: {getReadingTime(article.content)}m</span>
+                      </div>
                     </div>
                   </a>
                 );
               })}
             </div>
           ) : (
-            <div className="text-center py-20">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-cyan-500/10 border border-cyan-500/20 mb-6">
-                <Search size={32} className="text-cyan-400" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-3">
-                No articles found
-              </h3>
-              <p className="text-gray-400 mb-6">
-                Try adjusting your search terms or browse all articles
+            <div className="border border-dashed border-slate-800 rounded-xl p-12 text-center max-w-xl mx-auto my-12">
+              <Terminal size={24} className="text-rose-500 mx-auto mb-4" />
+              <h3 className="text-sm font-bold text-slate-300 mb-2">ERR_NO_MATCHING_RECORDS</h3>
+              <p className="text-xs text-slate-500 font-sans mb-4">
+                The evaluation engine returned 0 records matching your terminal filter parameter strings.
               </p>
               <button
                 onClick={() => {
                   setSearchTerm("");
                   setSelectedCategory("all");
                 }}
-                className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 rounded-xl font-semibold text-white transition-colors"
+                className="text-xs text-cyan-400 hover:underline"
               >
-                Clear Filters
+                Reset filter configurations
               </button>
             </div>
           )}
 
-          <button
-            onClick={() => router.push("/contact")}
-            className="px-8 py-4 mb-10 bg-slate-800/80 hover:bg-slate-700 border border-cyan-500/30 hover:border-cyan-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
-          >
-            Let's roll
-          </button>
+          {/* Navigation Matrix controls */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 pt-8 border-t border-slate-900">
+            <button
+              onClick={() => router.push("/contact")}
+              className="w-full sm:w-auto px-6 py-3 border border-cyan-500 text-cyan-400 bg-cyan-950/10 hover:bg-cyan-500 hover:text-black transition-all duration-200 rounded-md text-xs font-bold uppercase tracking-wider"
+            >
+              INITIALIZE_CONTACT
+            </button>
 
-         
-          <div className="flex justify-center">
             <button
               onClick={handleBack}
-              className="group flex items-center gap-3 px-10 py-4 bg-cyan-900/80 hover:bg-cyan-800 border border-cyan-500/30 hover:border-cyan-500/50 rounded-2xl font-bold text-white transition-all duration-300 hover:scale-105"
+              className="w-full sm:w-auto group flex items-center justify-center gap-2 px-6 py-3 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all duration-200 rounded-md text-xs uppercase tracking-wider"
             >
-              <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1.5" />
-              Back to Home
+              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+              RETURN_TO_BASE
             </button>
           </div>
         </div>
@@ -328,7 +286,7 @@ export default function BlogList() {
           @keyframes fadeInUp {
             from {
               opacity: 0;
-              transform: translateY(30px);
+              transform: translateY(15px);
             }
             to {
               opacity: 1;

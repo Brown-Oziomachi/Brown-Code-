@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { db2 } from "@/config/firebase.config2";
 import Navbar from "@/components/Navbar";
+import { Terminal, Cpu, Layers, Disc, ArrowLeft, AlertTriangle } from "lucide-react";
 
 const TechnologyPage = () => {
     const router = useRouter();
@@ -41,7 +42,7 @@ const TechnologyPage = () => {
     }, []);
 
     const handleBack = () => {
-        router.push("/");
+        router.push("/portfolio");
     };
 
     const scrollToSection = (sectionId) => {
@@ -65,7 +66,7 @@ const TechnologyPage = () => {
                 try {
                     querySnapshot = await getDocs(q);
                 } catch (err) {
-                    console.warn("Fallback: missing index.");
+                    console.warn("Fallback: missing index allocation mapping structures.");
 
                     q = query(postsRef, orderBy("createdAt", "desc"), limit(6));
                     querySnapshot = await getDocs(q);
@@ -78,7 +79,7 @@ const TechnologyPage = () => {
 
                 setPosts(data);
             } catch (error) {
-                console.error("Error fetching posts:", error);
+                console.error("Pipeline breakdown tracking data streams:", error);
             } finally {
                 setLoading(false);
             }
@@ -101,78 +102,94 @@ const TechnologyPage = () => {
                 scrollToSection={scrollToSection}
             />
 
-            <main className="w-full">
-                {/* ===== HERO SECTION (Portfolio Style, No Image) ===== */}
-                <section className="w-full py-20 text-center bg-black text-white px-4">
-                    <p className="uppercase tracking-wider text-xl underline font-semibold text-cyan-600 mb-3">
-                        Tech News
-                    </p>
+            <main className="w-full min-h-screen bg-[#030712] text-slate-100 pt-28 font-mono selection:bg-cyan-500/30 selection:text-cyan-200">
+                {/* ===== SYSTEM BANNER HEADER ===== */}
+                <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 pt-8 pb-12">
+                    <div className="relative w-full rounded-2xl border border-slate-900 bg-slate-950/40 backdrop-blur-md overflow-hidden p-6 md:p-12 shadow-2xl">
+                        <div className="absolute top-0 right-0 p-4 opacity-[0.02] pointer-events-none hidden md:block">
+                            <Cpu size={240} />
+                        </div>
 
-                    <p className=" mx-auto text-gray-300 text-sm md:text-lg leading-relaxed">
-                        Explore ideas, innovation, and deep-tech insights that shape the digital future. <br />
-                        Thoughtfully curated articles covering AI, software engineering, web development,
-                        clean energy tech, and the technologies transforming our world.
-                    </p>
+                        <div className="relative z-10 max-w-4xl">
+                            <div className="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 text-cyan-400 text-xs px-4 py-1.5 rounded-md tracking-wider uppercase mb-6">
+                                <Terminal size={14} className="animate-pulse" />
+                                fetch // tech_feed_logs
+                            </div>
+
+                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-4">
+                                TECH_NEWS_<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">STREAM</span>
+                            </h1>
+
+                            <p className="text-slate-400 text-sm md:text-base max-w-2xl leading-relaxed font-sans">
+                                Explore automated indices, architecture strategies, and deep technical innovations shaping optimization layers. From compiler components to cleaner computational logic.
+                            </p>
+                        </div>
+                    </div>
                 </section>
 
-                {/* ===== POSTS SECTION ===== */}
-                <div className="max-w-7xl mx-auto py- px-4">
+                {/* ===== PIPELINE MODULE RECTIFY ===== */}
+                <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 pb-24">
                     {loading ? (
-                        <p className="text-center py-10">Loading latest News...</p>
+                        <div className="flex flex-col items-center justify-center py-20 gap-3">
+                            <Disc className="w-6 h-6 animate-spin text-cyan-500" />
+                            <p className="text-xs text-slate-500 uppercase tracking-widest">Querying database matrix endpoints...</p>
+                        </div>
                     ) : posts.length === 0 ? (
-                        <p className="text-center text-gray-500">No posts found.</p>
+                        <div className="border border-dashed border-slate-800 rounded-xl p-12 text-center max-w-xl mx-auto">
+                            <AlertTriangle size={24} className="text-amber-500 mx-auto mb-4" />
+                            <h3 className="text-sm font-bold text-slate-300 mb-2">ERR_EMPTY_RESULT_SET</h3>
+                            <p className="text-xs text-slate-500 font-sans">
+                                The tracking stream returned absolute zero values fitting standard query parameters.
+                            </p>
+                        </div>
                     ) : (
                         <>
-                            {/* First Two Posts - Large Cards with Image Overlay */}
+                            {/* Primary Nodes: Grid Matrix Blocks */}
                             {firstTwoPosts.length > 0 && (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                     {firstTwoPosts.map((post) => (
                                         <Link
                                             key={post.id}
                                             href={`/news/${createFullSlug(post.title, post.id)}`}
-                                            className="group relative h-80 overflow-hidden bg-gray-900"
+                                            className="group relative h-80 overflow-hidden rounded-xl border border-slate-900 bg-slate-950/40 hover:border-cyan-500/40 transition-all duration-300 shadow-lg flex flex-col justify-end"
                                         >
                                             {post.imageUrl ? (
                                                 <img
                                                     src={post.imageUrl}
                                                     alt={post.title}
-                                                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                                                    className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-luminosity group-hover:opacity-30 group-hover:scale-[1.02] transition duration-500"
                                                     onError={(e) => {
                                                         e.target.style.display = 'none';
                                                     }}
                                                 />
                                             ) : (
-                                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-600 to-cyan-600"></div>
+                                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-950/10 to-slate-950/50"></div>
                                             )}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent"></div>
-                                            <div className="absolute bottom-0 left-0 right-0 p-6 text-cyan-600">
-                                                <p className="text-xs font-semibold mb-2 uppercase tracking-wider">
-                                                    {post.category || "Tech"}
-                                                </p>
-                                                <h3 className="text-2xl font-bold mb-3 group-hover:text-cyan-500 transition">
+
+                                            <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/70 to-transparent z-10"></div>
+
+                                            <div className="relative z-20 p-6">
+                                                <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded border border-cyan-500/30 text-cyan-400 bg-cyan-950/30 mb-3 inline-block">
+                                                    {post.category || "SYS_TECH"}
+                                                </span>
+                                                <h3 className="text-lg md:text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors duration-200 leading-snug">
                                                     {post.title}
                                                 </h3>
-                                                <div className="flex items-center gap-2 text-xs text-gray-300">
-                                                    <span>{post.author || "Tech Insights"}</span>
-                                                    <span>•</span>
+                                                <div className="flex items-center gap-4 text-[10px] text-slate-500">
+                                                    <span className="font-sans text-slate-400 font-medium">{post.author || "Core System"}</span>
+                                                    <span>//</span>
                                                     <span>
-                                                        {post.createdAt?.toDate
-                                                            ? (() => {
-                                                                const date = post.createdAt.toDate();
-                                                                const now = new Date();
-                                                                const diffTime = Math.abs(now - date);
-                                                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                                                const diffMonths = Math.floor(diffDays / 30);
+                                                        {post.createdAt?.toDate ? (() => {
+                                                            const date = post.createdAt.toDate();
+                                                            const now = new Date();
+                                                            const diffTime = Math.abs(now - date);
+                                                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                                            const diffMonths = Math.floor(diffDays / 30);
 
-                                                                if (diffMonths > 0) {
-                                                                    return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
-                                                                } else if (diffDays > 0) {
-                                                                    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-                                                                } else {
-                                                                    return 'Today';
-                                                                }
-                                                            })()
-                                                            : ""}
+                                                            if (diffMonths > 0) return `DELTA_${diffMonths}M_AGO`;
+                                                            if (diffDays > 0) return `DELTA_${diffDays}D_AGO`;
+                                                            return 'DELTA_TIMESTAMP_TODAY';
+                                                        })() : "UNKNOWN_TIME"}
                                                     </span>
                                                 </div>
                                             </div>
@@ -181,57 +198,53 @@ const TechnologyPage = () => {
                                 </div>
                             )}
 
-                            {/* Next Two Posts - Horizontal Cards with Side Image */}
+                            {/* Secondary Downstream Split-Nodes */}
                             {nextTwoPosts.length > 0 && (
-                                <div className="space-y-6 mb-12">
+                                <div className="grid grid-cols-1 gap-4 mb-14">
                                     {nextTwoPosts.map((post) => (
                                         <Link
                                             key={post.id}
                                             href={`/news/${createFullSlug(post.title, post.id)}`}
-                                            className="group flex gap-6 items-start hover:bg-gray-50 transition p-4 -mx-4"
+                                            className="group flex flex-col sm:flex-row gap-6 items-start sm:items-center bg-slate-950/20 border border-slate-900/60 rounded-xl hover:border-cyan-500/30 p-4 transition-all duration-200"
                                         >
-                                            <div className="relative w-32 h-32 flex-shrink-0 overflow-hidden bg-gray-200">
+                                            <div className="relative w-full sm:w-24 h-24 flex-shrink-0 overflow-hidden rounded-md border border-slate-900 bg-slate-950">
                                                 {post.imageUrl ? (
                                                     <img
                                                         src={post.imageUrl}
                                                         alt={post.title}
-                                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                                                        className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-luminosity group-hover:scale-105 transition duration-300"
                                                         onError={(e) => {
                                                             e.target.style.display = 'none';
                                                         }}
                                                     />
                                                 ) : (
-                                                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500"></div>
+                                                    <div className="absolute inset-0 bg-slate-900 flex items-center justify-center text-slate-700">
+                                                        <Layers size={18} />
+                                                    </div>
                                                 )}
                                             </div>
-                                            <div className="flex-1 max-md:-mt-5">
-                                                <p className="text-xs text-cyan-600 font-semibold mb-2 uppercase tracking-wider">
-                                                    {post.category || "Coding"}
+                                            <div className="flex-1">
+                                                <p className="text-[10px] text-cyan-500/70 font-bold uppercase tracking-wider mb-1">
+                                                    &gt;_ {post.category || "MODULE_ENG"}
                                                 </p>
-                                                <h3 className="text-xl font-bold mb-2 group-hover:text-cyan-700 transition text-gray-100">
+                                                <h3 className="text-base font-bold mb-2 group-hover:text-cyan-400 transition-colors text-slate-100">
                                                     {post.title}
                                                 </h3>
-                                                <div className="flex items-center gap-2 text-xs text-gray-500">
-                                                    <span>{post.author || "Tech Insights"}</span>
+                                                <div className="flex items-center gap-3 text-[10px] text-slate-500">
+                                                    <span className="font-sans text-slate-400">{post.author || "System Dev"}</span>
                                                     <span>•</span>
                                                     <span>
-                                                        {post.createdAt?.toDate
-                                                            ? (() => {
-                                                                const date = post.createdAt.toDate();
-                                                                const now = new Date();
-                                                                const diffTime = Math.abs(now - date);
-                                                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                                                const diffMonths = Math.floor(diffDays / 30);
+                                                        {post.createdAt?.toDate ? (() => {
+                                                            const date = post.createdAt.toDate();
+                                                            const now = new Date();
+                                                            const diffTime = Math.abs(now - date);
+                                                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                                            const diffMonths = Math.floor(diffDays / 30);
 
-                                                                if (diffMonths > 0) {
-                                                                    return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ago`;
-                                                                } else if (diffDays > 0) {
-                                                                    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-                                                                } else {
-                                                                    return 'Today';
-                                                                }
-                                                            })()
-                                                            : ""}
+                                                            if (diffMonths > 0) return `${diffMonths}m ago`;
+                                                            if (diffDays > 0) return `${diffDays}d ago`;
+                                                            return 'Today';
+                                                        })() : ""}
                                                     </span>
                                                 </div>
                                             </div>
@@ -240,40 +253,39 @@ const TechnologyPage = () => {
                                 </div>
                             )}
 
-                            {/* Remaining Posts as List */}
+                            {/* Outlying Registry Log Indices */}
                             {remainingPosts.length > 0 && (
-                                <div>
-                                    <h2 className="text-2xl md:text-3xl font-bold text-gray-100 mb-6">
-                                        More Articles
+                                <div className="mt-12">
+                                    <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <Layers size={14} className="text-cyan-500" />
+                                        DEEP_ARCHIVE_REGISTRY()
                                     </h2>
-                                    <div className="space-y-6 border-t border-cyan-200">
+                                    <div className="border-t border-slate-900 divide-y divide-slate-900/60">
                                         {remainingPosts.map((post) => (
                                             <Link
                                                 key={post.id}
                                                 href={`/news/${createFullSlug(post.title, post.id)}`}
-                                                className="group block p-6 border-b border-cyan-200
-                                            hover:bg-gray-50 transition duration-200"
+                                                className="group block py-5 px-2 hover:bg-slate-950/40 transition duration-150"
                                             >
-                                                <div className="flex items-start justify-between gap-4">
+                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                                     <div className="flex-1">
-                                                        <h3 className="text-xl font-bold mb-2 group-hover:text-cyan-700 transition text-white">
+                                                        <h3 className="text-sm font-bold text-slate-200 group-hover:text-cyan-400 transition-colors mb-1">
                                                             {post.title}
                                                         </h3>
-
-                                                        <p className="text-sm text-gray-400 mb-3 line-clamp-2">
+                                                        <p className="text-xs text-slate-500 font-sans line-clamp-1 max-w-3xl">
                                                             {post.subtitle}
                                                         </p>
-
-                                                        <p className="text-xs text-gray-300">
-                                                            {post.createdAt?.toDate
-                                                                ? post.createdAt.toDate().toDateString()
-                                                                : ""}
-                                                        </p>
                                                     </div>
-
-                                                    <span className="text-xs text-cyan-600 font-semibold uppercase whitespace-nowrap">
-                                                        Tech
-                                                    </span>
+                                                    <div className="flex items-center justify-between sm:justify-end gap-6 text-[10px] text-slate-600 font-mono">
+                                                        <span>
+                                                            {post.createdAt?.toDate
+                                                                ? post.createdAt.toDate().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }).toUpperCase()
+                                                                : "UNKNOWN_DATE"}
+                                                        </span>
+                                                        <span className="text-cyan-600 font-bold border border-cyan-950 px-1.5 py-0.5 rounded text-[9px]">
+                                                            {post.category?.toUpperCase() || "TECH"}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </Link>
                                         ))}
@@ -282,6 +294,17 @@ const TechnologyPage = () => {
                             )}
                         </>
                     )}
+
+                    {/* Pipeline Termination Return Options */}
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-16 pt-8 border-t border-slate-900">
+                        <button
+                            onClick={handleBack}
+                            className="w-full sm:w-auto group flex items-center justify-center gap-2 px-6 py-2.5 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all rounded-md text-xs uppercase tracking-wider"
+                        >
+                            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                            RETURN_TO_BASE
+                        </button>
+                    </div>
                 </div>
             </main>
         </>

@@ -16,264 +16,249 @@ import {
     Github,
     Linkedin,
     Mail,
-    Download
+    Download,
+    Terminal,
+    Cpu,
+    Database,
+    Layers,
+    GitBranch,
+    Binary
 } from 'lucide-react';
 
 export default function AboutMePage() {
     const [activeTab, setActiveTab] = useState('story');
 
     const skills = [
-        { name: 'React & Next.js', level: 70, color: 'from-blue-500 to-cyan-500' },
-        { name: 'Node.js & Vercel', level: 50, color: 'from-green-500 to-emerald-500' },
-        { name: 'JavaScript', level: 45, color: 'from-yellow-500 to-orange-500' },
-        { name: 'Database Management', level: 70, color: 'from-purple-500 to-pink-500' },
+        { name: 'React Architecture & Next.js SSR', level: 70, status: 'Production Ready' },
+        { name: 'Node.js Core & Vercel Serverless Platforms', level: 50, status: 'Stable Backend' },
+        { name: 'JavaScript Engine Paradigms (ES6+ Runtime)', level: 45, status: 'Intermediate Core' },
+        { name: 'Database Architecture & Management', level: 70, status: 'Scalable Systems' },
     ];
 
     const timeline = [
         {
             year: '2022',
-            title: 'Full Stack Developer',
-            description: 'Specialized in React and Node.js development',
-            icon: <Award size={20} />
+            title: 'Full Stack Software Developer',
+            description: 'Architecting full functional interfaces, handling data streams, and building integrated Node.js solutions.',
+            icon: <Briefcase size={16} />
         },
         {
             year: '2021',
-            title: 'Started Programming Journey',
-            description: 'Began learning web development and software engineering',
-            icon: <GraduationCap size={20} />
+            title: 'Systems Development & Developing Foundation',
+            description: 'Initiated programmatic core tracks. Discovered deep Developing patterns, data parsing structures, and script logic basics.',
+            icon: <Cpu size={16} />
         },
     ];
 
     const values = [
         {
-            icon: <Heart size={32} />,
-            title: 'Passion',
-            description: 'I love what I do and put my heart into every project'
+            icon: <Binary size={20} className="text-cyan-400" />,
+            title: 'Algorithmic Precision',
+            description: 'Writing maintainable, predictable, and clean modular structures Developered to minimize technical debt.'
         },
         {
-            icon: <Lightbulb size={32} />,
-            title: 'Innovation',
-            description: 'Always seeking creative solutions to complex problems'
+            icon: <Terminal size={20} className="text-cyan-400" />,
+            title: 'Asynchronous Architecture',
+            description: 'Optimizing network data round-trips, layout renders, and server workloads for raw performance velocity.'
         },
         {
-            icon: <Users size={32} />,
-            title: 'Collaboration',
-            description: 'Working together to achieve extraordinary results'
+            icon: <GitBranch size={20} className="text-cyan-400" />,
+            title: 'Robust Modularity',
+            description: 'Isolating reusable logic into components and functional code ecosystems built for clean scaling.'
         },
         {
-            icon: <TrendingUp size={32} />,
-            title: 'Growth',
-            description: 'Continuously learning and improving my craft'
+            icon: <Layers size={20} className="text-cyan-400" />,
+            title: 'Systems Adaptability',
+            description: 'Continually tracking state machine patterns, security layers, and fresh structural updates.'
         },
     ];
 
     const interests = [
-        { icon: <Code size={24} />, text: 'Coding' },
-        { icon: <Coffee size={24} />, text: 'Coffee' },
-        { icon: <Zap size={24} />, text: 'Tech Innovation' },
-        { icon: <Target size={24} />, text: 'Problem Solving' },
+        { icon: <Code size={16} />, text: 'System Architecture' },
+        { icon: <Cpu size={16} />, text: 'Hardware Protocols' },
+        { icon: <Terminal size={16} />, text: 'Command Interfaces' },
+        { icon: <Database size={16} />, text: 'Data Structuring' },
     ];
 
     return (
-        <div className="min-h-screen bg-black text-white">
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute w-96 h-96 bg-purple-500/10 rounded-full blur-3xl -top-48 -left-48 animate-pulse"></div>
-                <div className="absolute w-96 h-96 bg-pink-500/10 rounded-full blur-3xl -bottom-48 -right-48 animate-pulse"></div>
-                <div className="absolute w-96 h-96 bg-purple-500/5 rounded-full blur-3xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="min-h-screen bg-[#090d16] text-slate-300 font-mono antialiased selection:bg-cyan-500/20 selection:text-cyan-300 relative overflow-x-hidden">
+            {/* Developing Grid Underlay Overlay */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b1a_1px,transparent_1px),linear-gradient(to_bottom,#1e293b1a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none z-0"></div>
+
+            {/* Subtle Matrix Ambient Spotlights */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                <div className="absolute w-[500px] h-[500px] bg-cyan-500/[0.04] rounded-full blur-[120px] -top-40 -left-40"></div>
+                <div className="absolute w-[500px] h-[500px] bg-blue-600/[0.04] rounded-full blur-[120px] bottom-1/4 -right-40"></div>
             </div>
 
-            <nav className="relative z-10 border-b border-purple-500/20 backdrop-blur-xl">
-                <div className="max-w-7xl mx-auto px-4 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="text-xl font-bold  bg-gradient-to-r from-cyan-600 to-cyan-600 bg-clip-text text-transparent">
-                            {"<Brown Code />"}
-                        </div>
-                        <a
-                            href="/portfolio"
-                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-xl  hover:bg-purple-500/30 transition-colors"
-                        >
-                            <ArrowLeft size={20} />
-                            <span>Back to Home</span>
-                        </a>
+            {/* Top Navigation Frame */}
+            <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0">
+                <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3 group">
+                        <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
+                        <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+                            BROWN_CODE_SYS // DEV_PORTFOLIO
+                        </span>
                     </div>
+                    <a
+                        href="/portfolio"
+                        className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
+                    >
+                        <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+                        <span>SYS.RETURN()</span>
+                    </a>
                 </div>
             </nav>
 
-            <div className="relative z-10 max-w-7xl mx-auto px-4 py-12 md:py-20">
-                <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
-                    {/* Image Section */}
-                    <div className="relative order-1 md:order-1">
-                        <div className="relative group">
-                            <div className="absolute -inset-4 bg-gradient-to-r from-purple-600 via-cyan-600 to-cyan-600 rounded-3xl blur-2xl opacity-30 group-hover:opacity-50 transition duration-1000 animate-pulse"></div>
-                            <div className="relative bg-slate-800/50 backdrop-blur-xl p-4 border border-purple-500/20 overflow-hidden">
+            <main className="relative z-10 max-w-6xl mx-auto px-6 py-12 md:py-20">
+                {/* Main Identity Manifest block */}
+                <div className="grid md:grid-cols-12 gap-8 items-start mb-16">
+
+                    {/* Dev System Diagnostic Profile Column */}
+                    <div className="md:col-span-4 space-y-4">
+                        <div className="bg-slate-900/60 border border-slate-800/80 rounded p-4 relative group hover:border-slate-700/50 transition-all duration-300 shadow-md backdrop-blur-sm">
+                            <div className="absolute top-3 right-3 flex gap-1.5">
+                                <span className="w-2 h-2 rounded-full bg-red-500/40 group-hover:bg-red-500/60 transition-colors"></span>
+                                <span className="w-2 h-2 rounded-full bg-yellow-500/40 group-hover:bg-yellow-500/60 transition-colors"></span>
+                                <span className="w-2 h-2 rounded-full bg-green-500/40 group-hover:bg-green-500/60 transition-colors"></span>
+                            </div>
+
+                            {/* Terminal Image Wrapper */}
+                            <div className="border border-slate-800 rounded overflow-hidden aspect-square bg-slate-950 mb-4 relative shadow-inner">
                                 <img
                                     src="/brown.jpg"
-                                    alt="Brown Oziomachi"
-                                    className="w-full h-auto object-cover"
+                                    alt="Brown Oziomachi Engine Layout"
+                                    className="w-full h-full object-cover grayscale opacity-75 mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-500 ease-out"
                                 />
-                                {/* Overlay badge */}
-                                <div className="absolute bottom-8 left-8 right-8 bg-slate-900/80 backdrop-blur-xl rounded-2xl p-4 border border-purple-500/30">
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <h3 className="font-bold text-lg">Brown Oziomachi</h3>
-                                            <p className="text-cyan-400 text-sm">Full Stack Developer</p>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <a href="https://github.com/Brown-Oziomachi" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors">
-                                                <Github size={18} />
-                                            </a>
-                                            <a href="https://www.linkedin.com/in/brownoziomachi72a5a3229" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center hover:bg-purple-500/30 transition-colors">
-                                                <Linkedin size={18} />
-                                            </a>
-                                        </div>
-                                    </div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/10 to-transparent"></div>
+                                <div className="absolute bottom-2.5 left-2.5 right-2.5 text-[11px] bg-slate-900/95 p-2.5 rounded border border-slate-800/80 backdrop-blur-sm shadow-xl">
+                                    <div className="text-white font-bold tracking-wide"> Brown AD</div>
+                                    <div className="text-cyan-400 text-[10px] font-semibold mt-0.5 tracking-wider">ROLE: FULL_STACK_DEV</div>
+                                </div>
+                            </div>
+
+                            {/* Operational Diagnostic Streams */}
+                            <div className="space-y-2 text-[11px] text-slate-400 border-t border-slate-800/60 pt-3.5 font-mono">
+                                <div className="flex justify-between items-center"><span className="text-slate-500 font-medium">LOC:</span> <span className="text-slate-300 font-semibold hover:text-white transition-colors">NIGERIA // REMOTE</span></div>
+                                <div className="flex justify-between items-center"><span className="text-slate-500 font-medium">CORE_STACK:</span> <span className="text-cyan-400 font-bold tracking-wide">JAVASCRIPT // NODE</span></div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-slate-500 font-medium">STATUS:</span> 
+                                    <span className="inline-flex items-center gap-1.5 text-emerald-400 font-bold bg-emerald-950/30 border border-emerald-900/30 px-1.5 py-0.5 rounded text-[10px]">
+                                        <span className="w-1 h-1 rounded-full bg-emerald-400 animate-ping"></span>
+                                        ACTIVE_FOR_HIRE
+                                    </span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Quick Stats */}
-                        <div className="grid grid-cols-3 gap-4 mt-6">
-                            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-4 border border-purple-500/20 text-center">
-                                <div className="text-2xl font-bold text-cyan-400">2+</div>
-                                <div className="text-xs text-gray-400 mt-1">Years Exp</div>
-                            </div>
-                            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-4 border border-pink-500/20 text-center">
-                                <div className="text-2xl font-bold text-cyan-400">5+</div>
-                                <div className="text-xs text-gray-400 mt-1">Projects</div>
-                            </div>
-                            <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-4 border border-purple-500/20 text-center">
-                                <div className="text-2xl font-bold text-cyan-400">100%</div>
-                                <div className="text-xs text-gray-400 mt-1">Satisfied</div>
-                            </div>
+                        {/* Developing Metrics Indicators */}
+                        <div className="bg-slate-900/40 border border-slate-800/60 rounded p-3 grid grid-cols-3 gap-2.5 text-center backdrop-blur-sm">
+                            {[
+                                { num: '02+', name: 'YRS EXP' },
+                                { num: '05+', name: 'SHIPPED PROJ' },
+                                { num: '100%', name: 'UNIT TESTS' }
+                            ].map((m, idx) => (
+                                <div key={idx} className="bg-slate-950/60 p-2.5 rounded border border-slate-900/80 hover:border-slate-800 transition-colors shadow-sm">
+                                    <div className="text-base font-black text-white tracking-tight">{m.num}</div>
+                                    <div className="text-[9px] font-extrabold text-slate-500 mt-0.5 tracking-widest">{m.name}</div>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Text Section */}
-                    <div className="order-2 md:order-2">
-                        <span className="text-cyan-400 font-semibold text-sm tracking-wider uppercase">
-                            About Me
-                        </span>
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mt-2 mb-6">
-                            Passionate
-                            <br />
-                            <span className=" bg-gradient-to-r from-cyan-600 to-cyan-800 bg-clip-text text-transparent">
-                                Developer
-                            </span>
-                        </h1>
-                        <p className="text-lg text-gray-300 mb-6 leading-relaxed">
-                            Hello! I'm Brown Oziomachi, a full stack web developer passionate about creating exceptional digital experiences. With over 2 years of experience in the field, I specialize in building modern, responsive, and user-friendly web applications.
-                        </p>
-                        <p className="text-lg text-gray-300 mb-6 leading-relaxed">
-                            I specialize in JavaScript ecosystems (React, Next.js) and
-                            backend services (Node.js, Firebase). I enjoy combining
-                            design-first thinking with engineering rigor to make products
-                            that feel delightful and perform well.
-                        </p>
-                        <p className="text-lg text-gray-300 mb-8 leading-relaxed">
-                            I believe in the power of technology to transform ideas into reality. My approach combines technical expertise with creative problem-solving to deliver solutions that not only meet but exceed expectations.
-                        </p>
+                    {/* Technical Profile Breakdown Specs */}
+                    <div className="md:col-span-8 space-y-6 md:pl-4">
+                        <div>
+                            <div className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 bg-cyan-500 animate-pulse rounded-none"></span>
+                                DEV_MANIFEST // OBJECTIVE_DATA
+                            </div>
+                            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight uppercase">
+                                System Developer Portfolio <br />
+                                <span className="text-slate-500 font-light text-2xl sm:text-3xl tracking-wide">ID: Brown AD</span>
+                            </h1>
+                        </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex gap-4 flex-wrap">
+                        {/* Text Readout Block */}
+                        <div className="space-y-4 text-sm sm:text-base text-slate-400 border-l-2 border-slate-800/80 pl-5 leading-relaxed font-normal">
+                            <p className="hover:text-slate-300 transition-colors">
+                                I specialize in building predictable structural web applications within the high-velocity JavaScript stack. My core expertise centers around component encapsulation patterns with <span className="text-white font-medium underline decoration-cyan-500/30 underline-offset-4">React & Next.js</span> alongside reliable background task structures fueled by Node.js integration channels.
+                            </p>
+                            <p className="hover:text-slate-300 transition-colors">
+                                My methodology rejects messy script solutions. Instead, I choose explicit component workflows, clean data layer constraints, and clear data indexing patterns via custom modern schema infrastructures.
+                            </p>
+                        </div>
+
+                        {/* Action Interface Controls */}
+                        <div className="flex flex-wrap gap-3 pt-3">
                             <a
                                 href="/contact"
-                                className="px-8 py-4  bg-gradient-to-r from-cyan-600 to-cyan-800-600 rounded-2xl font-semibold hover:shadow-2xl hover:shadow-purple-500/50 transition-all transform hover:scale-105"
+                                className="px-5 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs rounded transition-all duration-300 tracking-wider uppercase shadow-md shadow-cyan-500/10 hover:shadow-cyan-400/20 active:scale-[0.98]"
                             >
-                                Get In Touch
+                                INITIALIZE_CONTACT()
                             </a>
                             <a
                                 href="/cv"
-                                className="inline-flex items-center gap-2 px-8 py-4 border-2 border-cyan-400/50 rounded-2xl font-semibold hover:bg-purple-400/10 hover:border-purple-400 transition-all"
+                                className="inline-flex items-center gap-2 px-5 py-3 bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-950 text-xs font-bold text-slate-300 hover:text-white rounded transition-all duration-300 uppercase tracking-wider shadow-sm active:scale-[0.98]"
                             >
-                                <Download size={20} />
-                                Download CV
+                                <Download size={14} className="text-cyan-400" />
+                                FETCH_RESUME.EXE
                             </a>
                         </div>
                     </div>
                 </div>
 
-                {/* Tabs Section */}
-                <div className="mb-12">
-                    <div className="flex gap-4 border-b border-cyan-500/20 mb-8 overflow-x-auto">
-                        <button
-                            onClick={() => setActiveTab('story')}
-                            className={`px-6 py-3 font-semibold whitespace-nowrap transition-all ${activeTab === 'story'
-                                    ? 'text-cyan-400 border-b-2 border-cyan-900'
-                                    : 'text-gray-400 hover:text-purple-300'
-                                }`}
-                        >
-                            My Story
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('skills')}
-                            className={`px-6 py-3 font-semibold whitespace-nowrap transition-all ${activeTab === 'skills'
-                                    ? 'text-cyan-400 border-b-2 border-cyan-900'
-                                    : 'text-gray-400 hover:text-purple-300'
-                                }`}
-                        >
-                            Skills
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('journey')}
-                            className={`px-6 py-3 font-semibold whitespace-nowrap transition-all ${activeTab === 'journey'
-                                    ? 'text-cyan-400 border-b-2 border-cyan-900'
-                                    : 'text-gray-400 hover:text-purple-300'
-                                }`}
-                        >
-                            Journey
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('values')}
-                            className={`px-6 py-3 font-semibold whitespace-nowrap transition-all ${activeTab === 'values'
-                                    ? 'text-cyan-400 border-b-2 border-cyan-900'
-                                    : 'text-gray-400 hover:text-purple-300'
-                                }`}
-                        >
-                            Values
-                        </button>
+                {/* Developing Tab Interfaces Grid Block */}
+                <div className="border border-slate-800/90 rounded bg-slate-900/20 overflow-hidden shadow-xl backdrop-blur-sm">
+
+                    {/* Control Panel Headers Bar */}
+                    <div className="bg-slate-950 border-b border-slate-800/80 p-2 flex overflow-x-auto gap-1 scrollbar-none">
+                        {['story', 'skills', 'journey', 'values'].map((tab) => (
+                            <button
+                                key={tab}
+                                onClick={() => setActiveTab(tab)}
+                                className={`px-4 py-2.5 text-xs font-bold font-mono uppercase rounded transition-all duration-300 tracking-wider shrink-0 active:scale-95 ${activeTab === tab
+                                        ? 'bg-slate-900 text-cyan-400 border border-slate-800 shadow-md shadow-black/40'
+                                        : 'text-slate-500 hover:text-slate-300 border border-transparent hover:bg-slate-900/30'
+                                    }`}
+                            >
+                                [ {tab.toUpperCase()} ]
+                            </button>
+                        ))}
                     </div>
 
-                    {/* Tab Content */}
-                    <div className="min-h-96">
-                        {/* My Story Tab */}
+                    {/* Interactive Tab Target Output Buffer */}
+                    <div className="p-6 min-h-[360px] transition-all duration-300">
+
+                        {/* Tab Module: Story / Manifest */}
                         {activeTab === 'story' && (
-                            <div className="grid md:grid-cols-2 gap-8 animate-fade-in">
-                                <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-purple-500/20">
-                                    <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                                        <div className="w-1 h-8 bg-gradient-to-t from-cyan-400 to-cyan-800 rounded-full"></div>
-                                        The Beginning
-                                    </h3>
-                                    <p className="text-gray-300 leading-relaxed mb-4">
-                                        My journey into web development started with curiosity and a laptop. I was fascinated by how websites worked and decided to learn how to build them myself. What started as a hobby quickly became a passion.
-                                    </p>
-                                    <p className="text-gray-300 leading-relaxed">
-                                        I spent countless hours learning, experimenting, and building projects. Each line of code was a step forward in my journey, and each project taught me something new.
-                                    </p>
+                            <div className="space-y-6 transition-all duration-500 opacity-100 transform translate-y-0">
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="bg-slate-900/40 border border-slate-800/80 p-5 rounded hover:border-slate-700/60 transition-all duration-300 hover:-translate-y-0.5">
+                                        <div className="text-xs font-bold text-slate-500 mb-2.5 uppercase flex items-center gap-2">
+                                            <span className="w-1.5 h-1.5 bg-cyan-500/50"></span> 01 // ORIGIN_METRICS
+                                        </div>
+                                        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-mono">
+                                            My journey began with local infrastructure curiosity and low-level programmatic scripts. I was determined to reverse-Developer layout payloads to parse functional components myself. That pure structural challenge turned an experimental past-time into full stack software construction Developing.
+                                        </p>
+                                    </div>
+                                    <div className="bg-slate-900/40 border border-slate-800/80 p-5 rounded hover:border-slate-700/60 transition-all duration-300 hover:-translate-y-0.5">
+                                        <div className="text-xs font-bold text-slate-500 mb-2.5 uppercase flex items-center gap-2">
+                                            <span className="w-1.5 h-1.5 bg-cyan-500/50"></span> 02 // RUNTIME_OBJECTIVES
+                                        </div>
+                                        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-mono">
+                                            Currently, I construct integrated full-spectrum systems. I manage complex React routing structures and connect them to relational engines or modern documents. My long-term roadmap focuses on architectural optimizations and secure data flow controls.
+                                        </p>
+                                    </div>
                                 </div>
 
-                                <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-purple-500/20">
-                                    <h3 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                                        <div className="w-1 h-8 bg-gradient-to-b from-cyan-400 to-cyan-900 rounded-full"></div>
-                                        Today
-                                    </h3>
-                                    <p className="text-gray-300 leading-relaxed mb-4">
-                                        Today, I'm a full stack developer with expertise in modern web technologies. I specialize in React, Next.js, Node.js, and database management. I've worked on numerous projects ranging from e-commerce platforms to news websites.
-                                    </p>
-                                    <p className="text-gray-300 leading-relaxed">
-                                        My goal is to continue growing as a developer while helping businesses and individuals bring their digital visions to life through clean, efficient, and scalable code.
-                                    </p>
-                                </div>
-
-                                <div className="md:col-span-2 bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-3xl p-8">
-                                    <h3 className="text-2xl font-bold mb-4">What Drives Me</h3>
-                                    <p className="text-gray-300 leading-relaxed mb-6">
-                                        I'm driven by the challenge of solving complex problems and the satisfaction of seeing a project come to life. There's something magical about turning an idea into a functional, beautiful web application that people can use and enjoy.
-                                    </p>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        {interests.map((interest, index) => (
-                                            <div key={index} className="flex items-center gap-3 bg-slate-800/50 rounded-xl p-3 border border-purple-500/20">
-                                                <div className="text-cyan-400">{interest.icon}</div>
-                                                <span className="text-sm font-medium">{interest.text}</span>
+                                <div className="bg-slate-950/60 border border-slate-800 p-5 rounded">
+                                    <div className="text-xs font-bold text-slate-500 mb-3.5 uppercase tracking-widest">SYSTEM_CORE_INTERESTS // DRIVERS</div>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                        {interests.map((item, idx) => (
+                                            <div key={idx} className="flex items-center gap-2.5 bg-slate-900/50 p-3 rounded border border-slate-800/80 text-[12px] hover:border-slate-700 hover:bg-slate-900 transition-all duration-300 shadow-sm">
+                                                <div className="text-cyan-500 group-hover:scale-110 transition-transform">{item.icon}</div>
+                                                <span className="text-slate-300 font-semibold tracking-tight">{item.text}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -281,138 +266,113 @@ export default function AboutMePage() {
                             </div>
                         )}
 
-                        {/* Skills Tab */}
+                        {/* Tab Module: Skill Matrix Readout */}
                         {activeTab === 'skills' && (
-                            <div className="animate-fade-in">
-                                <div className="mb-8">
-                                    <h3 className="text-2xl font-bold mb-2">Technical Expertise</h3>
-                                    <p className="text-gray-400">
-                                        A comprehensive overview of my technical skills and proficiency levels
-                                    </p>
-                                </div>
-
-                                <div className="space-y-6">
-                                    {skills.map((skill, index) => (
-                                        <div key={index} className="bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 backdrop-blur-xl rounded-2xl p-6">
-                                            <div className="flex justify-between items-center mb-3">
-                                                <span className="font-semibold">{skill.name}</span>
-                                                <span className="text-purple-400 font-bold">{skill.level}%</span>
+                            <div className="space-y-6 transition-all duration-500 opacity-100 transform translate-y-0">
+                                <div className="space-y-3.5">
+                                    {skills.map((skill, idx) => (
+                                        <div key={idx} className="bg-slate-950/40 border border-slate-800 p-4 rounded flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-slate-700/60 transition-all duration-300">
+                                            <div className="space-y-1 max-w-md">
+                                                <div className="text-xs sm:text-sm font-bold text-slate-200 tracking-wide">{skill.name}</div>
+                                                <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest">DIAGNOSTIC_STATE: <span className="text-slate-400">{skill.status}</span></div>
                                             </div>
-                                            <div className="w-full h-3 bg-slate-900/50 rounded-full overflow-hidden">
-                                                <div
-                                                    className={`h-full bg-gradient-to-r ${skill.color} rounded-full transition-all duration-1000 ease-out`}
-                                                    style={{ width: `${skill.level}%` }}
-                                                ></div>
+                                            <div className="flex items-center gap-4 w-full sm:w-auto shrink-0">
+                                                <div className="w-full sm:w-36 h-2 bg-slate-950 rounded-none overflow-hidden border border-slate-800 shadow-inner relative">
+                                                    <div className="h-full bg-gradient-to-r from-cyan-600 to-cyan-400 transition-all duration-1000 ease-out" style={{ width: `${skill.level}%` }}></div>
+                                                </div>
+                                                <span className="text-xs font-black text-cyan-400 w-8 text-right font-mono tracking-tighter">{skill.level}%</span>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
 
-                                <div className="grid md:grid-cols-3 gap-6 mt-8">
-                                    <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 backdrop-blur-xl rounded-2xl p-6  text-center">
-                                        <Code size={40} className="text-cyan-400 mx-auto mb-3" />
-                                        <h4 className="font-bold mb-2">Frontend</h4>
-                                        <p className="text-sm text-gray-400">React, Next.js, Tailwind CSS, HTML, CSS, JavaScript</p>
-                                    </div>
-                                    <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 backdrop-blur-xl rounded-2xl p-6 text-center">
-                                        <Briefcase size={40} className="text-cyan-400 mx-auto mb-3" />
-                                        <h4 className="font-bold mb-2">Backend</h4>
-                                        <div className='flex gap-1 items-center justify-center'>
-                                        <p className="text-sm text-gray-400">Node.js,</p>
-                                        <p className="text-sm text-gray-400">Vercel</p>
+                                {/* Stack Sub-categories Registry Matrix */}
+                                <div className="grid sm:grid-cols-3 gap-4 border-t border-slate-800/60 pt-6">
+                                    {[
+                                        { title: 'FRONTEND_ENGINE', stack: 'React, Next.js, Core Hooks, HTML5 / Tailwind Architecture' },
+                                        { title: 'BACKEND_RUNTIME', stack: 'Node.js Engine Execution, API Pipeline Integration, Vercel Edge' },
+                                        { title: 'DATA_PERSISTENCE', stack: 'MongoDB Structures, Firebase Storage Streams, Relational MySQL Layer' }
+                                    ].map((cat, idx) => (
+                                        <div key={idx} className="bg-slate-900/30 p-4 rounded border border-slate-800/80 hover:border-slate-700/60 transition-colors shadow-sm">
+                                            <div className="text-xs font-extrabold text-cyan-400 uppercase tracking-widest mb-2 border-b border-slate-800/50 pb-1">{cat.title}</div>
+                                            <div className="text-[11px] text-slate-400 leading-relaxed font-mono">{cat.stack}</div>
                                         </div>
-
-                                    </div>
-                                    <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 backdrop-blur-xl rounded-2xl p-6 text-center">
-                                        <Award size={40} className="text-cyan-400 mx-auto mb-3" />
-                                        <h4 className="font-bold mb-2">Database</h4>
-                                        <p className="text-sm text-gray-400">MongoDB, Firebase, MySQL</p>
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
                         )}
 
-                        {/* Journey Tab */}
+                        {/* Tab Module: Career Registry Timeline */}
                         {activeTab === 'journey' && (
-                            <div className="animate-fade-in">
-                                <div className="mb-8">
-                                    <h3 className="text-2xl font-bold mb-2">My Professional Journey</h3>
-                                    <p className="text-gray-400">
-                                        Key milestones and achievements throughout my career
-                                    </p>
-                                </div>
+                            <div className="relative pl-6 border-l border-slate-800/80 space-y-6 transition-all duration-500 opacity-100 transform translate-y-0 ml-2">
+                                {timeline.map((item, idx) => (
+                                    <div key={idx} className="relative group">
+                                        {/* Line Node Point Crosshair */}
+                                        <div className="absolute -left-[31px] top-2 w-2 h-2 bg-slate-950 border-2 border-cyan-500 group-hover:bg-cyan-400 transition-colors z-10"></div>
 
-                                <div className="relative">
-                                    {/* Timeline line */}
-                                    <div className="absolute left-8 top-0 bottom-0 w-0.5  bg-gradient-to-r from-cyan-600 to-cyan-800-600 border-1 border-cyan-400"></div>
-
-                                    <div className="space-y-8">
-                                        {timeline.map((item, index) => (
-                                            <div key={index} className="relative pl-20">
-                                                {/* Timeline dot */}
-                                                <div className="absolute left-6 top-6 w-5 h-5 bg-gradient-to-br from-can-500 to-cyan-800 rounded-full border-4 border-cyan-700"></div>
-                                                <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all">
-                                                    <div className="flex items-start justify-between mb-3">
-                                                        <div>
-                                                            <div className="text-cyan-400 font-bold text-sm mb-1">{item.year}</div>
-                                                            <h4 className="text-xl font-bold">{item.title}</h4>
-                                                        </div>
-                                                        <div className="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center text-cyan-400">
-                                                            {item.icon}
-                                                        </div>
-                                                    </div>
-                                                    <p className="text-gray-300">{item.description}</p>
+                                        <div className="bg-slate-950/40 border border-slate-800 p-4 rounded space-y-2.5 hover:border-slate-700/60 transition-all duration-300 shadow-sm">
+                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                                <div>
+                                                    <span className="text-[9px] font-black text-cyan-400 tracking-widest uppercase bg-cyan-950/40 border border-cyan-900/50 px-2 py-0.5 rounded shadow-sm">
+                                                        TIMESTAMP // {item.year}
+                                                    </span>
+                                                    <h4 className="text-sm font-extrabold text-white mt-2 uppercase tracking-wide">{item.title}</h4>
+                                                </div>
+                                                <div className="text-slate-500 group-hover:text-cyan-400 transition-colors shrink-0 self-start sm:self-center bg-slate-900/80 p-1.5 border border-slate-800 rounded">
+                                                    {item.icon}
                                                 </div>
                                             </div>
-                                        ))}
+                                            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-mono border-t border-slate-900/60 pt-2">{item.description}</p>
+                                        </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
                         )}
 
-                        {/* Values Tab */}
+                        {/* Tab Module: System Integrity Values */}
                         {activeTab === 'values' && (
-                            <div className="animate-fade-in">
-                                <div className="mb-8">
-                                    <h3 className="text-2xl font-bold mb-2">Core Values</h3>
-                                    <p className="text-gray-400">
-                                        The principles that guide my work and approach to development
-                                    </p>
-                                </div>
-
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    {values.map((value, index) => (
-                                        <div key={index} className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-8 border border-purple-500/20 hover:border-purple-500/40 transition-all group">
-                                            <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-cyan-900 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                                {value.icon}
+                            <div className="space-y-6 transition-all duration-500 opacity-100 transform translate-y-0">
+                                <div className="grid sm:grid-cols-2 gap-4">
+                                    {values.map((v, idx) => (
+                                        <div key={idx} className="bg-slate-950/40 border border-slate-800 p-4 rounded flex gap-3.5 items-start hover:border-slate-700/60 transition-all duration-300 shadow-sm hover:-translate-y-0.5">
+                                            <div className="p-2 bg-slate-900 border border-slate-800 rounded shrink-0 text-cyan-400 shadow-inner">
+                                                {v.icon}
                                             </div>
-                                            <h4 className="text-xl font-bold mb-3">{value.title}</h4>
-                                            <p className="text-gray-300 leading-relaxed">{value.description}</p>
+                                            <div className="space-y-1">
+                                                <h4 className="text-xs font-bold text-white uppercase tracking-wider">{v.title}</h4>
+                                                <p className="text-xs text-slate-400 leading-relaxed font-mono">{v.description}</p>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
 
-                                <div className="mt-8 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-3xl p-8 border border-purple-500/20">
-                                    <h4 className="text-xl font-bold mb-4">Let's Create Something Amazing</h4>
-                                    <p className="text-gray-300 mb-6 leading-relaxed">
-                                        I'm always excited to take on new challenges and collaborate on interesting projects. Whether you have a specific project in mind or just want to discuss ideas, I'd love to hear from you.
-                                    </p>
-                                    <div className="flex gap-4 flex-wrap">
+                                {/* Action Console Frame Segment */}
+                                <div className="bg-slate-950/80 border border-slate-800 rounded p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mt-6 shadow-inner relative overflow-hidden group">
+                                    <div className="absolute top-0 left-0 w-1 h-full bg-cyan-500/50"></div>
+                                    <div className="space-y-1 relative z-10">
+                                        <div className="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
+                                            EXECUTE_NEW_PROJECT // INSTANTIATE
+                                        </div>
+                                        <p className="text-xs text-slate-500 max-w-xl font-mono leading-relaxed">
+                                            System sockets are currently configured to accept remote development profiles, custom structural integrations, and full-stack software optimizations.
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-2 w-full md:w-auto shrink-0 relative z-10">
                                         <a
                                             href="/contact"
-                                            className="inline-flex items-center gap-2 px-6 py-3  bg-gradient-to-r from-cyan-600 to-cyan-800-600 rounded-xl font-semibold hover:shadow-xl hover:shadow-purple-500/50 transition-all transform hover:scale-105"
+                                            className="inline-flex items-center justify-center gap-2 text-[11px] font-black tracking-wider uppercase px-4 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded transition-all duration-300 w-full sm:w-auto shadow-md shadow-cyan-500/5 hover:shadow-cyan-400/10 active:scale-95"
                                         >
-                                            <Mail size={20} />
-                                            Contact Me
+                                            <Mail size={12} />
+                                            OPEN_COMMS()
                                         </a>
                                         <a
                                             href="https://github.com/Brown-Oziomachi"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 px-6 py-3 border-2 border-cyan-400/50 rounded-xl font-semibold hover:bg-purple-400/10 hover:border-purple-400 transition-all"
+                                            className="inline-flex items-center justify-center gap-2 text-[11px] font-bold tracking-wider uppercase px-4 py-2.5 bg-slate-900 border border-slate-800 hover:border-slate-700 text-white hover:bg-slate-950 rounded transition-all duration-300 w-full sm:w-auto shadow-sm active:scale-95"
                                         >
-                                            <Github size={20} />
-                                            View GitHub
+                                            <Github size={12} className="text-slate-400" />
+                                            GIT_HUB
                                         </a>
                                     </div>
                                 </div>
@@ -420,12 +380,12 @@ export default function AboutMePage() {
                         )}
                     </div>
                 </div>
-            </div>
+            </main>
 
-            {/* Footer */}
-            <footer className="relative z-10 border-t border-slate-800 py-8 mt-12">
-                <div className="max-w-6xl mx-auto px-4 text-center text-gray-400">
-                    <p>&copy; {new Date().getFullYear()} Brown Code. All rights reserved.</p>
+            {/* Bottom Output Navigation Panel */}
+            <footer className="relative z-10 border-t border-slate-900 bg-slate-950/60 py-6 mt-16 backdrop-blur-sm">
+                <div className="max-w-6xl mx-auto px-6 text-center text-[10px] font-bold text-slate-600 tracking-widest uppercase font-mono">
+                    <p className="hover:text-slate-500 transition-colors duration-300">&copy; {new Date().getFullYear()} BROWN_CODE.SYS. ALL RIGHTS RESERVED. SECURE_BUILD_V2.0.6</p>
                 </div>
             </footer>
         </div>

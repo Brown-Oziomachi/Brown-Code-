@@ -1,6 +1,8 @@
 "use client";
+
 import React, { useState, useEffect, useRef } from "react";
-import { MessageCircle, Send, X, Trash2, LogIn, LogOut } from "lucide-react";
+import { createPortal } from "react-dom";
+import { MessageCircle, Send, X, Trash2, Loader2, ShieldAlert, Terminal, Shield } from "lucide-react";
 import {
   collection,
   addDoc,
@@ -13,10 +15,7 @@ import {
   serverTimestamp,
   where,
 } from "firebase/firestore";
-import {
-  signOut,
-  onAuthStateChanged,
-} from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth1, db1 } from "@/config/firebase.config1";
 
 export default function FirebaseChat({ isOpen, onClose }) {
@@ -26,50 +25,47 @@ export default function FirebaseChat({ isOpen, onClose }) {
   const [isNameSet, setIsNameSet] = useState(false);
   const [loading, setLoading] = useState(true);
   const [admin, setAdmin] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [userId, setUserId] = useState(null);
 
-  const messageRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  // Scroll to bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  useEffect(() => scrollToBottom(), [messages]);
 
-  // Visitor gets unique ID once
-  let userId = null;
-  if (typeof window !== "undefined") {
-    userId = localStorage.getItem("chatUserId");
-    if (!userId) {
-      userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      localStorage.setItem("chatUserId", userId);
-    }
-  }
-
-  /* ---------------- FETCH MESSAGES: PRIVATE CHAT ---------------- */
+  // Automated layout matrix reset on incoming datastream packs
   useEffect(() => {
-    if (!userId) return;
-
-    let q;
-
-    if (admin) {
-      // ADMIN sees all messages
-      q = query(
-        collection(db1, "chat-messages"),
-        orderBy("timestamp", "asc"),
-        limit(500)
-      );
-    } else {
-      // USER sees only their own chat with admin
-      q = query(
-        collection(db1, "chat-messages"),
-        where("userId", "==", userId),
-        orderBy("timestamp", "asc"),
-        limit(500)
-      );
+    if (isOpen) {
+      setTimeout(scrollToBottom, 50);
     }
+  }, [messages, isOpen]);
+
+  // Handle mounting state for SSR safe Portals
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  // Unique local user session identity generation
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      let savedId = localStorage.getItem("chatUserId");
+      if (!savedId) {
+        savedId = `user_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+        localStorage.setItem("chatUserId", savedId);
+      }
+      setUserId(savedId);
+    }
+  }, []);
+
+  /* ---------------- FETCH MESSAGES ---------------- */
+  useEffect(() => {
+    if (!userId || !isOpen) return;
+
+    const q = admin
+      ? query(collection(db1, "chat-messages"), orderBy("timestamp", "asc"), limit(200))
+      : query(collection(db1, "chat-messages"), where("userId", "==", userId), orderBy("timestamp", "asc"), limit(200));
 
     const unsub = onSnapshot(
       q,
@@ -82,13 +78,13 @@ export default function FirebaseChat({ isOpen, onClose }) {
         setLoading(false);
       },
       (err) => {
-        console.error("Fetch error:", err);
+        console.error("Pipeline telemetry sync block error:", err);
         setLoading(false);
       }
     );
 
     return () => unsub();
-  }, [admin, userId]);
+  }, [admin, userId, isOpen]);
 
   /* ---------------- WATCH AUTH ---------------- */
   useEffect(() => {
@@ -99,7 +95,6 @@ export default function FirebaseChat({ isOpen, onClose }) {
         setIsNameSet(true);
       } else {
         setAdmin(null);
-
         const savedName = localStorage.getItem("chatUserName");
         if (savedName) {
           setUserName(savedName);
@@ -110,7 +105,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
     return () => unsub();
   }, []);
 
-  /* ---------------- SEND MESSAGE ---------------- */
+  /* ---------------- ACTIONS ---------------- */
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !userName) return;
@@ -119,8 +114,8 @@ export default function FirebaseChat({ isOpen, onClose }) {
     setNewMessage("");
 
     const data = {
-      text: text,
-      userName: userName,
+      text,
+      userName,
       isAdmin: !!admin,
       userId: admin ? "admin" : userId,
       timestamp: serverTimestamp(),
@@ -130,98 +125,119 @@ export default function FirebaseChat({ isOpen, onClose }) {
     try {
       await addDoc(collection(db1, "chat-messages"), data);
     } catch (error) {
-      console.error(error);
-      alert("Error sending message");
+      console.error("Data packet push breakdown error:", error);
     }
   };
 
-  /* ---------------- SET USER NAME ---------------- */
   const handleSetName = (e) => {
     e.preventDefault();
     if (!userName.trim()) return;
-
     localStorage.setItem("chatUserName", userName.trim());
     setIsNameSet(true);
   };
 
-  /* ---------------- ADMIN CLEAR ALL ---------------- */
   const clearMessages = async () => {
-    if (!admin) return;
-    if (!confirm("Delete all messages?")) return;
-
-    const snap = await getDocs(collection(db1, "chat-messages"));
-    await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)));
+    if (!admin || !window.confirm("Purge absolute message datablocks? This cannot be rolled back.")) return;
+    try {
+      const snap = await getDocs(collection(db1, "chat-messages"));
+      await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)));
+    } catch (err) {
+      console.error("System structural data clear error:", err);
+    }
   };
 
-  /* ---------------- FORMAT TIME ---------------- */
   const formatTime = (t) => {
     if (!t) return "";
-    return new Date(t).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    return new Date(t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
   };
 
-  /* ---------------- UI ---------------- */
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
-    <div className="fixed bottom-24 right-1 w-full max-w-sm h-[500px] lg:h-[700px] 
-        bg-cyan-950 rounded-2xl shadow-2xl z-50 flex flex-col">
+  return createPortal(
+    <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 w-full sm:w-[420px] h-full sm:h-[640px] bg-[#030712] sm:rounded-2xl shadow-2xl z-[9999] flex flex-col overflow-hidden border border-slate-900 font-mono selection:bg-cyan-500/30 selection:text-cyan-200 animate-in fade-in slide-in-from-bottom-4 duration-200">
 
-      {/* HEADER */}
-      <div className="bg-gradient-to-r from-cyan-600 to-cyan-800 p-4 rounded-t-2xl flex justify-between">
+      {/* WINDOW HEADER PANEL */}
+      <div className="bg-slate-950 px-4 py-4 flex items-center justify-between border-b border-slate-900 shrink-0">
         <div className="flex gap-3 items-center">
-          <MessageCircle className="text-white" />
-          <h3 className="text-white font-semibold">Live Chat</h3>
+          <div className={`w-10 h-10 rounded-full border flex items-center justify-center ${admin ? "bg-rose-950/20 border-rose-500/30 text-rose-400" : "bg-cyan-950/20 border-cyan-500/30 text-cyan-400"
+            }`}>
+            {admin ? <Shield size={18} /> : <Terminal size={18} />}
+          </div>
+          <div>
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-slate-100 text-xs font-bold uppercase tracking-wider">
+                {admin ? "SYS_ADMIN_CONSOLE" : "COMMS_INTERFACE"}
+              </h3>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            </div>
+            <span className="text-[10px] text-slate-500 block font-mono lowercase tracking-tight">
+              {admin ? "root@browncode.network" : `node//${userId?.substring(5, 14) || "client"}`}
+            </span>
+          </div>
         </div>
 
-        <div className="flex gap-2">
-          {admin ? (
-            <button onClick={() => signOut(auth1)}>
-              <LogOut className="text-white" />
-            </button>
-          ) : (
-            <a href="/admin">
-              <LogIn className="text-white" />
-            </a>
-          )}
-
+        <div className="flex items-center gap-2 text-slate-500">
           {admin && (
-            <button onClick={clearMessages}>
-              <Trash2 className="text-white" />
+            <button
+              onClick={clearMessages}
+              className="w-8 h-8 flex items-center justify-center rounded-md hover:text-rose-400 hover:bg-rose-950/20 transition-all"
+              title="Purge Stream Logs"
+            >
+              <Trash2 size={16} />
             </button>
           )}
 
-          <button onClick={onClose}>
-            <X className="text-white" />
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center rounded-md hover:text-white hover:bg-slate-900 transition-all"
+            title="Terminate Terminal Mode"
+          >
+            <X size={18} />
           </button>
         </div>
       </div>
 
-      {/* NAME INPUT */}
+      {/* CHAT VIEW LOGICAL CORE ENGINE */}
       {!isNameSet && !admin ? (
-        <div className="flex-1 p-6 flex items-center justify-center">
-          <form className="w-full" onSubmit={handleSetName}>
+        <div className="flex-1 p-6 flex flex-col items-center justify-center bg-slate-950/40 backdrop-blur-md">
+          <form className="w-full max-w-xs space-y-4" onSubmit={handleSetName}>
+            <div className="text-center space-y-2 mb-2">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-cyan-950/40 border border-cyan-500/20 text-cyan-400 rounded-xl mb-1">
+                <ShieldAlert size={20} />
+              </div>
+              <h4 className="text-xs font-bold text-slate-200 uppercase tracking-widest">IDENTITY_PARAM_REQUIRED</h4>
+              <p className="text-[11px] text-slate-500 font-sans max-w-[240px] mx-auto leading-relaxed">
+                Provide client configuration signature identifier to bind secure socket channel link.
+              </p>
+            </div>
             <input
-              className="w-full px-4 py-3 rounded-lg bg-slate-800 text-white"
-              placeholder="Your name..."
+              autoFocus
+              className="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-800 text-slate-100 placeholder-slate-600 text-xs outline-none focus:border-cyan-500/50 transition-colors font-mono"
+              placeholder="ENTER_SIGNATURE_ID..."
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
             />
-            <button className="mt-4 w-full py-3 rounded-lg bg-cyan-700 text-white">
-              Start Chatting
+            <button
+              disabled={!userName.trim()}
+              className="w-full py-3 rounded-lg bg-cyan-950/80 border border-cyan-500/40 hover:border-cyan-400 text-cyan-400 hover:text-cyan-200 font-bold text-[10px] uppercase tracking-widest transition-all disabled:opacity-20 disabled:pointer-events-none"
+            >
+              Initialize Feed Stream
             </button>
           </form>
         </div>
       ) : (
         <>
-          {/* MESSAGES */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          {/* SCROLLABLE LOG METRIC STREAM */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#050b14]">
             {loading ? (
-              <p className="text-gray-400 text-center">Loading…</p>
+              <div className="flex flex-col items-center justify-center h-full text-slate-500 gap-2">
+                <Loader2 size={18} className="animate-spin text-cyan-500" />
+                <span className="text-[10px] tracking-widest uppercase">Syncing datastreams...</span>
+              </div>
             ) : messages.length === 0 ? (
-              <p className="text-gray-400 text-center">No messages yet</p>
+              <div className="text-center text-[11px] text-slate-600 pt-16 font-sans">
+                Stream matrix clear. Transmit log string packets below to start telemetry routing.
+              </div>
             ) : (
               messages.map((msg) => {
                 const isOwn = msg.userName === userName;
@@ -230,33 +246,30 @@ export default function FirebaseChat({ isOpen, onClose }) {
                 return (
                   <div
                     key={msg.id}
-                    className={`flex flex-col ${
-                      isOwn ? "items-end" : "items-start"
-                    }`}
+                    className={`flex flex-col w-full ${isOwn ? "items-end" : "items-start"}`}
                   >
-                    <span
-                      className={`text-xs mb-1 ${
-                        isAdminMsg ? "text-red-400" : "text-purple-300"
-                      }`}
-                    >
-                      {msg.userName}
+                    {/* Log Signature Pointer Meta */}
+                    <span className={`text-[9px] px-1 mb-1 font-mono tracking-wider ${isAdminMsg ? "text-rose-400 font-bold" : isOwn ? "text-slate-500" : "text-cyan-400"
+                      }`}>
+                      {isAdminMsg ? `[ADMIN] ${msg.userName}` : msg.userName}
                     </span>
 
+                    {/* Crypt Datablock Bubble Matrix */}
                     <div
-                      className={`px-4 py-2 rounded-2xl max-w-[80%] ${
-                        isAdminMsg
-                          ? "bg-red-600 text-white"
+                      className={`px-3.5 py-2.5 rounded-xl text-xs max-w-[85%] relative break-words whitespace-pre-wrap leading-relaxed border ${isAdminMsg
+                          ? "bg-rose-950/20 border-rose-500/20 text-rose-200 rounded-tl-none shadow-md shadow-rose-950/5"
                           : isOwn
-                          ? "bg-purple-600 text-white"
-                          : "bg-slate-800 text-gray-200"
-                      }`}
+                            ? "bg-slate-900 border-slate-800 text-slate-200 rounded-tr-none"
+                            : "bg-cyan-950/20 border-cyan-500/10 text-slate-200 rounded-tl-none"
+                        }`}
                     >
-                      {msg.text}
-                    </div>
+                      <p className="pb-2 pr-6 text-[12.5px] font-sans text-slate-200">{msg.text}</p>
 
-                    <span className="text-xs text-gray-500 mt-1">
-                      {formatTime(msg.userTimestamp)}
-                    </span>
+                      {/* Timeline Sub-marker Metadata */}
+                      <span className="absolute bottom-1 right-2 text-[8px] text-slate-600 font-mono select-none">
+                        {formatTime(msg.userTimestamp)}
+                      </span>
+                    </div>
                   </div>
                 );
               })
@@ -264,28 +277,33 @@ export default function FirebaseChat({ isOpen, onClose }) {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* INPUT */}
+          {/* CHAT INPUT COMMAND ENTRY CONTROL STRIP */}
           <form
             onSubmit={handleSendMessage}
-            className="p-4 border-t border-slate-700 bg-cyan-950"
+            className="p-3 bg-slate-950 border-t border-slate-900 shrink-0"
           >
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <input
-                className="flex-1 px-4 py-3 rounded-full bg-slate-800 text-white"
-                placeholder="Type a message…"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 placeholder-slate-600 text-xs outline-none focus:border-cyan-500/30 transition-colors font-mono"
+                placeholder={admin ? "EXECUTE_ADMIN_MESSAGE_PACKET..." : "TRANSMIT_DATASTRING_BURST..."}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
               />
               <button
+                type="submit"
                 disabled={!newMessage.trim()}
-                className="p-3 bg-cyan-700 rounded-full text-white"
+                className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all shrink-0 border disabled:opacity-20 disabled:pointer-events-none ${admin
+                    ? "bg-rose-950/40 border-rose-500/30 text-rose-400 hover:border-rose-400"
+                    : "bg-cyan-950/40 border-cyan-500/30 text-cyan-400 hover:border-cyan-400"
+                  }`}
               >
-                <Send />
+                <Send size={14} className="translate-x-[0.5px]" />
               </button>
             </div>
           </form>
         </>
       )}
-    </div>
+    </div>,
+    document.body
   );
 }

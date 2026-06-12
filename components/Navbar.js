@@ -1,4 +1,3 @@
-// Navbar.jsx
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -7,14 +6,15 @@ import {
     Menu,
     X,
     ChevronDown,
-    Sparkles,
-    Home,
-    Briefcase,
-    Clock,
-    GraduationCap,
-    Newspaper,
+    Terminal,
+    Cpu,
+    Network,
     Globe,
+    Layers,
+    Server,
+    Newspaper,
     TrendingUp,
+    ExternalLink
 } from "lucide-react";
 
 export default function Navbar({
@@ -45,125 +45,116 @@ export default function Navbar({
 
     const jobOptions = [
         {
+            id: "UTIL_NODE_01",
             title: "JobCopilot (Auto Apply)",
-            description:
-                "AI-powered job applications - Apply to hundreds of jobs automatically",
-            icon: <Sparkles size={20} className="text-purple-400" />,
+            description: "Automated routing engine designed to cross-reference and batch-submit application data packets.",
+            icon: <Network size={14} />,
             href: "https://jobcopilot.com/?linkId=lp_494205&sourceId=brown-oziomachi&tenantId=jobcopilot",
             external: true,
-            gradient: "from-purple-500/20 to-pink-500/20",
+            type: "DATA_PIPELINE"
         },
         {
+            id: "UTIL_NODE_02",
             title: "FinalRound AI",
-            description:
-                "FinalRoundAI excels in preparing job seekers for the final stages of the hiring process",
-            icon: <Home size={20} className="text-blue-400" />,
+            description: "Advanced simulation runtime tailored to optimize and prepare developer profiles for screening blocks.",
+            icon: <Cpu size={14} />,
             href: "https://www.finalroundai.com/?via=browncode",
             external: true,
-            gradient: "from-blue-500/20 to-cyan-500/20",
+            type: "AI_ENGINE"
         },
         {
-            title: "Purchase a domain at HostAfrica",
-            description: "Find the perfect domain for your business!",
-            icon: <Briefcase size={24} className="text-green-400" />,
+            id: "UTIL_NODE_03",
+            title: "HostAfrica Domain Engine",
+            description: "Global registry allocation system. Provision and resolve high-performance top-level domain nodes.",
+            icon: <Globe size={14} />,
             href: "https://my.hostafrica.com/aff.php?aff=2657",
             external: true,
-            gradient: "from-green-500/20 to-emerald-500/20",
+            type: "DNS_PROVISION"
         },
         {
-            title: "eSkilled",
-            description: "AI Course Creator - Your Powerful Online Course Maker",
-            icon: <Clock size={24} className="text-orange-400" />,
+            id: "UTIL_NODE_04",
+            title: "eSkilled AI Creator",
+            description: "Automated content block model built to orchestrate and output online course architectures.",
+            icon: <Layers size={14} />,
             href: "https://aicoursecreator.eskilled.io/?fpr=brown99",
             external: true,
-            gradient: "from-orange-500/20 to-amber-500/20",
+            type: "LOGIC_SYNTH"
         },
         {
-            title: "Prove your knowledge | Answer questions and earn money",
-            description: "Launch your career with hands-on learning experiences",
-            icon: <GraduationCap size={20} className="text-indigo-400" />,
+            id: "UTIL_NODE_05",
+            title: "Swagbucks Knowledge Base",
+            description: "Distributed manual verification engine where operators execute tasks for reward payloads.",
+            icon: <Server size={14} />,
             href: "https://www.swagbucks.com/p/register?rb=202240461&rp=1",
             external: true,
-            gradient: "from-indigo-500/20 to-purple-500/20",
+            type: "COMPUTE_TRACK"
         },
     ];
 
     const newsOptions = [
         {
-            title: "Tech News",
-            description:
-                "Oversharing with AI: How your ChatGPT conversations could be used against you",
-            icon: <Sparkles size={20} className="text-blue-400" />,
+            id: "NEWS_NODE_01",
+            title: "Oversharing with AI",
+            description: "Risk Assessment: How your production ChatGPT conversations could be indexed or used against you.",
+            icon: <Cpu size={14} />,
             href: "https://browncode.name.ng/news/oversharing-with-ai-how-your-chatgpt-conversations-could-be-used-against-you--sygqIVJl6xs5jo47WwQw",
-            gradient: "from-blue-500/20 to-cyan-500/20",
-            category: "technology",
+            type: "SEC_LOG"
         },
         {
-            title: "Tech News",
-            description:
-                "China Warns of Catastrophic Consequences from Unregulated AI Development in U.S.",
-            icon: <TrendingUp size={20} className="text-green-400" />,
+            id: "NEWS_NODE_02",
+            title: "Unregulated AI Policies",
+            description: "Global telemetry warnings regarding unmitigated and unregulated algorithmic development vectors.",
+            icon: <TrendingUp size={14} />,
             href: "https://browncode.name.ng/news/china-warns-of-catastrophic-consequences-from-unregulated-ai-development-in-u-s--WSHJ3fcktdE5wlKY5lZQ",
-            gradient: "from-green-500/20 to-emerald-500/20",
-            category: "business",
+            type: "SYS_WARN"
         },
         {
-            title: "Tech News",
-            description: "Nearly two-thirds of young adults fear AI will take their jobs",
-            icon: <Globe size={20} className="text-purple-400" />,
+            id: "NEWS_NODE_03",
+            title: "Labor Automation Deficit",
+            description: "Statistical indicators reporting high-density anxiety profiles concerning AI resource replacement.",
+            icon: <Globe size={14} />,
             href: "https://browncode.name.ng/news/nearly-two-thirds-of-young-adults-fear-ai-will-take-their-jobs--73sOIQLizN4Vs3O65pa2",
-            gradient: "from-purple-500/20 to-pink-500/20",
-            category: "general",
+            type: "TELEMETRY"
         },
     ];
 
-    // Helper function to determine if item should be a link
-    const isLinkItem = (item) => {
-        return ["blog", "tech-news",].includes(item);
-    };
+    const isLinkItem = (item) => ["blog", "tech-news"].includes(item);
 
-    // Helper function to format display text
     const formatDisplayText = (item) => {
         return item.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
     };
 
     const JobCard = ({ job, onClick }) => {
         const content = (
-            <div
-                className={`group relative p-6 rounded-xl bg-gradient-to-br ${job.gradient} hover:scale-105 transition-all duration-300 cursor-pointer border border-gray-700/50 hover:border-gray-600 h-full`}
-            >
-                <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="flex-shrink-0 p-3 bg-slate-800/50 rounded-lg">
+            <div className="group bg-slate-950 border border-slate-900 hover:border-slate-800 p-4 rounded-sm flex flex-col justify-between h-full space-y-4 relative transition-all duration-300">
+                <div className="absolute top-0 right-0 w-0 h-0 border-t-[4px] border-r-[4px] border-t-transparent border-r-transparent group-hover:border-t-cyan-500 group-hover:border-r-cyan-500 transition-all"></div>
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between border-b border-slate-900 pb-2 text-[9px] font-bold tracking-widest text-slate-500">
+                        <span>{job.id}</span>
+                        <span className="text-cyan-500">{job.type}</span>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                        <div className="p-1.5 bg-slate-900 border border-slate-800 text-slate-400 group-hover:text-cyan-400 transition-colors shrink-0">
                             {job.icon}
                         </div>
-                        <h3 className="text-lg font-semibold text-white group-hover:text-purple-300 transition-colors">
+                        <h4 className="text-xs font-black text-white uppercase tracking-tight group-hover:text-cyan-400 transition-colors pt-0.5">
                             {job.title}
-                        </h3>
+                        </h4>
                     </div>
-                    <p className="text-sm text-gray-400 leading-relaxed">
-                        {job.description}
-                    </p>
+                    <p className="text-[11px] text-slate-400 font-sans leading-relaxed">{job.description}</p>
                 </div>
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-500/0 via-pink-500/0 to-purple-500/0 group-hover:from-purple-500/10 group-hover:via-pink-500/10 group-hover:to-purple-500/10 transition-all duration-300" />
+                <div className="text-[9px] text-slate-500 inline-flex items-center gap-1 uppercase tracking-wider bg-slate-900/50 border border-slate-800/60 group-hover:border-cyan-500/20 px-2 py-1 rounded-sm group-hover:text-cyan-400 transition-all w-fit">
+                    EXEC_CONNECT() <ExternalLink size={8} />
+                </div>
             </div>
         );
 
-        if (job.external) {
-            return (
-                <a
-                    href={job.href}
-                    target="_self"
-                    rel="noopener noreferrer"
-                    onClick={onClick}
-                >
-                    {content}
-                </a>
-            );
-        }
-
-        return (
-            <Link href={job.href} onClick={onClick}>
+        return job.external ? (
+            <a href={job.href} target="_blank" rel="noopener noreferrer" onClick={onClick} className="block h-full">
+                {content}
+            </a>
+        ) : (
+            <Link href={job.href} onClick={onClick} className="block h-full">
                 {content}
             </Link>
         );
@@ -171,110 +162,94 @@ export default function Navbar({
 
     const NewsCard = ({ news, onClick }) => {
         const isExternal = news.href.startsWith("http");
-
         const content = (
-            <div
-                className={`group relative p-6 rounded-xl bg-gradient-to-br ${news.gradient} hover:scale-105 transition-all duration-300 cursor-pointer border border-gray-700/50 hover:border-gray-600 h-full`}
-            >
-                <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="flex-shrink-0 p-3 bg-slate-800/50 rounded-lg">
+            <div className="group bg-slate-950 border border-slate-900 hover:border-slate-800 p-4 rounded-sm flex flex-col justify-between h-full space-y-4 relative transition-all duration-300">
+                <div className="absolute top-0 right-0 w-0 h-0 border-t-[4px] border-r-[4px] border-t-transparent border-r-transparent group-hover:border-t-cyan-500 group-hover:border-r-cyan-500 transition-all"></div>
+                <div className="space-y-2">
+                    <div className="flex items-center justify-between border-b border-slate-900 pb-2 text-[9px] font-bold tracking-widest text-slate-500">
+                        <span>{news.id}</span>
+                        <span className="text-cyan-500">{news.type}</span>
+                    </div>
+                    <div className="flex items-start gap-2.5">
+                        <div className="p-1.5 bg-slate-900 border border-slate-800 text-slate-400 group-hover:text-cyan-400 transition-colors shrink-0">
                             {news.icon}
                         </div>
-                        <h3 className="text-lg font-semibold text-white group-hover:text-blue-300 transition-colors">
+                        <h4 className="text-xs font-black text-white uppercase tracking-tight group-hover:text-cyan-400 transition-colors pt-0.5">
                             {news.title}
-                        </h3>
+                        </h4>
                     </div>
-                    <p className="text-sm text-gray-400 leading-relaxed">{news.description}</p>
+                    <p className="text-[11px] text-slate-400 font-sans leading-relaxed">{news.description}</p>
                 </div>
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 via-cyan-500/0 to-blue-500/0 group-hover:from-blue-500/10 group-hover:via-cyan-500/10 group-hover:to-blue-500/10 transition-all duration-300" />
+                <div className="text-[9px] text-slate-500 inline-flex items-center gap-1 uppercase tracking-wider bg-slate-900/50 border border-slate-800/60 group-hover:border-cyan-500/20 px-2 py-1 rounded-sm group-hover:text-cyan-400 transition-all w-fit">
+                    FETCH_LOG() <ExternalLink size={8} />
+                </div>
             </div>
         );
 
-        if (isExternal) {
-            return (
-                <a href={news.href} target="_blank" rel="noopener noreferrer" onClick={onClick}>
-                    {content}
-                </a>
-            );
-        }
-
-        return <Link href={news.href} onClick={onClick}>{content}</Link>;
+        return isExternal ? (
+            <a href={news.href} target="_blank" rel="noopener noreferrer" onClick={onClick} className="block h-full">
+                {content}
+            </a>
+        ) : (
+            <Link href={news.href} onClick={onClick} className="block h-full">
+                {content}
+            </Link>
+        );
     };
 
-
+    // Close on click outside hooks
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (navRef.current && !navRef.current.contains(event.target)) {
-                setIsMenuOpen(false);
-            }
+            if (navRef.current && !navRef.current.contains(event.target)) setIsMenuOpen(false);
         };
-        if (isMenuOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        if (isMenuOpen) document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [isMenuOpen, setIsMenuOpen]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (jobRef.current && !jobRef.current.contains(event.target)) {
-                setIsJobOpen(false);
-            }
+            if (jobRef.current && !jobRef.current.contains(event.target)) setIsJobOpen(false);
         };
-        if (isJobOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        if (isJobOpen) document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [isJobOpen]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (newsRef.current && !newsRef.current.contains(event.target)) {
-                setIsNewsOpen(false);
-            }
+            if (newsRef.current && !newsRef.current.contains(event.target)) setIsNewsOpen(false);
         };
-        if (isNewsOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        if (isNewsOpen) document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [isNewsOpen]);
 
     return (
         <>
-            <nav
-                className={`fixed w-full z-50 transition-all duration-300 ${isScrolled
-                    ? "bg-black backdrop-blur-sm shadow-lg"
-                    : "bg-transparent"
-                    }`}
-            >
+            <nav className={`fixed w-full z-50 font-mono antialiased transition-all duration-200 border-b ${isScrolled
+                    ? "bg-[#050811]/95 border-slate-900 backdrop-blur-md shadow-md"
+                    : "bg-transparent border-transparent"
+                }`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
-                        {/* Logo */}
+                        {/* System Identifier Logo */}
                         <div className="flex-shrink-0">
-                            <Link href="/portfolio">
-                                <span className="text-sm font-bold bg-gradient-to-r from-cyan-300 to-cyan-400 bg-clip-text text-transparent">
-                                    {"<BROWN CODE />"}
+                            <Link href="/">
+                                <span className="text-xs font-black tracking-widest text-cyan-400 hover:text-white transition-colors">
+                                    {"<BROWN_CODE_SYS />"}
                                 </span>
                             </Link>
                         </div>
 
-                        {/* Desktop Menu */}
+                        {/* Desktop Navigation Links */}
                         <div className="hidden md:block">
-                            <div className="ml-10 flex items-baseline space-x-8">
+                            <div className="ml-10 flex items-center space-x-4">
                                 {navItems.map((item) =>
                                     isLinkItem(item) ? (
                                         <Link
                                             key={item}
                                             href={`/${item}`}
-                                            className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
-                                                ? "text-cyan-400"
-                                                : "text-gray-300 hover:text-white"
+                                            className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-1.5 transition-colors border border-transparent rounded-sm ${activeSection === item
+                                                    ? "text-cyan-400 border-slate-900 bg-slate-900/40"
+                                                    : "text-slate-400 hover:text-white"
                                                 }`}
                                         >
                                             {formatDisplayText(item)}
@@ -283,9 +258,9 @@ export default function Navbar({
                                         <button
                                             key={item}
                                             onClick={() => scrollToSection(item)}
-                                            className={`capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeSection === item
-                                                ? "text-cyan-400"
-                                                : "text-gray-300 hover:text-white"
+                                            className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-1.5 transition-colors border border-transparent rounded-sm cursor-pointer ${activeSection === item
+                                                    ? "text-cyan-400 border-slate-900 bg-slate-900/40"
+                                                    : "text-slate-400 hover:text-white"
                                                 }`}
                                         >
                                             {item}
@@ -293,270 +268,182 @@ export default function Navbar({
                                     )
                                 )}
 
-                                {/* Desktop Find Job Dropdown */}
-                                <div ref={jobRef} className="relative">
+                                {/* Desktop Pipeline Router Toggles */}
+                                <div ref={jobRef} className="relative inline-block">
                                     <button
-                                        onClick={() => {
-                                            setIsJobOpen(!isJobOpen);
-                                            setIsNewsOpen(false);
-                                        }}
-                                        className="capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-300 hover:text-white flex items-center gap-1"
+                                        onClick={() => { setIsJobOpen(!isJobOpen); setIsNewsOpen(false); }}
+                                        className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-1.5 text-slate-400 hover:text-white transition-colors flex items-center gap-1 rounded-sm border ${isJobOpen ? "border-slate-800 bg-slate-900/60 text-white" : "border-transparent"
+                                            }`}
                                     >
-                                        Jobs{" "}
-                                        <ChevronDown
-                                            size={14}
-                                            className={`transition-transform duration-300 ${isJobOpen ? "rotate-180" : ""
-                                                }`}
-                                        />
+                                        [UTILITIES]
+                                        <ChevronDown size={10} className={`transition-transform duration-200 ${isJobOpen ? "rotate-180" : ""}`} />
                                     </button>
                                 </div>
 
-                                {/* Desktop Read News Dropdown */}
-                                <div ref={newsRef} className="relative">
+                                <div ref={newsRef} className="relative inline-block">
                                     <button
-                                        onClick={() => {
-                                            setIsNewsOpen(!isNewsOpen);
-                                            setIsJobOpen(false);
-                                        }}
-                                        className="capitalize px-3 py-2 rounded-md text-sm font-medium transition-colors text-gray-300 hover:text-white flex items-center gap-1"
+                                        onClick={() => { setIsNewsOpen(!isNewsOpen); setIsJobOpen(false); }}
+                                        className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-1.5 text-slate-400 hover:text-white transition-colors flex items-center gap-1 rounded-sm border ${isNewsOpen ? "border-slate-800 bg-slate-900/60 text-white" : "border-transparent"
+                                            }`}
                                     >
-                                        <Newspaper size={16} className="mr-1" />
-                                        News{" "}
-                                        <ChevronDown
-                                            size={14}
-                                            className={`transition-transform duration-300 ${isNewsOpen ? "rotate-180" : ""
-                                                }`}
-                                        />
+                                        <Newspaper size={12} className="text-slate-500" /> [TELEMETRY]
+                                        <ChevronDown size={10} className={`transition-transform duration-200 ${isNewsOpen ? "rotate-180" : ""}`} />
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Mobile Right Side (Menu + Find Job + News) */}
-                        <div className="md:hidden flex items-center gap-2">
-                            {/* Mobile Find Job */}
+                        {/* Mobile Operations Block triggers */}
+                        <div className="md:hidden flex items-center gap-1">
                             <button
-                                onClick={() => {
-                                    setIsJobOpenMobile(!isJobOpenMobile);
-                                    setIsNewsOpenMobile(false);
-                                    setIsMenuOpen(false);
-                                }}
-                                className="capitalize px-2 py-2 rounded-md text-xs font-medium text-gray-300 hover:text-white flex items-center gap-1"
+                                onClick={() => { setIsJobOpenMobile(!isJobOpenMobile); setIsNewsOpenMobile(false); setIsMenuOpen(false); }}
+                                className="text-[10px] font-bold uppercase tracking-wider px-2 py-1.5 text-slate-400 border border-slate-900/60 bg-slate-950 rounded-sm flex items-center gap-0.5"
                             >
-                                Jobs{" "}
-                                <ChevronDown
-                                    size={14}
-                                    className={`transition-transform duration-300 ${isJobOpenMobile ? "rotate-180" : ""
-                                        }`}
-                                />
+                                UTIL <ChevronDown size={10} className={isJobOpenMobile ? "rotate-180" : ""} />
                             </button>
 
-                            {/* Mobile Read News */}
                             <button
-                                onClick={() => {
-                                    setIsNewsOpenMobile(!isNewsOpenMobile);
-                                    setIsJobOpenMobile(false);
-                                    setIsMenuOpen(false);
-                                }}
-                                className="capitalize px-2 py-2 rounded-md text-xs font-medium text-gray-300 hover:text-white flex items-center gap-1"
+                                onClick={() => { setIsNewsOpenMobile(!isNewsOpenMobile); setIsJobOpenMobile(false); setIsMenuOpen(false); }}
+                                className="text-[10px] font-bold uppercase tracking-wider px-2 py-1.5 text-slate-400 border border-slate-900/60 bg-slate-950 rounded-sm flex items-center gap-0.5"
                             >
-                                <Newspaper size={14} />
-                                <ChevronDown
-                                    size={14}
-                                    className={`transition-transform duration-300 ${isNewsOpenMobile ? "rotate-180" : ""
-                                        }`}
-                                />
+                                <Newspaper size={11} /> <ChevronDown size={10} className={isNewsOpenMobile ? "rotate-180" : ""} />
                             </button>
 
-                            {/* Mobile menu button */}
                             <button
-                                onClick={() => {
-                                    setIsMenuOpen(!isMenuOpen);
-                                    setIsJobOpenMobile(false);
-                                    setIsNewsOpenMobile(false);
-                                }}
-                                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none"
+                                onClick={() => { setIsMenuOpen(!isMenuOpen); setIsJobOpenMobile(false); setIsNewsOpenMobile(false); }}
+                                className="inline-flex items-center justify-center p-2 text-slate-400 hover:text-white border border-transparent rounded-sm focus:outline-none"
                             >
-                                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                                {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
                             </button>
                         </div>
                     </div>
                 </div>
             </nav>
 
-            {/* Mobile Menu Side Drawer */}
+            {/* Mobile Controls Drawer Block */}
             {isMenuOpen && (
                 <>
-                    {/* Backdrop Overlay */}
-                    <div
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
-                        onClick={() => setIsMenuOpen(false)}
-                    />
-
-                    {/* Side Drawer */}
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-xs z-40 md:hidden" onClick={() => setIsMenuOpen(false)} />
                     <div
                         ref={navRef}
-                        className="fixed top-0 right-0 h-full w-80 max-w-[55vw] backdrop-blur-xl shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-out overflow-y-auto"
-                        style={{
-                            animation: "slideInRight 0.3s ease-out",
-                        }}
+                        className="fixed top-0 right-0 h-full w-72 bg-[#050811] border-l border-slate-900 font-mono shadow-xl z-50 md:hidden flex flex-col justify-between overflow-y-auto"
+                        style={{ animation: "slideInRight 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards" }}
                     >
-                        {/* Close Button */}
-                        <div className="flex justify-between items-center p-4 border-b border-gray-700">
-                            <h2 className="text-xl font-bold text-white">Brown Code</h2>
-                            <button
-                                onClick={() => setIsMenuOpen(false)}
-                                className="p-2 rounded-lg hover:bg-gray-700 transition-colors"
-                                aria-label="Close menu"
-                            >
-                                <X size={24} className="text-gray-300" />
-                            </button>
+                        <div>
+                            <div className="flex justify-between items-center p-4 border-b border-slate-900">
+                                <span className="text-xs font-black tracking-widest text-white uppercase">// MAIN_MENU</span>
+                                <button onClick={() => setIsMenuOpen(false)} className="p-1.5 border border-slate-900 hover:border-slate-800 rounded-sm text-slate-400">
+                                    <X size={14} />
+                                </button>
+                            </div>
+
+                            <div className="p-3 space-y-1">
+                                {navItems.map((item) =>
+                                    isLinkItem(item) ? (
+                                        <Link
+                                            key={item}
+                                            href={`/${item}`}
+                                            onClick={() => setIsMenuOpen(false)}
+                                            className="text-xs font-bold uppercase tracking-wider block w-full text-left px-3 py-2.5 text-slate-400 hover:text-white hover:bg-slate-950 border border-transparent hover:border-slate-900 rounded-sm transition-colors"
+                                        >
+                                            {formatDisplayText(item)}
+                                        </Link>
+                                    ) : (
+                                        <button
+                                            key={item}
+                                            onClick={() => { scrollToSection(item); setIsMenuOpen(false); }}
+                                            className="text-xs font-bold uppercase tracking-wider block w-full text-left px-3 py-2.5 text-slate-400 hover:text-white hover:bg-slate-950 border border-transparent hover:border-slate-900 rounded-sm transition-colors cursor-pointer"
+                                        >
+                                            {item}
+                                        </button>
+                                    )
+                                )}
+                            </div>
                         </div>
 
-                        {/* Navigation Items */}
-                        <div className="px-4 pt-4 pb-3 space-y-2">
-                            {navItems.map((item) =>
-                                isLinkItem(item) ? (
-                                    <Link
-                                        key={item}
-                                        href={`/${item}`}
-                                        onClick={() => setIsMenuOpen(false)}
-                                        className="capitalize block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
-                                    >
-                                        {formatDisplayText(item)}
-                                    </Link>
-                                ) : (
-                                    <button
-                                        key={item}
-                                        onClick={() => {
-                                            scrollToSection(item);
-                                            setIsMenuOpen(false);
-                                        }}
-                                        className="capitalize block w-full text-left px-4 py-3 rounded-lg text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
-                                    >
-                                        {item}
-                                    </button>
-                                )
-                            )}
-                        </div>
-                        <hr className="border-gray-700" />
-                        <div className="p-5 mt-3 space-y-3">
-                            <h1 className="text-sm md:text-sm font-bold text-gray-100 leading-snug">
-                                Your competitors with websites are getting{" "}
-                                <span className="text-cyan-600">YOUR customers.</span>
-                            </h1>
-
+                        <div className="p-4 border-t border-slate-900 bg-slate-950/50 space-y-3">
+                            <div className="text-[11px] text-slate-500 font-sans leading-relaxed border-l-2 border-cyan-500 pl-2">
+                                System Notice: Distributed commercial interfaces are deploying operational assets continuously. Secure connectivity profiles now.
+                            </div>
                             <Link
                                 href="/contact"
                                 onClick={() => setIsMenuOpen(false)}
-                                className="inline-block  bg-gradient-to-r from-cyan-600 to-cyan-800-600 text-white font-semibold px-3 py-2 rounded-full shadow-md hover:bg-purple-700 transition"
+                                className="block text-center w-full bg-slate-900 border border-slate-800 hover:border-cyan-500/30 hover:text-cyan-400 text-white text-xs font-bold uppercase tracking-wider py-2.5 rounded-sm transition-all"
                             >
-                                <span className="block text-sm">Let's work together</span>
+                                INITIALIZE_ENGAGEMENT()
                             </Link>
                         </div>
                     </div>
 
-                    {/* CSS Animation */}
                     <style jsx>{`
-            @keyframes slideInRight {
-              from {
-                transform: translateX(100%);
-              }
-              to {
-                transform: translateX(0);
-              }
-            }
-          `}</style>
+                        @keyframes slideInRight {
+                            from { transform: translateX(100%); }
+                            to { transform: translateX(0); }
+                        }
+                    `}</style>
                 </>
             )}
 
-            {/* Full Screen Desktop Job Dropdown */}
+            {/* Full Screen Desktop Mega Dropdown System - Utilities Router */}
             {isJobOpen && (
-                <div
-                    ref={jobRef}
-                    className="hidden md:block fixed inset-x-0 top-16 bg-slate-900/98 backdrop-blur-lg border-t border-gray-700/50 shadow-2xl z-40"
-                >
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                        <div className="mb-8">
-                            <h2 className="text-3xl font-bold  bg-gradient-to-r from-cyan-600 to-cyan-800-600 bg-clip-text text-transparent mb-2">
-                                Find Your Next Opportunity
-                            </h2>
-                            <p className="text-gray-400">
-                                Explore various job options tailored to your career goals
-                            </p>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {jobOptions.map((job, index) => (
-                                <JobCard
-                                    key={index}
-                                    job={job}
-                                    onClick={() => setIsJobOpen(false)}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Full Screen Desktop News Dropdown */}
-            {isNewsOpen && (
-                <div
-                    ref={newsRef}
-                    className="hidden md:block fixed inset-x-0 top-16 bg-slate-900/98 backdrop-blur-lg border-t border-gray-700/50 shadow-2xl z-40"
-                >
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                        <div className="mb-8">
-                            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-                                Stay Informed
-                            </h2>
-                            <p className="text-gray-400">
-                                Read the latest news from around the world
-                            </p>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {newsOptions.map((news, index) => (
-                                <NewsCard
-                                    key={index}
-                                    news={news}
-                                    onClick={() => setIsNewsOpen(false)}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Full Screen Mobile Job Dropdown */}
-            {isJobOpenMobile && (
-                <>
-                    {/* Backdrop */}
-                    <div
-                        className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-                        style={{ top: "64px" }}
-                        onClick={() => setIsJobOpenMobile(false)}
-                    />
-
-                    {/* Dropdown Content */}
-                    <div
-                        className="md:hidden fixed left-0 right-0 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-40 shadow-2xl max-h-[calc(100vh-64px)]"
-                        style={{ top: "64px" }}
-                    >
-                        <div className="px-4 py-8">
-                            <div className="mb-6">
-                                <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-                                    Find Your Next Opportunity
+                <div ref={jobRef} className="hidden md:block fixed inset-x-0 top-16 bg-[#fff]/98 backdrop-blur-md border-b border-slate-900 z-40 font-mono shadow-xl animate-none">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        <div className="mb-6 border-b border-slate-900 pb-4 flex items-center justify-between">
+                            <div className="space-y-1">
+                                <h2 className="text-sm font-black text-black uppercase tracking-wider flex items-center gap-1.5">
+                                    <Terminal size={12} className="text-cyan-400" /> SYS_UTILITIES_ROUTER // CONFIG
                                 </h2>
-                                <p className="text-gray-400 text-sm">
-                                    Explore various job options tailored to your career goals
+                                <p className="text-xs text-slate-500 font-sans">
+                                    Execute data bridges to integrated application routing networks and automation runtimes.
                                 </p>
                             </div>
-                            <div className="space-y-4">
+                            <button onClick={() => setIsJobOpen(false)} className="text-[10px] font-bold text-slate-500 border border-slate-900 px-2 py-1 hover:border-slate-800 rounded-sm">CLOSE_X()</button>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {jobOptions.map((job, index) => (
+                                <JobCard key={index} job={job} onClick={() => setIsJobOpen(false)} />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Full Screen Desktop Mega Dropdown System - Telemetry Feed */}
+            {isNewsOpen && (
+                <div ref={newsRef} className="hidden md:block fixed inset-x-0 top-16 bg-white backdrop-blur-md border-b border-slate-900 z-40 font-mono shadow-xl">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        <div className="mb-6 border-b border-slate-900 pb-4 flex items-center justify-between">
+                            <div className="space-y-1">
+                                <h2 className="text-sm font-black text-black uppercase tracking-wider flex items-center gap-1.5">
+                                    <Terminal size={12} className="text-cyan-400" /> DATA_TELEMETRY_STREAM // SYSTEM_LOGS
+                                </h2>
+                                <p className="text-xs text-slate-500 font-sans">
+                                    Monitor system environment parameters, automation indexes, and structural global industry metrics.
+                                </p>
+                            </div>
+                            <button onClick={() => setIsNewsOpen(false)} className="text-[10px] font-bold text-slate-500 border border-slate-900 px-2 py-1 hover:border-slate-800 rounded-sm">CLOSE_X()</button>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {newsOptions.map((news, index) => (
+                                <NewsCard key={index} news={news} onClick={() => setIsNewsOpen(false)} />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Full Screen Mobile Dropdown Panels */}
+            {isJobOpenMobile && (
+                <>
+                    <div className="md:hidden fixed inset-0 bg-black/70 z-40" style={{ top: "64px" }} onClick={() => setIsJobOpenMobile(false)} />
+                    <div className="md:hidden fixed left-0 right-0 bg-[#050811] border-b border-slate-900 overflow-y-auto z-40 font-mono shadow-xl max-h-[calc(100vh-64px)]" style={{ top: "64px" }}>
+                        <div className="px-4 py-6 space-y-4">
+                            <div className="border-b border-slate-900 pb-2">
+                                <h2 className="text-xs font-black text-white uppercase tracking-widest">// SYS_UTILITIES</h2>
+                            </div>
+                            <div className="space-y-3">
                                 {jobOptions.map((job, index) => (
-                                    <JobCard
-                                        key={index}
-                                        job={job}
-                                        onClick={() => setIsJobOpenMobile(false)}
-                                    />
+                                    <JobCard key={index} job={job} onClick={() => setIsJobOpenMobile(false)} />
                                 ))}
                             </div>
                         </div>
@@ -564,37 +451,17 @@ export default function Navbar({
                 </>
             )}
 
-            {/* Full Screen Mobile News Dropdown */}
             {isNewsOpenMobile && (
                 <>
-                    {/* Backdrop */}
-                    <div
-                        className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
-                        style={{ top: "64px" }}
-                        onClick={() => setIsNewsOpenMobile(false)}
-                    />
-
-                    {/* Dropdown Content */}
-                    <div
-                        className="md:hidden fixed left-0 right-0 bg-slate-900/98 backdrop-blur-lg overflow-y-auto z-40 shadow-2xl max-h-[calc(100vh-64px)]"
-                        style={{ top: "64px" }}
-                    >
-                        <div className="px-4 py-8">
-                            <div className="mb-6">
-                                <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-                                    Stay Informed
-                                </h2>
-                                <p className="text-gray-400 text-sm">
-                                    Read the latest news from around the world
-                                </p>
+                    <div className="md:hidden fixed inset-0 bg-black/70 z-40" style={{ top: "64px" }} onClick={() => setIsNewsOpenMobile(false)} />
+                    <div className="md:hidden fixed left-0 right-0 bg-[#050811] border-b border-slate-900 overflow-y-auto z-40 font-mono shadow-xl max-h-[calc(100vh-64px)]" style={{ top: "64px" }}>
+                        <div className="px-4 py-6 space-y-4">
+                            <div className="border-b border-slate-900 pb-2">
+                                <h2 className="text-xs font-black text-white uppercase tracking-widest">// DATA_TELEMETRY</h2>
                             </div>
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 {newsOptions.map((news, index) => (
-                                    <NewsCard
-                                        key={index}
-                                        news={news}
-                                        onClick={() => setIsNewsOpenMobile(false)}
-                                    />
+                                    <NewsCard key={index} news={news} onClick={() => setIsNewsOpenMobile(false)} />
                                 ))}
                             </div>
                         </div>

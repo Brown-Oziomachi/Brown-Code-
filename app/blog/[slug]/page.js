@@ -2,7 +2,7 @@
 
 import Head from "next/head";
 import { articles } from "@/app/data/article";
-import { ArrowLeft, Calendar, Clock, User, Share2, Bookmark, Twitter, Linkedin, Facebook } from "lucide-react";
+import { ArrowLeft, Clock, User, Share2, Terminal, Code2, Cpu, GitCommit } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, use } from "react";
 
@@ -17,30 +17,21 @@ export default function ArticlePage({ params }) {
 
   if (!article) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="text-6xl">📄</div>
-          <h2 className="text-3xl font-bold text-white">Article Not Found</h2>
-          <p className="text-gray-400">The article you're looking for doesn't exist.</p>
+      <div className="min-h-screen bg-[#030712] flex items-center justify-center font-mono">
+        <div className="text-center space-y-4 border border-slate-900 bg-slate-950/50 p-12 rounded-xl max-w-md">
+          <Terminal size={40} className="text-rose-500 mx-auto" />
+          <h2 className="text-xl font-bold text-white">ERR_DOCUMENT_NOT_FOUND</h2>
+          <p className="text-xs text-slate-500 font-sans">The requested resource mapping block could not be located in database memory.</p>
           <button
             onClick={() => router.push("/blog")}
-            className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-semibold hover:scale-105 transition-transform"
+            className="mt-6 px-6 py-2.5 border border-cyan-500 text-cyan-400 bg-cyan-950/10 hover:bg-cyan-500 hover:text-black transition-all text-xs font-bold uppercase rounded-md"
           >
-            Back to Blog
+            RETURN_TO_INDEX
           </button>
         </div>
       </div>
     );
   }
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
 
   const getReadingTime = (content) => {
     const words = content.split(" ").length;
@@ -61,7 +52,7 @@ export default function ArticlePage({ params }) {
   return (
     <>
       <Head>
-        <title>{article.title} | BrownCode Blog | Software Developer</title>
+        <title>{article.title} | Technical Documentation | Systems Engineer</title>
         <meta name="description" content={article.preview} />
         <meta property="og:title" content={article.title} />
         <meta property="og:description" content={article.preview} />
@@ -95,159 +86,150 @@ export default function ArticlePage({ params }) {
         }}
       />
 
-      <article className="min-h-screen bg-black text-white">
-        {/* Hero Section */}
+      <article className="min-h-screen bg-[#030712] text-slate-100 font-mono selection:bg-cyan-500/30 selection:text-cyan-200">
+        {/* Engineering System Banner */}
         <div className="relative">
-          {/* Background Image with Overlay */}
-          <div className="relative h-[60vh] md:h-[50vh] overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/80 to-slate-950 z-10" />
+          <div className="relative h-[40vh] md:h-[35vh] overflow-hidden border-b border-slate-900">
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/80 to-[#030712] z-10" />
             <img
               src={article.image}
               alt={article.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover opacity-40 mix-blend-luminosity"
             />
           </div>
 
-          {/* Floating Back Button */}
+          {/* Interactive Shell Back Action */}
           <button
             onClick={() => router.push("/blog")}
-            className="absolute top-8 left-8 z-20 flex items-center gap-2 px-5 py-3 bg-cyan-900/80 backdrop-blur-md border border-purple-500/30 rounded-xl text-white font-semibold hover:bg-slate-800/80 hover:border-purple-500/50 transition-all duration-300 hover:scale-105 shadow-xl"
+            className="absolute top-8 left-8 z-20 flex items-center gap-2 px-4 py-2 bg-slate-950 border border-slate-800 rounded-md text-xs text-slate-400 hover:text-white hover:border-slate-700 transition-all shadow-xl"
           >
-            <ArrowLeft size={18} />
-            <span className="hidden sm:inline">Back</span>
+            <ArrowLeft size={14} />
+            <span>cd ..</span>
           </button>
 
-          {/* Article Header - Overlapping the image */}
-          <div className="relative z-20 -mt-32 md:-mt-40">
+          {/* Article Node Title Segment */}
+          <div className="relative z-20 -mt-24 md:-mt-28">
             <div className="max-w-4xl mx-auto px-6 md:px-12">
-              <div className="bg-gradient-to-r from-cyan-500/20 to-cyan-500/20 backdrop-blur-xl p-8 md:p-12 shadow-2xl">
-                {/* Category Badge */}
-                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/20 to-cyan-500/20 border border-cyan-500/40 px-4 py-2 rounded-full text-sm font-semibold text-purple-300 mb-6">
-                  <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                  Featured Article
+              <div className="bg-slate-950/80 border border-slate-900 backdrop-blur-md p-6 md:p-10 rounded-xl shadow-2xl">
+
+                {/* Module Flag */}
+                <div className="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 px-3 py-1 rounded-md text-[11px] text-cyan-400 mb-6 uppercase tracking-wider">
+                  <Cpu size={12} className="animate-pulse" />
+                  core_node // verified_publication
                 </div>
 
-                {/* Title */}
-                <h1 className="text-xl md:text-xl lg:text-5xl font-bold mb-6 leading-tight bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+                {/* Technical Title */}
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mb-6 leading-snug">
                   {article.title}
                 </h1>
 
-                {/* Meta Information */}
-                <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-8">
+                {/* Manifest Metadata */}
+                <div className="flex flex-wrap items-center gap-6 text-[11px] text-slate-500 mb-6 border-b border-slate-900 pb-6">
                   <div className="flex items-center gap-2">
-                   
-                    <div>
-                      <div className="flex items-center gap-1.5 text-white font-semibold">
-                        <img src="/cod2.png" alt="Author" className="w-30 h-20 rounded-full mr-1" />
-                      </div>
-                      <span className="ml-5">
-                        {article.postedBy}
-                      </span>
-                    </div>
+                    <User size={13} className="text-slate-600" />
+                    <span className="text-slate-300 font-sans">{article.postedBy}</span>
+                  </div>
                   <div className="flex items-center gap-2">
-                    <Clock size={16} className="text-cyan-400" />
-                    <span>{getReadingTime(article.content)} min read</span>
+                    <Clock size={13} className="text-slate-600" />
+                    <span>EST_READ: {getReadingTime(article.content)}m</span>
                   </div>
-                    
+                  <div className="flex items-center gap-2">
+                    <GitCommit size={13} className="text-slate-600" />
+                    <span>HEX_ID: {article.slug.slice(0, 7).toUpperCase()}</span>
                   </div>
-
-                  <div className="hidden sm:block w-px h-10 bg-purple-500/20" />
-
                 </div>
 
-                {/* Preview Text */}
-                <p className="text-sm text-gray-300 leading-relaxed border-l-4 border-cyan-500 pl-6 mb-8">
+                {/* Abstract Text */}
+                <p className="text-xs text-slate-400 font-sans leading-relaxed border-l-2 border-cyan-500/50 pl-4 mb-6">
+                  <span className="font-mono text-[11px] text-cyan-500 block mb-1">ABSTRACT:</span>
                   {article.preview}
                 </p>
 
-                {/* Action Buttons */}
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <button
-                        onClick={() => setShowShare(!showShare)}
-                        className="flex items-center gap-2 px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 border border-purple-500/30 rounded-xl transition-all duration-300 hover:scale-105"
-                      >
-                        <Share2 size={16} />
-                        <span className="text-sm font-semibold">Share</span>
-                      </button>
+                {/* Network Distribution Protocols */}
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowShare(!showShare)}
+                      className="flex items-center gap-2 px-3 py-1.5 border border-slate-800 bg-slate-900/50 hover:border-slate-700 text-xs text-slate-300 rounded transition-all"
+                    >
+                      <Share2 size={12} />
+                      <span>PIPE_SHARE</span>
+                    </button>
 
-                      {showShare && (
-                        <div className="absolute top-full mt-2 left-0 bg-slate-900 border border-cyan-500/30 rounded-xl p-2 shadow-xl backdrop-blur-xl min-w-[160px] z-30">
-                          <button
-                            onClick={() => handleShare("twitter")}
-                            className="w-full flex items-center gap-3 px-4 py-2 hover:bg-purple-600/20 rounded-lg transition-colors text-left"
-                          >
-                            <Twitter size={16} className="text-blue-400" />
-                            <span className="text-sm">Twitter</span>
-                          </button>
-
-                          <button
-                            onClick={() => handleShare("linkedin")}
-                            className="w-full flex items-center gap-3 px-4 py-2 hover:bg-purple-600/20 rounded-lg transition-colors text-left"
-                          >
-                            <Linkedin size={16} className="text-blue-500" />
-                            <span className="text-sm">LinkedIn</span>
-                          </button>
-
-                          <button
-                            onClick={() => handleShare("facebook")}
-                            className="w-full flex items-center gap-3 px-4 py-2 hover:bg-purple-600/20 rounded-lg transition-colors text-left"
-                          >
-                            <Facebook size={16} className="text-blue-600" />
-                            <span className="text-sm">Facebook</span>
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                    {showShare && (
+                      <div className="absolute top-full mt-2 left-0 bg-slate-950 border border-slate-800 rounded-md p-1 shadow-2xl backdrop-blur-xl min-w-[140px] z-30 text-[11px]">
+                        <button
+                          onClick={() => handleShare("twitter")}
+                          className="w-full flex items-center gap-2 px-3 py-2 hover:bg-slate-900 rounded text-slate-400 hover:text-cyan-400 transition-colors text-left"
+                        >
+                          <span>X_TWITTER</span>
+                        </button>
+                        <button
+                          onClick={() => handleShare("linkedin")}
+                          className="w-full flex items-center gap-2 px-3 py-2 hover:bg-slate-900 rounded text-slate-400 hover:text-cyan-400 transition-colors text-left"
+                        >
+                          <span>LINKEDIN</span>
+                        </button>
+                        <button
+                          onClick={() => handleShare("facebook")}
+                          className="w-full flex items-center gap-2 px-3 py-2 hover:bg-slate-900 rounded text-slate-400 hover:text-cyan-400 transition-colors text-left"
+                        >
+                          <span>FACEBOOK</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
         </div>
 
-        {/* Article Content */}
-        <div className="max-w-4xl mx-auto px-6 md:px-12 py-16">
-          <div className="prose prose-lg prose-invert max-w-none">
-            <div className="text-gray-300 text-sm leading-relaxed space-y-6 whitespace-pre-line">
+        {/* Technical Logs / Content Compilation */}
+        <div className="max-w-4xl mx-auto px-6 md:px-12 py-12">
+          <div className="prose prose-invert max-w-none font-sans">
+            <div className="text-slate-300 text-sm md:text-base leading-relaxed space-y-6 whitespace-pre-line">
               {article.content.split('\n\n').map((paragraph, index) => (
-                <p key={index} className="mb-6 font-medium">
+                <p key={index}>
                   {paragraph}
                 </p>
               ))}
             </div>
-            <button
-              onClick={() => router.push("/contact")}
-              className="px-8 py-4  bg-gradient-to-r from-cyan-600 to-cyan-800-600 hover:bg-slate-800 border border-purple-500/30 hover:border-purple-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
-            >
-              Let's roll
-            </button>
+
+            <div className="mt-12 pt-6 border-t border-slate-900 font-mono">
+              <button
+                onClick={() => router.push("/contact")}
+                className="px-6 py-3 border border-cyan-500 text-cyan-400 bg-cyan-950/10 hover:bg-cyan-500 hover:text-black transition-all rounded-md text-xs font-bold uppercase tracking-wider"
+              >
+                INITIALIZE_CONTACT
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Bottom CTA Section */}
+        {/* Navigation Endpoints */}
         <div className="max-w-4xl mx-auto px-6 md:px-12 pb-20">
-          <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-3xl p-8 md:p-12 text-center backdrop-blur-sm">
-            <h3 className="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-              Enjoyed this article?
+          <div className="border border-slate-900 bg-slate-950/20 rounded-xl p-8 text-center backdrop-blur-sm">
+            <h3 className="text-sm font-bold text-white mb-2 uppercase tracking-wide">
+              // review completeness check
             </h3>
-            <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-              Explore more insights and strategies to build your digital presence
+            <p className="text-xs text-slate-500 font-sans mb-6 max-w-xl mx-auto">
+              Execution loop finished. Select downstream navigation pipeline to parse alternative logs.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-4 text-xs font-bold">
               <button
                 onClick={() => router.push("/blog")}
-                className="group flex items-center gap-3 px-8 py-4  bg-gradient-to-r from-cyan-600 to-cyan-800-600 hover:from-cyan-600 hover:to-can-900 rounded-xl font-bold text-white shadow-xl shadow-purple-500/25 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105"
+                className="group flex items-center gap-2 px-5 py-2.5 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all rounded-md uppercase"
               >
-                <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
-                More Articles
+                <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
+                INDEX_LOGS
               </button>
               <button
                 onClick={() => router.push("/portfolio")}
-                className="px-8 py-4 bg-slate-900/80 hover:bg-slate-800 border border-cyan-500/30 hover:border-purple-500/50 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
+                className="px-5 py-2.5 bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all rounded-md uppercase"
               >
-                Back to Home
+                RETURN_TO_BASE
               </button>
             </div>
           </div>

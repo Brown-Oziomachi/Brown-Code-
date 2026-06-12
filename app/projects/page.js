@@ -4,293 +4,294 @@ import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+    Terminal,
+    ArrowLeft,
+    ExternalLink,
+    Lock,
+    Cpu,
+    Layers,
+    Binary,
+    Activity
+} from "lucide-react";
 
 const projects = [
     {
-        id: 1,
+        id: "SYS_NODE_01",
         title: "Cyclopedia News Website",
         description: "Enterprise news platform featuring real-time content delivery, advanced filtering algorithms, and multimedia integration with optimized video streaming.",
         image: "/the.jpg",
         link: "https://www.thecyclopedia.com.ng",
-        // github: "https://github.com/yourusername/cyclopedia",
-        tags: ["Next.js", "React", "Video Streaming"],
+        tags: ["Next.js", "React Architecture", "Video Steams"],
         year: "2024",
-        role: "Full Stack Developer"
+        role: "FULL_STACK_DEV",
+        status: "LIVE_SYS"
     },
     {
-        id: 2,
+        id: "SYS_NODE_02",
         title: "E-Commerce Store/Yotapoint",
         description: "Scalable e-commerce solution with secure payment integration, inventory management system, and comprehensive admin dashboard.",
         image: "/yota.jpg",
         link: "https://yotapoint.com/feeds",
-        // github: "https://github.com/yourusername/yotapoint",
-        tags: ["E-Commerce", "Payment Gateway", "Admin Panel"],
+        tags: ["E-Commerce", "Payment Sockets", "Admin Schema"],
         year: "2024",
-        role: "Lead Developer"
+        role: "LEAD_ENGINEER",
+        status: "LIVE_SYS"
     },
     {
-        id: 3,
+        id: "SYS_NODE_03",
         title: "IJ Stitches Portfolio",
         description: "Performance-optimized portfolio with advanced animations, accessibility compliance, and responsive design architecture.",
         image: "/ijs.jpg",
         link: "https://ij-stitches.vercel.app/main",
-        // github: "https://github.com/yourusername/ij-stitches",
-        tags: ["React", "GSAP", "Performance"],
+        tags: ["React Engine", "GSAP Hooks", "Asset Optimization"],
         year: "2024",
-        role: "Frontend Architect"
+        role: "FRONTEND_ARCHITECT",
+        status: "OPTIMIZED"
     },
     {
-        id: 4,
+        id: "SYS_NODE_04",
         title: "Portfolio Website",
         description: "Modern portfolio solution with dynamic content management, SEO optimization, and analytics integration.",
         image: "/cd.jpg",
         link: "https://browncode.name.ng",
-        // github: "https://github.com/yourusername/portfolio",
-        tags: ["Next.js", "TypeScript", "SEO"],
+        tags: ["Next.js Matrix", "Pure JS Engine", "SEO Sockets"],
         year: "2024",
-        role: "Full Stack Developer"
+        role: "FULL_STACK_DEV",
+        status: "PRODUCTION"
     },
     {
-        id: 5,
+        id: "SYS_NODE_05",
         title: "Cyclopedia Editor App",
         description: "Content management system with rich text editing, collaborative features, and version control for editorial workflows.",
         image: "/ed.jpg",
-        // github: "https://github.com/yourusername/cyclopedia-editor",
-        tags: ["CMS", "Real-time Collab", "TypeScript"],
+        link: null, // Lock status
+        tags: ["CMS Infrastructure", "Real-time Sync", "Workflow Pipeline"],
         year: "2024",
-        role: "Technical Lead"
+        role: "TECHNICAL_LEAD",
+        status: "NDA_LOCKED"
     },
 ];
 
 export default function ProjectsPage() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [activeSection, setActiveSection] = useState("blog");
+    const [activeSection, setActiveSection] = useState("projects");
     const router = useRouter();
-    
+
     useEffect(() => {
-            const handleScroll = () => {
-                setIsScrolled(window.scrollY > 50);
-            };
-    
-            window.addEventListener("scroll", handleScroll);
-            return () => window.removeEventListener("scroll", handleScroll);
-        }, []);
-    
-        const handleBack = () => {
-            router.push("/portfolio");
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 50);
         };
-    
-        const scrollToSection = (sectionId) => {
-            router.push(`/#${sectionId}`);
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    const handleBack = () => {
+        router.push("/portfolio");
     };
-    
+
+    const scrollToSection = (sectionId) => {
+        router.push(`/#${sectionId}`);
+    };
+
     return (
         <>
-         <Navbar
-            isScrolled={isScrolled}
-            isMenuOpen={isMenuOpen}
-            setIsMenuOpen={setIsMenuOpen}
-            activeSection={activeSection}
-            scrollToSection={scrollToSection}
-        />
-        <div className="min-h-screen bg-zinc-950 text-zinc-100 py-20 ">
-            {/* Header */}
-            <header className="border-b border-zinc-800 bg-zinc-950/50 backdrop-blur-xl sticky top-0 z-30">
-                <div className="max-w-7xl mx-auto px-6 py-20">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-2xl font-semibold tracking-tight text-zinc-100">
-                                Projects Portfolio
+            <Navbar
+                isScrolled={isScrolled}
+                isMenuOpen={isMenuOpen}
+                setIsMenuOpen={setIsMenuOpen}
+                activeSection={activeSection}
+                scrollToSection={scrollToSection}
+            />
+
+            <div className="min-h-screen bg-[#050811] text-slate-400 font-mono antialiased relative pt-24 pb-20">
+                {/* Tactical Blueprint Grid */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b0d_1px,transparent_1px),linear-gradient(to_bottom,#1e293b0d_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none z-0"></div>
+
+                {/* HEADER TERMINAL STRIP */}
+                <header className="border-b border-slate-900 bg-[#0b132b]/20 backdrop-blur-md relative z-10">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                        <div className="space-y-1">
+                            <div className="text-[10px] font-bold text-cyan-400 tracking-widest uppercase flex items-center gap-1.5">
+                                <Terminal size={12} /> INDEX_REGISTRY // ARCHIVE
+                            </div>
+                            <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
+                                Shipped Production Nodes
                             </h1>
-                            <p className="text-sm text-zinc-400 mt-1">
-                                {projects.length} Production Applications
+                            <p className="text-xs text-slate-500">
+                                Total parsed arrays: <span className="text-slate-300 font-bold">[{projects.length}] stable builds detected</span>
                             </p>
                         </div>
-                        <div className="flex items-center gap-3 text-sm text-zinc-400">
-                            <span className="hidden sm:inline">Full Stack Web Developer</span>
-                            <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                                <a
-                                    href="https://wa.me/2347013725529"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-emerald-400 transition-colors cursor-pointer"
-                                >
-                                    Available
+
+                        <div className="flex flex-wrap items-center gap-4">
+                            <button
+                                onClick={handleBack}
+                                className="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-900 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-300 rounded-sm transition-all uppercase tracking-wider"
+                            >
+                                <ArrowLeft size={12} /> ESC_RETURN
+                            </button>
+                            <div className="inline-flex items-center gap-2 px-3 py-2 bg-slate-950 border border-slate-900 text-xs text-slate-400">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span className="font-bold text-[10px] tracking-widest text-slate-500 uppercase">SYS_SOCKET:</span>
+                                <a href="https://wa.me/2347013725529" target="_blank" rel="noopener noreferrer" className="text-emerald-400 font-bold hover:underline">
+                                    COMMS_OPEN
                                 </a>
                             </div>
+                        </div>
                     </div>
-                </div>
-            </header>
+                </header>
 
-            {/* Main Content */}
-            <main className="max-w-7xl mx-auto px-6 py-16">
-                {/* Stats Bar */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6">
-                        <div className="text-3xl font-bold text-zinc-100 mb-1">{projects.length}</div>
-                        <div className="text-sm text-zinc-400">Projects Delivered</div>
-                    </div>
-                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6">
-                        <div className="text-3xl font-bold text-zinc-100 mb-1">90%</div>
-                        <div className="text-sm text-zinc-400">Client Satisfaction</div>
-                    </div>
-                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6">
-                        <div className="text-3xl font-bold text-zinc-100 mb-1">2</div>
-                        <div className="text-sm text-zinc-400">Years Experience</div>
-                    </div>
-                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6">
-                        <div className="text-3xl font-bold text-zinc-100 mb-1">24/7</div>
-                        <div className="text-sm text-zinc-400">System Uptime</div>
-                    </div>
-                </div>
+                <main className="max-w-7xl mx-auto px-4 sm:px-8 py-12 relative z-10 space-y-12">
 
-                {/* Projects Grid */}
-                <div className="space-y-8">
-                    {projects.map((project, index) => (
-                        <article
-                            key={project.id}
-                            className="group bg-zinc-900/30 border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-all duration-300 z-0"
-                        >
-                            <div className="grid md:grid-cols-5 gap-0 z-0">
-                                {/* Image */}
-                                <div className="md:col-span-2 relative h-64 md:h-auto overflow-hidden bg-zinc-900 z-0">
-                                    <img
-                                        src={project.image}
-                                        alt={project.title}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 z-0"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/80 to-transparent"></div>
-
-                                    {/* Project Number */}
-                                    <div className="absolute top-6 left-6 w-12 h-12 rounded-full bg-zinc-950/90 border border-zinc-700 flex items-center justify-center">
-                                        <span className="text-lg font-mono text-zinc-400">
-                                            {String(index + 1).padStart(2, '0')}
-                                        </span>
-                                    </div>
+                    {/* TELEMETRY METRICS SECTION */}
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        {[
+                            { label: "INDEXED_BUILDS", value: `0${projects.length}`, desc: "Active modules", icon: <Layers size={14} /> },
+                            { label: "SUCCESS_RATIO", value: "100%", desc: "Deployment status", icon: <Binary size={14} /> },
+                            { label: "TRACK_DURATION", value: "02+", desc: "Years validation", icon: <Cpu size={14} /> },
+                            { label: "CRITICAL_UPTIME", value: "24/7", desc: "Service continuity", icon: <Activity size={14} /> }
+                        ].map((stat, i) => (
+                            <div key={i} className="bg-[#0b132b]/10 border border-slate-900 p-4 rounded-sm flex justify-between items-start group hover:border-slate-800/80 transition-colors">
+                                <div className="space-y-1">
+                                    <div className="text-[10px] font-bold text-slate-500 tracking-wider uppercase">{stat.label}</div>
+                                    <div className="text-2xl font-black text-white tracking-tight">{stat.value}</div>
+                                    <div className="text-[10px] text-slate-600 font-medium font-sans">{stat.desc}</div>
                                 </div>
-
-                                {/* Content */}
-                                <div className="md:col-span-3 p-8 flex flex-col justify-between">
-                                    <div>
-                                        {/* Meta */}
-                                        <div className="flex items-center gap-4 text-xs text-zinc-500 mb-4">
-                                            <span className="flex items-center gap-2">
-                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                                </svg>
-                                                {project.role}
-                                            </span>
-                                            <span>•</span>
-                                            <span className="flex items-center gap-2">
-                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                </svg>
-                                                {project.year}
-                                            </span>
-                                        </div>
-
-                                        {/* Title & Description */}
-                                        <h2 className="text-2xl font-semibold text-zinc-100 mb-3 group-hover:text-white transition-colors">
-                                            {project.title}
-                                        </h2>
-                                        <p className="text-zinc-400 leading-relaxed mb-6">
-                                            {project.description}
-                                        </p>
-
-                                        {/* Tech Stack */}
-                                        <div className="flex flex-wrap gap-2">
-                                            {project.tags.map((tag, i) => (
-                                                <span
-                                                    key={i}
-                                                    className="px-3 py-1 text-xs font-medium bg-zinc-800/50 text-zinc-300 rounded border border-zinc-700/50"
-                                                >
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Action */}
-                                    <div className="flex items-center gap-4 mt-8">
-                                        {project.link ? (
-                                            <>
-                                                <a
-                                                    href={project.link}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 text-sm font-medium transition-all"
-                                                >
-                                                    View Live Site
-                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                                    </svg>
-                                                </a>
-                                                {/* {project.github && (
-                                                    <a
-                                                        href={project.github}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-zinc-700 hover:bg-zinc-800 text-zinc-300 text-sm font-medium transition-all"
-                                                    >
-                                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                                                        </svg>
-                                                        View Code
-                                                    </a>
-                                                )} */}
-                                            </>
-                                        ) : (
-                                            <>
-                                                {project.github ? (
-                                                    <a
-                                                        href={project.github}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-zinc-700 hover:bg-zinc-800 text-zinc-300 text-sm font-medium transition-all"
-                                                    >
-                                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                                                        </svg>
-                                                        View Code
-                                                    </a>
-                                                ) : (
-                                                    <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-zinc-800/50 border border-zinc-700 text-zinc-500 text-sm font-medium">
-                                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                                        </svg>
-                                                        Under NDA
-                                                    </span>
-                                                )}
-                                            </>
-                                        )}
-                                    </div>
+                                <div className="text-slate-600 group-hover:text-cyan-500/80 transition-colors pt-0.5">
+                                    {stat.icon}
                                 </div>
                             </div>
-                        </article>
-                    ))}
-                </div>
-
-                {/* Footer CTA */}
-                <div className="mt-20 text-center">
-                    <div className="inline-flex flex-col items-center gap-4 p-8 bg-zinc-900/30 border border-zinc-800 rounded-xl">
-                        <h3 className="text-xl font-semibold text-zinc-100">
-                            Interested in working together?
-                        </h3>
-                        <p className="text-sm text-zinc-400 max-w-md">
-                            I'm currently available for freelance projects and full-time opportunities.
-                        </p>
-                        <button className="mt-2 inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-zinc-100 hover:bg-white text-zinc-950 font-medium transition-all">
-                          <Link href="/contact">Get in Touch</Link>
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </button>
+                        ))}
                     </div>
-                </div>
-            </main>
+
+                    {/* MECHANICAL PROJECT LAYOUT STREAM */}
+                    <div className="space-y-6">
+                        {projects.map((project, index) => (
+                            <article
+                                key={project.id}
+                                className="bg-slate-950/40 border border-slate-900 rounded-sm overflow-hidden hover:border-slate-800 transition-all duration-300 group shadow-lg"
+                            >
+                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
+
+                                    {/* Embedded Node Display Column */}
+                                    <div className="lg:col-span-4 relative h-48 lg:h-auto min-h-[220px] bg-slate-950 border-b lg:border-b-0 lg:border-r border-slate-900/60 overflow-hidden">
+                                        <img
+                                            src={project.image}
+                                            alt={project.title}
+                                            className="w-full h-full object-cover grayscale opacity-40 contrast-125 brightness-70 group-hover:scale-[1.02] group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-500"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-transparent to-[#050811]/90"></div>
+
+                                        {/* Structural Hex Coordinates */}
+                                        <div className="absolute top-4 left-4 bg-slate-950/90 text-[10px] font-black text-slate-500 px-2.5 py-1 border border-slate-900/80 tracking-widest shadow-xl">
+                                            {project.id} // #{String(index + 1).padStart(2, '0')}
+                                        </div>
+                                    </div>
+
+                                    {/* Operational Architecture Spec Column */}
+                                    <div className="lg:col-span-8 p-6 sm:p-8 flex flex-col justify-between space-y-6">
+                                        <div className="space-y-4">
+
+                                            {/* Micro-Labels Strip */}
+                                            <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest border-b border-slate-900 pb-3">
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="w-1 h-1 bg-cyan-500"></span>
+                                                    ROLE: <span className="text-slate-300">{project.role}</span>
+                                                </div>
+                                                <span className="text-slate-800 hidden sm:inline">|</span>
+                                                <div>
+                                                    TIMESTAMP: <span className="text-slate-400 font-normal">{project.year}</span>
+                                                </div>
+                                                <span className="text-slate-800 hidden sm:inline">|</span>
+                                                <div>
+                                                    STATUS: <span className={`font-black ${project.link ? 'text-cyan-400' : 'text-amber-500/80'}`}>[{project.status}]</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Header Blocks */}
+                                            <div className="space-y-1">
+                                                <h2 className="text-xl font-black text-white uppercase tracking-tight group-hover:text-cyan-400 transition-colors">
+                                                    {project.title}
+                                                </h2>
+                                            </div>
+
+                                            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-3xl font-sans">
+                                                {project.description}
+                                            </p>
+                                        </div>
+
+                                        {/* Lower Action & Stack Infrastructure Block */}
+                                        <div className="pt-4 border-t border-slate-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+
+                                            {/* Tech Tokens */}
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {project.tags.map((tag, i) => (
+                                                    <span
+                                                        key={i}
+                                                        className="px-2.5 py-0.5 text-[9px] font-bold bg-slate-900/80 text-slate-500 border border-slate-800/60 rounded-none tracking-wide"
+                                                    >
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                            </div>
+
+                                            {/* Functional Execution Gate */}
+                                            <div className="shrink-0">
+                                                {project.link ? (
+                                                    <a
+                                                        href={project.link}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/30 text-xs font-bold text-slate-300 hover:text-cyan-400 transition-all rounded-sm"
+                                                    >
+                                                        EXECUTE_LIVE_RUN()
+                                                        <ExternalLink size={11} />
+                                                    </a>
+                                                ) : (
+                                                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-950 border border-slate-900 text-xs font-bold text-slate-600 cursor-not-allowed">
+                                                        <Lock size={11} className="text-amber-600/60" />
+                                                        ACCESS_RESTRICTED_NDA
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+
+                    {/* LOWER DESK PIPELINE HANDSHAKE */}
+                    <div className="pt-8">
+                        <div className="max-w-3xl mx-auto border border-slate-900 bg-[#0b132b]/10 p-6 sm:p-8 rounded-sm relative overflow-hidden text-center space-y-4">
+                            <div className="absolute top-0 left-0 w-24 h-0.5 bg-cyan-500"></div>
+
+                            <div className="space-y-1.5">
+                                <h3 className="text-base font-black text-white uppercase tracking-wide">
+                                    Initialize System Integration?
+                                </h3>
+                                <p className="text-xs text-slate-400 font-sans max-w-md mx-auto leading-relaxed">
+                                    Operational channels are currently calibrated for contract pipelines, system refactoring, and remote enterprise micro-modules.
+                                </p>
+                            </div>
+
+                            <div className="pt-2">
+                                <Link
+                                    href="/contact"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm transition-all shadow-md active:scale-95"
+                                >
+                                    OPEN_CONN_SOCKET()
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
+                </main>
             </div>
         </>
-
     );
 }

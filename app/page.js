@@ -1,7 +1,8 @@
 // app/page.js
 
-import ContactForm from "./contact/page";
+import SitemapPage from "./sitemap-html/page";
+
 
 export default function Home() {
-  return <ContactForm />;
+  return <SitemapPage />;
 }

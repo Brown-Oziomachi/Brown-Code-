@@ -7,7 +7,10 @@ import {
     Phone,
     Send,
     ArrowLeft,
-    CheckCircle
+    CheckCircle,
+    Terminal,
+    ShieldAlert,
+    Network
 } from 'lucide-react';
 
 export default function ContactForm() {
@@ -21,8 +24,8 @@ export default function ContactForm() {
 
     const [errors, setErrors] = useState({});
 
-    // Replace with your WhatsApp number (include country code without +)
-    const WHATSAPP_NUMBER = '2347013725529'; // Example: Nigerian number
+    // WhatsApp infrastructure endpoint matching your profile number
+    const WHATSAPP_NUMBER = '2347013725529';
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -30,7 +33,6 @@ export default function ContactForm() {
             ...prev,
             [name]: value
         }));
-        // Clear error when user starts typing
         if (errors[name]) {
             setErrors(prev => ({
                 ...prev,
@@ -43,25 +45,25 @@ export default function ContactForm() {
         const newErrors = {};
 
         if (!formData.name.trim()) {
-            newErrors.name = 'Name is required';
+            newErrors.name = 'Data parsing fail: Name string required';
         }
 
         if (!formData.email.trim()) {
-            newErrors.email = 'Email is required';
+            newErrors.email = 'Data parsing fail: Email string required';
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Email is invalid';
+            newErrors.email = 'Format exception: Invalid email schema';
         }
 
         if (!formData.phone.trim()) {
-            newErrors.phone = 'Phone number is required';
+            newErrors.phone = 'Data parsing fail: Telecom pointer required';
         }
 
         if (!formData.subject.trim()) {
-            newErrors.subject = 'Subject is required';
+            newErrors.subject = 'Data parsing fail: Subject payload required';
         }
 
         if (!formData.message.trim()) {
-            newErrors.message = 'Message is required';
+            newErrors.message = 'Data parsing fail: Core message array required';
         }
 
         setErrors(newErrors);
@@ -70,29 +72,24 @@ export default function ContactForm() {
 
     const handleSubmit = () => {
         if (validateForm()) {
-            // Format the message for WhatsApp
             const whatsappMessage = `
-*New Contact Form Submission*
-
-*Name:* ${formData.name}
-*Email:* ${formData.email}
-*Phone:* ${formData.phone}
-*Subject:* ${formData.subject}
-
-*Message:*
+[SYS_SUBMISSION // PORTFOLIO_CONTACT]
+-----------------------------------------
+*Sender Identity:* ${formData.name}
+*Network Pointer:* ${formData.email}
+*Telecom Routing:* ${formData.phone}
+*Stream Subject:* ${formData.subject}
+-----------------------------------------
+*Payload Array:*
 ${formData.message}
-      `.trim();
+            `.trim();
 
-            // Encode the message for URL
             const encodedMessage = encodeURIComponent(whatsappMessage);
-
-            // Create WhatsApp URL
             const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
 
-            // Open WhatsApp in new tab
             window.open(whatsappUrl, '_blank');
 
-            // Optional: Reset form after submission
+            // Resetting data layers inside current runtime state
             setFormData({
                 name: '',
                 email: '',
@@ -104,260 +101,267 @@ ${formData.message}
     };
 
     return (
-        <div className="min-h-screen bg-black text-white">
-            {/* Background Effects */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute w-96 h-96 bg-purple-500/10 rounded-full blur-3xl -top-48 -left-48 animate-pulse"></div>
-                <div className="absolute w-96 h-96 bg-pink-500/10 rounded-full blur-3xl -bottom-48 -right-48 animate-pulse"></div>
-                <div className="absolute w-96 h-96 bg-purple-500/5 rounded-full blur-3xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
-            </div>
+        <div className="min-h-screen bg-[#090d16] text-slate-300 font-mono antialiased selection:bg-cyan-500/20 selection:text-cyan-300">
+            {/* Engineering Grid Layer Underlay */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b12_1px,transparent_1px),linear-gradient(to_bottom,#1e293b12_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none z-0"></div>
 
-            {/* Navigation Bar */}
-            <nav className="relative z-10 border-b border-purple-500/20 backdrop-blur-xl">
-                <div className="max-w-7xl mx-auto px-4 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-cyan-400 bg-clip-text text-transparent">
-                            {"<Brown Code />"}
-                        </div>
-                        <a
-                            href="/portfolio"
-                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-xl hover:bg-purple-500/30 transition-colors"
-                        >
-                            <ArrowLeft size={20} />
-                            <span>Back to Home</span>
-                        </a>
+            {/* Top Navigation Frame */}
+            <nav className="relative z-10 border-b border-slate-800 bg-[#090d16]/80 backdrop-blur-sm">
+                <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <Terminal size={18} className="text-cyan-400" />
+                        <span className="text-sm font-bold text-white tracking-wider uppercase">
+                            BROWN_CODE_SYS // COMMS_GATEWAY
+                        </span>
                     </div>
+                    <a
+                        href="/portfolio"
+                        className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 transition-all"
+                    >
+                        <ArrowLeft size={14} />
+                        <span>SYS.RETURN()</span>
+                    </a>
                 </div>
             </nav>
 
-            {/* Main Content */}
-            <div className="relative z-10 max-w-6xl mx-auto px-4 py-12 md:py-20">
-                <div className="grid md:grid-cols-2 gap-12 items-start">
-                    {/* Left Side - Info */}
-                    <div className="space-y-8">
+            {/* Main Segment Wrapper */}
+            <main className="relative z-10 max-w-6xl mx-auto px-6 py-12 md:py-20">
+                <div className="grid md:grid-cols-12 gap-8 items-start">
+
+                    {/* Left Column: Routing Metrics & Info */}
+                    <div className="md:col-span-5 space-y-6">
                         <div>
-                            <span className="text-cyan-400 font-semibold text-sm tracking-wider uppercase">
-                                Get In Touch
-                            </span>
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mt-2 mb-4">
-                                Let's Work
-                                <br />
-                                <span className="bg-gradient-to-r from-cyan-400 via-cyan-900 to-cyan-900 bg-clip-text text-transparent">
-                                    Together
-                                </span>
+                            <div className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-1.5 flex items-center gap-2">
+                                <span className="w-2 h-2 bg-cyan-500 animate-pulse rounded-none"></span>
+                                SOCKET_OPEN // CONNECT_INTERFACE
+                            </div>
+                            <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight uppercase leading-none">
+                                Request System <br />
+                                <span className="text-slate-500 font-light text-2xl md:text-3xl">Integration</span>
                             </h1>
-                            <p className="text-lg text-gray-300">
-                                Have a project in mind? Fill out the form and I'll get back to you via WhatsApp as soon as possible.
+                            <p className="text-xs sm:text-sm text-slate-400 mt-4 leading-relaxed border-l-2 border-slate-800 pl-4">
+                                Pipe your project dependencies, timeline frameworks, or structural queries directly into my operational workspace. Form submissions are verified and serialized over encrypted WhatsApp protocols.
                             </p>
                         </div>
 
-                        {/* Contact Info Cards */}
-                        <div className="space-y-4">
-                            <div className="bg-cyan-950/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all">
+                        {/* Static Diagnostics Cards */}
+                        <div className="space-y-3">
+                            <div className="bg-slate-900/40 border border-slate-800 p-4 rounded-none">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <Mail size={24} className="text-cyan-500" />
+                                    <div className="p-2 bg-slate-950 border border-slate-850 text-cyan-400 shrink-0">
+                                        <Mail size={16} />
                                     </div>
-                                    <div>
-                                        <h3 className="font-bold mb-1">Email</h3>
-                                        <p className="text-gray-400">browncemmanuel@gmail.com</p>
+                                    <div className="text-xs font-mono">
+                                        <div className="font-bold text-white uppercase tracking-wider mb-0.5">SMTP_LINK_POINTER</div>
+                                        <div className="text-slate-400">browncemmanuel@gmail.com</div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-cyan-900/50 backdrop-blur-xl rounded-2xl p-6 border border-cyan-500/20 hover:border-purple-500/40 transition-all">
+                            <div className="bg-slate-900/40 border border-slate-800 p-4 rounded-none">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <Phone size={24} className="text-cyan-500" />
+                                    <div className="p-2 bg-slate-950 border border-slate-850 text-cyan-400 shrink-0">
+                                        <Network size={16} />
                                     </div>
-                                    <div>
-                                        <h3 className="font-bold mb-1">WhatsApp</h3>
-                                        <p className="text-gray-400">Available 24/7 for urgent inquiries</p>
+                                    <div className="text-xs font-mono">
+                                        <div className="font-bold text-white uppercase tracking-wider mb-0.5">TELECOM_PROTOCOL</div>
+                                        <div className="text-emerald-400">WHATSAPP_HANDSHAKE_24_7</div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-cyan-800/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all">
+                            <div className="bg-slate-900/40 border border-slate-800 p-4 rounded-none">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <CheckCircle size={24} className="text-cyan-500" />
+                                    <div className="p-2 bg-slate-950 border border-slate-850 text-cyan-400 shrink-0">
+                                        <CheckCircle size={16} />
                                     </div>
-                                    <div>
-                                        <h3 className="font-bold mb-1">Response Time</h3>
-                                        <p className="text-gray-400">Usually within 24 hours</p>
+                                    <div className="text-xs font-mono">
+                                        <div className="font-bold text-white uppercase tracking-wider mb-0.5">AVERAGE_LATENCY</div>
+                                        <div className="text-slate-400">Response loops drop within &lt; 24Hrs</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Feature List */}
-                        <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-2xl p-6 border border-purple-500/20">
-                            <h3 className="font-bold mb-4">Why Contact Me?</h3>
-                            <ul className="space-y-3">
-                                <li className="flex items-center gap-3">
-                                    <div className="w-2 h-2 bg-cyan-800 rounded-full"></div>
-                                    <span className="text-gray-300">Custom web solutions tailored to your needs</span>
+                        {/* Architectural Validation Constraints */}
+                        <div className="bg-slate-950/60 border border-slate-800 p-4 font-mono">
+                            <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">SYSTEM_INTEGRITY_SPECS</h3>
+                            <ul className="space-y-2 text-[11px] text-slate-500">
+                                <li className="flex items-center gap-2">
+                                    <span className="w-1 h-1 bg-cyan-500"></span> [01] Modular component structures optimized for performance
                                 </li>
-                                <li className="flex items-center gap-3">
-                                    <div className="w-2 h-2 bg-cyan-700 rounded-full"></div>
-                                    <span className="text-gray-300">Professional and timely communication</span>
+                                <li className="flex items-center gap-2">
+                                    <span className="w-1 h-1 bg-cyan-500"></span> [02] Clean asynchronous state routing architectures
                                 </li>
-                                <li className="flex items-center gap-3">
-                                    <div className="w-2 h-2 bg-cyan-600 rounded-full"></div>
-                                    <span className="text-gray-300">Competitive pricing and quality work</span>
-                                </li>
-                                <li className="flex items-center gap-3">
-                                    <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
-                                    <span className="text-gray-300">Long-term support and maintenance</span>
+                                <li className="flex items-center gap-2">
+                                    <span className="w-1 h-1 bg-cyan-500"></span> [03] Strict type checks and scalable schema validations
                                 </li>
                             </ul>
                         </div>
                     </div>
 
-                    {/* Right Side - Form */}
-                    <div className="relative">
-                        <div className="absolute -inset-1 bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 rounded-3xl blur-xl opacity-20"></div>
-                        <div className="relative bg-gradient-to-br from-cyan-900/40 to-cyan-900/20 border border-cyan-500/30 backdrop-blur-xl rounded-3xl p-8 ">
-                            <h2 className="text-2xl font-bold mb-6">Send Me a Message</h2>
+                    {/* Right Column: Code-Terminal Form Interface */}
+                    <div className="md:col-span-7 relative">
+                        <div className="border border-slate-800 bg-slate-900/20 backdrop-blur-sm">
 
-                            <div className="space-y-6">
-                                {/* Name Field */}
+                            {/* Terminal Pseudo Control Bar Header */}
+                            <div className="bg-slate-950 border-b border-slate-800 px-4 py-2 flex items-center justify-between">
+                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                                    <Terminal size={12} className="text-cyan-500" />
+                                    COMMS_INPUT_BUFFER.SH
+                                </div>
+                                <div className="flex gap-1.5">
+                                    <span className="w-2 h-2 rounded-none bg-slate-800"></span>
+                                    <span className="w-2 h-2 rounded-none bg-slate-800"></span>
+                                    <span className="w-2 h-2 rounded-none bg-cyan-500/40"></span>
+                                </div>
+                            </div>
+
+                            <div className="p-6 space-y-5">
+
+                                {/* Name Input segment */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                        Full Name <span className="text-red-400">*</span>
+                                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                                        SENDER_IDENTITY_STRING <span className="text-red-500">*</span>
                                     </label>
                                     <div className="relative">
-                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-500/50">
-                                            <User size={20} />
+                                        <div className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-slate-600">
+                                            <User size={14} />
                                         </div>
                                         <input
                                             type="text"
                                             name="name"
                                             value={formData.name}
                                             onChange={handleChange}
-                                            className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.name ? 'border-red-500' : 'border-cyan-500/30'
-                                                } rounded-xl focus:border-cyan-500 focus:outline-none transition-colors text-white placeholder-gray-500`}
-                                            placeholder="John Doe"
+                                            className={`w-full pl-10 pr-4 py-2.5 bg-slate-950 border ${errors.name ? 'border-red-500/70 focus:border-red-500' : 'border-slate-800 focus:border-cyan-500/50'} rounded-none text-xs text-white placeholder-slate-700 font-mono focus:outline-none transition-all`}
+                                            placeholder="e.g., John Doe"
                                         />
                                     </div>
                                     {errors.name && (
-                                        <p className="text-red-400 text-sm mt-1">{errors.name}</p>
+                                        <p className="text-red-400 text-[10px] mt-1.5 font-bold flex items-center gap-1">
+                                            <ShieldAlert size={10} /> {errors.name}
+                                        </p>
                                     )}
                                 </div>
 
-                                {/* Email Field */}
+                                {/* Email Input segment */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                        Email Address <span className="text-red-400">*</span>
+                                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                                        NETWORK_SMTP_ADDRESS <span className="text-red-500">*</span>
                                     </label>
                                     <div className="relative">
-                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-500/50">
-                                            <Mail size={20} />
+                                        <div className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-slate-600">
+                                            <Mail size={14} />
                                         </div>
                                         <input
                                             type="email"
                                             name="email"
                                             value={formData.email}
                                             onChange={handleChange}
-                                            className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.email ? 'border-red-500' : 'border-cyan-500/30'
-                                                } rounded-xl focus:border-cyan-500 focus:outline-none transition-colors text-white placeholder-gray-500`}
-                                            placeholder="john@example.com"
+                                            className={`w-full pl-10 pr-4 py-2.5 bg-slate-950 border ${errors.email ? 'border-red-500/70 focus:border-red-500' : 'border-slate-800 focus:border-cyan-500/50'} rounded-none text-xs text-white placeholder-slate-700 font-mono focus:outline-none transition-all`}
+                                            placeholder="e.g., dev@network.com"
                                         />
                                     </div>
                                     {errors.email && (
-                                        <p className="text-red-400 text-sm mt-1">{errors.email}</p>
+                                        <p className="text-red-400 text-[10px] mt-1.5 font-bold flex items-center gap-1">
+                                            <ShieldAlert size={10} /> {errors.email}
+                                        </p>
                                     )}
                                 </div>
 
-                                {/* Phone Field */}
+                                {/* Phone Input segment */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                        Phone Number <span className="text-red-400">*</span>
+                                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                                        TELECOM_ROUTING_POINTER <span className="text-red-500">*</span>
                                     </label>
                                     <div className="relative">
-                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-500/50">
-                                            <Phone size={20} />
+                                        <div className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-slate-600">
+                                            <Phone size={14} />
                                         </div>
                                         <input
                                             type="tel"
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleChange}
-                                            className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.phone ? 'border-red-500' : 'border-cyan-500/30'
-                                                } rounded-xl focus:border-cyan-500 focus:outline-none transition-colors text-white placeholder-gray-500`}
-                                            placeholder="+234 801 234 5678"
+                                            className={`w-full pl-10 pr-4 py-2.5 bg-slate-950 border ${errors.phone ? 'border-red-500/70 focus:border-red-500' : 'border-slate-800 focus:border-cyan-500/50'} rounded-none text-xs text-white placeholder-slate-700 font-mono focus:outline-none transition-all`}
+                                            placeholder="e.g., +234 7010000000"
                                         />
                                     </div>
                                     {errors.phone && (
-                                        <p className="text-red-400 text-sm mt-1">{errors.phone}</p>
+                                        <p className="text-red-400 text-[10px] mt-1.5 font-bold flex items-center gap-1">
+                                            <ShieldAlert size={10} /> {errors.phone}
+                                        </p>
                                     )}
                                 </div>
 
-                                {/* Subject Field */}
+                                {/* Subject Input segment */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                        Subject <span className="text-red-400">*</span>
+                                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                                        STREAM_SUBJECT_HEADER <span className="text-red-500">*</span>
                                     </label>
                                     <div className="relative">
-                                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-cyan-500/50">
-                                            <MessageSquare size={20} />
+                                        <div className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-slate-600">
+                                            <MessageSquare size={14} />
                                         </div>
                                         <input
                                             type="text"
                                             name="subject"
                                             value={formData.subject}
                                             onChange={handleChange}
-                                            className={`w-full pl-12 pr-4 py-3 bg-slate-900/50 border ${errors.subject ? 'border-red-500' : 'border-cyan-500/30'
-                                                } rounded-xl focus:border-cyan-500 focus:outline-none transition-colors text-white placeholder-gray-500`}
-                                            placeholder="Project Inquiry"
+                                            className={`w-full pl-10 pr-4 py-2.5 bg-slate-950 border ${errors.subject ? 'border-red-500/70 focus:border-red-500' : 'border-slate-800 focus:border-cyan-500/50'} rounded-none text-xs text-white placeholder-slate-700 font-mono focus:outline-none transition-all`}
+                                            placeholder="e.g., Architecture Optimization Pipeline"
                                         />
                                     </div>
                                     {errors.subject && (
-                                        <p className="text-red-400 text-sm mt-1">{errors.subject}</p>
+                                        <p className="text-red-400 text-[10px] mt-1.5 font-bold flex items-center gap-1">
+                                            <ShieldAlert size={10} /> {errors.subject}
+                                        </p>
                                     )}
                                 </div>
 
-                                {/* Message Field */}
+                                {/* Message Input segment */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                        Message <span className="text-red-400">*</span>
+                                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                                        CORE_PAYLOAD_ARRAY (MESSAGE) <span className="text-red-500">*</span>
                                     </label>
                                     <textarea
                                         name="message"
                                         value={formData.message}
                                         onChange={handleChange}
-                                        rows={5}
-                                        className={`w-full px-4 py-3 bg-slate-900/50 border ${errors.message ? 'border-red-500' : 'border-cyan-500/30'
-                                            } rounded-xl focus:border-cyan-500 focus:outline-none transition-colors text-white placeholder-gray-500 resize-none`}
-                                        placeholder="Tell me about your project..."
+                                        rows={4}
+                                        className={`w-full px-3.5 py-2.5 bg-slate-950 border ${errors.message ? 'border-red-500/70 focus:border-red-500' : 'border-slate-800 focus:border-cyan-500/50'} rounded-none text-xs text-white placeholder-slate-700 font-mono focus:outline-none transition-all resize-none`}
+                                        placeholder="Enter architectural specs, project directives, or system conditions..."
                                     ></textarea>
                                     {errors.message && (
-                                        <p className="text-red-400 text-sm mt-1">{errors.message}</p>
+                                        <p className="text-red-400 text-[10px] mt-1.5 font-bold flex items-center gap-1">
+                                            <ShieldAlert size={10} /> {errors.message}
+                                        </p>
                                     )}
                                 </div>
 
-                                {/* Submit Button */}
+                                {/* Core Redirection Action Engine Button */}
                                 <button
                                     onClick={handleSubmit}
-                                    className="w-full py-4  bg-gradient-to-r from-cyan-600 to-cyan-800-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all transform hover:scale-105 flex items-center justify-center gap-2 group"
+                                    className="w-full py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-none transition-all tracking-wider uppercase flex items-center justify-center gap-2 group"
                                 >
-                                    <span>Send via WhatsApp</span>
-                                    <Send size={20} className="group-hover:translate-x-1 transition-transform" />
+                                    <span>INITIATE_REDIRECT(WHATSAPP)</span>
+                                    <Send size={12} className="group-hover:translate-x-0.5 transition-transform" />
                                 </button>
 
-                                <p className="text-center text-sm text-gray-400">
-                                    By submitting this form, you'll be redirected to WhatsApp with your message pre-filled
-                                </p>
+                                <div className="text-center text-[10px] text-slate-500 leading-normal border-t border-slate-900 pt-3">
+                                    [NOTICE] Runtime submission constructs text payloads and redirects execution blocks directly into safe external communication matrices.
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            {/* Footer */}
-            <footer className="relative z-10 border-t border-slate-800 py-8 mt-12">
-                <div className="max-w-6xl mx-auto px-4 text-center text-gray-400">
-                    <p>&copy; {new Date().getFullYear()} Brown Code. All rights reserved.</p>
+                </div>
+            </main>
+
+            {/* Footer Console Out block */}
+            <footer className="relative z-10 border-t border-slate-900 bg-slate-950/60 py-6 mt-16">
+                <div className="max-w-6xl mx-auto px-6 text-center text-[10px] font-bold text-slate-600 tracking-widest uppercase font-mono">
+                    <p>&copy; {new Date().getFullYear()} BROWN_CODE.SYS. ALL RIGHTS RESERVED. SECURE_BUILD_V2.0.6</p>
                 </div>
             </footer>
         </div>

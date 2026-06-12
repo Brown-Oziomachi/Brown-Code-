@@ -2,32 +2,44 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
-import { AlertTriangle, CheckCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Check, CheckCheck, ArrowLeft, MoreVertical, Phone, Video, Info } from "lucide-react";
 
 export default function PortfolioScamChecker() {
     const router = useRouter();
 
-    // Navbar state
+    // Navbar & System Interactions State
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [activeSection, setActiveSection] = useState("scam-checker");
 
-    // Scroll listener for navbar effect
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 50);
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Navigation function for navbar sections
     const scrollToSection = (sectionId) => {
         router.push(`/#${sectionId}`);
     };
 
+    // Chat Message Mock Schema
+    const chatLog = [
+        { from: "developer", text: "Hey! I'd love to build your website. It's going to be amazing! 🚀", time: "11:24 AM", isRedFlag: false },
+        { from: "client", text: "That sounds great! Can I see some of your previous work?", time: "11:26 AM", isRedFlag: false },
+        { from: "developer", text: "My portfolio is still being updated. But trust me, I'm really good! I've done tons of projects.", time: "11:27 AM", isRedFlag: false },
+        { from: "client", text: "Okay, what's your process? How do we get started?", time: "11:30 AM", isRedFlag: false },
+        { from: "developer", text: "I need the full payment of $5,000 upfront before I start. That's how I work. 💰", time: "11:31 AM", isRedFlag: true },
+        { from: "client", text: "That seems like a lot upfront. Can we do payments in stages? Like 30% now, 40% halfway, 30% when done?", time: "11:35 AM", isRedFlag: false },
+        { from: "developer", text: "No, I don't work that way. I need full payment first. If you don't trust me, maybe we shouldn't work together. 🤷‍♂️", time: "11:36 AM", isRedFlag: true },
+        { from: "client", text: "Can you at least show me a contract or timeline of what you'll deliver?", time: "11:39 AM", isRedFlag: false },
+        { from: "developer", text: "We can figure out details later. But I need the money first. I have other clients waiting, so decide fast! ⏰", time: "11:40 AM", isRedFlag: true }
+    ];
+
     return (
-        <>
-            {/* Navbar */}
+        <div className="bg-[#111b21] min-h-screen text-[#e9edef] antialiased">
+            {/* Global Base Layout Sync Header */}
             <Navbar
                 isScrolled={isScrolled}
                 isMenuOpen={isMenuOpen}
@@ -36,134 +48,180 @@ export default function PortfolioScamChecker() {
                 scrollToSection={scrollToSection}
             />
 
-            {/* Main Content */}
-            <div className="min-h-screen bg-black text-white p-4 md:p-8 pt-32">
-                <div className="max-w-4xl mx-auto">
-                    {/* Title */}
-                    <div className="text-center mb-8 lg:mt-20">
-                        <h2 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-                            🤔 Beware of Scam?
-                        </h2>
+            {/* Content Container Window */}
+            <div className="max-w-3xl mx-auto px-4 pt-28 pb-16">
+
+                {/* Introduction Header Banner */}
+                <div className="text-center mb-8">
+                    <span className="text-[11px] font-mono uppercase tracking-widest text-[#00a884] bg-[#00a884]/10 px-3 py-1 rounded-full border border-[#00a884]/20">
+                        Security Awareness Pipeline
+                    </span>
+                    <h1 className="text-3xl font-black tracking-tight mt-3 text-[#e9edef]">
+                        Developer Scam Checker
+                    </h1>
+                    <p className="text-xs text-[#8696a0] max-w-md mx-auto mt-2 leading-relaxed">
+                        Analysing communication signatures and structural red flags to protect your engineering investments.
+                    </p>
+                </div>
+
+                {/* WHATSAPP PHONE FRAME CONTAINER */}
+                <div className="rounded-2xl border border-[#222e35] shadow-2xl overflow-hidden bg-[#0b141a] flex flex-col h-[650px]">
+
+                    {/* WhatsApp Top Application Bar */}
+                    <div className="bg-[#202c33] px-3 py-2.5 flex items-center justify-between select-none border-b border-[#222e35]">
+                        <div className="flex items-center gap-2">
+                            <ArrowLeft size={18} className="text-[#aebac1] cursor-pointer" />
+                            <div className="relative">
+                                <div className="bg-[#65a30d] w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                                    SD
+                                </div>
+                                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#00e676] border-2 border-[#202c33] rounded-full"></span>
+                            </div>
+                            <div className="pl-1">
+                                <h3 className="text-sm font-bold text-[#e9edef] leading-tight">Shady Developer</h3>
+                                <span className="text-[11px] text-[#00a884] block">online</span>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-5 text-[#aebac1]">
+                            <Video size={18} className="cursor-pointer hover:text-[#e9edef]" />
+                            <Phone size={16} className="cursor-pointer hover:text-[#e9edef]" />
+                            <MoreVertical size={18} className="cursor-pointer hover:text-[#e9edef]" />
+                        </div>
                     </div>
 
-                    {/* Story Setup */}
-                    <div className="bg-gradient-to-br from-slate-900/80 to-purple-900/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 mb-8 shadow-2xl border border-purple-500/30">
-                        <p className="text-gray-300 text-lg leading-relaxed">
-                            A business owner contacted a{" "}
-                            <span className="font-bold text-purple-400">developer</span> online,
-                            excited about getting a professional website and portfolio. They both
-                            expressed enthusiasm to work together, but the developer started making
-                            demands such as{" "}
-                            <span className="font-semibold text-red-500">
-                                full payment upfront and refusing to show previous work
+                    {/* WhatsApp Dynamic Scrolling Chat Feed Canvas */}
+                    <div
+                        className="flex-1 overflow-y-auto p-4 space-y-3.5 relative"
+                        style={{
+                            backgroundImage: `url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')`,
+                            backgroundBlendMode: "overlay",
+                            backgroundColor: "#0b141a"
+                        }}
+                    >
+                        {/* WhatsApp Encrypted Security Alert Flag */}
+                        <div className="flex justify-center my-2">
+                            <span className="bg-[#182229] border border-[#222e35] text-[#ffd279] text-[11px] px-3 py-1.5 rounded-lg max-w-sm text-center shadow-sm flex items-start gap-1.5 leading-normal">
+                                <Info size={14} className="shrink-0 mt-0.5" />
+                                Messages and calls are end-to-end encrypted. No one outside of this chat can read them, not even WhatsApp.
                             </span>
-                            . Should the business owner trust all their money to someone who hasn't
-                            proven their capabilities yet?
-                        </p>
-                    </div>
+                        </div>
 
-                    {/* Case Study */}
-                    <div className="mb-8">
-                        <h3 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-                            The Conversation 💬
-                        </h3>
-
-                        {/* Chat Container */}
-                        <div className="space-y-6">
-                            {[
-                                { from: "developer", text: "Hey! I'd love to build your website. It's going to be amazing! 🚀", isRedFlag: false },
-                                { from: "client", text: "That sounds great! Can I see some of your previous work?", isRedFlag: false },
-                                { from: "developer", text: "My portfolio is still being updated. But trust me, I'm really good! I've done tons of projects.", isRedFlag: false },
-                                { from: "client", text: "Okay, what's your process? How do we get started?", isRedFlag: false },
-                                { from: "developer", text: "I need the full payment of $5,000 upfront before I start. That's how I work. 💰", isRedFlag: true },
-                                { from: "client", text: "That seems like a lot upfront. Can we do payments in stages? Like 30% now, 40% halfway, 30% when done?", isRedFlag: false },
-                                { from: "developer", text: "No, I don't work that way. I need full payment first. If you don't trust me, maybe we shouldn't work together. 🤷‍♂️", isRedFlag: true },
-                                { from: "client", text: "Can you at least show me a contract or timeline of what you'll deliver?", isRedFlag: false },
-                                { from: "developer", text: "We can figure out details later. But I need the money first. I have other clients waiting, so decide fast! ⏰", isRedFlag: true },
-                            ].map((msg, i) => (
+                        {/* Thread Mapping */}
+                        {chatLog.map((msg, i) => {
+                            const isClient = msg.from === "client";
+                            return (
                                 <div
                                     key={i}
-                                    className={`flex items-start gap-3 ${msg.from === "client" ? "justify-end" : ""}`}
+                                    className={`flex ${isClient ? "justify-end" : "justify-start"}`}
                                 >
-                                    {msg.from === "developer" && (
-                                        <div className="bg-purple-500 rounded-full w-12 h-12 flex items-center justify-center text-2xl flex-shrink-0">
-                                            👨‍💻
-                                        </div>
-                                    )}
-
                                     <div
-                                        className={`p-4 shadow-md max-w-md rounded-2xl ${msg.from === "client"
-                                            ? "bg-purple-700 text-white rounded-tr-none"
-                                            : msg.isRedFlag
-                                                ? "bg-red-100 border-2 border-red-500 text-gray-800 rounded-tl-none"
-                                                : "bg-slate-800 text-gray-300 rounded-tl-none"
+                                        className={`max-w-[75%] px-3 py-1.5 rounded-lg text-sm shadow-md relative group transition-all ${isClient
+                                                ? "bg-[#005c4b] text-[#e9edef] rounded-tr-none"
+                                                : msg.isRedFlag
+                                                    ? "bg-[#3b1919] border border-red-900 text-[#f9bcbc] rounded-tl-none animate-pulse"
+                                                    : "bg-[#202c33] text-[#e9edef] rounded-tl-none"
                                             }`}
                                     >
-                                        <p className="font-medium mb-1">
-                                            {msg.from === "client" ? "Business Owner" : "Shady Developer"}
+                                        {/* Danger Flag Alert Tag */}
+                                        {!isClient && msg.isRedFlag && (
+                                            <span className="text-[9px] uppercase tracking-wider font-mono font-black text-red-400 block mb-1">
+                                                🚨 [Risk Variable Detected]
+                                            </span>
+                                        )}
+
+                                        <p className="whitespace-pre-wrap break-words pr-12 text-[13.5px]">
+                                            {msg.text}
                                         </p>
-                                        <p>{msg.text}</p>
-                                    </div>
 
-                                    {msg.from === "client" && (
-                                        <div className="bg-purple-600 rounded-full w-12 h-12 flex items-center justify-center text-2xl flex-shrink-0">
-                                            👨‍💼
+                                        {/* Timestamp Layout Block */}
+                                        <div className="absolute bottom-1 right-2 flex items-center gap-1 select-none">
+                                            <span className="text-[9px] text-[#8696a0]">
+                                                {msg.time}
+                                            </span>
+                                            {isClient && (
+                                                <CheckCheck size={13} className="text-[#53bdeb]" />
+                                            )}
                                         </div>
-                                    )}
+                                    </div>
                                 </div>
-                            ))}
-                        </div>
+                            );
+                        })}
                     </div>
 
-                    {/* Analysis Section */}
-                    <div className="grid md:grid-cols-2 gap-6 mb-8">
-                        {/* Red Flags */}
-                        <div className="bg-red-900/20 border-2 border-red-500 rounded-3xl p-6 shadow-lg">
-                            <div className="flex items-center gap-3 mb-4">
-                                <AlertTriangle className="text-red-500" size={32} />
-                                <h4 className="text-2xl font-bold text-red-400">🚩 Red Flags</h4>
-                            </div>
-                            <ul className="space-y-3 text-gray-200">
-                                <li>✗ No portfolio or examples of work</li>
-                                <li>✗ Demanding 100% payment upfront</li>
-                                <li>✗ Refusing milestone payments</li>
-                                <li>✗ No contract or clear timeline</li>
-                                <li>✗ Creating pressure to decide quickly</li>
-                                <li>✗ Using guilt or threats to get money</li>
-                            </ul>
+                    {/* WhatsApp Mock Input Footer Utility */}
+                    <div className="bg-[#202c33] p-2.5 flex items-center gap-2 select-none border-t border-[#222e35]">
+                        <div className="flex-1 bg-[#2a3942] rounded-lg px-3 py-2 text-xs text-[#8696a0] flex items-center">
+                            Chat sequence locked for forensic analysis...
                         </div>
-
-                        {/* Green Flags */}
-                        <div className="bg-green-900/20 border-2 border-green-500 rounded-3xl p-6 shadow-lg">
-                            <div className="flex items-center gap-3 mb-4">
-                                <CheckCircle className="text-green-500" size={32} />
-                                <h4 className="text-2xl font-bold text-green-400">✅ Good Signs</h4>
-                            </div>
-                            <ul className="space-y-3 text-gray-200">
-                                <li>✓ Shows real portfolio examples</li>
-                                <li>✓ Offers payment in stages/milestones</li>
-                                <li>✓ Provides detailed contract</li>
-                                <li>✓ Clear timeline and deliverables</li>
-                                <li>✓ Has reviews or testimonials</li>
-                                <li>✓ Professional communication</li>
-                            </ul>
+                        <div className="bg-[#00a884] w-9 h-9 rounded-full flex items-center justify-center text-white shadow-md">
+                            🔒
                         </div>
-                    </div>
-
-                    {/* Final Warning */}
-                    <div className="bg-yellow-900/20 border-2 border-yellow-500 rounded-3xl p-6 md:p-8 text-center shadow-lg">
-                        <p className="text-2xl font-bold text-yellow-400 mb-3">⚠️ Remember This:</p>
-                        <p className="text-lg text-gray-200 leading-relaxed">
-                            A legitimate professional will{" "}
-                            <span className="font-bold text-green-400">ALWAYS</span> show you their work,
-                            provide a contract, and offer reasonable payment terms. If someone pressures
-                            you for full payment upfront without proof of their skills, that's a{" "}
-                            <span className="font-bold text-red-500">MAJOR RED FLAG</span>. Trust your
-                            instincts and protect your money!
-                        </p>
                     </div>
                 </div>
+
+                {/* CRITICAL STRUCTURAL RISK EVALUATION SCHEMATICS */}
+                <div className="grid md:grid-cols-2 gap-4 mt-8">
+
+                    {/* Red Flags Container */}
+                    <div className="bg-[#182229] border border-red-500/20 rounded-xl p-5 shadow-lg">
+                        <div className="flex items-center gap-2 mb-3 border-b border-[#222e35] pb-2">
+                            <AlertTriangle className="text-red-500" size={20} />
+                            <h4 className="text-sm font-black text-red-400 uppercase tracking-wider">🚩 Execution Red Flags</h4>
+                        </div>
+                        <ul className="space-y-2 text-xs text-[#8696a0]">
+                            <li className="flex items-start gap-2"><span className="text-red-500 font-bold">✗</span> Missing active portfolio or live software URLs</li>
+                            <li className="flex items-start gap-2"><span className="text-red-500 font-bold">✗</span> Insisting on full upfront budget allocation</li>
+                            <li className="flex items-start gap-2"><span className="text-red-500 font-bold">✗</span> Rejecting milestones or private sandbox tests</li>
+                            <li className="flex items-start gap-2"><span className="text-red-500 font-bold">✗</span> Absence of signed operational agreements</li>
+                            <li className="flex items-start gap-2"><span className="text-red-500 font-bold">✗</span> Instigating synthetic timeline panic loops</li>
+                        </ul>
+                    </div>
+
+                    {/* Green Flags Container */}
+                    <div className="bg-[#182229] border border-[#00a884]/20 rounded-xl p-5 shadow-lg">
+                        <div className="flex items-center gap-2 mb-3 border-b border-[#222e35] pb-2">
+                            <CheckCircle className="text-[#00a884]" size={20} />
+                            <h4 className="text-sm font-black text-[#00a884] uppercase tracking-wider">✅ Professional Baselines</h4>
+                        </div>
+                        <ul className="space-y-2 text-xs text-[#8696a0]">
+                            <li className="flex items-start gap-2"><span className="text-[#00a884] font-bold">✓</span> Provision of verified live deployment builds</li>
+                            <li className="flex items-start gap-2"><span className="text-[#00a884] font-bold">✓</span> Structural staging pipelines with split funding</li>
+                            <li className="flex items-start gap-2"><span className="text-[#00a884] font-bold">✓</span> Explicit, legally valid delivery agreements</li>
+                            <li className="flex items-start gap-2"><span className="text-[#00a884] font-bold">✓</span> Clear milestone schedules and tracking updates</li>
+                            <li className="flex items-start gap-2"><span className="text-[#00a884] font-bold">✓</span> Objective, transparent scoping communication</li>
+                        </ul>
+                    </div>
+                </div>
+
+                {/* Final Diagnostic Warning Banner */}
+                <div className="bg-[#182229] border-l-4 border-yellow-500 rounded-r-xl p-5 mt-4 shadow-md">
+                    <div className="flex gap-3">
+                        <span className="text-xl shrink-0 select-none">⚠️</span>
+                        <div>
+                            <h4 className="text-xs font-mono font-bold text-yellow-500 uppercase tracking-wider">System Resolution Guidance</h4>
+                            <p className="text-xs text-[#8696a0] mt-1.5 leading-relaxed">
+                                Elite engineering partners prioritize accountability. They will naturally walk you through staging links, structure detailed contracts, and organize transparent milestone funding. If a contact attempts to force financial settlement without providing technical validation, protect your capital resources.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Clean Structural Footer Action Alignment */}
+                <div className="mt-12 text-center pt-6 border-t border-[#222e35]">
+                    <p className="text-[11px] font-mono text-[#8696a0]">
+                        Need to sync with a verified production node?
+                    </p>
+                    <div className="mt-4">
+                        <Link
+                            href="https://browncode.name.ng"
+                            className="inline-block bg-[#202c33] hover:bg-[#2a3942] border border-[#222e35] text-[#e9edef] text-xs font-bold font-mono tracking-wider px-6 py-2.5 rounded-lg transition-all"
+                        >
+                            // Access Secure Main Portfolio
+                        </Link>
+                    </div>
+                </div>
+
             </div>
-        </>
+        </div>
     );
 }
