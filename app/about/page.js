@@ -175,7 +175,7 @@ export default function AboutMePage() {
                             </div>
                             <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight uppercase">
                                 System Developer Portfolio <br />
-                                <span className="text-slate-500 font-light text-2xl sm:text-3xl tracking-wide">ID: Brown AD</span>
+                                <span className="text-slate-500 font-light text-2xl sm:text-3xl tracking-wide ">ID: BC_CORE_v2.0.6</span>
                             </h1>
                         </div>
 

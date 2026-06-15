@@ -16,6 +16,7 @@ import {
     TrendingUp,
     ExternalLink
 } from "lucide-react";
+import { SysMonitorNavDeskLink, SysMonitorNavLink, SysMonitorNavMobLink } from "@/app/status/page";
 
 export default function Navbar({
     isScrolled,
@@ -41,7 +42,7 @@ export default function Navbar({
         "contact",
         "blog",
         "tech-news",
-    ];
+    ];      
 
     const jobOptions = [
         {
@@ -267,7 +268,7 @@ export default function Navbar({
                                         </button>
                                     )
                                 )}
-
+                                
                                 {/* Desktop Pipeline Router Toggles */}
                                 <div ref={jobRef} className="relative inline-block">
                                     <button
@@ -315,9 +316,12 @@ export default function Navbar({
                             >
                                 {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
                             </button>
+               
                         </div>
+                <SysMonitorNavDeskLink />
                     </div>
                 </div>
+
             </nav>
 
             {/* Mobile Controls Drawer Block */}
@@ -360,7 +364,6 @@ export default function Navbar({
                                 )}
                             </div>
                         </div>
-
                         <div className="p-4 border-t border-slate-900 bg-slate-950/50 space-y-3">
                             <div className="text-[11px] text-slate-500 font-sans leading-relaxed border-l-2 border-cyan-500 pl-2">
                                 System Notice: Distributed commercial interfaces are deploying operational assets continuously. Secure connectivity profiles now.

@@ -5,6 +5,7 @@ import { articles } from "../data/article";
 import { ArrowLeft, Clock, User, Search, Terminal, Cpu, Database, Binary } from "lucide-react";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/footer";
 
 export default function BlogList() {
   const router = useRouter();
@@ -111,7 +112,7 @@ export default function BlogList() {
                 stdout // technical_logs
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-4">
+              <h1 className="text-2xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-4">
                 ENGINEERING_<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">INSIGHTS</span>
               </h1>
 
@@ -294,6 +295,7 @@ export default function BlogList() {
             }
           }
         `}</style>
+        <Footer />
       </section>
     </>
   );

@@ -14,6 +14,8 @@ import {
   getDocs,
   serverTimestamp,
   where,
+  doc,
+  getDoc
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth1, db1 } from "@/config/firebase.config1";
@@ -27,6 +29,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
   const [admin, setAdmin] = useState(null);
   const [mounted, setMounted] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [isRegisteredUser, setIsRegisteredUser] = useState(false);
 
   const messagesEndRef = useRef(null);
 
@@ -34,20 +37,17 @@ export default function FirebaseChat({ isOpen, onClose }) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Automated layout matrix reset on incoming datastream packs
   useEffect(() => {
     if (isOpen) {
       setTimeout(scrollToBottom, 50);
     }
   }, [messages, isOpen]);
 
-  // Handle mounting state for SSR safe Portals
   useEffect(() => {
     setMounted(true);
     return () => setMounted(false);
   }, []);
 
-  // Unique local user session identity generation
   useEffect(() => {
     if (typeof window !== "undefined") {
       let savedId = localStorage.getItem("chatUserId");
@@ -59,51 +59,97 @@ export default function FirebaseChat({ isOpen, onClose }) {
     }
   }, []);
 
-  /* ---------------- FETCH MESSAGES ---------------- */
+  /* ---------------- WATCH AUTH & PROFILE DATA ---------------- */
   useEffect(() => {
-    if (!userId || !isOpen) return;
+    const unsub = onAuthStateChanged(auth1, async (user) => {
+      if (user) {
+        if (user.email === "browncemmanuel@gmail.com") {
+          setAdmin(user);
+          setUserId("admin");
+          setUserName("Brown Code");
+          setIsNameSet(true);
+          setIsRegisteredUser(true);
+        } else {
+          setAdmin(null);
+          setUserId(user.uid);
+          setIsRegisteredUser(true);
+          setMessages([]); // ✅ clear any leftover admin messages
 
-    const q = admin
-      ? query(collection(db1, "chat-messages"), orderBy("timestamp", "asc"), limit(200))
-      : query(collection(db1, "chat-messages"), where("userId", "==", userId), orderBy("timestamp", "asc"), limit(200));
+          try {
+            const userDocRef = doc(db1, "users", user.uid);
+            const userDocSnap = await getDoc(userDocRef);
 
-    const unsub = onSnapshot(
-      q,
-      (snapshot) => {
-        const fetched = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setMessages(fetched);
-        setLoading(false);
-      },
-      (err) => {
-        console.error("Pipeline telemetry sync block error:", err);
-        setLoading(false);
-      }
-    );
-
-    return () => unsub();
-  }, [admin, userId, isOpen]);
-
-  /* ---------------- WATCH AUTH ---------------- */
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth1, (user) => {
-      if (user && user.email === "browncemmanuel@gmail.com") {
-        setAdmin(user);
-        setUserName("Brown Code");
-        setIsNameSet(true);
+            if (userDocSnap.exists() && userDocSnap.data().username) {
+              setUserName(userDocSnap.data().username);
+              setIsNameSet(true);
+            } else {
+              const savedName = localStorage.getItem("chatUserName");
+              if (savedName) {
+                setUserName(savedName);
+                setIsNameSet(true);
+              } else {
+                setIsNameSet(false);
+              }
+            }
+          } catch (err) {
+            console.error("Failed parsing profile metadata sequence:", err);
+          }
+        }
       } else {
         setAdmin(null);
+        setIsRegisteredUser(false);
+        setIsNameSet(false);
+        setUserName("");
+
+        setMessages([]);
+        let savedId = localStorage.getItem("chatUserId");
+        if (savedId) setUserId(savedId);
+
         const savedName = localStorage.getItem("chatUserName");
         if (savedName) {
           setUserName(savedName);
           setIsNameSet(true);
+        } else {
+          setUserName("");
+          setIsNameSet(false);
         }
       }
     });
     return () => unsub();
   }, []);
+
+  /* ---------------- FETCH MESSAGES ---------------- */
+  useEffect(() => {
+    if (!userId || !isOpen) return;
+
+    const q = query(
+      collection(db1, "chat-messages"),
+      orderBy("timestamp", "asc"),
+      limit(200)
+    );
+
+    const unsub = onSnapshot(q, (snapshot) => {
+      const fetched = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const filtered = admin
+        ? fetched
+        : fetched.filter(msg =>
+          msg.userId === userId ||                    
+          (msg.isAdmin && msg.targetUserId === userId) 
+        );
+
+      setMessages(filtered);
+      setLoading(false);
+    }, (err) => {
+      console.error("Pipeline telemetry sync block error:", err);
+      setLoading(false);
+    });
+
+    return () => unsub();
+  }, [admin, userId, isOpen]);
 
   /* ---------------- ACTIONS ---------------- */
   const handleSendMessage = async (e) => {
@@ -117,7 +163,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
       text,
       userName,
       isAdmin: !!admin,
-      userId: admin ? "admin" : userId,
+      userId: userId,
       timestamp: serverTimestamp(),
       userTimestamp: new Date().toISOString(),
     };
@@ -159,19 +205,18 @@ export default function FirebaseChat({ isOpen, onClose }) {
       {/* WINDOW HEADER PANEL */}
       <div className="bg-slate-950 px-4 py-4 flex items-center justify-between border-b border-slate-900 shrink-0">
         <div className="flex gap-3 items-center">
-          <div className={`w-10 h-10 rounded-full border flex items-center justify-center ${admin ? "bg-rose-950/20 border-rose-500/30 text-rose-400" : "bg-cyan-950/20 border-cyan-500/30 text-cyan-400"
-            }`}>
+          <div className={`w-10 h-10 rounded-full border flex items-center justify-center ${admin ? "bg-rose-950/20 border-rose-500/30 text-rose-400" : "bg-cyan-950/20 border-cyan-500/30 text-cyan-400"}`}>
             {admin ? <Shield size={18} /> : <Terminal size={18} />}
           </div>
           <div>
             <div className="flex items-center gap-1.5">
               <h3 className="text-slate-100 text-xs font-bold uppercase tracking-wider">
-                {admin ? "SYS_ADMIN_CONSOLE" : "COMMS_INTERFACE"}
+                {admin ? "CHAT_BROWN_CODE" : "COMMS_INTERFACE"}
               </h3>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
             </div>
             <span className="text-[10px] text-slate-500 block font-mono lowercase tracking-tight">
-              {admin ? "root@browncode.network" : `node//${userId?.substring(5, 14) || "client"}`}
+              {admin ? "root@browncode.network" : isRegisteredUser ? `registered//node_${userId?.substring(0, 6)}` : `guest//node_${userId?.substring(5, 11)}`}
             </span>
           </div>
         </div>
@@ -198,7 +243,7 @@ export default function FirebaseChat({ isOpen, onClose }) {
       </div>
 
       {/* CHAT VIEW LOGICAL CORE ENGINE */}
-      {!isNameSet && !admin ? (
+      {!isNameSet ? (
         <div className="flex-1 p-6 flex flex-col items-center justify-center bg-slate-950/40 backdrop-blur-md">
           <form className="w-full max-w-xs space-y-4" onSubmit={handleSetName}>
             <div className="text-center space-y-2 mb-2">
@@ -223,6 +268,15 @@ export default function FirebaseChat({ isOpen, onClose }) {
             >
               Initialize Feed Stream
             </button>
+
+            <div className="text-center pt-2">
+              <p className="text-[10px] text-slate-600 uppercase tracking-wider">
+                Want a persistent network identity?{" "}
+                <a href="/signin?redirect=open-chat" className="text-cyan-600 hover:text-cyan-400 underline transition-colors">
+                  Authorize_Session
+                </a>
+              </p>
+            </div>
           </form>
         </div>
       ) : (
@@ -240,21 +294,18 @@ export default function FirebaseChat({ isOpen, onClose }) {
               </div>
             ) : (
               messages.map((msg) => {
-                const isOwn = msg.userName === userName;
-                const isAdminMsg = msg.isAdmin;
-
+               const isAdminMsg = msg.isAdmin;
+                const isOwn = !isAdminMsg && (msg.userId === userId || msg.userName === userName);
+                
                 return (
                   <div
                     key={msg.id}
                     className={`flex flex-col w-full ${isOwn ? "items-end" : "items-start"}`}
                   >
-                    {/* Log Signature Pointer Meta */}
-                    <span className={`text-[9px] px-1 mb-1 font-mono tracking-wider ${isAdminMsg ? "text-rose-400 font-bold" : isOwn ? "text-slate-500" : "text-cyan-400"
-                      }`}>
-                      {isAdminMsg ? `[ADMIN] ${msg.userName}` : msg.userName}
+                    <span className={`text-[9px] px-1 mb-1 font-mono tracking-wider ${isAdminMsg ? "text-rose-400 font-bold" : isOwn ? "text-slate-500" : "text-cyan-400"}`}>
+                      {isAdminMsg ? `[BROWN CODE] ${msg.userName}` : msg.userName}
                     </span>
 
-                    {/* Crypt Datablock Bubble Matrix */}
                     <div
                       className={`px-3.5 py-2.5 rounded-xl text-xs max-w-[85%] relative break-words whitespace-pre-wrap leading-relaxed border ${isAdminMsg
                           ? "bg-rose-950/20 border-rose-500/20 text-rose-200 rounded-tl-none shadow-md shadow-rose-950/5"
@@ -264,8 +315,6 @@ export default function FirebaseChat({ isOpen, onClose }) {
                         }`}
                     >
                       <p className="pb-2 pr-6 text-[12.5px] font-sans text-slate-200">{msg.text}</p>
-
-                      {/* Timeline Sub-marker Metadata */}
                       <span className="absolute bottom-1 right-2 text-[8px] text-slate-600 font-mono select-none">
                         {formatTime(msg.userTimestamp)}
                       </span>

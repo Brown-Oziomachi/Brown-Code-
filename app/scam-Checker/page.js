@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { AlertTriangle, CheckCircle, Check, CheckCheck, ArrowLeft, MoreVertical, Phone, Video, Info } from "lucide-react";
+import Footer from "@/components/footer";
 
 export default function PortfolioScamChecker() {
     const router = useRouter();
@@ -220,8 +221,8 @@ export default function PortfolioScamChecker() {
                         </Link>
                     </div>
                 </div>
-
             </div>
+                    <Footer />
         </div>
     );
 }

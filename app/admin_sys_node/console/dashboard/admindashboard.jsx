@@ -15,6 +15,8 @@ import {
   Radio,
   Inbox,
   ShieldAlert,
+  Database,
+  UserCheck,
 } from "lucide-react";
 import {
   collection,
@@ -31,40 +33,37 @@ import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { auth1, db1 } from "@/config/firebase.config1";
 
-// ── Read admin email from env ─────────────────────────────────────────────────
-// Add to .env.local:  NEXT_PUBLIC_ADMIN_EMAIL=your@email.com
 const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
-export default function AdminDashboard() {
+export default function AdminDashboardClient() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [admin, setAdmin] = useState(null);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [conversations, setConversations] = useState([]);
+  const [identityLogs, setIdentityLogs] = useState([]); // Array for explicit name injections
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
   const router = useRouter();
 
-  // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Auth guard
   useEffect(() => {
     const unsub = onAuthStateChanged(auth1, (user) => {
       if (user && ADMIN_EMAIL && user.email === ADMIN_EMAIL) {
         setAdmin(user);
       } else {
         setAdmin(null);
-        router.push("/admin");
+        router.push("/admin_sys_node/console/dashboard");
       }
       setLoading(false);
     });
     return () => unsub();
   }, [router]);
 
-  // Live message feed
+  // Live stream parsing loop
   useEffect(() => {
     const q = query(
       collection(db1, "chat-messages"),
@@ -74,26 +73,41 @@ export default function AdminDashboard() {
       const list = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
       setMessages(list);
 
-      // Group into conversations by userName
       const grouped = {};
+      const identities = [];
+
       list.forEach((msg) => {
         if (!msg.isAdmin) {
-          if (!grouped[msg.userName]) {
-            grouped[msg.userName] = {
-              userName: msg.userName,
-              messages: [],
-              lastMessage: msg.text,
-              lastTimestamp: msg.userTimestamp,
-            };
+          // If message is a dedicated identity footprint injection, isolate it for the summary ledger
+          if (msg.isIdentityInjection) {
+            identities.unshift({
+              id: msg.id,
+              name: msg.userName,
+              timestamp: msg.userTimestamp,
+            });
           }
+
+          if (!grouped[msg.userName]) {
+    grouped[msg.userName] = {
+        userName: msg.userName,
+        userId: msg.userId, // 
+        messages: [],
+        lastMessage: msg.text,
+        lastTimestamp: msg.userTimestamp,
+    };
+}
           grouped[msg.userName].messages.push(msg);
           grouped[msg.userName].lastMessage = msg.text;
           grouped[msg.userName].lastTimestamp = msg.userTimestamp;
+          if (msg.isIdentityInjection) {
+            grouped[msg.userName].isIdentityVerified = true;
+          }
         }
       });
-      setConversations(Object.values(grouped));
 
-      // Notification on new inbound message
+      setConversations(Object.values(grouped));
+      setIdentityLogs(identities);
+
       const latest = list[list.length - 1];
       if (latest && !latest.isAdmin) {
         new Audio("/notify.mp3").play().catch(() => {});
@@ -108,23 +122,24 @@ export default function AdminDashboard() {
     return () => unsub();
   }, []);
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !selectedConversation) return;
-    try {
-      await addDoc(collection(db1, "chat-messages"), {
-        text: newMessage.trim(),
-        userName: "Admin",
-        isAdmin: true,
-        replyTo: selectedConversation.userName,
-        timestamp: serverTimestamp(),
-        userTimestamp: new Date().toISOString(),
-      });
-      setNewMessage("");
-    } catch (err) {
-      console.error("Send error:", err);
-    }
-  };
+ const handleSendMessage = async (e) => {
+   e.preventDefault();
+   if (!newMessage.trim() || !selectedConversation) return;
+   try {
+     await addDoc(collection(db1, "chat-messages"), {
+       text: newMessage.trim(),
+       userName: "Admin",
+       isAdmin: true,
+       replyTo: selectedConversation.userName,
+       targetUserId: selectedConversation.userId, // ✅ attach target userId
+       timestamp: serverTimestamp(),
+       userTimestamp: new Date().toISOString(),
+     });
+     setNewMessage("");
+   } catch (err) {
+     console.error("Send error:", err);
+   }
+ };
 
   const handleDeleteMessage = async (id) => {
     if (!window.confirm("Delete this payload?")) return;
@@ -144,7 +159,7 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     await signOut(auth1);
-    router.push("/admin");
+    router.push("/admin_sys_node");
   };
 
   const relativeTime = (ts) => {
@@ -168,7 +183,6 @@ export default function AdminDashboard() {
     );
   };
 
-  // ── Loading / auth guard screens ─────────────────────────────────────────
   if (loading)
     return (
       <div className="min-h-screen bg-[#050811] flex items-center justify-center font-mono">
@@ -183,7 +197,6 @@ export default function AdminDashboard() {
 
   if (!admin) return null;
 
-  // ── Stat tiles ────────────────────────────────────────────────────────────
   const stats = [
     {
       label: "ACTIVE_THREADS",
@@ -191,9 +204,9 @@ export default function AdminDashboard() {
       icon: <Users size={14} className="text-cyan-500" />,
     },
     {
-      label: "TOTAL_PAYLOADS",
-      value: messages.length,
-      icon: <MessageCircle size={14} className="text-cyan-500" />,
+      label: "IDENTITY_SIGNATURES",
+      value: identityLogs.length,
+      icon: <UserCheck size={14} className="text-amber-500" />,
     },
     {
       label: "INBOUND_MSGS",
@@ -209,10 +222,9 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-[#050811] text-slate-400 font-mono antialiased selection:bg-cyan-500/20 selection:text-cyan-300 relative overflow-x-hidden">
-      {/* Engineering grid background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b0d_1px,transparent_1px),linear-gradient(to_bottom,#1e293b0d_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none z-0" />
 
-      {/* ── Header bar ──────────────────────────────────────────────────────── */}
+      {/* Header bar */}
       <header className="relative z-20 border-b border-slate-900 bg-[#050811]/90 backdrop-blur-sm px-4 sm:px-8 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -229,12 +241,6 @@ export default function AdminDashboard() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 bg-emerald-950/20 border border-emerald-900/40 rounded-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-[9px] font-bold text-emerald-400 tracking-widest">
-                SESSION_ACTIVE
-              </span>
-            </div>
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-800 hover:border-red-500/30 hover:text-red-400 text-slate-400 text-[10px] font-bold uppercase tracking-widest transition-all rounded-sm"
@@ -245,7 +251,7 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      {/* ── Stats strip ─────────────────────────────────────────────────────── */}
+      {/* Stats strip */}
       <div className="relative z-10 border-b border-slate-900 px-4 sm:px-8 py-4">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3">
           {stats.map((s) => (
@@ -267,22 +273,51 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* ── Main grid ───────────────────────────────────────────────────────── */}
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-6">
-        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-6">
+      {/* Main Grid Sections */}
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-6">
+        {/* IDENTITY SIGNATURE HISTORY PANEL */}
+        <div className="bg-[#0b132b]/10 border border-slate-900 p-4 rounded-md space-y-3">
+          <div className="flex items-center gap-2 text-[10px] font-bold text-amber-400 uppercase tracking-widest">
+            <Database size={12} /> INTERCEPTED_IDENTITY_INJECTIONS //
+            AUDIT_TRAIL
+          </div>
+
+          {identityLogs.length === 0 ? (
+            <p className="text-[10px] text-slate-600 italic">
+              No custom identities declared on server nodes yet...
+            </p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {identityLogs.map((log) => (
+                <div
+                  key={log.id}
+                  className="bg-slate-950 border border-amber-500/20 text-amber-400 text-[10px] px-3 py-1 rounded-sm font-mono flex items-center gap-2"
+                >
+                  <span className="w-1 h-1 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="font-bold tracking-tight">
+                    {log.name.toUpperCase()}
+                  </span>
+                  <span className="text-slate-600 text-[9px]">
+                    ({relativeTime(log.timestamp)})
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
           <Terminal size={13} className="text-cyan-500" /> LIVE_COMM_ROUTING //
           MESSAGE_THREADS
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-[calc(100vh-340px)] min-h-[480px]">
-          {/* ── Conversation list ────────────────────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-[calc(100vh-420px)] min-h-[440px]">
+          {/* Thread Index */}
           <div className="lg:col-span-4 bg-[#0b132b]/20 border border-slate-800/60 rounded relative flex flex-col overflow-hidden">
-            {/* Panel label */}
             <div className="absolute top-0 left-5 -translate-y-1/2 bg-[#050811] px-2 text-[9px] font-bold text-cyan-400 tracking-widest uppercase z-10">
               01 // THREAD_INDEX
             </div>
 
-            {/* Panel header */}
             <div className="flex items-center justify-between px-4 pt-5 pb-3 border-b border-slate-900">
               <div className="flex items-center gap-2">
                 <Users size={12} className="text-cyan-500" />
@@ -293,23 +328,18 @@ export default function AdminDashboard() {
               </div>
               <button
                 onClick={handleClearAll}
-                title="Purge all messages"
                 className="flex items-center gap-1.5 px-2 py-1 text-[9px] font-bold text-red-400/60 hover:text-red-400 hover:bg-red-400/5 border border-transparent hover:border-red-900/40 uppercase tracking-widest transition-all rounded-sm"
               >
                 <Trash2 size={10} /> PURGE_ALL()
               </button>
             </div>
 
-            {/* Thread list */}
             <div className="flex-1 overflow-y-auto">
               {conversations.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full gap-3 text-center px-4">
                   <Inbox size={28} className="text-slate-700" />
                   <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">
                     NO_ACTIVE_THREADS
-                  </p>
-                  <p className="text-[10px] text-slate-700">
-                    Awaiting inbound payloads…
                   </p>
                 </div>
               ) : (
@@ -327,7 +357,6 @@ export default function AdminDashboard() {
                       }`}
                     >
                       <div className="flex items-start gap-3">
-                        {/* Avatar */}
                         <div className="w-8 h-8 bg-[#0b132b] border border-slate-800 flex items-center justify-center flex-shrink-0 rounded-sm">
                           <span
                             className={`text-xs font-black ${isActive ? "text-cyan-400" : "text-slate-400"}`}
@@ -337,22 +366,25 @@ export default function AdminDashboard() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-center mb-0.5">
-                            <span
-                              className={`text-[11px] font-black uppercase tracking-tight ${isActive ? "text-cyan-400" : "text-slate-300"}`}
-                            >
-                              {conv.userName}
-                            </span>
-                            <span className="text-[9px] text-slate-600 font-bold tracking-widest">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span
+                                className={`text-[11px] font-black uppercase tracking-tight truncate ${isActive ? "text-cyan-400" : "text-slate-300"}`}
+                              >
+                                {conv.userName}
+                              </span>
+                              {conv.isIdentityVerified && (
+                                <span className="bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded text-[8px] font-bold px-1 py-0.2 shrink-0">
+                                  VERIFIED_ID
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[9px] text-slate-600 font-bold tracking-widest shrink-0">
                               {relativeTime(conv.lastTimestamp)}
                             </span>
                           </div>
                           <p className="text-[10px] text-slate-500 truncate">
                             {conv.lastMessage}
                           </p>
-                          <div className="text-[9px] text-slate-700 mt-0.5 font-bold tracking-widest">
-                            {conv.messages.length} MSG
-                            {conv.messages.length !== 1 ? "S" : ""}
-                          </div>
                         </div>
                       </div>
                     </button>
@@ -362,7 +394,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* ── Chat pane ───────────────────────────────────────────────────── */}
+          {/* Chat Stream View */}
           <div className="lg:col-span-8 bg-[#0b132b]/20 border border-slate-800/60 rounded relative flex flex-col overflow-hidden">
             <div className="absolute top-0 left-5 -translate-y-1/2 bg-[#050811] px-2 text-[9px] font-bold text-cyan-400 tracking-widest uppercase z-10">
               02 // ACTIVE_STREAM
@@ -370,7 +402,6 @@ export default function AdminDashboard() {
 
             {selectedConversation ? (
               <>
-                {/* Chat header */}
                 <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-900">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 bg-[#0b132b] border border-cyan-900/40 flex items-center justify-center rounded-sm">
@@ -387,23 +418,17 @@ export default function AdminDashboard() {
                           CONNECTED
                         </span>
                       </div>
-                      <p className="text-[10px] text-slate-500 tracking-widest">
-                        {selectedConversation.messages.length} INBOUND_PAYLOAD
-                        {selectedConversation.messages.length !== 1 ? "S" : ""}
-                      </p>
                     </div>
                   </div>
                   <CheckCircle size={14} className="text-emerald-400" />
                 </div>
 
-                {/* Messages */}
                 <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
                   {convMessages().map((msg) => (
                     <div
                       key={msg.id}
                       className={`flex flex-col ${msg.isAdmin ? "items-end" : "items-start"}`}
                     >
-                      {/* Meta row */}
                       <div className="flex items-center gap-2 mb-1">
                         <span
                           className={`text-[9px] font-bold tracking-widest uppercase ${msg.isAdmin ? "text-cyan-400" : "text-slate-500"}`}
@@ -417,7 +442,6 @@ export default function AdminDashboard() {
                         </span>
                       </div>
 
-                      {/* Bubble */}
                       <div className="flex items-start gap-2 group">
                         {!msg.isAdmin && (
                           <button
@@ -429,9 +453,11 @@ export default function AdminDashboard() {
                         )}
                         <div
                           className={`px-4 py-2.5 max-w-[75%] text-xs leading-relaxed font-sans border ${
-                            msg.isAdmin
-                              ? "bg-cyan-950/30 border-cyan-900/40 text-cyan-200 rounded-sm rounded-br-none"
-                              : "bg-slate-900 border-slate-800 text-slate-300 rounded-sm rounded-bl-none"
+                            msg.isIdentityInjection
+                              ? "bg-amber-950/10 border-amber-900/30 text-amber-200 rounded-sm"
+                              : msg.isAdmin
+                                ? "bg-cyan-950/30 border-cyan-900/40 text-cyan-200 rounded-sm rounded-br-none"
+                                : "bg-slate-900 border-slate-800 text-slate-300 rounded-sm rounded-bl-none"
                           }`}
                         >
                           {msg.text}
@@ -450,7 +476,6 @@ export default function AdminDashboard() {
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Input */}
                 <form
                   onSubmit={handleSendMessage}
                   className="px-5 py-4 border-t border-slate-900"
@@ -469,7 +494,7 @@ export default function AdminDashboard() {
                     <button
                       type="submit"
                       disabled={!newMessage.trim()}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-500 hover:bg-cyan-400 disabled:bg-slate-800 disabled:text-slate-600 text-slate-950 font-black text-[9px] uppercase tracking-widest transition-all rounded-sm disabled:cursor-not-allowed"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-500 hover:bg-cyan-400 disabled:bg-slate-800 disabled:text-slate-600 text-slate-950 font-black text-[9px] uppercase tracking-widest transition-all rounded-sm"
                     >
                       <Send size={10} /> SEND()
                     </button>
@@ -477,29 +502,14 @@ export default function AdminDashboard() {
                 </form>
               </>
             ) : (
-              /* Empty state */
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center space-y-4 px-8">
                   <div className="w-14 h-14 bg-[#0b132b]/40 border border-slate-800/60 flex items-center justify-center mx-auto rounded">
                     <MessageCircle size={22} className="text-slate-700" />
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                      NO_STREAM_SELECTED
-                    </p>
-                    <p className="text-[10px] text-slate-700">
-                      Select a thread from the index to open its payload stream.
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-center gap-1">
-                    {[0, 1, 2].map((i) => (
-                      <span
-                        key={i}
-                        className="w-1 h-1 rounded-full bg-cyan-500/40 animate-pulse"
-                        style={{ animationDelay: `${i * 0.2}s` }}
-                      />
-                    ))}
-                  </div>
+                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    NO_STREAM_SELECTED
+                  </p>
                 </div>
               </div>
             )}

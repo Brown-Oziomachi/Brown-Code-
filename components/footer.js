@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export default function Footer() {
-    const currentYear = new Date().getFullYear();
+    const allYear = new Date().getFullYear();
 
     return (
         <footer className="bg-[#0b0b0f] border-t border-[rgba(248,248,255,.07)] py-12 mt-20 relative overflow-hidden">
@@ -13,8 +13,8 @@ export default function Footer() {
 
                     {/* Node 1: Brand System Ident */}
                     <div className="text-center md:text-left space-y-1">
-                        <h4 className="text-sm font-black tracking-tight text-[#f8f8ff]">
-                            BROWN <span className="bg-gradient-to-r from-cyan-300 to-cyan-400 bg-clip-text text-transparent">CODE</span>
+                        <h4 className="text-sm font-black tracking-tight text-[rgba(248,248,255,0.48)]">
+                            BROWN_CODE_SYS
                         </h4>
                         <p className="text-[11px] font-mono text-[rgba(248,248,255,.35)]">
               // High Efficiency Web Systems.
@@ -49,8 +49,8 @@ export default function Footer() {
                     {/* Node 3: Live Telemetry Status Tag */}
                     <div className="flex justify-center md:justify-end items-center gap-2 select-none">
                         <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#a3e635] opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#65a30d]"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
                         </span>
                         <span className="text-[10px] font-mono uppercase tracking-widest text-[rgba(248,248,255,.4)] bg-[#11111a] border border-[rgba(248,248,255,.07)] px-2.5 py-1 rounded">
                             Staging.Verified
@@ -61,9 +61,11 @@ export default function Footer() {
 
                 {/* Legal Node Base */}
                 <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-[11px] font-mono text-[rgba(248,248,255,.3)]">
-                    <p>© {currentYear} Brown Code. All rights reserved.</p>
-                    <p className="text-[10px] text-[rgba(248,248,255,.2)]">
-                        Locally Routed // NG Node
+                    <div className="max-w-6xl mx-auto px-6 text-center text-[10px] font-bold text-slate-600 tracking-widest uppercase font-mono">
+                        <p>&copy; {allYear} BROWN_CODE.SYS. ALL RIGHTS RESERVED. SECURE_BUILD_V2.0.6</p>
+                    </div>
+                    <p className="text-[10px] font-mono tracking-widest text-[rgba(248,248,255,.4)] bg-[#11111a] border border-[rgba(248,248,255,.07)] px-2.5 py-1 rounded">
+                        https://www.browncode.name.ng
                     </p>
                 </div>
             </div>

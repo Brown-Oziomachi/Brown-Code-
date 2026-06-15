@@ -1,3 +1,4 @@
+import InteractionTracker from "@/components/InteractionTracker";
 import "./globals.css";
 import Script from "next/script";
 
@@ -46,7 +47,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="">
-        <div className="gradient"/>
+        {/* 🕵️‍♂️ THE LIVE INTERACTION TRACKER (Runs client-side tracking across all nodes) */}
+        <InteractionTracker />
+
+        <div className="gradient" />
         {children}
         <Script
           src="https://www.careerjet.com.ng/partners/js_banner.html?format=banner_02_468x60&affid=395e979b37f19b4b31613006e51978ee"

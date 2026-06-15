@@ -2,16 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Network, Terminal, FileText, Compass, Globe } from "lucide-react";
+import { Network, Terminal, Compass, Globe, Binary, ArrowLeft, Activity } from "lucide-react";
 import Footer from "@/components/footer";
 
 // Simulated fetch layer for production blog nodes
 const getBlogSlugs = async () => {
     return [
         "why-you-need-a-website",
+        "how-users-help-ai-companies-make-billions",
         "importance-of-a-personal-portfolio",
         "why-branding-matters-online",
         "future-proofing-your-career-online",
+        "cost-of-neglect-website-maintenance",
+        "how-to-build-your-first-website",
+        "seo-fundamentals-getting-found",
+        "content-marketing-personal-brands",
     ];
 };
 
@@ -33,7 +38,7 @@ export default function SitemapPage() {
         { name: "Cheap Web Developer — Nigeria", href: "/brown-code/cheap-web-developer-in-nigeria" },
         { name: "Software Developer — Nigeria", href: "/brown-code/software-developer-nigeria" },
         { name: "Software Developer — Africa", href: "/brown-code/software-developer-africa" },
-        { name: "Web Developer — Abuja", href: "/brown-code/web-developer-abuja" }, // Fixed: Prefixed leading missing forward slash
+        { name: "Web Developer — Abuja", href: "/brown-code/web-developer-abuja" },
         { name: "Web Developer — Nigeria", href: "/brown-code/web-developer-nigeria" },
     ];
 
@@ -55,49 +60,59 @@ export default function SitemapPage() {
     }, []);
 
     return (
-        <main className="min-h-screen bg-[#0b0b0f] text-[#f8f8ff] antialiased py-24 px-6 relative selection:bg-[#7c3aed] selection:text-[#f8f8ff]">
-            {/* Top Concentrated Subtle Purple Laser Backlight Blur Effect */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[150px] bg-[#7c3aed]/10 rounded-full blur-[120px] pointer-events-none select-none"></div>
+        <main className="min-h-screen bg-[#0b0b0f] text-slate-100 antialiased py-24 px-4 md:px-6 relative font-mono selection:bg-cyan-500/30 selection:text-cyan-200">
+            {/* Top Concentrated Subtle Cyan Laser Backlight Blur Effect */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[150px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none select-none"></div>
 
-            <div className="max-w-5xl mx-auto">
+            <div className="max-w-7xl mx-auto">
 
                 {/* Application Architecture Header Meta Section */}
-                <header className="border-b border-[rgba(248,248,255,.06)] pb-8 mb-12 text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="space-y-1">
-                        <div className="inline-flex items-center gap-2 bg-[#a3e635]/10 border border-[#a3e635]/20 rounded-full px-3 py-1 text-xs font-mono text-[#a3e635]">
-                            <Network size={12} /> // System.Map_Tree
+                <header className="relative w-full rounded-2xl border border-slate-800 bg-slate-950/40 backdrop-blur-md overflow-hidden p-6 md:p-10 shadow-2xl mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none hidden md:block">
+                        <Binary size={180} />
+                    </div>
+
+                    <div className="relative z-10 text-center md:text-left">
+                        <div className="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 text-cyan-400 text-xs px-4 py-1.5 rounded-md tracking-wider uppercase mb-4">
+                            <Network size={14} className="animate-pulse" />
+                            system_tree // route_manifest
                         </div>
-                        <h1 className="text-3xl font-black tracking-tight mt-2">
-                            Directory Index Map
+                        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white">
+                            DIRECTORY_<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">INDEX</span>
                         </h1>
                     </div>
-                    <p className="text-xs font-mono text-[rgba(248,248,255,.35)] max-w-xs text-center md:text-right leading-relaxed">
-                        Automated directory maps indexing core endpoints, platform insights, and localized routing paths.
+
+                    <p className="relative z-10 text-xs text-slate-400 max-w-xs text-center md:text-right leading-relaxed font-sans">
+                        Automated structural mapping pipelines indexing all available endpoint records, core platform nodes, and localized optimization routing footprints.
                     </p>
                 </header>
 
                 {/* THE SYSTEM GRID PACKET OVERVIEW */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
 
                     {/* Block A: Core Platform System Elements */}
-                    <div className="bg-[#111116] border border-[rgba(248,248,255,.04)] rounded-2xl p-5 space-y-4 shadow-xl">
-                        <div className="flex items-center gap-2 border-b border-[rgba(248,248,255,.04)] pb-2.5">
-                            <Compass size={16} className="text-[#a3e635]" />
-                            <h3 className="text-xs font-mono font-black uppercase tracking-wider text-[rgba(248,248,255,.8)]">
-                                Core Navigation
+                    <div className="bg-slate-950/40 border border-slate-900 rounded-xl p-5 space-y-4 shadow-xl hover:border-slate-800/80 transition-colors duration-300">
+                        <div className="flex items-center gap-2 border-b border-slate-900 pb-3">
+                            <Compass size={16} className="text-cyan-400" />
+                            <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+                                CORE_NAVIGATION()
                             </h3>
                         </div>
-                        <ul className="space-y-1 font-mono text-xs">
+                        <ul className="space-y-0.5 text-xs">
                             {corePages.map((page, i) => (
                                 <li key={i}>
                                     <Link
                                         href={page.href}
-                                        className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-[rgba(248,248,255,.55)] hover:text-[#f8f8ff] hover:bg-[rgba(248,248,255,.03)] transition-all group"
+                                        className="flex items-center gap-2 px-2 py-2 rounded-md text-slate-400 hover:text-cyan-400 hover:bg-slate-950 transition-all duration-200 group"
                                     >
-                                        <span className="text-[rgba(248,248,255,.2)] group-hover:text-[#a3e635] text-[10px] transition-colors">
+                                        <span className="text-slate-700 group-hover:text-cyan-500/50 text-[10px] transition-colors">
                                             └─
                                         </span>
-                                        {page.name}
+                                        {/* Dynamic accent color swap if it detects our status tracker node item */}
+                                        <span className={page.href === "/status" ? "text-cyan-400 font-bold flex items-center gap-1.5" : ""}>
+                                            {page.href === "/status" && <Activity size={11} className="animate-pulse text-cyan-400" />}
+                                            {page.name}
+                                        </span>
                                     </Link>
                                 </li>
                             ))}
@@ -105,30 +120,30 @@ export default function SitemapPage() {
                     </div>
 
                     {/* Block B: Technical Platform Journals (Dynamic Slugs Layer) */}
-                    <div className="bg-[#111116] border border-[rgba(248,248,255,.04)] rounded-2xl p-5 space-y-4 shadow-xl">
-                        <div className="flex items-center gap-2 border-b border-[rgba(248,248,255,.04)] pb-2.5">
-                            <Terminal size={16} className="text-[#a855f7]" />
-                            <h3 className="text-xs font-mono font-black uppercase tracking-wider text-[rgba(248,248,255,.8)]">
-                                Documentation Logs
+                    <div className="bg-slate-950/40 border border-slate-900 rounded-xl p-5 space-y-4 shadow-xl hover:border-slate-800/80 transition-colors duration-300">
+                        <div className="flex items-center gap-2 border-b border-slate-900 pb-3">
+                            <Terminal size={16} className="text-emerald-400" />
+                            <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+                                DOCUMENTATION_LOGS
                             </h3>
                         </div>
-                        <ul className="space-y-1 font-mono text-xs">
+                        <ul className="space-y-0.5 text-xs">
                             {loading ? (
-                                <li className="text-[rgba(248,248,255,.3)] text-center py-6 text-[11px] italic">
-                                    Compiling log paths...
+                                <li className="text-slate-600 text-center py-8 text-[11px] italic">
+                                    Compiling map records...
                                 </li>
                             ) : blogSlugs.length === 0 ? (
-                                <li className="text-[rgba(248,248,255,.3)] text-center py-6 text-[11px]">
-                                    No entries indexed.
+                                <li className="text-slate-600 text-center py-8 text-[11px]">
+                                    ERR_NO_ENTRIES_INDEXED
                                 </li>
                             ) : (
                                 blogSlugs.map((slug, i) => (
                                     <li key={`blog-${i}`}>
                                         <Link
                                             href={`/blog/${slug}`}
-                                            className="flex items-start gap-2 px-2.5 py-2 rounded-lg text-[rgba(248,248,255,.55)] hover:text-[#f8f8ff] hover:bg-[rgba(248,248,255,.03)] transition-all group"
+                                            className="flex items-start gap-2 px-2 py-2 rounded-md text-slate-400 hover:text-emerald-400 hover:bg-slate-950 transition-all duration-200 group"
                                         >
-                                            <span className="text-[rgba(248,248,255,.2)] group-hover:text-[#a855f7] text-[10px] mt-0.5 shrink-0">
+                                            <span className="text-slate-700 group-hover:text-emerald-500/50 text-[10px] mt-0.5 shrink-0">
                                                 ✦
                                             </span>
                                             <span className="capitalize truncate">
@@ -142,21 +157,21 @@ export default function SitemapPage() {
                     </div>
 
                     {/* Block C: Regional Targeting SEO Routing Array Map */}
-                    <div className="bg-[#111116] border border-[rgba(248,248,255,.04)] rounded-2xl p-5 space-y-4 shadow-xl">
-                        <div className="flex items-center gap-2 border-b border-[rgba(248,248,255,.04)] pb-2.5">
-                            <Globe size={16} className="text-cyan-400" />
-                            <h3 className="text-xs font-mono font-black uppercase tracking-wider text-[rgba(248,248,255,.8)]">
-                                Geolocation Nodes
+                    <div className="bg-slate-950/40 border border-slate-900 rounded-xl p-5 space-y-4 shadow-xl hover:border-slate-800/80 transition-colors duration-300 md:col-span-2 lg:col-span-1">
+                        <div className="flex items-center gap-2 border-b border-slate-900 pb-3">
+                            <Globe size={16} className="text-blue-400" />
+                            <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+                                GEOLOCATION_NODES
                             </h3>
                         </div>
-                        <ul className="space-y-1 font-mono text-xs">
+                        <ul className="space-y-0.5 text-xs">
                             {seoNodes.map((page, i) => (
                                 <li key={i}>
                                     <Link
                                         href={page.href}
-                                        className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-[rgba(248,248,255,.55)] hover:text-[#f8f8ff] hover:bg-[rgba(248,248,255,.03)] transition-all group"
+                                        className="flex items-center gap-2 px-2 py-2 rounded-md text-slate-400 hover:text-blue-400 hover:bg-slate-950 transition-all duration-200 group"
                                     >
-                                        <span className="text-[rgba(248,248,255,.2)] group-hover:text-cyan-400 text-[10px] transition-colors">
+                                        <span className="text-slate-700 group-hover:text-blue-500/50 text-[10px] transition-colors">
                                             ::
                                         </span>
                                         <span className="truncate">{page.name}</span>
@@ -168,9 +183,19 @@ export default function SitemapPage() {
 
                 </div>
 
-               <Footer />
+                {/* Main Control Alignment Matrix back navigation */}
+                <div className="flex flex-col sm:flex-row items-center justify-start gap-4 mb-12">
+                    <Link
+                        href="/portfolio"
+                        className="w-full sm:w-auto group flex items-center justify-center gap-2 px-6 py-3 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all duration-200 rounded-md text-xs uppercase tracking-wider"
+                    >
+                        <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                        RETURN_TO_BASE
+                    </Link>
+                </div>
 
             </div>
+            <Footer />
         </main>
     );
 }
