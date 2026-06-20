@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import Link from "next/link";
 
 // 1. TRANSACTIONAL METADATA CONFIGURATION
@@ -218,7 +219,7 @@ export default function HireWebDeveloperAbuja() {
                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#7c3aed]/5 blur-3xl pointer-events-none"></div>
 
                     <h2 className="text-2xl font-black">Ready to Align Production Schedules?</h2>
-                    <p className="text-xs text-[rgba(248,248,255,.4)] mt-3 max-w-md mx-auto leading-relaxed">
+                    <p className="text-xs text-[rgba(248,248,255,.4)] mt-3 mx-auto leading-relaxed">
                         Let&apos;s build down a clear baseline. Skip lengthy consulting periods and connect directly on-site or via WhatsApp.
                     </p>
 
@@ -239,13 +240,7 @@ export default function HireWebDeveloperAbuja() {
                     </div>
                 </section>
 
-                {/* Structural Platform Footer */}
-                <footer className="mt-24 pt-8 border-t border-[rgba(248,248,255,.12)] (MUTED2) flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-[rgba(248,248,255,.4)]">
-                    <p>© {currentYear} browncode.name.ng — Core Web Engineering Systems Hub.</p>
-                    <span className="text-[10px] font-mono bg-[rgba(248,248,255,.12)] px-2 py-1 rounded">
-                        contract.node-abuja
-                    </span>
-                </footer>
+              <Footer />
             </main>
         </div>
     );

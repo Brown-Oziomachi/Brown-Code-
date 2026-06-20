@@ -8,6 +8,7 @@ import {
     addDoc,
     serverTimestamp,
 } from "firebase/firestore";
+import { db1 } from "@/config/firebase.config1";
 export default function StatusMonitorPage() {
     const [systemData, setSystemData] = useState(null);
     const [loading, setLoading] = useState(true);

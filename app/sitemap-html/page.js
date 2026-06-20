@@ -8,7 +8,7 @@ import Footer from "@/components/footer";
 // Simulated fetch layer for production blog nodes
 const getBlogSlugs = async () => {
     return [
-        "why-you-need-a-website",
+        "why-business-owners-need-websites",
         "how-users-help-ai-companies-make-billions",
         "importance-of-a-personal-portfolio",
         "why-branding-matters-online",
@@ -24,13 +24,13 @@ export default function SitemapPage() {
     // Divided structurally to protect user navigation flows
     const corePages = [
         { name: "Home Node", href: "/portfolio" },
-        { name: "About Developer", href: "/about" },
+        { name: "About Developer", href: "/bc/about" },
         { name: "Technical Log (Blog)", href: "/blog" },
-        { name: "Contact Secure", href: "/contact" },
+        { name: "Contact Secure", href: "/bc/contact" },
         { name: "Career Openings (Jobs)", href: "/jobs" },
-        { name: "Production Projects", href: "/projects" },
-        { name: "Forensic Scam Checker", href: "/scam-checker" },
-        { name: "Curriculum Vitae (CV)", href: "/cv" },
+        { name: "Production Projects", href: "/bc/projects" },
+        { name: "Forensic Scam Checker", href: "/client/scam-checker" },
+        { name: "Curriculum Vitae (CV)", href: "/cv/pdf" },
     ];
 
     const seoNodes = [
@@ -59,8 +59,38 @@ export default function SitemapPage() {
         fetchSlugs();
     }, []);
 
+    if (loading) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+                <p className="font-sans text-xs font-semibold uppercase tracking-widest text-cyan-400">
+                    Loading bc Portfolio
+                </p>
+            </div>
+        );
+    }
     return (
-        <main className="min-h-screen bg-[#0b0b0f] text-slate-100 antialiased py-24 px-4 md:px-6 relative font-mono selection:bg-cyan-500/30 selection:text-cyan-200">
+        <>
+             <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
+                            <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+                                <div className="flex items-center gap-3 group">
+                        <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
+                                    <a href="/">
+                                        <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+                                BROWN_CODE_DEV // system_tree
+                                        </span>
+                                    </a>
+                                </div>
+                                <a
+                                    href="/"
+                                    className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
+                                >
+                                    <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+                        <span>SYS.INDEX()</span>
+                                </a>
+                            </div>
+            </nav>
+            
+        <main className="min-h-screen bg-[#0b0b0f] text-slate-100 antialiased py-24 px-4 md:px-6 relative font-mono selection:bg-cyan-500/30 selection:text-cyan-200 overflow-hidden">
             {/* Top Concentrated Subtle Cyan Laser Backlight Blur Effect */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[150px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none select-none"></div>
 
@@ -196,6 +226,7 @@ export default function SitemapPage() {
 
             </div>
             <Footer />
-        </main>
+            </main>
+        </>
     );
 }

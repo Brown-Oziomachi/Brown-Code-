@@ -31,7 +31,7 @@ export default function FloatingClient({ onChatOpen }) {
             onChatOpen();
         } else {
             // Not logged in — send to signin with redirect
-            router.push("/signin?redirect=open-chat");
+            router.push("/signup?redirect=open-chat");
         }
     };
 

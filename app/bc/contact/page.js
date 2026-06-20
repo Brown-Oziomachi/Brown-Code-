@@ -110,9 +110,11 @@ ${formData.message}
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <Terminal size={18} className="text-cyan-400" />
+                        <a href='/'>
                         <span className="text-sm font-bold text-white tracking-wider uppercase">
-                            BROWN_CODE_SYS // COMMS_GATEWAY
+                            BROWN_CODE_DEV // COMMS_GATEWAY
                         </span>
+                        </a>
                     </div>
                     <a
                         href="/portfolio"
@@ -136,7 +138,7 @@ ${formData.message}
                                 SOCKET_OPEN // CONNECT_INTERFACE
                             </div>
                             <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight uppercase leading-none">
-                                Request System <br />
+                                Request Website <br />
                                 <span className="text-slate-500 font-light text-2xl md:text-3xl">Integration</span>
                             </h1>
                             <p className="text-xs sm:text-sm text-slate-400 mt-4 leading-relaxed border-l-2 border-slate-800 pl-4">
@@ -185,7 +187,7 @@ ${formData.message}
 
                         {/* Architectural Validation Constraints */}
                         <div className="bg-slate-950/60 border border-slate-800 p-4 font-mono">
-                            <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">SYSTEM_INTEGRITY_SPECS</h3>
+                            <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">WEBSITE_INTEGRITY_SPECS</h3>
                             <ul className="space-y-2 text-[11px] text-slate-500">
                                 <li className="flex items-center gap-2">
                                     <span className="w-1 h-1 bg-cyan-500"></span> [01] Modular component structures optimized for performance

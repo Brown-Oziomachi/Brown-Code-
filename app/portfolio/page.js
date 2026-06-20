@@ -89,7 +89,7 @@ export default function PortfolioClients() {
         { name: 'React Architecture & Next.js SSR', level: 70, status: 'Production Ready' },
         { name: 'Node.js Core & Vercel Serverless Platforms', level: 50, status: 'Stable Backend' },
         { name: 'JavaScript Engine Paradigms (ES6+ Runtime)', level: 45, status: 'Intermediate Core' },
-        { name: 'Database Architecture & Management', level: 70, status: 'Scalable Systems' },
+        { name: 'Database Architecture & Management', level: 70, status: 'Scalable Website' },
     ];
 
     const timeline = [
@@ -101,7 +101,7 @@ export default function PortfolioClients() {
         },
         {
             year: '2021',
-            title: 'Systems Development & Foundational Code Tracking',
+            title: 'Software Development & Foundational Code Tracking',
             description: 'Initiated programmatic core tracks. Discovered deep data layout structures, schema validation parsing, and foundational logical algorithms.',
             icon: <Cpu size={14} />
         },
@@ -125,7 +125,7 @@ export default function PortfolioClients() {
         },
         {
             icon: <Layers size={18} />,
-            title: 'Systems Adaptability',
+            title: 'Software Adaptability',
             description: 'Continually tracking state machine patterns, security layers, and fresh structural updates.'
         },
     ];
@@ -177,11 +177,11 @@ export default function PortfolioClients() {
                             </div>
 
                             <div className="space-y-1.5 text-center sm:text-left">
-                                <h2 className="text-xl font-black text-white uppercase tracking-tight">Brown Code</h2>
-                                <p className="text-xs font-bold text-cyan-400 tracking-wider">Full-Stack Developer</p>
+                                <h2 className="text-xl font-black text-white uppercase tracking-tight">Sir Brown AD</h2>
+                                <p className="text-xs font-bold text-cyan-400 tracking-wider">Full-Stack Web Developer</p>
                             </div>
 
-                            {/* System Diagnostic Telemetry Panel */}
+                            {/* Software Diagnostic Telemetry Panel */}
                             <div className="space-y-2 text-xs font-mono border-t border-slate-800/60 pt-4">
                                 <div className="flex justify-between">
                                     <span className="text-slate-500">ID:</span>
@@ -190,7 +190,7 @@ export default function PortfolioClients() {
 
                                 <div className="flex justify-between">
                                     <span className="text-slate-500">ACCESS_LEVEL:</span>
-                                    <span className="text-cyan-400 font-bold">ROOT_USER // AUTH_GRANTED</span>
+                                    <span className="text-cyan-400 font-bold">ROOT_USER / AUTH_GRANTED</span>
                                 </div>
 
                                 <div className="flex justify-between">
@@ -205,17 +205,17 @@ export default function PortfolioClients() {
 
                                 <div className="flex justify-between">
                                     <span className="text-slate-500">DATA_STORE:</span>
-                                    <span className="text-slate-300 font-bold">FIRESTORE // CLOUD_HOSTED</span>
+                                    <span className="text-slate-300 font-bold">FIRESTORE / CLOUD_HOSTED</span>
                                 </div>
 
                                 <div className="flex justify-between">
                                     <span className="text-slate-500">TRANS_PROTOCOL:</span>
-                                    <span className="text-slate-300 font-bold">HTTPS / WSS // REST_API</span>
+                                    <span className="text-slate-300 font-bold">HTTPS / WSS / REST_API</span>
                                 </div>
 
                                 <div className="flex justify-between">
                                     <span className="text-slate-500">SYS_UPTIME:</span>
-                                    <span className="text-slate-300 font-bold">02+_YEARS // ACTIVE_CYCLES</span>
+                                    <span className="text-slate-300 font-bold">02+_YEARS / ACTIVE_CYCLES</span>
                                 </div>
 
                                 <div className="flex justify-between items-center pt-1">
@@ -246,11 +246,11 @@ export default function PortfolioClients() {
                         </p>
                     </div>
 
-                    {/* Right System Scope Panel */}
+                    {/* Right Software Scope Panel */}
                     <div className="lg:col-span-8 flex flex-col justify-between p-2 sm:p-6 space-y-8">
                         <div className="space-y-4">
                             <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-slate-900 border border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-widest rounded-none">
-                                <Activity size={10} className="text-cyan-500 animate-pulse" /> SYSTEM_INITIALIZATION_LOG
+                                <Activity size={10} className="text-cyan-500 animate-pulse" /> SOFTWARE_INITIALIZATION_LOG
                             </div>
                             <h1 className="text-3xl sm:text-6xl font-black text-white tracking-tighter uppercase leading-[0.95]">
                                 Developing high-velocity web nodes.
@@ -269,7 +269,7 @@ export default function PortfolioClients() {
                                 <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
                             </button>
                             <Link
-                                href="/cv"
+                                href="/cv/pdf"
                                 className="inline-flex items-center gap-2 px-5 py-3 bg-slate-900/60 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-300 hover:text-white transition-all uppercase tracking-wider rounded-sm"
                             >
                                 <Download size={12} className="text-cyan-400" />
@@ -304,7 +304,7 @@ export default function PortfolioClients() {
                                         Every application stack I initialize prioritizes layout render performance, robust data schema safety boundaries, and modular component isolation.
                                     </p>
                                     <Link
-                                        href="/about"
+                                        href="/bc/about"
                                         className="inline-flex items-center gap-2 px-5 py-3 bg-slate-900/60 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-300 hover:text-white transition-all uppercase tracking-wider rounded-sm"
                                     >
                                         <User size={12} className="text-cyan-400" />
@@ -446,7 +446,7 @@ export default function PortfolioClients() {
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <Link href="/projects" className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-cyan-400 transition-colors tracking-widest">
+                        <Link href="/bc/projects" className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-cyan-400 transition-colors tracking-widest">
                             READ_COMPLETE_INDEX()
                             <ArrowRight size={12} />
                         </Link>
@@ -455,9 +455,9 @@ export default function PortfolioClients() {
             </section>
 
             {/* PIPELINE DISPATCH FOR OPPORTUNITIES */}
-            <section id="jobs" className="relative z-10 py-16 px-4 sm:px-8 border-b border-slate-900">
-                <div className="max-w-5xl mx-auto border border-slate-800/80 bg-[#0b132b]/10 p-8 rounded relative overflow-hidden backdrop-blur-sm shadow-inner">
-                    <div className="absolute top-0 left-0 w-32 h-1 bg-cyan-500"></div>
+            <section id="jobs" className="relative z-10 py-16 px-4 sm:px-8 border-b border-slate-900 bg-white/2">
+                <div className="max-w-5xl mx-auto border border-slate-800/80 bg-[#0b132b] p-8 rounded relative overflow-hidden backdrop-blur-sm shadow-inner" >
+                    <div className="absolute top-0 left-0 w-50 h-1 bg-cyan-500"></div>
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
                         <div className="lg:col-span-8 space-y-2">
                             <div className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">
@@ -465,7 +465,7 @@ export default function PortfolioClients() {
                             </div>
                             <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight">Worldwide Remote Opportunities Stream</h2>
                             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-sans max-w-2xl">
-                                System parameters are thoroughly customized to handle distributed micro-tasks, long-term full-stack infrastructure setups, and secure remote platform execution blocks.
+                                Software parameters are thoroughly customized to handle distributed micro-tasks, long-term full-stack infrastructure setups, and secure remote platform execution blocks.
                             </p>
                         </div>
                         <div className="lg:col-span-4 lg:text-right">
@@ -487,8 +487,8 @@ export default function PortfolioClients() {
                             [ PORT_80_HANDSHAKE ]
                         </div>
                         <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">Establish Context Stream</h2>
-                        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-xl mx-auto font-sans">
-                            Submit payloads for remote contracts, core system optimizations, or scalable JavaScript system design consults.
+                        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed mx-auto font-sans">
+                            Submit payloads for remote contracts, core website optimizations, or scalable JavaScript system design consults.
                         </p>
                     </div>
 
@@ -499,8 +499,8 @@ export default function PortfolioClients() {
                     </div>
 
                     <div>
-                        <Link href="/contact" className="inline-block px-6 py-3 bg-slate-950 border border-slate-900 hover:border-slate-800 text-slate-300 hover:text-white font-black text-xs tracking-wider uppercase rounded-sm transition-all">
-                            INITIALIZE_SECURE_CHATPOINT()
+                        <Link href="/bc/contact" className="inline-block px-6 py-3 bg-slate-950 border border-slate-900 hover:border-slate-800 text-slate-300 hover:text-white font-black text-xs tracking-wider uppercase rounded-sm transition-all">
+                            INITIALIZE_ENGAGEMENT()
                         </Link>
                     </div>
                 </div>

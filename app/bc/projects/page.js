@@ -1,6 +1,5 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -74,37 +73,35 @@ const projects = [
 ];
 
 export default function ProjectsPage() {
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [activeSection, setActiveSection] = useState("projects");
     const router = useRouter();
-
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
 
     const handleBack = () => {
         router.push("/portfolio");
     };
 
-    const scrollToSection = (sectionId) => {
-        router.push(`/#${sectionId}`);
-    };
 
     return (
         <>
-            <Navbar
-                isScrolled={isScrolled}
-                isMenuOpen={isMenuOpen}
-                setIsMenuOpen={setIsMenuOpen}
-                activeSection={activeSection}
-                scrollToSection={scrollToSection}
-            />
+             {/* Top Navigation Frame */}
+                       <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
+                           <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+                               <div className="flex items-center gap-3 group">
+                                   <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
+                                   <a href="/">
+                                   <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+                                BROWN_CODE_DEV // PRO_DEPLOYMENTS
+                                   </span>
+                                   </a>
+                               </div>
+                               <a
+                                   href="/portfolio"
+                                   className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
+                               >
+                                   <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+                                   <span>SYS.RETURN()</span>
+                               </a>
+                           </div>
+                       </nav>
 
             <div className="min-h-screen bg-[#050811] text-slate-400 font-mono antialiased relative pt-24 pb-20">
                 {/* Tactical Blueprint Grid */}
@@ -281,7 +278,7 @@ export default function ProjectsPage() {
 
                             <div className="pt-2">
                                 <Link
-                                    href="/contact"
+                                    href="/bc/contact"
                                     className="inline-flex items-center gap-2 px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm transition-all shadow-md active:scale-95"
                                 >
                                     OPEN_CONN_SOCKET()

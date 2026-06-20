@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import Link from "next/link";
 
 export const metadata = {
@@ -195,7 +196,7 @@ export default function WebDeveloperAbuja() {
           <h2 className="text-2xl sm:text-3xl font-black text-[#f8f8ff]">
             Let&apos;s Architect Your Digital Platform
           </h2>
-          <p className="text-sm text-[rgba(248,248,255,.4)] mt-3 max-w-lg mx-auto leading-relaxed">
+          <p className="text-sm text-[rgba(248,248,255,.4)] mt-3 mx-auto leading-relaxed">
             Ready to deploy an enterprise-grade website or web app? Reach out on WhatsApp or secure a consultation block via email.
           </p>
           <div className="mt-4 text-xs text-[rgba(248,248,255,.4)] space-y-1">
@@ -215,15 +216,7 @@ export default function WebDeveloperAbuja() {
           </div>
         </section>
 
-        {/* System Footer Info */}
-        <footer className="mt-20 pt-8 border-t border-[rgba(248,248,255,.12)] flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-[rgba(248,248,255,.4)]">
-            © {currentYear} browncode.name.ng — Core Web Engineering Systems.
-          </p>
-          <span className="text-[10px] font-mono text-[rgba(248,248,255,.4)] bg-[rgba(248,248,255,.12)] px-2 py-1 rounded">
-            v2.1.0-stable
-          </span>
-        </footer>
+        <Footer />
       </main>
     </div>
   );

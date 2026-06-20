@@ -134,7 +134,7 @@ export default function CVResume() {
                     <div className="mb-12">
                         <h1 className="text-5xl font-bold text-gray-900 mb-4 tracking-wider uppercase">
                             <span className="inline-block px-4 py-1 -ml-4">
-                                BROWN OZIOMACHI
+                                BROWN OZIOMACHI AD
                             </span>
                         </h1>
                         <div className="text-gray-600 text-sm leading-7">

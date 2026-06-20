@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import Link from "next/link";
 
 // 1. COUNTRY-SCALE METADATA CONFIGURATION
@@ -191,7 +192,7 @@ export default function WebDeveloperNigeria() {
                     <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#a3e635]/5 blur-3xl pointer-events-none rounded-full"></div>
 
                     <h2 className="text-2xl sm:text-3xl font-black">Ready to Kickstart Your System Build?</h2>
-                    <p className="text-xs text-[rgba(248,248,255,.4)] mt-3 max-w-lg mx-auto leading-relaxed">
+                    <p className="text-xs text-[rgba(248,248,255,.4)] mt-3 mx-auto leading-relaxed">
                         Schedule a system audit briefing. Check out deployment parameters, screenshots, and live instances directly at{" "}
                         <Link href="https://browncode.name.ng" className="text-[#a855f7] underline hover:text-[#7c3aed]">
                             browncode.name.ng
@@ -215,13 +216,8 @@ export default function WebDeveloperNigeria() {
                     </div>
                 </section>
 
-                {/* Footer Section */}
-                <footer className="mt-20 pt-8 border-t border-[rgba(248,248,255,.12)] flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-[rgba(248,248,255,.4)]">
-                    <p>© {currentYear} browncode.name.ng — Engineering Scalable Platforms Across Nigeria.</p>
-                    <span className="text-[10px] font-mono bg-[rgba(248,248,255,.12)] px-2 py-1 rounded">
-                        v2.2.0-stable
-                    </span>
-                </footer>
+                <Footer />
+             
             </main>
         </div>
     );

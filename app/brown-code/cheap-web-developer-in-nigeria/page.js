@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import Link from "next/link";
 
 // 1. VALUE-OPTIMIZED METADATA CONFIGURATION
@@ -202,7 +203,7 @@ export default function CheapWebDeveloperNigeria() {
                     <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#a3e635]/5 blur-3xl pointer-events-none rounded-full"></div>
 
                     <h2 className="text-2xl sm:text-3xl font-black text-[#f8f8ff]">Launch Your Platform Intelligently</h2>
-                    <p className="text-xs text-[rgba(248,248,255,.4)] mt-3 max-w-lg mx-auto leading-relaxed">
+                    <p className="text-xs text-[rgba(248,248,255,.4)] mt-3 mx-auto leading-relaxed">
                         Secure high-performance infrastructure engineered inside your custom pricing parameters. Drop an active project specification brief on WhatsApp.
                     </p>
 
@@ -222,13 +223,7 @@ export default function CheapWebDeveloperNigeria() {
                     </div>
                 </section>
 
-                {/* Production Terminal Minimal Footer */}
-                <footer className="mt-24 pt-8 border-t border-[rgba(248,248,255,.12)] flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono text-[rgba(248,248,255,.4)]">
-                    <p>© {currentYear} browncode.name.ng // High Efficiency Framework Systems.</p>
-                    <span className="bg-[#11111a] border border-[rgba(248,248,255,.07)] px-2 py-0.5 rounded">
-                        node.value-optimized
-                    </span>
-                </footer>
+                <Footer />
             </main>
         </div>
     );

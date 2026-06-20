@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { articles } from "../data/article";
 import { ArrowLeft, Clock, User, Search, Terminal, Cpu, Database, Binary } from "lucide-react";
 import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/footer";
 
 export default function BlogList() {
@@ -12,9 +11,6 @@ export default function BlogList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredArticles, setFilteredArticles] = useState(articles);
   const [isSearching, setIsSearching] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("blog");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   // Categorize articles
@@ -56,21 +52,10 @@ export default function BlogList() {
     return () => clearTimeout(timeOutId);
   }, [searchTerm, selectedCategory]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const handleBack = () => {
     router.push("/portfolio");
   };
 
-  const scrollToSection = (sectionId) => {
-    router.push(`/#${sectionId}`);
-  };
 
   const getReadingTime = (content) => {
     const words = content.split(" ").length;
@@ -89,13 +74,26 @@ export default function BlogList() {
 
   return (
     <>
-      <Navbar
-        isScrolled={isScrolled}
-        isMenuOpen={isMenuOpen}
-        setIsMenuOpen={setIsMenuOpen}
-        activeSection={activeSection}
-        scrollToSection={scrollToSection}
-      />
+      {/* Top Navigation Frame */}
+      <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3 group">
+            <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
+            <a href="/">
+              <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+                BROWN_CODE_DEV // technical_logs
+              </span>
+            </a>
+          </div>
+          <a
+            href="/portfolio"
+            className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
+          >
+            <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+            <span>SYS.RETURN()</span>
+          </a>
+        </div>
+      </nav>
 
       <section className="min-h-screen bg-[#030712] text-slate-100 pt-32 pb-20 px-4 md:px-8 lg:px-12 font-mono selection:bg-cyan-500/30 selection:text-cyan-200">
         <div className="max-w-7xl mx-auto">
@@ -205,8 +203,11 @@ export default function BlogList() {
                     href={`/blog/${article.slug}`}
                     className="group flex flex-col justify-between bg-slate-950/40 border border-slate-900 rounded-xl overflow-hidden hover:border-cyan-500/40 transition-all duration-300"
                     style={{
+                      animationName: "fadeInUp",
+                      animationDuration: "0.4s",
+                      animationTimingFunction: "ease-out",
+                      animationFillMode: "forwards",
                       animationDelay: `${index * 50}ms`,
-                      animation: "fadeInUp 0.4s ease-out forwards",
                       opacity: 0,
                     }}
                   >
@@ -267,7 +268,7 @@ export default function BlogList() {
           {/* Navigation Matrix controls */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 pt-8 border-t border-slate-900">
             <button
-              onClick={() => router.push("/contact")}
+              onClick={() => router.push("/bc/contact")}
               className="w-full sm:w-auto px-6 py-3 border border-cyan-500 text-cyan-400 bg-cyan-950/10 hover:bg-cyan-500 hover:text-black transition-all duration-200 rounded-md text-xs font-bold uppercase tracking-wider"
             >
               INITIALIZE_CONTACT

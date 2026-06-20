@@ -22,8 +22,10 @@ import {
     Database,
     Layers,
     GitBranch,
-    Binary
+    Binary,
+    User
 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AboutMePage() {
     const [activeTab, setActiveTab] = useState('story');
@@ -32,19 +34,25 @@ export default function AboutMePage() {
         { name: 'React Architecture & Next.js SSR', level: 70, status: 'Production Ready' },
         { name: 'Node.js Core & Vercel Serverless Platforms', level: 50, status: 'Stable Backend' },
         { name: 'JavaScript Engine Paradigms (ES6+ Runtime)', level: 45, status: 'Intermediate Core' },
-        { name: 'Database Architecture & Management', level: 70, status: 'Scalable Systems' },
+        { name: 'Database Architecture & Management', level: 70, status: 'Scalabl websites' },
+    ];
+
+    const exps = [
+        { num: '02+', name: 'YRS EXP' },
+        { num: '05+', name: 'SHIPPED PROJ' },
+        { num: '100%', name: 'UNIT TESTS' }
     ];
 
     const timeline = [
         {
-            year: '2022',
+            year: '2024',
             title: 'Full Stack Software Developer',
             description: 'Architecting full functional interfaces, handling data streams, and building integrated Node.js solutions.',
             icon: <Briefcase size={16} />
         },
         {
-            year: '2021',
-            title: 'Systems Development & Developing Foundation',
+            year: '2025',
+            title: 'Software Development & Developing Foundation',
             description: 'Initiated programmatic core tracks. Discovered deep Developing patterns, data parsing structures, and script logic basics.',
             icon: <Cpu size={16} />
         },
@@ -68,16 +76,16 @@ export default function AboutMePage() {
         },
         {
             icon: <Layers size={20} className="text-cyan-400" />,
-            title: 'Systems Adaptability',
-            description: 'Continually tracking state machine patterns, security layers, and fresh structural updates.'
+            title: 'Software Adaptability',
+            description: 'Continually tracking state web patterns, security layers, and fresh structural updates.'
         },
     ];
 
     const interests = [
-        { icon: <Code size={16} />, text: 'System Architecture' },
-        { icon: <Cpu size={16} />, text: 'Hardware Protocols' },
-        { icon: <Terminal size={16} />, text: 'Command Interfaces' },
-        { icon: <Database size={16} />, text: 'Data Structuring' },
+        { icon: <Code size={16} />, text: 'Application Architecture' },
+        { icon: <Cpu size={16} />, text: 'API & Integration Protocols' },
+        { icon: <Terminal size={16} />, text: 'Control Flow & Application Logic' },
+        { icon: <Database size={16} />, text: 'Data Modeling & State Management' },
     ];
 
     return (
@@ -96,9 +104,11 @@ export default function AboutMePage() {
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3 group">
                         <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
+                        <a href="/">
                         <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                            BROWN_CODE_SYS // DEV_PORTFOLIO
+                            BROWN_CODE_DEV // DEV_PORTFOLIO
                         </span>
+                        </a>
                     </div>
                     <a
                         href="/portfolio"
@@ -114,7 +124,7 @@ export default function AboutMePage() {
                 {/* Main Identity Manifest block */}
                 <div className="grid md:grid-cols-12 gap-8 items-start mb-16">
 
-                    {/* Dev System Diagnostic Profile Column */}
+                    {/* Dev Software Diagnostic Profile Column */}
                     <div className="md:col-span-4 space-y-4">
                         <div className="bg-slate-900/60 border border-slate-800/80 rounded p-4 relative group hover:border-slate-700/50 transition-all duration-300 shadow-md backdrop-blur-sm">
                             <div className="absolute top-3 right-3 flex gap-1.5">
@@ -126,20 +136,20 @@ export default function AboutMePage() {
                             {/* Terminal Image Wrapper */}
                             <div className="border border-slate-800 rounded overflow-hidden aspect-square bg-slate-950 mb-4 relative shadow-inner">
                                 <img
-                                    src="/brown.jpg"
+                                    src="/coder1.png"
                                     alt="Brown Oziomachi Engine Layout"
                                     className="w-full h-full object-cover grayscale opacity-75 mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-500 ease-out"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/10 to-transparent"></div>
                                 <div className="absolute bottom-2.5 left-2.5 right-2.5 text-[11px] bg-slate-900/95 p-2.5 rounded border border-slate-800/80 backdrop-blur-sm shadow-xl">
-                                    <div className="text-white font-bold tracking-wide"> Brown AD</div>
+                                    <div className="text-white font-bold tracking-wide">Sir Brown AD</div>
                                     <div className="text-cyan-400 text-[10px] font-semibold mt-0.5 tracking-wider">ROLE: FULL_STACK_DEV</div>
                                 </div>
                             </div>
 
                             {/* Operational Diagnostic Streams */}
                             <div className="space-y-2 text-[11px] text-slate-400 border-t border-slate-800/60 pt-3.5 font-mono">
-                                <div className="flex justify-between items-center"><span className="text-slate-500 font-medium">LOC:</span> <span className="text-slate-300 font-semibold hover:text-white transition-colors">NIGERIA // REMOTE</span></div>
+                                <div className="flex justify-between items-center"><span className="text-slate-500 font-medium">NET_LOC:</span> <span className="text-slate-300 font-semibold hover:text-white transition-colors">NIGERIA // REMOTE</span></div>
                                 <div className="flex justify-between items-center"><span className="text-slate-500 font-medium">CORE_STACK:</span> <span className="text-cyan-400 font-bold tracking-wide">JAVASCRIPT // NODE</span></div>
                                 <div className="flex justify-between items-center">
                                     <span className="text-slate-500 font-medium">STATUS:</span> 
@@ -153,14 +163,10 @@ export default function AboutMePage() {
 
                         {/* Developing Metrics Indicators */}
                         <div className="bg-slate-900/40 border border-slate-800/60 rounded p-3 grid grid-cols-3 gap-2.5 text-center backdrop-blur-sm">
-                            {[
-                                { num: '02+', name: 'YRS EXP' },
-                                { num: '05+', name: 'SHIPPED PROJ' },
-                                { num: '100%', name: 'UNIT TESTS' }
-                            ].map((m, idx) => (
+                            {exps.map((e, idx) => (
                                 <div key={idx} className="bg-slate-950/60 p-2.5 rounded border border-slate-900/80 hover:border-slate-800 transition-colors shadow-sm">
-                                    <div className="text-base font-black text-white tracking-tight">{m.num}</div>
-                                    <div className="text-[9px] font-extrabold text-slate-500 mt-0.5 tracking-widest">{m.name}</div>
+                                    <div className="text-base font-black text-white tracking-tight">{e.num}</div>
+                                    <div className="text-[9px] font-extrabold text-slate-500 mt-0.5 tracking-widest">{e.name}</div>
                                 </div>
                             ))}
                         </div>
@@ -174,7 +180,7 @@ export default function AboutMePage() {
                                 DEV_MANIFEST // OBJECTIVE_DATA
                             </div>
                             <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight uppercase">
-                                System Developer Portfolio <br />
+                                Software Developer Portfolio <br />
                                 <span className="text-slate-500 font-light text-2xl sm:text-3xl tracking-wide ">ID: BC_CORE_v2.0.6</span>
                             </h1>
                         </div>
@@ -187,18 +193,24 @@ export default function AboutMePage() {
                             <p className="hover:text-slate-300 transition-colors">
                                 My methodology rejects messy script solutions. Instead, I choose explicit component workflows, clean data layer constraints, and clear data indexing patterns via custom modern schema infrastructures.
                             </p>
-                        </div>
+                            <Link
+                                href="/bc_dev"
+                                className="inline-flex items-center gap-2 px-5 py-3 bg-slate-900/60 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-300 hover:text-white transition-all uppercase tracking-wider rounded-sm"
+                            >
+                                <User size={12} className="text-cyan-400" />
+                                  MORE_ABOUT_ME()
+                            </Link>                        </div>
 
                         {/* Action Interface Controls */}
                         <div className="flex flex-wrap gap-3 pt-3">
                             <a
-                                href="/contact"
+                                href="/bc/contact"
                                 className="px-5 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs rounded transition-all duration-300 tracking-wider uppercase shadow-md shadow-cyan-500/10 hover:shadow-cyan-400/20 active:scale-[0.98]"
                             >
                                 INITIALIZE_CONTACT()
                             </a>
                             <a
-                                href="/cv"
+                                href="/cv/pdf"
                                 className="inline-flex items-center gap-2 px-5 py-3 bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-950 text-xs font-bold text-slate-300 hover:text-white rounded transition-all duration-300 uppercase tracking-wider shadow-sm active:scale-[0.98]"
                             >
                                 <Download size={14} className="text-cyan-400" />
@@ -247,13 +259,13 @@ export default function AboutMePage() {
                                             <span className="w-1.5 h-1.5 bg-cyan-500/50"></span> 02 // RUNTIME_OBJECTIVES
                                         </div>
                                         <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-mono">
-                                            Currently, I construct integrated full-spectrum systems. I manage complex React routing structures and connect them to relational engines or modern documents. My long-term roadmap focuses on architectural optimizations and secure data flow controls.
+                                            Currently, I construct integrated full-spectrum website. I manage complex React routing structures and connect them to relational engines or modern documents. My long-term roadmap focuses on architectural optimizations and secure data flow controls.
                                         </p>
                                     </div>
                                 </div>
 
                                 <div className="bg-slate-950/60 border border-slate-800 p-5 rounded">
-                                    <div className="text-xs font-bold text-slate-500 mb-3.5 uppercase tracking-widest">SYSTEM_CORE_INTERESTS // DRIVERS</div>
+                                    <div className="text-xs font-bold text-slate-500 mb-3.5 uppercase tracking-widest">DEVELOPER_CORE_INTERESTS // ROUTING</div>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                                         {interests.map((item, idx) => (
                                             <div key={idx} className="flex items-center gap-2.5 bg-slate-900/50 p-3 rounded border border-slate-800/80 text-[12px] hover:border-slate-700 hover:bg-slate-900 transition-all duration-300 shadow-sm">
@@ -329,7 +341,7 @@ export default function AboutMePage() {
                             </div>
                         )}
 
-                        {/* Tab Module: System Integrity Values */}
+                        {/* Tab Module: Softwar Integrity Values */}
                         {activeTab === 'values' && (
                             <div className="space-y-6 transition-all duration-500 opacity-100 transform translate-y-0">
                                 <div className="grid sm:grid-cols-2 gap-4">
@@ -354,12 +366,12 @@ export default function AboutMePage() {
                                             EXECUTE_NEW_PROJECT // INSTANTIATE
                                         </div>
                                         <p className="text-xs text-slate-500 max-w-xl font-mono leading-relaxed">
-                                            System sockets are currently configured to accept remote development profiles, custom structural integrations, and full-stack software optimizations.
+                                            Software sockets are currently configured to accept remote development profiles, custom structural integrations, and full-stack software optimizations.
                                         </p>
                                     </div>
                                     <div className="flex gap-2 w-full md:w-auto shrink-0 relative z-10">
                                         <a
-                                            href="/contact"
+                                            href="/bc/contact"
                                             className="inline-flex items-center justify-center gap-2 text-[11px] font-black tracking-wider uppercase px-4 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded transition-all duration-300 w-full sm:w-auto shadow-md shadow-cyan-500/5 hover:shadow-cyan-400/10 active:scale-95"
                                         >
                                             <Mail size={12} />

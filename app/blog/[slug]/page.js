@@ -90,12 +90,8 @@ export default function ArticlePage({ params }) {
         {/* Engineering System Banner */}
         <div className="relative">
           <div className="relative h-[40vh] md:h-[35vh] overflow-hidden border-b border-slate-900">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/80 to-[#030712] z-10" />
-            <img
-              src={article.image}
-              alt={article.title}
-              className="w-full h-full object-cover opacity-40 mix-blend-luminosity"
-            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/80 to-[#9196a3] z-10 " />
+           
           </div>
 
           {/* Interactive Shell Back Action */}
@@ -108,7 +104,7 @@ export default function ArticlePage({ params }) {
           </button>
 
           {/* Article Node Title Segment */}
-          <div className="relative z-20 -mt-24 md:-mt-28">
+          <div className="relative z-20 -mt-24 lg:-mt-38">
             <div className="max-w-4xl mx-auto px-6 md:px-12">
               <div className="bg-slate-950/80 border border-slate-900 backdrop-blur-md p-6 md:p-10 rounded-xl shadow-2xl">
 
@@ -155,7 +151,7 @@ export default function ArticlePage({ params }) {
                       <Share2 size={12} />
                       <span>PIPE_SHARE</span>
                     </button>
-
+                   
                     {showShare && (
                       <div className="absolute top-full mt-2 left-0 bg-slate-950 border border-slate-800 rounded-md p-1 shadow-2xl backdrop-blur-xl min-w-[140px] z-30 text-[11px]">
                         <button
@@ -185,6 +181,13 @@ export default function ArticlePage({ params }) {
             </div>
           </div>
         </div>
+        <div className="">
+          <img
+            src={article.image}
+            alt={article.title}
+            className="w-full h-full object-cover opacity-40 mix-blend-luminosity mx-auto"
+          />
+        </div>
 
         {/* Technical Logs / Content Compilation */}
         <div className="max-w-4xl mx-auto px-6 md:px-12 py-12">
@@ -199,7 +202,7 @@ export default function ArticlePage({ params }) {
 
             <div className="mt-12 pt-6 border-t border-slate-900 font-mono">
               <button
-                onClick={() => router.push("/contact")}
+                onClick={() => router.push("/bc/contact")}
                 className="px-6 py-3 border border-cyan-500 text-cyan-400 bg-cyan-950/10 hover:bg-cyan-500 hover:text-black transition-all rounded-md text-xs font-bold uppercase tracking-wider"
               >
                 INITIALIZE_CONTACT
@@ -214,7 +217,7 @@ export default function ArticlePage({ params }) {
             <h3 className="text-sm font-bold text-white mb-2 uppercase tracking-wide">
               // review completeness check
             </h3>
-            <p className="text-xs text-slate-500 font-sans mb-6 max-w-xl mx-auto">
+            <p className="text-xs text-slate-500 font-sans mb-6 mx-auto">
               Execution loop finished. Select downstream navigation pipeline to parse alternative logs.
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-xs font-bold">

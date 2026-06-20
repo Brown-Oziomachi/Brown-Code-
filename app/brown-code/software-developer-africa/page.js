@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import Link from "next/link";
 
 // 1. CONTINENTAL METADATA CONFIGURATION
@@ -189,7 +190,7 @@ export default function WebDeveloperAfrica() {
                             <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-[#f8f8ff]">
                                 Initialize a Continental Pipeline
                             </h2>
-                            <p className="text-xs text-[rgba(248,248,255,.4)] mt-3 max-w-md mx-auto leading-relaxed">
+                            <p className="text-xs text-[rgba(248,248,255,.4)] mt-3 mx-auto leading-relaxed">
                                 Ready to scale your application infrastructure? Connect directly on WhatsApp or route your detailed engineering blueprints via email.
                             </p>
 
@@ -208,7 +209,7 @@ export default function WebDeveloperAfrica() {
                                     WhatsApp Consultation
                                 </Link>
                                 <Link
-                                    href="https://browncode.name.ng"
+                                    href="https://browncode.name.ng/portfolio"
                                     className="w-full sm:w-auto inline-block bg-[#11111a] hover:bg-[#18182a] text-[#f8f8ff] px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-wider border border-[rgba(248,248,255,.12)] transition-all"
                                 >
                                     Explore Core Portfolio
@@ -216,14 +217,7 @@ export default function WebDeveloperAfrica() {
                             </div>
                         </section>
 
-                        {/* Minimal Tech Footer Block */}
-                        <footer className="pt-8 border-t border-[rgba(248,248,255,.12)] (MUTED2) flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-[rgba(248,248,255,.4)] font-mono">
-                            <p>© {currentYear} browncode.name.ng // Systems Engineering Across Africa.</p>
-                            <span className="bg-[#11111a] border border-[rgba(248,248,255,.07)] px-2 py-0.5 rounded">
-                                node.panafrica-v2.3.0
-                            </span>
-                        </footer>
-
+                        <Footer />
                     </div>
                 </div>
             </div>

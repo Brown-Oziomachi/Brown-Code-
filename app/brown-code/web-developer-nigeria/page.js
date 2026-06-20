@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import Link from "next/link";
 
 // 1. METADATA CONFIGURATION
@@ -199,7 +200,7 @@ export default function WebDeveloperNigeria() {
                     <h2 className="text-2xl sm:text-3xl font-black">
                         Contact Browncode in Nigeria
                     </h2>
-                    <p className="text-sm text-[rgba(248,248,255,.4)] (MUTED) mt-3 max-w-lg mx-auto leading-relaxed">
+                    <p className="text-sm text-[rgba(248,248,255,.4)] (MUTED) mt-3 mx-auto leading-relaxed">
                         Ready to build your website? Reach out directly via WhatsApp or secure a consultation block via email.
                     </p>
                     <div className="mt-4 text-xs text-[rgba(248,248,255,.4)] (MUTED) space-y-1">
@@ -219,15 +220,7 @@ export default function WebDeveloperNigeria() {
                     </div>
                 </section>
 
-                {/* System Footer Info (BORDER2 variant separator) */}
-                <footer className="mt-20 pt-8 border-t border-[rgba(248,248,255,.12)] (MUTED2) flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <p className="text-xs text-[rgba(248,248,255,.4)] (MUTED)">
-                        © {currentYear} browncode.name.ng — Web Developer in Nigeria
-                    </p>
-                    <span className="text-[10px] font-mono text-[rgba(248,248,255,.4)] (MUTED) bg-[rgba(248,248,255,.12)] (MUTED2) px-2 py-1 rounded">
-                        v2.1.0-stable
-                    </span>
-                </footer>
+                <Footer />
             </main>
         </div>
     );

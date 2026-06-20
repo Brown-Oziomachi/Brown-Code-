@@ -37,7 +37,6 @@ export default function Navbar({
         "home",
         "about",
         "projects",
-        "skills",
         "testimonials",
         "contact",
         "blog",
@@ -235,7 +234,7 @@ export default function Navbar({
                         <div className="flex-shrink-0">
                             <Link href="/">
                                 <span className="text-xs font-black tracking-widest text-cyan-400 hover:text-white transition-colors">
-                                    {"<BROWN_CODE_SYS />"}
+                                    {"<BROWN_CODE_DEV />"}
                                 </span>
                             </Link>
                         </div>
@@ -366,10 +365,10 @@ export default function Navbar({
                         </div>
                         <div className="p-4 border-t border-slate-900 bg-slate-950/50 space-y-3">
                             <div className="text-[11px] text-slate-500 font-sans leading-relaxed border-l-2 border-cyan-500 pl-2">
-                                System Notice: Distributed commercial interfaces are deploying operational assets continuously. Secure connectivity profiles now.
+                                <strong>System Notice:</strong> Distributed commercial interfaces are deploying operational assets continuously.<strong> Secure connectivity profiles now.</strong>
                             </div>
                             <Link
-                                href="/contact"
+                                href="/bc/contact"
                                 onClick={() => setIsMenuOpen(false)}
                                 className="block text-center w-full bg-slate-900 border border-slate-800 hover:border-cyan-500/30 hover:text-cyan-400 text-white text-xs font-bold uppercase tracking-wider py-2.5 rounded-sm transition-all"
                             >

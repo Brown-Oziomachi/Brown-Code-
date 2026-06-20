@@ -13,6 +13,26 @@ export default function PrivacyPolicy() {
     const currentYear = new Date().getFullYear();
 
     return (
+        <>
+         <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
+                    <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3 group">
+                <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
+                            <a href="/">
+                                <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+                                BROWN_CODE_DEV //  PRIV_MANIFES
+                                </span>
+                            </a>
+                        </div>
+                        <a
+                            href="/"
+                            className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
+                        >
+                            <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
+                            <span>SYS.RETURN()</span>
+                        </a>
+                    </div>
+        </nav>
         <div className="min-h-screen bg-[#030712] text-slate-100 antialiased font-mono pt-12 selection:bg-cyan-500/30 selection:text-cyan-200">
             <main className="max-w-4xl mx-auto px-4 md:px-6 py-24 lg:py-32">
 
@@ -115,6 +135,8 @@ export default function PrivacyPolicy() {
                 </footer>
 
             </main>
-        </div>
+            </div>
+        </>
+
     );
 }

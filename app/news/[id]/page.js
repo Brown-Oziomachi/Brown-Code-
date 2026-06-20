@@ -206,13 +206,26 @@ export default function NewsDetails() {
 
     return (
         <>
-            <Navbar
-                isScrolled={isScrolled}
-                isMenuOpen={isMenuOpen}
-                setIsMenuOpen={setIsMenuOpen}
-                activeSection={activeSection}
-                scrollToSection={scrollToSection}
-            />
+            <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
+                <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3 group">
+                        <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
+                        <a href="/">
+                            <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+                                BROWN_CODE_DEV // NEWS_HUB
+                            </span>
+                        </a>
+                    </div>
+                    <a
+                        href="/"
+                        className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
+                    >
+                        <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform uppercase" />
+                        <span>SYS.RETURN()</span>
+                    </a>
+                </div>
+            </nav>
+
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}

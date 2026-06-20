@@ -14,10 +14,10 @@ export default function Footer() {
                     {/* Node 1: Brand System Ident */}
                     <div className="text-center md:text-left space-y-1">
                         <h4 className="text-sm font-black tracking-tight text-[rgba(248,248,255,0.48)]">
-                            BROWN_CODE_SYS
+                            <Link href="/" >{'< BROWN_CODE_DEV />'}</Link>
                         </h4>
                         <p className="text-[11px] font-mono text-[rgba(248,248,255,.35)]">
-              // High Efficiency Web Systems.
+                            // Architecting High-Efficiency Web Applications at Scale.
                         </p>
                     </div>
 
@@ -42,6 +42,13 @@ export default function Footer() {
                             className="text-[rgba(248,248,255,.45)] hover:text-cyan-400 transition-colors relative group py-1"
                         >
                             <span>Terms</span>
+                            <span className="absolute bottom-0 left-0 w-0 h-px bg-cyan-400 transition-all group-hover:w-full"></span>
+                        </Link>
+                        <Link
+                            href="/faq"
+                            className="text-[rgba(248,248,255,.45)] hover:text-cyan-400 transition-colors relative group py-1"
+                        >
+                            <span>Faq</span>
                             <span className="absolute bottom-0 left-0 w-0 h-px bg-cyan-400 transition-all group-hover:w-full"></span>
                         </Link>
                     </div>
