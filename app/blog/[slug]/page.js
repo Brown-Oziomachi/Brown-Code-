@@ -185,7 +185,7 @@ export default function ArticlePage({ params }) {
           <img
             src={article.image}
             alt={article.title}
-            className="w-full h-full object-cover opacity-40 mix-blend-luminosity mx-auto"
+            className="  lg:w-full object-cover opacity-40 mix-blend-luminosity mx-auto max-md:p-5 lg:p-50 mt-5 lg:-mt-20 rounded-lg border border-slate-900 "
           />
         </div>
 
