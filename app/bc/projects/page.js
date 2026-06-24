@@ -2,9 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import {
-    Terminal,
     ArrowLeft,
     ExternalLink,
     Lock,
@@ -19,275 +17,397 @@ const projects = [
     {
         id: "SYS_NODE_01",
         title: "Cyclopedia News Website",
-        description: "Enterprise news platform featuring real-time content delivery, advanced filtering algorithms, and multimedia integration with optimized video streaming.",
+        description: "Enterprise news platform featuring real-time content delivery, advanced filtering algorithms, and multimedia integration with optimised video streaming.",
         image: "/the.jpg",
         link: "https://www.thecyclopedia.com.ng",
-        tags: ["Next.js", "React Architecture", "Video Steams"],
+        tags: ["Next.js", "React Architecture", "Video Streams"],
         year: "2024",
         role: "FULL_STACK_DEV",
-        status: "LIVE_SYS"
+        status: "LIVE",
     },
     {
         id: "SYS_NODE_02",
-        title: "E-Commerce Store/Yotapoint",
+        title: "E-Commerce Store / Yotapoint",
         description: "Scalable e-commerce solution with secure payment integration, inventory management system, and comprehensive admin dashboard.",
         image: "/yota.jpg",
         link: "https://yotapoint.com",
         tags: ["E-Commerce", "Payment Sockets", "Admin Schema"],
         year: "2024",
         role: "LEAD_ENGINEER",
-        status: "LIVE_SYS"
+        status: "LIVE",
     },
     {
         id: "SYS_NODE_03",
         title: "IJ Stitches Portfolio",
-        description: "Performance-optimized portfolio with advanced animations, accessibility compliance, and responsive design architecture.",
+        description: "Performance-optimised portfolio with advanced animations, accessibility compliance, and responsive design architecture.",
         image: "/ijs.jpg",
         link: "https://ij-stitches.vercel.app/main",
-        tags: ["React Engine", "GSAP Hooks", "Asset Optimization"],
+        tags: ["React Engine", "GSAP Hooks", "Asset Optimisation"],
         year: "2024",
         role: "FRONTEND_ARCHITECT",
-        status: "OPTIMIZED"
+        status: "OPTIMISED",
     },
     {
         id: "SYS_NODE_04",
         title: "Portfolio Website",
-        description: "Modern portfolio solution with dynamic content management, SEO optimization, and analytics integration.",
+        description: "Modern portfolio solution with dynamic content management, SEO optimisation, and analytics integration.",
         image: "/cd.jpg",
         link: "https://browncode.name.ng",
-        tags: ["Next.js Matrix", "Pure JS Engine", "SEO Sockets"],
+        tags: ["Next.js", "Pure JS Engine", "SEO"],
         year: "2024",
         role: "FULL_STACK_DEV",
-        status: "PRODUCTION"
+        status: "PRODUCTION",
     },
     {
         id: "SYS_NODE_05",
         title: "Cyclopedia Editor App",
         description: "Content management system with rich text editing, collaborative features, and version control for editorial workflows.",
         image: "/ed.jpg",
-        link: null, // Lock status
+        link: null,
         tags: ["CMS Infrastructure", "Real-time Sync", "Workflow Pipeline"],
         year: "2024",
         role: "TECHNICAL_LEAD",
-        status: "NDA_LOCKED"
+        status: "NDA_LOCKED",
     },
+];
+
+const STATS = [
+    { label: "INDEXED_BUILDS", value: `0${projects.length}`, desc: "Active modules", icon: <Layers size={14} /> },
+    { label: "SUCCESS_RATIO", value: "100%", desc: "Deployment status", icon: <Binary size={14} /> },
+    { label: "YEARS_ACTIVE", value: "02+", desc: "Years validated", icon: <Cpu size={14} /> },
+    { label: "UPTIME", value: "24/7", desc: "Service continuity", icon: <Activity size={14} /> },
 ];
 
 export default function ProjectsPage() {
     const router = useRouter();
 
-    const handleBack = () => {
-        router.push("/portfolio");
-    };
-
-
     return (
         <>
-             {/* Top Navigation Frame */}
-                       <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
-                           <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                               <div className="flex items-center gap-3 group">
-                                   <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
-                                   <a href="/">
-                                   <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                                BROWN_CODE_DEV // PRO_DEPLOYMENTS
-                                   </span>
-                                   </a>
-                               </div>
-                               <a
-                                   href="/portfolio"
-                                   className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
-                               >
-                                   <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
-                                   <span>SYS.RETURN()</span>
-                               </a>
-                           </div>
-                       </nav>
+            <style>{`
+                *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-            <div className="min-h-screen bg-[#050811] text-slate-400 font-mono antialiased relative pt-24 pb-20">
-                {/* Tactical Blueprint Grid */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b0d_1px,transparent_1px),linear-gradient(to_bottom,#1e293b0d_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none z-0"></div>
+                :root {
+                    --bg:         #0a0a0b;
+                    --surface:    #111113;
+                    --border:     #1e1e22;
+                    --border-hi:  #2e2e34;
+                    --text-1:     #f4f4f5;
+                    --text-2:     #a1a1aa;
+                    --text-3:     #52525b;
+                    --accent:     #e8ff47;
+                    --accent-dim: rgba(232,255,71,0.08);
+                    --radius:     6px;
+                    --font-serif: 'DM Serif Display', 'Georgia', serif;
+                    --font-sans:  'Inter', system-ui, sans-serif;
+                    --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+                }
 
-                {/* HEADER TERMINAL STRIP */}
-                <header className="border-b border-slate-900 bg-[#0b132b]/20 backdrop-blur-md relative z-10">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                        <div className="space-y-1">
-                            <div className="text-[10px] font-bold text-cyan-400 tracking-widest uppercase flex items-center gap-1.5">
-                                <Terminal size={12} /> INDEX_REGISTRY // ARCHIVE
-                            </div>
-                            <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
-                                Shipped Production Nodes
+                @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+                .pj-page {
+                    font-family: var(--font-sans);
+                    background: var(--bg);
+                    color: var(--text-1);
+                    min-height: 100vh;
+                }
+
+                /* ── Nav ── */
+                .pj-nav {
+                    position: sticky; top: 0; z-index: 100;
+                    background: rgba(10,10,11,0.92);
+                    backdrop-filter: blur(12px);
+                    border-bottom: 1px solid var(--border);
+                    padding: 0 24px; height: 56px;
+                    display: flex; align-items: center; justify-content: space-between;
+                }
+                .pj-nav__brand {
+                    font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+                    letter-spacing: 0.08em; color: var(--text-1); text-decoration: none;
+                }
+                .pj-nav__brand em { font-style: normal; color: var(--accent); }
+                .pj-nav__back {
+                    display: inline-flex; align-items: center; gap: 6px;
+                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+                    color: var(--text-2); text-decoration: none;
+                    padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+                    transition: color .15s, border-color .15s, background .15s;
+                }
+                .pj-nav__back:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
+
+                /* ── Main ── */
+                .pj-main { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+
+                /* ── Masthead ── */
+                .pj-masthead {
+                    display: flex; align-items: flex-end; justify-content: space-between;
+                    gap: 16px; padding: 52px 0 32px;
+                    border-bottom: 1px solid var(--border); margin-bottom: 36px;
+                }
+                .pj-masthead__eyebrow {
+                    font-family: var(--font-mono); font-size: 11px; color: var(--accent);
+                    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px;
+                }
+                .pj-masthead__title {
+                    font-family: var(--font-serif);
+                    font-size: clamp(36px, 5vw, 60px); font-weight: 400; line-height: 1.05;
+                }
+                .pj-masthead__desc {
+                    font-size: 13px; color: var(--text-2); line-height: 1.6;
+                    max-width: 320px; text-align: right;
+                }
+                @media (max-width: 700px) {
+                    .pj-masthead { flex-direction: column; align-items: flex-start; }
+                    .pj-masthead__desc { text-align: left; }
+                }
+
+                /* ── Section label ── */
+                .pj-section-label {
+                    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+                    text-transform: uppercase; color: var(--text-3);
+                    display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+                }
+                .pj-section-label::after {
+                    content: ''; flex: 1; height: 1px; background: var(--border);
+                }
+
+                /* ── Stats grid ── */
+                .pj-stats {
+                    display: grid; grid-template-columns: repeat(4, 1fr);
+                    gap: 1px; background: var(--border);
+                    border: 1px solid var(--border); border-radius: var(--radius);
+                    overflow: hidden; margin-bottom: 48px;
+                }
+                @media (max-width: 700px) { .pj-stats { grid-template-columns: 1fr 1fr; } }
+
+                .pj-stat {
+                    background: var(--surface); padding: 20px 24px;
+                    display: flex; flex-direction: column; gap: 4px;
+                    transition: background .15s;
+                }
+                .pj-stat:hover { background: #141417; }
+                .pj-stat__label {
+                    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em;
+                    text-transform: uppercase; color: var(--text-3);
+                }
+                .pj-stat__value {
+                    font-family: var(--font-serif); font-size: 32px; font-weight: 400;
+                    color: var(--text-1); line-height: 1;
+                }
+                .pj-stat__desc { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+                /* ── Project cards ── */
+                .pj-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 48px; }
+
+                .pj-card {
+                    display: grid; grid-template-columns: 280px 1fr;
+                    background: var(--surface); overflow: hidden;
+                    position: relative; transition: background .15s;
+                }
+                .pj-card:hover { background: #141417; }
+                .pj-card::before {
+                    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+                    background: var(--accent); transform: scaleY(0); transform-origin: bottom;
+                    transition: transform .2s ease; z-index: 5;
+                }
+                .pj-card:hover::before { transform: scaleY(1); }
+
+                @media (max-width: 800px) { .pj-card { grid-template-columns: 1fr; } }
+
+                .pj-card__img-wrap {
+                    position: relative; height: 220px; background: var(--bg); overflow: hidden;
+                }
+                @media (max-width: 800px) { .pj-card__img-wrap { height: 180px; } }
+
+                .pj-card__img {
+                    width: 100%; height: 100%; object-fit: cover;
+                    opacity: 0.4; filter: grayscale(30%);
+                    transition: opacity .3s, transform .4s, filter .3s;
+                }
+                .pj-card:hover .pj-card__img { opacity: 0.7; transform: scale(1.03); filter: grayscale(0); }
+
+                .pj-card__img-placeholder {
+                    width: 100%; height: 100%;
+                    background: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(255,255,255,0.015) 8px, rgba(255,255,255,0.015) 16px);
+                }
+
+                .pj-card__id {
+                    position: absolute; top: 12px; left: 12px;
+                    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
+                    color: var(--text-3); background: rgba(10,10,11,0.85);
+                    padding: 4px 8px; border: 1px solid var(--border); border-radius: 3px;
+                }
+
+                .pj-card__body {
+                    padding: 24px 28px; display: flex; flex-direction: column; justify-content: space-between; gap: 16px;
+                }
+
+                .pj-card__meta {
+                    display: flex; flex-wrap: wrap; gap: 16px;
+                    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
+                    text-transform: uppercase; color: var(--text-3);
+                    border-bottom: 1px solid var(--border); padding-bottom: 14px;
+                }
+                .pj-card__meta span { color: var(--text-2); }
+                .pj-card__meta-live { color: var(--accent) !important; }
+                .pj-card__meta-locked { color: #f59e0b !important; }
+
+                .pj-card__title {
+                    font-family: var(--font-serif);
+                    font-size: clamp(18px, 2vw, 22px); font-weight: 400; line-height: 1.25;
+                    color: var(--text-1); transition: color .15s;
+                }
+                .pj-card:hover .pj-card__title { color: #fff; }
+
+                .pj-card__desc {
+                    font-size: 13px; color: var(--text-2); line-height: 1.6; margin-top: 6px;
+                }
+
+                .pj-card__footer {
+                    display: flex; align-items: center; justify-content: space-between;
+                    flex-wrap: wrap; gap: 12px; padding-top: 14px; border-top: 1px solid var(--border);
+                }
+
+                .pj-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+                .pj-tag {
+                    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em;
+                    text-transform: uppercase; padding: 3px 8px; border-radius: 3px;
+                    background: var(--accent-dim); color: var(--accent);
+                    border: 1px solid rgba(232,255,71,0.2); line-height: 1;
+                }
+
+                .pj-btn {
+                    display: inline-flex; align-items: center; gap: 6px;
+                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+                    padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius);
+                    background: transparent; color: var(--text-2);
+                    text-decoration: none; cursor: pointer;
+                    transition: color .15s, border-color .15s, background .15s;
+                }
+                .pj-btn:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
+                .pj-btn--accent {
+                    border-color: rgba(232,255,71,0.3); color: var(--accent); background: var(--accent-dim);
+                }
+                .pj-btn--accent:hover { background: rgba(232,255,71,0.15); border-color: rgba(232,255,71,0.5); color: var(--accent); }
+                .pj-btn--locked {
+                    border-color: rgba(245,158,11,0.2); color: #78716c; background: transparent; cursor: not-allowed;
+                }
+
+                /* ── CTA ── */
+                .pj-cta {
+                    border: 1px solid var(--border); border-radius: var(--radius);
+                    background: var(--surface); padding: 40px;
+                    text-align: center; position: relative; overflow: hidden;
+                }
+                .pj-cta::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); }
+                .pj-cta__title {
+                    font-family: var(--font-serif); font-size: 28px; font-weight: 400;
+                    color: var(--text-1); margin-bottom: 10px;
+                }
+                .pj-cta__desc { font-size: 13px; color: var(--text-2); line-height: 1.6; max-width: 400px; margin: 0 auto 24px; }
+
+                /* ── Footer row ── */
+                .pj-footer {
+                    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+                    gap: 12px; padding-top: 40px; margin-top: 48px; border-top: 1px solid var(--border);
+                }
+                .pj-footer__info { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); letter-spacing: 0.06em; }
+            `}</style>
+
+            <div className="pj-page">
+                {/* Nav */}
+                <nav className="pj-nav">
+                    <a href="/" className="pj-nav__brand">brown<em>.</em>dev</a>
+                    <a href="/portfolio" className="pj-nav__back">
+                        <ArrowLeft size={13} /> Portfolio
+                    </a>
+                </nav>
+
+                <main className="pj-main">
+                    {/* Masthead */}
+                    <header className="pj-masthead">
+                        <div>
+                            <p className="pj-masthead__eyebrow">Work</p>
+                            <h1 className="pj-masthead__title">
+                                Production<br />Deployments
                             </h1>
-                            <p className="text-xs text-slate-500">
-                                Total parsed arrays: <span className="text-slate-300 font-bold">[{projects.length}] stable builds detected</span>
-                            </p>
                         </div>
+                        <p className="pj-masthead__desc">
+                            Shipped systems, live platforms, and production-grade builds across the stack.
+                        </p>
+                    </header>
 
-                        <div className="flex flex-wrap items-center gap-4">
-                            <button
-                                onClick={handleBack}
-                                className="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-900 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-300 rounded-sm transition-all uppercase tracking-wider"
-                            >
-                                <ArrowLeft size={12} /> ESC_RETURN
-                            </button>
-                            <div className="inline-flex items-center gap-2 px-3 py-2 bg-slate-950 border border-slate-900 text-xs text-slate-400">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                                <span className="font-bold text-[10px] tracking-widest text-slate-500 uppercase">SYS_SOCKET:</span>
-                                <a href="https://wa.me/2347013725529" target="_blank" rel="noopener noreferrer" className="text-emerald-400 font-bold hover:underline">
-                                    COMMS_OPEN
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-
-                <main className="max-w-7xl mx-auto px-4 sm:px-8 py-12 relative z-10 space-y-12">
-
-                    {/* TELEMETRY METRICS SECTION */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        {[
-                            { label: "INDEXED_BUILDS", value: `0${projects.length}`, desc: "Active modules", icon: <Layers size={14} /> },
-                            { label: "SUCCESS_RATIO", value: "100%", desc: "Deployment status", icon: <Binary size={14} /> },
-                            { label: "TRACK_DURATION", value: "02+", desc: "Years validation", icon: <Cpu size={14} /> },
-                            { label: "CRITICAL_UPTIME", value: "24/7", desc: "Service continuity", icon: <Activity size={14} /> }
-                        ].map((stat, i) => (
-                            <div key={i} className="bg-[#0b132b]/10 border border-slate-900 p-4 rounded-sm flex justify-between items-start group hover:border-slate-800/80 transition-colors">
-                                <div className="space-y-1">
-                                    <div className="text-[10px] font-bold text-slate-500 tracking-wider uppercase">{stat.label}</div>
-                                    <div className="text-2xl font-black text-white tracking-tight">{stat.value}</div>
-                                    <div className="text-[10px] text-slate-600 font-medium font-sans">{stat.desc}</div>
-                                </div>
-                                <div className="text-slate-600 group-hover:text-cyan-500/80 transition-colors pt-0.5">
-                                    {stat.icon}
-                                </div>
+                    {/* Stats */}
+                    <p className="pj-section-label">Metrics</p>
+                    <div className="pj-stats">
+                        {STATS.map((s, i) => (
+                            <div key={i} className="pj-stat">
+                                <span className="pj-stat__label">{s.label}</span>
+                                <span className="pj-stat__value">{s.value}</span>
+                                <span className="pj-stat__desc">{s.desc}</span>
                             </div>
                         ))}
                     </div>
 
-                    {/* MECHANICAL PROJECT LAYOUT STREAM */}
-                    <div className="space-y-6">
-                        {projects.map((project, index) => (
-                            <article
-                                key={project.id}
-                                className="bg-slate-950/40 border border-slate-900 rounded-sm overflow-hidden hover:border-slate-800 transition-all duration-300 group shadow-lg"
-                            >
-                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-0">
-
-                                    {/* Embedded Node Display Column */}
-                                    <div className="lg:col-span-4 relative h-48 lg:h-auto min-h-[220px] bg-slate-950 border-b lg:border-b-0 lg:border-r border-slate-900/60 overflow-hidden">
-                                        <img
-                                            src={project.image}
-                                            alt={project.title}
-                                            className="w-full h-full object-cover grayscale opacity-40 contrast-125 brightness-70 group-hover:scale-[1.02] group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-500"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-transparent to-[#050811]/90"></div>
-
-                                        {/* Structural Hex Coordinates */}
-                                        <div className="absolute top-4 left-4 bg-slate-950/90 text-[10px] font-black text-slate-500 px-2.5 py-1 border border-slate-900/80 tracking-widest shadow-xl">
-                                            {project.id} // #{String(index + 1).padStart(2, '0')}
+                    {/* Projects */}
+                    <p className="pj-section-label">All projects</p>
+                    <div className="pj-list">
+                        {projects.map((p, i) => (
+                            <article key={p.id} className="pj-card">
+                                <div className="pj-card__img-wrap">
+                                    {p.image
+                                        ? <img src={p.image} alt={p.title} className="pj-card__img" onError={e => e.target.style.display = "none"} />
+                                        : <div className="pj-card__img-placeholder" />
+                                    }
+                                    <span className="pj-card__id">{p.id} // #{String(i + 1).padStart(2, "0")}</span>
+                                </div>
+                                <div className="pj-card__body">
+                                    <div>
+                                        <div className="pj-card__meta">
+                                            <span>Role: <span>{p.role}</span></span>
+                                            <span>Year: <span>{p.year}</span></span>
+                                            <span>Status: <span className={p.link ? "pj-card__meta-live" : "pj-card__meta-locked"}>[{p.status}]</span></span>
                                         </div>
+                                        <h2 className="pj-card__title">{p.title}</h2>
+                                        <p className="pj-card__desc">{p.description}</p>
                                     </div>
-
-                                    {/* Operational Architecture Spec Column */}
-                                    <div className="lg:col-span-8 p-6 sm:p-8 flex flex-col justify-between space-y-6">
-                                        <div className="space-y-4">
-
-                                            {/* Micro-Labels Strip */}
-                                            <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest border-b border-slate-900 pb-3">
-                                                <div className="flex items-center gap-1.5">
-                                                    <span className="w-1 h-1 bg-cyan-500"></span>
-                                                    ROLE: <span className="text-slate-300">{project.role}</span>
-                                                </div>
-                                                <span className="text-slate-800 hidden sm:inline">|</span>
-                                                <div>
-                                                    TIMESTAMP: <span className="text-slate-400 font-normal">{project.year}</span>
-                                                </div>
-                                                <span className="text-slate-800 hidden sm:inline">|</span>
-                                                <div>
-                                                    STATUS: <span className={`font-black ${project.link ? 'text-cyan-400' : 'text-amber-500/80'}`}>[{project.status}]</span>
-                                                </div>
-                                            </div>
-
-                                            {/* Header Blocks */}
-                                            <div className="space-y-1">
-                                                <h2 className="text-xl font-black text-white uppercase tracking-tight group-hover:text-cyan-400 transition-colors">
-                                                    {project.title}
-                                                </h2>
-                                            </div>
-
-                                            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-3xl font-sans">
-                                                {project.description}
-                                            </p>
+                                    <div className="pj-card__footer">
+                                        <div className="pj-tags">
+                                            {p.tags.map(t => <span key={t} className="pj-tag">{t}</span>)}
                                         </div>
-
-                                        {/* Lower Action & Stack Infrastructure Block */}
-                                        <div className="pt-4 border-t border-slate-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-
-                                            {/* Tech Tokens */}
-                                            <div className="flex flex-wrap gap-1.5">
-                                                {project.tags.map((tag, i) => (
-                                                    <span
-                                                        key={i}
-                                                        className="px-2.5 py-0.5 text-[9px] font-bold bg-slate-900/80 text-slate-500 border border-slate-800/60 rounded-none tracking-wide"
-                                                    >
-                                                        {tag}
-                                                    </span>
-                                                ))}
-                                            </div>
-
-                                            {/* Functional Execution Gate */}
-                                            <div className="shrink-0">
-                                                {project.link ? (
-                                                    <a
-                                                        href={project.link}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 hover:border-cyan-500/30 text-xs font-bold text-slate-300 hover:text-cyan-400 transition-all rounded-sm"
-                                                    >
-                                                        EXECUTE_LIVE_RUN()
-                                                        <ExternalLink size={11} />
-                                                    </a>
-                                                ) : (
-                                                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-950 border border-slate-900 text-xs font-bold text-slate-600 cursor-not-allowed">
-                                                        <Lock size={11} className="text-amber-600/60" />
-                                                        ACCESS_RESTRICTED_NDA
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                        </div>
-
+                                        {p.link
+                                            ? <a href={p.link} target="_blank" rel="noopener noreferrer" className="pj-btn">
+                                                View live <ExternalLink size={12} />
+                                            </a>
+                                            : <span className="pj-btn pj-btn--locked">
+                                                <Lock size={12} /> NDA restricted
+                                            </span>
+                                        }
                                     </div>
                                 </div>
                             </article>
                         ))}
                     </div>
 
-                    {/* LOWER DESK PIPELINE HANDSHAKE */}
-                    <div className="pt-8">
-                        <div className="max-w-3xl mx-auto border border-slate-900 bg-[#0b132b]/10 p-6 sm:p-8 rounded-sm relative overflow-hidden text-center space-y-4">
-                            <div className="absolute top-0 left-0 w-24 h-0.5 bg-cyan-500"></div>
-
-                            <div className="space-y-1.5">
-                                <h3 className="text-base font-black text-white uppercase tracking-wide">
-                                    Initialize System Integration?
-                                </h3>
-                                <p className="text-xs text-slate-400 font-sans max-w-md mx-auto leading-relaxed">
-                                    Operational channels are currently calibrated for contract pipelines, system refactoring, and remote enterprise micro-modules.
-                                </p>
-                            </div>
-
-                            <div className="pt-2">
-                                <Link
-                                    href="/bc/contact"
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-sm transition-all shadow-md active:scale-95"
-                                >
-                                    OPEN_CONN_SOCKET()
-                                </Link>
-                            </div>
-                        </div>
+                    {/* CTA */}
+                    <div className="pj-cta">
+                        <h2 className="pj-cta__title">Start a project</h2>
+                        <p className="pj-cta__desc">
+                            Channels are open for contract work, system builds, and remote collaborations.
+                        </p>
+                        <Link href="/bc/contact" className="pj-btn pj-btn--accent">
+                            Get in touch
+                        </Link>
                     </div>
 
+                    {/* Footer row */}
+                    <footer className="pj-footer">
+                        <span className="pj-footer__info">brown.dev — production deployments</span>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                            <button className="pj-btn" onClick={() => router.push("/portfolio")}>
+                                <ArrowLeft size={13} /> Portfolio
+                            </button>
+                        </div>
+                    </footer>
                 </main>
             </div>
             <Footer />

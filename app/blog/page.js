@@ -2,326 +2,875 @@
 
 import { useRouter } from "next/navigation";
 import { articles } from "../data/article";
-import { ArrowLeft, Clock, User, Search, Terminal, Cpu, Database, Binary } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Search, X, Clock, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import Footer from "@/components/footer";
 
+// ─── helpers ────────────────────────────────────────────────────────────────
+const getReadingTime = (content) =>
+  Math.max(1, Math.ceil(content.split(" ").length / 200));
+
+const CATEGORIES = [
+  { key: "all", label: "All posts" },
+  { key: "architecture", label: "Architecture" },
+  { key: "engineering", label: "Engineering" },
+  { key: "technology", label: "Technology" },
+];
+
+const architectureSlugs = [
+  "why-you-need-a-website",
+  "importance-of-a-personal-portfolio",
+  "why-branding-matters-online",
+  "future-proofing-your-career-online",
+];
+const engineeringSlugs = [
+  "how-to-build-your-first-website",
+  "seo-fundamentals-getting-found",
+  "content-marketing-personal-brands",
+  "networking-digital-era",
+];
+
+const getCategoryKey = (slug) => {
+  if (architectureSlugs.includes(slug)) return "architecture";
+  if (engineeringSlugs.includes(slug)) return "engineering";
+  return "technology";
+};
+
+const CATEGORY_LABELS = {
+  architecture: "Architecture",
+  engineering: "Engineering",
+  technology: "Technology",
+};
+
+// ─── sub-components ─────────────────────────────────────────────────────────
+
+/** Featured (large) card — first 2 articles */
+const FeaturedCard = ({ article }) => (
+  <a href={`/blog/${article.slug}`} className="bl-feat-card">
+    <div className="bl-feat-card__img-wrap">
+      {article.image ? (
+        <img
+          src={article.image}
+          alt={article.title}
+          className="bl-feat-card__img"
+          onError={(e) => (e.target.style.display = "none")}
+        />
+      ) : (
+        <div className="bl-feat-card__img-placeholder" />
+      )}
+      <div className="bl-feat-card__overlay" />
+    </div>
+    <div className="bl-feat-card__body">
+      <span className="bl-tag">{CATEGORY_LABELS[getCategoryKey(article.slug)]}</span>
+      <h2 className="bl-feat-card__title">{article.title}</h2>
+      <p className="bl-feat-card__preview">{article.preview}</p>
+      <div className="bl-meta">
+        <span className="bl-meta__author">{article.postedBy}</span>
+        <span className="bl-meta__dot" />
+        <span>{getReadingTime(article.content)} min read</span>
+      </div>
+    </div>
+    <span className="bl-feat-card__arrow-wrap">
+      <ArrowUpRight size={14} className="bl-feat-card__arrow" />
+    </span>
+  </a>
+);
+
+/** Standard card — grid of remaining articles */
+const ArticleCard = ({ article, index }) => (
+  <a
+    href={`/blog/${article.slug}`}
+    className="bl-card"
+    style={{ animationDelay: `${index * 40}ms` }}
+  >
+    <div className="bl-card__img-wrap">
+      {article.image ? (
+        <img
+          src={article.image}
+          alt={article.title}
+          className="bl-card__img"
+          onError={(e) => (e.target.style.display = "none")}
+        />
+      ) : (
+        <div className="bl-card__img-placeholder" />
+      )}
+    </div>
+    <div className="bl-card__body">
+      <span className="bl-tag bl-tag--sm">
+        {CATEGORY_LABELS[getCategoryKey(article.slug)]}
+      </span>
+      <h3 className="bl-card__title">{article.title}</h3>
+      <p className="bl-card__preview">{article.preview}</p>
+      <div className="bl-meta bl-meta--sm">
+        <span className="bl-meta__author">{article.postedBy}</span>
+        <span className="bl-meta__dot" />
+        <span>{getReadingTime(article.content)} min read</span>
+      </div>
+    </div>
+  </a>
+);
+
+// ─── page ────────────────────────────────────────────────────────────────────
 export default function BlogList() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredArticles, setFilteredArticles] = useState(articles);
-  const [isSearching, setIsSearching] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
-
-  // Categorize articles
-  const architectureArticles = articles.filter(a =>
-    ['why-you-need-a-website', 'importance-of-a-personal-portfolio', 'why-branding-matters-online', 'future-proofing-your-career-online'].includes(a.slug)
-  );
-
-  const engineeringArticles = articles.filter(a =>
-    ['how-to-build-your-first-website', 'seo-fundamentals-getting-found', 'content-marketing-personal-brands', 'networking-digital-era'].includes(a.slug)
-  );
+  const [filteredArticles, setFilteredArticles] = useState(articles);
 
   useEffect(() => {
-    const timeOutId = setTimeout(() => {
-      setIsSearching(true);
-
-      let filtered = articles;
-
-      if (selectedCategory === 'architecture') {
-        filtered = architectureArticles;
-      } else if (selectedCategory === 'engineering') {
-        filtered = engineeringArticles;
-      } else if (selectedCategory === 'core') {
-        filtered = engineeringArticles;
+    const id = setTimeout(() => {
+      let result = articles;
+      if (selectedCategory !== "all") {
+        result = result.filter(
+          (a) => getCategoryKey(a.slug) === selectedCategory
+        );
       }
-
-      if (searchTerm) {
-        const searchLower = searchTerm.toLowerCase();
-        filtered = filtered.filter((article) => {
-          return (
-            article.content.toLowerCase().includes(searchLower) ||
-            article.postedBy.toLowerCase().includes(searchLower) ||
-            article.title.toLowerCase().includes(searchLower)
-          );
-        });
+      if (searchTerm.trim()) {
+        const q = searchTerm.toLowerCase();
+        result = result.filter(
+          (a) =>
+            a.title.toLowerCase().includes(q) ||
+            a.preview?.toLowerCase().includes(q) ||
+            a.content.toLowerCase().includes(q) ||
+            a.postedBy.toLowerCase().includes(q)
+        );
       }
-
-      setFilteredArticles(filtered);
-      setIsSearching(false);
-    }, 300);
-
-    return () => clearTimeout(timeOutId);
+      setFilteredArticles(result);
+    }, 250);
+    return () => clearTimeout(id);
   }, [searchTerm, selectedCategory]);
 
-  const handleBack = () => {
-    router.push("/portfolio");
-  };
-
-
-  const getReadingTime = (content) => {
-    const words = content.split(" ").length;
-    return Math.max(1, Math.ceil(words / 200));
-  };
-
-  const getCategoryBadge = (slug) => {
-    if (architectureArticles.some(a => a.slug === slug)) {
-      return { label: "System Architecture", color: "border-cyan-500/30 text-cyan-400 bg-cyan-950/30" };
-    }
-    if (engineeringArticles.some(a => a.slug === slug)) {
-      return { label: "Core Engineering", color: "border-emerald-500/30 text-emerald-400 bg-emerald-750/30" };
-    }
-    return { label: "TECHNOLOGY", color: "border-slate-700 text-slate-400 bg-slate-900/40" };
-  };
+  const featuredArticles = filteredArticles.slice(0, 2);
+  const gridArticles = filteredArticles.slice(2);
 
   return (
     <>
-      {/* Top Navigation Frame */}
-      <nav className="relative z-10 border-b border-slate-800/80 bg-[#0b0b0f] backdrop-blur-md sticky top-0 z-[9999]">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 group">
-            <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
-            <a href="/">
-              <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                BROWN_CODE_DEV // technical_logs
-              </span>
-            </a>
-          </div>
-          <a
-            href="/portfolio"
-            className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
-          >
-            <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
-            <span>SYS.RETURN()</span>
+      <style>{`
+                *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+                :root {
+                    --bg:          #0a0a0b;
+                    --surface:     #111113;
+                    --border:      #1e1e22;
+                    --border-hi:   #2e2e34;
+                    --text-1:      #f4f4f5;
+                    --text-2:      #a1a1aa;
+                    --text-3:      #52525b;
+                    --accent:      #e8ff47;
+                    --accent-dim:  rgba(232,255,71,0.08);
+                    --radius:      6px;
+                    --font-serif:  'DM Serif Display', 'Georgia', serif;
+                    --font-sans:   'Inter', system-ui, sans-serif;
+                    --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+                }
+
+                @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+                .bl-page {
+                    font-family: var(--font-sans);
+                    background: var(--bg);
+                    color: var(--text-1);
+                    min-height: 100vh;
+                }
+
+                /* ── Nav ── */
+                .bl-nav {
+                    position: sticky;
+                    top: 0;
+                    z-index: 100;
+                    background: rgba(10,10,11,0.92);
+                    backdrop-filter: blur(12px);
+                    border-bottom: 1px solid var(--border);
+                    padding: 0 24px;
+                    height: 56px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+
+                .bl-nav__brand {
+                    font-family: var(--font-mono);
+                    font-size: 12px;
+                    font-weight: 500;
+                    letter-spacing: 0.08em;
+                    color: var(--text-1);
+                    text-decoration: none;
+                }
+
+                .bl-nav__brand em { font-style: normal; color: var(--accent); }
+
+                .bl-nav__back {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    letter-spacing: 0.06em;
+                    color: var(--text-2);
+                    text-decoration: none;
+                    padding: 6px 12px;
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    transition: color 0.15s, border-color 0.15s, background 0.15s;
+                }
+
+                .bl-nav__back:hover {
+                    color: var(--text-1);
+                    border-color: var(--border-hi);
+                    background: var(--surface);
+                }
+
+                /* ── Main ── */
+                .bl-main {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    padding: 0 24px 80px;
+                }
+
+                /* ── Masthead ── */
+                .bl-masthead {
+                    display: flex;
+                    align-items: flex-end;
+                    justify-content: space-between;
+                    gap: 16px;
+                    padding: 52px 0 32px;
+                    border-bottom: 1px solid var(--border);
+                    margin-bottom: 36px;
+                }
+
+                .bl-masthead__eyebrow {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--accent);
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    margin-bottom: 10px;
+                }
+
+                .bl-masthead__title {
+                    font-family: var(--font-serif);
+                    font-size: clamp(36px, 5vw, 60px);
+                    font-weight: 400;
+                    line-height: 1.05;
+                    color: var(--text-1);
+                }
+
+                .bl-masthead__desc {
+                    font-size: 13px;
+                    color: var(--text-2);
+                    line-height: 1.6;
+                    max-width: 320px;
+                    text-align: right;
+                }
+
+                /* ── Toolbar: filter + search ── */
+                .bl-toolbar {
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 16px;
+                    margin-bottom: 36px;
+                }
+
+                .bl-filters {
+                    display: flex;
+                    gap: 6px;
+                    flex-wrap: wrap;
+                }
+
+                .bl-filter-btn {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    letter-spacing: 0.06em;
+                    padding: 6px 14px;
+                    border-radius: var(--radius);
+                    border: 1px solid var(--border);
+                    background: transparent;
+                    color: var(--text-2);
+                    cursor: pointer;
+                    transition: color 0.15s, border-color 0.15s, background 0.15s;
+                }
+
+                .bl-filter-btn:hover {
+                    color: var(--text-1);
+                    border-color: var(--border-hi);
+                    background: var(--surface);
+                }
+
+                .bl-filter-btn--active {
+                    background: var(--accent-dim);
+                    border-color: rgba(232,255,71,0.3);
+                    color: var(--accent);
+                }
+
+                .bl-search {
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    background: var(--surface);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    padding: 8px 14px;
+                    min-width: 260px;
+                    transition: border-color 0.15s;
+                }
+
+                .bl-search:focus-within {
+                    border-color: var(--border-hi);
+                }
+
+                .bl-search__icon { color: var(--text-3); flex-shrink: 0; }
+
+                .bl-search input {
+                    background: none;
+                    border: none;
+                    outline: none;
+                    font-family: var(--font-sans);
+                    font-size: 13px;
+                    color: var(--text-1);
+                    width: 100%;
+                }
+
+                .bl-search input::placeholder { color: var(--text-3); }
+
+                .bl-search__clear {
+                    background: none;
+                    border: none;
+                    color: var(--text-3);
+                    cursor: pointer;
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    transition: color 0.15s;
+                }
+
+                .bl-search__clear:hover { color: var(--text-1); }
+
+                .bl-search__count {
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    color: var(--text-3);
+                    margin-top: 6px;
+                    padding-left: 2px;
+                }
+
+                .bl-search__count em { font-style: normal; color: var(--accent); }
+
+                /* ── Section label ── */
+                .bl-section-label {
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    letter-spacing: 0.12em;
+                    text-transform: uppercase;
+                    color: var(--text-3);
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    margin-bottom: 20px;
+                }
+
+                .bl-section-label::after {
+                    content: '';
+                    flex: 1;
+                    height: 1px;
+                    background: var(--border);
+                }
+
+                /* ── Tags ── */
+                .bl-tag {
+                    display: inline-block;
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    letter-spacing: 0.08em;
+                    text-transform: uppercase;
+                    padding: 3px 8px;
+                    border-radius: 3px;
+                    background: var(--accent-dim);
+                    color: var(--accent);
+                    border: 1px solid rgba(232,255,71,0.2);
+                    line-height: 1;
+                }
+
+                .bl-tag--sm { font-size: 9px; padding: 2px 6px; }
+
+                /* ── Meta ── */
+                .bl-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--text-3);
+                    margin-top: 12px;
+                }
+
+                .bl-meta--sm { font-size: 10px; margin-top: 10px; }
+                .bl-meta__author { color: var(--text-2); }
+
+                .bl-meta__dot {
+                    width: 3px;
+                    height: 3px;
+                    border-radius: 50%;
+                    background: var(--border-hi);
+                    flex-shrink: 0;
+                }
+
+                /* ── Featured row ── */
+                .bl-feat-row {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 1px;
+                    background: var(--border);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    overflow: hidden;
+                    margin-bottom: 48px;
+                }
+
+                @media (max-width: 700px) {
+                    .bl-feat-row { grid-template-columns: 1fr; }
+                    .bl-masthead { flex-direction: column; align-items: flex-start; }
+                    .bl-masthead__desc { text-align: left; }
+                    .bl-toolbar { flex-direction: column; align-items: flex-start; }
+                    .bl-search { min-width: 100%; width: 100%; }
+                }
+
+                .bl-feat-card {
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 380px;
+                    overflow: hidden;
+                    background: var(--surface);
+                    text-decoration: none;
+                    transition: background 0.15s;
+                }
+
+                .bl-feat-card:hover { background: #141417; }
+
+                .bl-feat-card::before {
+                    content: '';
+                    position: absolute;
+                    left: 0; top: 0; bottom: 0;
+                    width: 2px;
+                    background: var(--accent);
+                    transform: scaleY(0);
+                    transform-origin: bottom;
+                    transition: transform 0.2s ease;
+                    z-index: 5;
+                }
+
+                .bl-feat-card:hover::before { transform: scaleY(1); }
+
+                .bl-feat-card__img-wrap {
+                    position: relative;
+                    height: 200px;
+                    background: var(--bg);
+                    overflow: hidden;
+                    flex-shrink: 0;
+                }
+
+                .bl-feat-card__img {
+                    width: 100%; height: 100%;
+                    object-fit: cover;
+                    opacity: 0.5;
+                    filter: grayscale(25%);
+                    transition: opacity 0.3s, transform 0.4s;
+                }
+
+                .bl-feat-card:hover .bl-feat-card__img {
+                    opacity: 0.7;
+                    transform: scale(1.03);
+                }
+
+                .bl-feat-card__img-placeholder {
+                    width: 100%; height: 100%;
+                    background: repeating-linear-gradient(
+                        45deg, transparent, transparent 8px,
+                        rgba(255,255,255,0.015) 8px, rgba(255,255,255,0.015) 16px
+                    );
+                }
+
+                .bl-feat-card__overlay {
+                    position: absolute;
+                    inset: 0;
+                    background: linear-gradient(to bottom, transparent 40%, var(--surface) 100%);
+                    transition: background 0.15s;
+                }
+
+                .bl-feat-card:hover .bl-feat-card__overlay {
+                    background: linear-gradient(to bottom, transparent 40%, #141417 100%);
+                }
+
+                .bl-feat-card__body {
+                    padding: 20px 24px 24px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    flex: 1;
+                }
+
+                .bl-feat-card__title {
+                    font-family: var(--font-serif);
+                    font-size: clamp(18px, 2.2vw, 23px);
+                    font-weight: 400;
+                    line-height: 1.25;
+                    color: var(--text-1);
+                    transition: color 0.15s;
+                }
+
+                .bl-feat-card:hover .bl-feat-card__title { color: #fff; }
+
+                .bl-feat-card__preview {
+                    font-size: 13px;
+                    color: var(--text-2);
+                    line-height: 1.55;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+                .bl-feat-card__arrow-wrap {
+                    position: absolute;
+                    top: 16px; right: 16px;
+                    z-index: 4;
+                }
+
+                .bl-feat-card__arrow {
+                    color: var(--text-3);
+                    transition: color 0.15s, transform 0.15s;
+                }
+
+                .bl-feat-card:hover .bl-feat-card__arrow {
+                    color: var(--accent);
+                    transform: translate(2px, -2px);
+                }
+
+                /* ── Article grid ── */
+                .bl-grid {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 1px;
+                    background: var(--border);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    overflow: hidden;
+                    margin-bottom: 56px;
+                }
+
+                @media (max-width: 900px) { .bl-grid { grid-template-columns: 1fr 1fr; } }
+                @media (max-width: 600px) { .bl-grid { grid-template-columns: 1fr; } }
+
+                .bl-card {
+                    display: flex;
+                    flex-direction: column;
+                    background: var(--surface);
+                    text-decoration: none;
+                    overflow: hidden;
+                    position: relative;
+                    transition: background 0.15s;
+                    animation: blFadeUp 0.4s ease-out both;
+                }
+
+                .bl-card:hover { background: #141417; }
+
+                .bl-card::before {
+                    content: '';
+                    position: absolute;
+                    left: 0; top: 0; bottom: 0;
+                    width: 2px;
+                    background: var(--accent);
+                    transform: scaleY(0);
+                    transform-origin: bottom;
+                    transition: transform 0.2s ease;
+                    z-index: 5;
+                }
+
+                .bl-card:hover::before { transform: scaleY(1); }
+
+                @keyframes blFadeUp {
+                    from { opacity: 0; transform: translateY(12px); }
+                    to   { opacity: 1; transform: translateY(0); }
+                }
+
+                .bl-card__img-wrap {
+                    height: 160px;
+                    background: var(--bg);
+                    overflow: hidden;
+                    flex-shrink: 0;
+                }
+
+                .bl-card__img {
+                    width: 100%; height: 100%;
+                    object-fit: cover;
+                    opacity: 0.45;
+                    filter: grayscale(25%);
+                    transition: opacity 0.3s, transform 0.4s;
+                }
+
+                .bl-card:hover .bl-card__img {
+                    opacity: 0.65;
+                    transform: scale(1.04);
+                }
+
+                .bl-card__img-placeholder {
+                    width: 100%; height: 100%;
+                    background: repeating-linear-gradient(
+                        45deg, transparent, transparent 6px,
+                        rgba(255,255,255,0.015) 6px, rgba(255,255,255,0.015) 12px
+                    );
+                }
+
+                .bl-card__body {
+                    padding: 18px 20px 20px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 7px;
+                    flex: 1;
+                }
+
+                .bl-card__title {
+                    font-family: var(--font-serif);
+                    font-size: 17px;
+                    font-weight: 400;
+                    line-height: 1.3;
+                    color: var(--text-1);
+                    transition: color 0.15s;
+                }
+
+                .bl-card:hover .bl-card__title { color: #fff; }
+
+                .bl-card__preview {
+                    font-size: 12px;
+                    color: var(--text-2);
+                    line-height: 1.55;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+                /* ── Empty state ── */
+                .bl-empty {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 80px 0;
+                    text-align: center;
+                }
+
+                .bl-empty__code {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--text-3);
+                    letter-spacing: 0.1em;
+                }
+
+                .bl-empty__msg { font-size: 14px; color: var(--text-2); }
+
+                .bl-empty__reset {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--accent);
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    margin-top: 4px;
+                    transition: opacity 0.15s;
+                }
+
+                .bl-empty__reset:hover { opacity: 0.7; }
+
+                /* ── CTA / Footer row ── */
+                .bl-footer {
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
+                    padding-top: 40px;
+                    margin-top: 48px;
+                    border-top: 1px solid var(--border);
+                }
+
+                .bl-footer__info {
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    color: var(--text-3);
+                    letter-spacing: 0.06em;
+                }
+
+                .bl-footer__actions {
+                    display: flex;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                }
+
+                .bl-btn {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    letter-spacing: 0.06em;
+                    padding: 8px 16px;
+                    border-radius: var(--radius);
+                    border: 1px solid var(--border);
+                    background: transparent;
+                    color: var(--text-2);
+                    cursor: pointer;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    transition: color 0.15s, border-color 0.15s, background 0.15s;
+                    text-decoration: none;
+                }
+
+                .bl-btn:hover {
+                    color: var(--text-1);
+                    border-color: var(--border-hi);
+                    background: var(--surface);
+                }
+
+                .bl-btn--accent {
+                    border-color: rgba(232,255,71,0.3);
+                    color: var(--accent);
+                    background: var(--accent-dim);
+                }
+
+                .bl-btn--accent:hover {
+                    background: rgba(232,255,71,0.15);
+                    border-color: rgba(232,255,71,0.5);
+                    color: var(--accent);
+                }
+            `}</style>
+
+      <div className="bl-page">
+        {/* ── Nav ── */}
+        <nav className="bl-nav">
+          <a href="/" className="bl-nav__brand">
+            brown<em>.</em>dev
           </a>
-        </div>
-      </nav>
+          <a href="/portfolio" className="bl-nav__back">
+            <ArrowLeft size={13} />
+            Portfolio
+          </a>
+        </nav>
 
-      <section className="min-h-screen bg-[#0b0b0f] text-slate-100 pt-32 pb-20 px-4 md:px-8 lg:px-12 font-mono  selection:text-cyan-200">
-        <div className="max-w-7xl mx-auto">
-
-          {/* Developer / Engineering Header Section */}
-          <div className="relative w-full rounded-2xl border border-slate-800 bg-[#0b0b0f] backdrop-blur-md overflow-hidden p-6 md:p-12 shadow-2xl mb-12">
-            <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none hidden md:block">
-              <Binary size={240} />
-            </div>
-
-            <div className="relative z-10 max-w-4xl">
-              <div className="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 text-cyan-400 text-xs px-4 py-1.5 rounded-md tracking-wider uppercase mb-6">
-                <Terminal size={14} className="animate-pulse" />
-                stdout // technical_logs
-              </div>
-
-              <h1 className="text-2xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-4">
-                ENGINEERING_<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">INSIGHTS</span>
+        <main className="bl-main">
+          {/* ── Masthead ── */}
+          <header className="bl-masthead">
+            <div>
+              <p className="bl-masthead__eyebrow">Writing</p>
+              <h1 className="bl-masthead__title">
+                Engineering<br />Insights
               </h1>
-
-              <p className="text-slate-400 text-base md:text-lg max-w-2xl leading-relaxed font-sans">
-                Deep dives into systems architecture, production grade compilation structures, digital infrastructure optimization, and cleaner design patterns.
-              </p>
             </div>
-          </div>
+            <p className="bl-masthead__desc">
+              Deep dives into systems architecture, digital infrastructure, and design patterns worth thinking about.
+            </p>
+          </header>
 
-          {/* Technical Filter Pipeline */}
-          <div className="flex flex-wrap items-center justify-start gap-3 mb-10 border-b border-slate-900 pb-6 text-xs">
-            <button
-              onClick={() => setSelectedCategory('all')}
-              className={`flex items-center gap-2 px-4 py-2 border rounded-md transition-all duration-200 ${selectedCategory === 'all'
-                ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 shadow-sm'
-                : 'bg-transparent border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
-                }`}
-            >
-              <Cpu size={14} />
-              ALL_MODULES()
-            </button>
-
-            <button
-              onClick={() => setSelectedCategory('architecture')}
-              className={`flex items-center gap-2 px-4 py-2 border rounded-md transition-all duration-200 ${selectedCategory === 'architecture'
-                ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 shadow-sm'
-                : 'bg-transparent border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
-                }`}
-            >
-              <Database size={14} />
-              SYS_ARCH
-            </button>
-
-            <button
-              onClick={() => setSelectedCategory('tech')}
-              className={`flex items-center gap-2 px-4 py-2 border rounded-md transition-all duration-200 ${selectedCategory === 'tech'
-                ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 shadow-sm'
-                : 'bg-transparent border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
-                }`}
-            >
-              <Terminal size={14} />
-              TECH
-            </button>
-
-            <button
-              onClick={() => setSelectedCategory('core')}
-              className={`flex items-center gap-2 px-4 py-2 border rounded-md transition-all duration-200 ${selectedCategory === 'core'
-                ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 shadow-sm'
-                : 'bg-transparent border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
-                }`}
-            >
-              <Terminal size={14} />
-              CORE_ENG
-            </button>
-          </div>
-
-          {/* CLI Search Shell */}
-          <div className="max-w-3xl mb-16 ">
-            <div className="relative flex items-center bg-[#0b0b0f] border border-slate-800 rounded-lg focus-within:border-cyan-500/50 transition-all duration-200">
-              <span className="pl-4 text-cyan-500 select-none text-xs font-bold">$ grep -ri</span>
-              <input
-                type="text"
-                placeholder="search queries or technical parameters..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-transparent pl-3 pr-16 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none"
-              />
-              {searchTerm && (
+          {/* ── Toolbar ── */}
+          <div className="bl-toolbar">
+            <div className="bl-filters">
+              {CATEGORIES.map((cat) => (
                 <button
-                  onClick={() => setSearchTerm("")}
-                  className="absolute right-4 text-xs text-slate-500 hover:text-cyan-400 transition-colors"
+                  key={cat.key}
+                  onClick={() => setSelectedCategory(cat.key)}
+                  className={`bl-filter-btn${selectedCategory === cat.key ? " bl-filter-btn--active" : ""}`}
                 >
-                  [ESC]
+                  {cat.label}
                 </button>
+              ))}
+            </div>
+            <div>
+              <div className="bl-search">
+                <Search size={14} className="bl-search__icon" />
+                <input
+                  type="text"
+                  placeholder="Search articles…"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                {searchTerm && (
+                  <button className="bl-search__clear" onClick={() => setSearchTerm("")}>
+                    <X size={13} />
+                  </button>
+                )}
+              </div>
+              {searchTerm && (
+                <p className="bl-search__count">
+                  <em>{filteredArticles.length}</em> result{filteredArticles.length !== 1 ? "s" : ""}
+                </p>
               )}
             </div>
-
-            {searchTerm && (
-              <div className="mt-2 text-left pl-1">
-                <p className="text-slate-500 text-xs">
-                  {isSearching ? (
-                    "Analyzing records..."
-                  ) : (
-                    <>
-                      Query returned <span className="text-emerald-400">{filteredArticles.length}</span> matching matrix blocks
-                    </>
-                  )}
-                </p>
-              </div>
-            )}
           </div>
 
-          {filteredArticles.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-              {filteredArticles.map((article, index) => {
-                const badge = getCategoryBadge(article.slug);
-                return (
-                  <a
-                    key={`${article.slug}-${index}`} //  Guarantees uniqueness across updates
-                    href={`/blog/${article.slug}`}
-                    className="group relative flex flex-col justify-between bg-slate-950 border border-slate-900 overflow-hidden hover:border-cyan-500/40 transition-all duration-300 shadow-xl"
-                    style={{
-                      animationName: "fadeInUp",
-                      animationDuration: "0.4s",
-                      animationTimingFunction: "ease-out",
-                      animationFillMode: "forwards",
-                      animationDelay: `${index * 50}ms`,
-                      opacity: 0,
-                    }}
-                  >
-                    {/* Background Image Container */}
-                    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                      <img
-                        src={article.image}
-                        alt={article.title}
-                        className="w-full h-full object-cover opacity-20  transition-all duration-500 mix-blend-luminosity"
-                      />
-                      {/* Ambient Dark Overlay to protect text legibility */}
-                      <div className="absolute inset-0 " />
-                    </div>
-
-                    {/* Foreground Card Content Block */}
-                    <div className="relative z-10 p-6 flex-1 flex flex-col">
-                      {/* Meta Node Classification */}
-                      <div className="flex items-center justify-between mb-4">
-                        <span className={`text-[10px] uppercase px-2 py-0.5 rounded border backdrop-blur-sm ${badge.color}`}>
-                          {badge.label}
-                        </span>
-                        <span className="text-[10px] text-slate-500 font-mono">ID: {article.slug.slice(0, 7)}</span>
-                      </div>
-
-                      {/* Technical Title */}
-                      <h3 className="text-white text-lg font-bold leading-snug mb-3 group-hover:text-cyan-400 transition-colors duration-200">
-                        {article.title}
-                      </h3>
-
-                      {/* Abstract / Preview */}
-                      <p className="text-slate-400 text-xs font-sans leading-relaxed line-clamp-3 mb-4 mt-auto">
-                        {article.preview}
-                      </p>
-                    </div>
-
-                    {/* Node Footer metrics */}
-                    <div className="relative z-10 px-6 py-4 border-t border-slate-900/60 bg-[#0b0b0f] backdrop-blur-sm flex items-center justify-between text-[11px] text-slate-500">
-                      <div className="flex items-center gap-1.5">
-                        <User size={12} className="text-slate-600" />
-                        <span className="text-slate-400">{article.postedBy}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <Clock size={12} className="text-slate-600" />
-                        <span>EST_TIME: {getReadingTime(article.content)}m</span>
-                      </div>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="border border-dashed border-slate-800 rounded-xl p-12 text-center max-w-xl mx-auto my-12 relative z-10">
-              <Terminal size={24} className="text-rose-500 mx-auto mb-4" />
-              <h3 className="text-sm font-bold text-slate-300 mb-2">ERR_NO_MATCHING_RECORDS</h3>
-              <p className="text-xs text-slate-500 font-sans mb-4">
-                The evaluation engine returned 0 records matching your terminal filter parameter strings.
-              </p>
+          {/* ── Content ── */}
+          {filteredArticles.length === 0 ? (
+            <div className="bl-empty">
+              <span className="bl-empty__code">NO_RESULTS</span>
+              <p className="bl-empty__msg">No articles match your current filter.</p>
               <button
-                onClick={() => {
-                  setSearchTerm("");
-                  setSelectedCategory("all");
-                }}
-                className="text-xs text-cyan-400 hover:underline"
+                className="bl-empty__reset"
+                onClick={() => { setSearchTerm(""); setSelectedCategory("all"); }}
               >
-                Reset filter configurations
+                Clear filters
               </button>
             </div>
+          ) : (
+            <>
+              {featuredArticles.length > 0 && (
+                <>
+                  <p className="bl-section-label">Featured</p>
+                  <div className="bl-feat-row">
+                    {featuredArticles.map((a) => (
+                      <FeaturedCard key={a.slug} article={a} />
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {gridArticles.length > 0 && (
+                <>
+                  <p className="bl-section-label">All articles</p>
+                  <div className="bl-grid">
+                    {gridArticles.map((a, i) => (
+                      <ArticleCard key={a.slug} article={a} index={i} />
+                    ))}
+                  </div>
+                </>
+              )}
+            </>
           )}
 
-          {/* Navigation Matrix controls */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 pt-8 border-t border-slate-900">
-            <button
-              onClick={() => router.push("/bc/contact")}
-              className="w-full sm:w-auto px-6 py-3 border border-cyan-500 text-cyan-400 bg-cyan-950/10 hover:bg-cyan-500 hover:text-black transition-all duration-200 rounded-md text-xs font-bold uppercase tracking-wider"
-            >
-              INITIALIZE_CONTACT
-            </button>
+          {/* ── Footer ── */}
+          <footer className="bl-footer">
+            <span className="bl-footer__info">
+              brown.dev — writing & insights
+            </span>
+            <div className="bl-footer__actions">
+              <button
+                className="bl-btn bl-btn--accent"
+                onClick={() => router.push("/bc/contact")}
+              >
+                Get in touch
+              </button>
+              <button
+                className="bl-btn"
+                onClick={() => router.push("/portfolio")}
+              >
+                <ArrowLeft size={13} />
+                Portfolio
+              </button>
+            </div>
+          </footer>
+        </main>
+      </div>
 
-            <button
-              onClick={handleBack}
-              className="w-full sm:w-auto group flex items-center justify-center gap-2 px-6 py-3 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all duration-200 rounded-md text-xs uppercase tracking-wider"
-            >
-              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-              RETURN_TO_BASE
-            </button>
-          </div>
-        </div>
-
-        <style jsx>{`
-          @keyframes fadeInUp {
-            from {
-              opacity: 0;
-              transform: translateY(15px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-        `}</style>
-        <Footer />
-      </section>
+      <Footer />
     </>
   );
 }

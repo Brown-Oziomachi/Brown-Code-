@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Terminal, Cpu, HardDrive, RefreshCw, ArrowLeft, Activity, Clock, ShieldCheck, AlertCircle, FileText, Footprints, LogOut, LogIn, Database, UserCheck } from "lucide-react";
 import {
-    collection,
-    addDoc,
-    serverTimestamp,
-} from "firebase/firestore";
+    Terminal, Cpu, HardDrive, RefreshCw, ArrowLeft,
+    Activity, Clock, ShieldCheck, AlertCircle, FileText,
+    Footprints, LogOut, LogIn, Database, UserCheck
+} from "lucide-react";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db1 } from "@/config/firebase.config1";
+
 export default function StatusMonitorPage() {
     const [systemData, setSystemData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -16,373 +17,402 @@ export default function StatusMonitorPage() {
     const [lastUpdated, setLastUpdated] = useState("");
     const [liveClientTrail, setLiveClientTrail] = useState([]);
     const [userSessions, setUserSessions] = useState([]);
-
-    // State to handle the name input box
     const [visitorName, setVisitorName] = useState("");
     const [savedName, setSavedName] = useState("");
 
-    // Hook Loop 1: Connect to the Node.js backend transmission stream
     useEffect(() => {
-        async function probeServerMetrics() {
+        async function probe() {
             setLoading(true);
             try {
-                const response = await fetch("/status/api");
-                const data = await response.json();
+                const res = await fetch("/status/api");
+                const data = await res.json();
                 if (data.success) {
                     setSystemData(data);
-                    const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                    setLastUpdated(currentTime);
-                    generateMockUserJourneys();
+                    setLastUpdated(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
+                    generateMockSessions();
                 }
-            } catch (err) {
-                console.error("System telemetry sync failure:", err);
-            } finally {
-                setLoading(false);
-            }
+            } catch (e) { console.error(e); }
+            finally { setLoading(false); }
         }
-        probeServerMetrics();
+        probe();
     }, [refreshTrigger]);
 
-    // Hook Loop 2: Heartbeat interval - updates data automatically every 5 seconds
     useEffect(() => {
-        const interval = setInterval(() => {
-            setRefreshTrigger(prev => prev + 1);
-        }, 5000);
-        return () => clearInterval(interval);
+        const t = setInterval(() => setRefreshTrigger((p) => p + 1), 5000);
+        return () => clearInterval(t);
     }, []);
 
-    // Hook Loop 3: Pull real-time navigation paths and name out of storage on every refresh cycle
     useEffect(() => {
         if (typeof window !== "undefined") {
-            const storedTrail = JSON.parse(sessionStorage.getItem("browncode_session_trail") || "[]");
-            setLiveClientTrail(storedTrail);
-
-            const existingName = sessionStorage.getItem("browncode_visitor_name") || "";
-            setSavedName(existingName);
+            const trail = JSON.parse(sessionStorage.getItem("browncode_session_trail") || "[]");
+            // ── Limit to 10 most recent steps ──
+            setLiveClientTrail(trail.slice(-10));
+            setSavedName(sessionStorage.getItem("browncode_visitor_name") || "");
         }
     }, [refreshTrigger]);
 
     const handleSaveName = async (e) => {
         e.preventDefault();
         if (!visitorName.trim()) return;
-
-        const formattedName = visitorName.trim();
-
-        if (typeof window !== "undefined") {
-            sessionStorage.setItem("browncode_visitor_name", formattedName);
-            setSavedName(formattedName);
-            setVisitorName("");
-
-            try {
-                await addDoc(collection(db1, "chat-messages"), {
-                    text: `SYSTEM_LOG: Visitor has explicitly verified their terminal signature identity footprint.`,
-                    userName: formattedName, 
-                    isAdmin: false,
-                    isIdentityInjection: true,
-                    timestamp: serverTimestamp(),
-                    userTimestamp: new Date().toISOString(),
-                });
-            } catch (err) {
-                console.error("Failed to broadcast identity footprint to matrix:", err);
-            }
-            // --------------------------------------------------
-
-            setRefreshTrigger(prev => prev + 1);
-        }
+        const name = visitorName.trim();
+        sessionStorage.setItem("browncode_visitor_name", name);
+        setSavedName(name);
+        setVisitorName("");
+        try {
+            await addDoc(collection(db1, "chat-messages"), {
+                text: `SYSTEM_LOG: Visitor verified identity.`,
+                userName: name, isAdmin: false, isIdentityInjection: true,
+                timestamp: serverTimestamp(), userTimestamp: new Date().toISOString(),
+            });
+        } catch (e) { console.error(e); }
+        setRefreshTrigger((p) => p + 1);
     };
 
-    // Helper logic to simulate historical path interactions of visitors across your platform trees
-    const generateMockUserJourneys = () => {
-        const entryPoints = ["/sitemap", "/portfolio", "/blog/why-you-need-a-website"];
-        const midPoints = ["/about", "/projects", "/blog", "/cv", "/scam-checker"];
+    const generateMockSessions = () => {
+        const entries = ["/sitemap", "/portfolio", "/blog/why-you-need-a-website"];
+        const mids = ["/about", "/projects", "/blog", "/cv", "/scam-checker"];
         const exits = ["Tab Closed (Idle)", "Navigated Away", "Session Timeout"];
-
-        const mockSessions = [
+        setUserSessions([
             {
-                id: "USR_REF_9942",
-                ip: "102.89.43.12 (Abuja, NG)",
-                entry: entryPoints[Math.floor(Math.random() * entryPoints.length)],
-                steps: [
-                    midPoints[Math.floor(Math.random() * midPoints.length)],
-                    "/status",
-                    midPoints[Math.floor(Math.random() * midPoints.length)]
-                ],
-                currentStatus: "ACTIVE_NOW",
-                duration: "4m 12s"
+                id: "USR_9942", ip: "102.89.43.12 (Abuja, NG)",
+                entry: entries[Math.floor(Math.random() * entries.length)],
+                steps: [mids[Math.floor(Math.random() * mids.length)], "/status", mids[Math.floor(Math.random() * mids.length)]],
+                status: "ACTIVE", duration: "4m 12s",
             },
             {
-                id: "USR_REF_8821",
-                ip: "197.210.8.54 (Lagos, NG)",
+                id: "USR_8821", ip: "197.210.8.54 (Lagos, NG)",
                 entry: "/portfolio",
                 steps: ["/projects", "/blog/importance-of-a-personal-portfolio", "/contact"],
-                currentStatus: exits[Math.floor(Math.random() * exits.length)],
-                duration: "8m 45s"
-            }
-        ];
-        setUserSessions(mockSessions);
+                status: exits[Math.floor(Math.random() * exits.length)], duration: "8m 45s",
+            },
+        ]);
     };
 
     return (
-        <div className="min-h-screen bg-[#030712] text-slate-100 font-mono antialiased p-4 md:p-6 flex flex-col justify-between">
-            <div className="max-w-5xl w-full mx-auto py-8 md:py-12">
+        <>
+            <style>{`
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+          --bg: #0a0a0b; --surface: #111113; --border: #1e1e22; --border-hi: #2e2e34;
+          --text-1: #f4f4f5; --text-2: #a1a1aa; --text-3: #52525b;
+          --accent: #e8ff47; --accent-dim: rgba(232,255,71,0.08);
+          --radius: 6px;
+          --serif: 'DM Serif Display', Georgia, serif;
+          --sans: 'Inter', system-ui, sans-serif;
+          --mono: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-                {/* Header System Panel */}
-                <header className="border-b border-slate-900 pb-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <div className="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 text-cyan-400 text-xs px-3 py-1 rounded mb-3">
-                            <Terminal size={12} className="animate-pulse" />
-                            SYS_MONITOR // CORE_RESOURCES
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <h1 className="text-2xl font-black text-white tracking-tight">PLATFORM_LIVE_TELEMETRY</h1>
-                            <span className="relative flex h-2.5 w-2.5">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
-                            </span>
-                        </div>
-                    </div>
+        .st-page { min-height: 100vh; background: var(--bg); color: var(--text-2); font-family: var(--sans); display: flex; flex-direction: column; }
+        .st-main { max-width: 1000px; width: 100%; margin: 0 auto; padding: 40px 24px 60px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
 
-                    <div className="flex flex-col sm:items-end gap-2 w-full sm:w-auto">
-                        <button
-                            onClick={() => setRefreshTrigger(prev => prev + 1)}
-                            disabled={loading}
-                            className="flex items-center justify-center gap-2 text-xs border border-slate-800 hover:border-slate-700 bg-slate-950/50 px-4 py-2 rounded text-slate-400 hover:text-white transition-all disabled:opacity-50 w-full sm:w-auto"
-                        >
-                            <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
-                            FORCE_PROBE
-                        </button>
-                        {lastUpdated && (
-                            <div className="flex items-center gap-1.5 text-[10px] text-slate-500 justify-start sm:justify-end">
-                                <Clock size={10} />
-                                <span>STREAM_ACTIVE: {lastUpdated}</span>
+        /* Header */
+        .st-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .st-header__eyebrow { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; }
+        .st-header__eyebrow-dot { width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
+        .st-header__title { font-family: var(--serif); font-size: clamp(22px, 3vw, 32px); color: var(--text-1); display: flex; align-items: center; gap: 12px; }
+        .st-ping { position: relative; width: 8px; height: 8px; flex-shrink: 0; }
+        .st-ping__ring { position: absolute; inset: 0; border-radius: 50%; background: var(--accent); opacity: 0.4; animation: st-ping 1.4s ease-out infinite; }
+        .st-ping__dot { position: absolute; inset: 1px; border-radius: 50%; background: var(--accent); }
+        @keyframes st-ping { 0%{transform:scale(1);opacity:0.4} 100%{transform:scale(2.2);opacity:0} }
+
+        .st-header__right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+        .st-refresh {
+          display: inline-flex; align-items: center; gap: 6px;
+          font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
+          padding: 7px 14px; border: 1px solid var(--border); border-radius: var(--radius);
+          background: var(--surface); color: var(--text-2); cursor: pointer;
+          transition: color 0.15s, border-color 0.15s;
+        }
+        .st-refresh:hover:not(:disabled) { color: var(--text-1); border-color: var(--border-hi); }
+        .st-refresh:disabled { opacity: 0.4; cursor: not-allowed; }
+        .st-last-updated { font-family: var(--mono); font-size: 9px; color: var(--text-3); display: flex; align-items: center; gap: 5px; }
+
+        /* Identity input */
+        .st-identity { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+        .st-identity__label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
+        .st-identity__label svg { color: var(--accent); }
+        .st-identity__sub { font-size: 11px; color: var(--text-3); }
+        .st-identity__form { display: flex; gap: 8px; flex-shrink: 0; }
+        .st-identity__input {
+          font-family: var(--mono); font-size: 11px; padding: 7px 12px;
+          background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+          color: var(--text-1); outline: none; width: 180px;
+          transition: border-color 0.15s;
+        }
+        .st-identity__input::placeholder { color: var(--text-3); }
+        .st-identity__input:focus { border-color: rgba(232,255,71,0.4); }
+        .st-identity__btn {
+          font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+          padding: 7px 14px; border-radius: var(--radius);
+          background: var(--accent-dim); border: 1px solid rgba(232,255,71,0.25);
+          color: var(--accent); cursor: pointer; white-space: nowrap;
+          transition: background 0.15s;
+        }
+        .st-identity__btn:hover { background: rgba(232,255,71,0.14); }
+
+        /* Stat cards */
+        .st-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+        @media (max-width: 700px) { .st-stats { grid-template-columns: 1fr 1fr; } }
+        .st-stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+        .st-stat__label { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+        .st-stat__label svg { flex-shrink: 0; }
+        .st-stat__val { font-family: var(--serif); font-size: 20px; color: var(--text-1); }
+        .st-stat__sub { font-family: var(--mono); font-size: 9px; color: var(--text-3); margin-top: 2px; }
+
+        /* Sessions panel */
+        .st-sessions { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+        .st-sessions__header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+        .st-sessions__title { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+        .st-sessions__title svg { color: var(--accent); }
+        .st-sessions__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
+        @media (max-width: 640px) { .st-sessions__grid { grid-template-columns: 1fr; } }
+
+        .st-session { background: var(--bg); padding: 16px 18px; }
+        .st-session__top { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--border); }
+        .st-session__id { font-family: var(--mono); font-size: 10px; color: var(--accent); margin-bottom: 2px; display: flex; align-items: center; gap: 5px; }
+        .st-session__ip { font-family: var(--mono); font-size: 9px; color: var(--text-3); }
+        .st-session__badge { font-family: var(--mono); font-size: 8px; letter-spacing: 0.08em; padding: 2px 7px; border-radius: 3px; }
+        .st-session__badge--active { background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.2); color: #4ade80; animation: st-ping-badge 1.4s ease-out infinite; }
+        @keyframes st-ping-badge { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        .st-session__badge--ended { background: var(--surface); border: 1px solid var(--border); color: var(--text-3); }
+
+        .st-trail { display: flex; flex-direction: column; gap: 5px; font-family: var(--mono); font-size: 10px; }
+        .st-trail__entry { display: flex; align-items: center; gap: 6px; color: #4ade80; }
+        .st-trail__step { display: flex; align-items: center; gap: 6px; color: var(--text-3); padding-left: 14px; border-left: 1px solid var(--border); }
+        .st-trail__exit { display: flex; align-items: center; gap: 6px; color: #f87171; }
+        .st-trail__step-label { font-size: 9px; color: var(--text-3); }
+        .st-trail__path { background: var(--surface); padding: 1px 6px; border-radius: 3px; }
+        .st-trail__time { font-size: 9px; color: var(--text-3); margin-left: auto; }
+        .st-trail__duration { font-family: var(--mono); font-size: 9px; color: var(--text-3); text-align: right; margin-top: 8px; }
+        .st-empty { font-size: 11px; color: var(--text-3); padding: 8px 0; font-style: italic; }
+
+        /* Infra grid */
+        .st-infra { display: grid; grid-template-columns: 1fr 2fr; gap: 16px; }
+        @media (max-width: 700px) { .st-infra { grid-template-columns: 1fr; } }
+
+        .st-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+        .st-panel__header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+        .st-panel__header svg { color: var(--accent); }
+        .st-panel__body { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+
+        .st-node { display: flex; justify-content: space-between; align-items: center; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-family: var(--mono); font-size: 11px; }
+        .st-node__name { color: var(--text-1); font-weight: 500; }
+        .st-node__right { display: flex; align-items: center; gap: 10px; }
+        .st-node__latency { font-size: 10px; color: var(--text-3); }
+        .st-node__status { font-size: 9px; padding: 2px 7px; border-radius: 3px; background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.2); color: #4ade80; letter-spacing: 0.06em; }
+
+        .st-log { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; display: flex; gap: 12px; align-items: flex-start; font-family: var(--mono); font-size: 10px; }
+        .st-log__time { color: var(--text-3); white-space: nowrap; flex-shrink: 0; font-size: 9px; margin-top: 1px; }
+        .st-log__type { font-size: 9px; padding: 1px 6px; border-radius: 3px; flex-shrink: 0; letter-spacing: 0.06em; }
+        .st-log__type--WARN { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); color: #fbbf24; }
+        .st-log__type--SUCCESS { background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.2); color: #4ade80; }
+        .st-log__type--INFO { background: rgba(96,165,250,0.07); border: 1px solid rgba(96,165,250,0.2); color: #60a5fa; }
+        .st-log__msg { color: var(--text-2); line-height: 1.5; }
+
+        /* Footer */
+        .st-footer { border-top: 1px solid var(--border); padding: 20px 24px; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .st-footer__link { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 10px; color: var(--text-3); text-decoration: none; transition: color 0.15s; }
+        .st-footer__link:hover { color: var(--text-1); }
+
+        /* Loading */
+        .st-loading { flex: 1; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+      `}</style>
+
+            <div className="st-page">
+                <div className="st-main">
+
+                    {/* Header */}
+                    <div className="st-header">
+                        <div>
+                            <div className="st-header__eyebrow">
+                                <span className="st-header__eyebrow-dot" /> Platform monitor
                             </div>
-                        )}
-                    </div>
-                </header>
-
-                {/* Identity Input Box */}
-                <div className="mb-6 bg-slate-950/60 border border-slate-900 p-4 rounded-xl">
-                    <form onSubmit={handleSaveName} className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-                        <div className="text-left w-full sm:w-auto">
-                            <div className="text-white text-xs font-bold flex items-center gap-1.5 uppercase tracking-wide">
-                                <UserCheck size={14} className="text-cyan-400" /> Identity Matrix Signature
+                            <div className="st-header__title">
+                                Live telemetry
+                                <span className="st-ping"><span className="st-ping__ring" /><span className="st-ping__dot" /></span>
                             </div>
-                            <p className="text-[10px] text-slate-500 mt-0.5">
-                                {savedName
-                                    ? `Currently verified as: ${savedName.toUpperCase()}`
-                                    : "Identify yourself to link your local runtime environment footprint."
-                                }
-                            </p>
                         </div>
-                        <div className="flex gap-2 w-full sm:w-auto shrink-0">
-                            <input
-                                type="text"
-                                value={visitorName}
-                                onChange={(e) => setVisitorName(e.target.value)}
-                                placeholder="Enter your identity..."
-                                className="bg-slate-900/80 border border-slate-800 text-xs px-3 py-2 rounded text-white focus:outline-none focus:border-cyan-500 placeholder-slate-600 font-mono w-full sm:w-48"
-                            />
+                        <div className="st-header__right">
                             <button
-                                type="submit"
-                                className="bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 text-cyan-400 text-xs px-4 py-2 rounded transition-all font-bold shrink-0"
+                                className="st-refresh"
+                                onClick={() => setRefreshTrigger((p) => p + 1)}
+                                disabled={loading}
                             >
-                                INJECT_ID
+                                <RefreshCw size={12} style={loading ? { animation: "spin 1s linear infinite" } : {}} />
+                                Refresh
                             </button>
+                            {lastUpdated && (
+                                <div className="st-last-updated">
+                                    <Clock size={10} /> Updated {lastUpdated}
+                                </div>
+                            )}
                         </div>
-                    </form>
-                </div>
-
-                {loading && !systemData ? (
-                    <div className="text-center py-24 text-xs text-slate-500 italic animate-pulse">
-                        &gt; Syncing distributed network channels...
                     </div>
-                ) : (
-                    <div className="space-y-6">
 
-                        {/* SECTION A: Primary Analytical Counters */}
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                            <div className="bg-slate-950/40 border border-slate-900 p-3 sm:p-4 rounded-xl min-w-0">
-                                <div className="text-slate-500 text-[9px] sm:text-[10px] uppercase font-bold tracking-wider mb-1 flex items-center gap-1 sm:gap-1.5 truncate">
-                                    <ShieldCheck size={12} className="text-emerald-400 shrink-0" /> System State
-                                </div>
-                                <div className="text-base sm:text-lg font-bold text-emerald-400 truncate">{systemData?.metrics.status}</div>
-                            </div>
-
-                            <div className="bg-slate-950/40 border border-slate-900 p-3 sm:p-4 rounded-xl min-w-0">
-                                <div className="text-slate-500 text-[9px] sm:text-[10px] uppercase font-bold tracking-wider mb-1 flex items-center gap-1 sm:gap-1.5 truncate">
-                                    <Activity size={12} className="text-cyan-400 shrink-0" /> Incoming Load
-                                </div>
-                                <div className="text-base sm:text-lg font-bold text-white transition-all duration-300 truncate">{systemData?.metrics.traffic}</div>
-                            </div>
-
-                            <div className="bg-slate-950/40 border border-slate-900 p-3 sm:p-4 rounded-xl min-w-0">
-                                <div className="text-slate-500 text-[9px] sm:text-[10px] uppercase font-bold tracking-wider mb-1 flex items-center gap-1 sm:gap-1.5 truncate">
-                                    <Cpu size={12} className="text-blue-400 shrink-0" /> Runtime Engine
-                                </div>
-                                <div className="text-xs sm:text-sm font-bold text-slate-200 truncate">Mem: {systemData?.metrics.memory}</div>
-                                <div className="text-[9px] sm:text-[10px] text-slate-500 mt-0.5 truncate">Up: {systemData?.metrics.uptime}</div>
-                            </div>
-
-                            <div className="bg-slate-950/40 border border-slate-900 p-3 sm:p-4 rounded-xl min-w-0">
-                                <div className="text-slate-500 text-[9px] sm:text-[10px] uppercase font-bold tracking-wider mb-1 flex items-center gap-1 sm:gap-1.5 truncate">
-                                    <AlertCircle size={12} className="text-amber-500 shrink-0" /> Pipeline Failures
-                                </div>
-                                <div className="text-base sm:text-lg font-bold text-slate-200 truncate">{systemData?.metrics.errorPercent}</div>
+                    {/* Identity */}
+                    <div className="st-identity">
+                        <div>
+                            <div className="st-identity__label"><UserCheck size={11} /> Identity</div>
+                            <div className="st-identity__sub">
+                                {savedName ? `Verified as: ${savedName}` : "Enter your name to tag your session."}
                             </div>
                         </div>
+                        <form className="st-identity__form" onSubmit={handleSaveName}>
+                            <input
+                                className="st-identity__input" type="text" value={visitorName}
+                                onChange={(e) => setVisitorName(e.target.value)} placeholder="Your name…"
+                            />
+                            <button type="submit" className="st-identity__btn">Save</button>
+                        </form>
+                    </div>
 
-                        {/* NEW SECTION C: Live User Journey Interactive Tracking Stream */}
-                        <div className="bg-slate-950/40 border border-slate-900 p-5 rounded-xl space-y-4">
-                            <div className="flex items-center gap-2 border-b border-slate-900 pb-3">
-                                <Footprints size={14} className="text-amber-400" />
-                                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Live Active Interaction Session Streams</h3>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                                {/* Real-time Session Box (Dynamic Individual Name Check Included) */}
-                                <div className="bg-slate-950/90 border border-slate-800 p-4 rounded-lg space-y-3 shadow-inner">
-                                    <div className="flex justify-between items-center border-b border-slate-900 pb-2">
-                                        <div>
-                                            <span className="text-[11px] font-bold text-amber-400 flex items-center gap-1">
-                                                <Database size={10} />
-                                                {savedName
-                                                    ? `NODE // ${savedName.toUpperCase()}`
-                                                    : "CURRENT_CLIENT_SESSION"
-                                                }
-                                            </span>
-                                            <span className="text-[9px] text-slate-500">
-                                                {savedName
-                                                    ? "Locally verified identity footprint"
-                                                    : "Captured locally from your tracker"
-                                                }
-                                            </span>
-                                        </div>
-                                        <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-pulse">
-                                            LIVE_CAPTURE
-                                        </span>
-                                    </div>
-
-                                    <div className="space-y-1.5 text-[11px]">
-                                        {liveClientTrail.length === 0 ? (
-                                            <div className="text-slate-500 text-xs italic py-2">
-                                                No exploration steps registered. Try visiting other pages!
-                                            </div>
-                                        ) : (
-                                            liveClientTrail.map((step, idx) => (
-                                                <div key={idx} className={`flex items-center gap-2 ${step.isEntry ? "text-emerald-400/90" : "text-slate-400 pl-4 border-l border-slate-800"}`}>
-                                                    {step.isEntry ? <LogIn size={11} /> : <span className="text-slate-600 text-[9px]">↳ Step {idx}:</span>}
-                                                    {step.isEntry && <span className="text-slate-500 text-[9px] font-sans w-12">ENTERED:</span>}
-                                                    <span className={`px-1.5 py-0.5 rounded ${step.isEntry ? "bg-slate-900 font-mono" : "bg-slate-900/50"}`}>
-                                                        {step.nodePath}
-                                                    </span>
-                                                    <span className="text-slate-600 text-[9px] font-sans ml-auto">{step.time}</span>
-                                                </div>
-                                            ))
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Mock Sample Logs */}
-                                {userSessions.map((session, sIdx) => (
-                                    <div key={sIdx} className="bg-slate-950/90 border border-slate-900 p-4 rounded-lg space-y-3">
-                                        <div className="flex justify-between items-center border-b border-slate-900 pb-2">
-                                            <div>
-                                                <span className="text-[11px] font-bold text-cyan-400 block">{session.id}</span>
-                                                <span className="text-[9px] text-slate-500">{session.ip}</span>
-                                            </div>
-                                            <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${session.currentStatus === "ACTIVE_NOW"
-                                                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                                                : "bg-slate-800 text-slate-400"
-                                                }`}>
-                                                {session.currentStatus}
-                                            </span>
-                                        </div>
-
-                                        <div className="space-y-1.5 text-[11px]">
-                                            <div className="flex items-center gap-2 text-emerald-400/90">
-                                                <LogIn size={11} />
-                                                <span className="text-slate-500 text-[9px] font-sans w-12">ENTERED:</span>
-                                                <span className="bg-slate-900 px-1.5 py-0.5 rounded font-mono">{session.entry}</span>
-                                            </div>
-
-                                            {session.steps.map((step, stepIdx) => (
-                                                <div key={stepIdx} className="flex items-center gap-2 text-slate-400 pl-4 border-l border-slate-800">
-                                                    <span className="text-slate-600 text-[9px]">↳ Step {stepIdx + 1}:</span>
-                                                    <span className="bg-slate-900/50 px-1.5 py-0.5 rounded">{step}</span>
-                                                </div>
-                                            ))}
-
-                                            {session.currentStatus !== "ACTIVE_NOW" && (
-                                                <div className="flex items-center gap-2 text-rose-400/90">
-                                                    <LogOut size={11} />
-                                                    <span className="text-slate-500 text-[9px] font-sans w-12">EXITED:</span>
-                                                    <span className="bg-slate-900/40 text-slate-500 px-1.5 py-0.5 rounded line-through">{session.currentStatus}</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="text-[9px] text-slate-600 text-right font-sans">Session duration: {session.duration}</div>
+                    {loading && !systemData ? (
+                        <div className="st-loading">Syncing…</div>
+                    ) : (
+                        <>
+                            {/* Stats */}
+                            <div className="st-stats">
+                                {[
+                                    { label: "System state", icon: <ShieldCheck size={11} />, val: systemData?.metrics.status, sub: null, color: "#4ade80" },
+                                    { label: "Incoming load", icon: <Activity size={11} />, val: systemData?.metrics.traffic, sub: null, color: "var(--text-1)" },
+                                    { label: "Runtime", icon: <Cpu size={11} />, val: `Mem: ${systemData?.metrics.memory}`, sub: `Up: ${systemData?.metrics.uptime}`, color: "var(--text-1)" },
+                                    { label: "Error rate", icon: <AlertCircle size={11} />, val: systemData?.metrics.errorPercent, sub: null, color: "var(--text-1)" },
+                                ].map((s) => (
+                                    <div key={s.label} className="st-stat">
+                                        <div className="st-stat__label">{s.icon} {s.label}</div>
+                                        <div className="st-stat__val" style={{ color: s.color, fontSize: 16 }}>{s.val}</div>
+                                        {s.sub && <div className="st-stat__sub">{s.sub}</div>}
                                     </div>
                                 ))}
                             </div>
-                        </div>
 
-                        {/* SECTION B: Infrastructure & System Logs Grid */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <div className="bg-slate-950/40 border border-slate-900 p-5 rounded-xl space-y-4">
-                                <div className="flex items-center gap-2 border-b border-slate-900 pb-3">
-                                    <HardDrive size={14} className="text-purple-400" />
-                                    <h3 className="text-xs font-bold text-white uppercase tracking-wider">Cluster Nodes</h3>
+                            {/* Live sessions — capped at 10 */}
+                            <div className="st-sessions">
+                                <div className="st-sessions__header">
+                                    <Footprints size={13} style={{ color: "var(--accent)" }} />
+                                    <span className="st-sessions__title">
+                                        Live interaction streams
+                                        <span style={{ marginLeft: 8, color: "var(--text-3)", fontFamily: "var(--mono)", fontSize: 9 }}>
+                                            (showing up to 10 steps)
+                                        </span>
+                                    </span>
                                 </div>
-                                <div className="space-y-2">
-                                    {systemData?.infrastructure.map((node, idx) => (
-                                        <div key={idx} className="flex justify-between items-center text-xs bg-slate-950/80 border border-slate-900/50 p-3 rounded-lg">
-                                            <span className="text-slate-300 font-bold tracking-tight">{node.id}</span>
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-slate-500 font-sans text-[11px]">{node.latency}</span>
-                                                <span className="bg-emerald-500/5 border border-emerald-500/20 px-2 py-0.5 text-[10px] rounded text-emerald-400 font-bold">
-                                                    {node.status}
+                                <div className="st-sessions__grid">
+
+                                    {/* Your session */}
+                                    <div className="st-session">
+                                        <div className="st-session__top">
+                                            <div>
+                                                <div className="st-session__id">
+                                                    <Database size={10} />
+                                                    {savedName ? `NODE · ${savedName.toUpperCase()}` : "YOUR SESSION"}
+                                                </div>
+                                                <div className="st-session__ip">Local capture</div>
+                                            </div>
+                                            <span className="st-session__badge st-session__badge--active">LIVE</span>
+                                        </div>
+                                        <div className="st-trail">
+                                            {liveClientTrail.length === 0 ? (
+                                                <div className="st-empty">No steps yet. Browse around!</div>
+                                            ) : liveClientTrail.map((step, i) => (
+                                                step.isEntry ? (
+                                                    <div key={i} className="st-trail__entry">
+                                                        <LogIn size={10} />
+                                                        <span className="st-trail__step-label">ENTERED</span>
+                                                        <span className="st-trail__path">{step.nodePath}</span>
+                                                        <span className="st-trail__time">{step.time}</span>
+                                                    </div>
+                                                ) : (
+                                                    <div key={i} className="st-trail__step">
+                                                        <span className="st-trail__step-label">↳ {i}</span>
+                                                        <span className="st-trail__path">{step.nodePath}</span>
+                                                        <span className="st-trail__time">{step.time}</span>
+                                                    </div>
+                                                )
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Mock sessions */}
+                                    {userSessions.map((s) => (
+                                        <div key={s.id} className="st-session">
+                                            <div className="st-session__top">
+                                                <div>
+                                                    <div className="st-session__id">{s.id}</div>
+                                                    <div className="st-session__ip">{s.ip}</div>
+                                                </div>
+                                                <span className={`st-session__badge ${s.status === "ACTIVE" ? "st-session__badge--active" : "st-session__badge--ended"}`}>
+                                                    {s.status === "ACTIVE" ? "ACTIVE" : "ENDED"}
                                                 </span>
                                             </div>
+                                            <div className="st-trail">
+                                                <div className="st-trail__entry">
+                                                    <LogIn size={10} />
+                                                    <span className="st-trail__step-label">ENTERED</span>
+                                                    <span className="st-trail__path">{s.entry}</span>
+                                                </div>
+                                                {s.steps.map((step, i) => (
+                                                    <div key={i} className="st-trail__step">
+                                                        <span className="st-trail__step-label">↳ {i + 1}</span>
+                                                        <span className="st-trail__path">{step}</span>
+                                                    </div>
+                                                ))}
+                                                {s.status !== "ACTIVE" && (
+                                                    <div className="st-trail__exit">
+                                                        <LogOut size={10} />
+                                                        <span className="st-trail__step-label">EXITED</span>
+                                                        <span style={{ textDecoration: "line-through", opacity: 0.6 }}>{s.status}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="st-trail__duration">Duration: {s.duration}</div>
                                         </div>
                                     ))}
-                                    userSessions</div>
-                            </div>
-
-                            <div className="bg-slate-950/40 border border-slate-900 p-5 rounded-xl space-y-4 lg:col-span-2">
-                                <div className="flex items-center gap-2 border-b border-slate-900 pb-3">
-                                    <FileText size={14} className="text-cyan-400" />
-                                    <h3 className="text-xs font-bold text-white uppercase tracking-wider">Active Stream Logs</h3>
-                                </div>
-                                <div className="space-y-2 font-mono text-[11px]">
-                                    {systemData?.logs.map((log, idx) => (
-                                        <div key={idx} className="p-3 bg-slate-950 border border-slate-900/60 rounded-lg flex flex-col sm:flex-row gap-1 sm:gap-4 items-start">
-                                            <span className="text-slate-600 font-sans shrink-0 text-[10px]">{log.timestamp}</span>
-                                            <span className={`font-bold text-[10px] px-1.5 py-0.2 rounded shrink-0 ${log.type === 'WARN' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-                                                log.type === 'SUCCESS' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                                                    'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                                                }`}>
-                                                [{log.type}]
-                                            </span>
-                                            <span className="text-slate-400 tracking-tight">{log.message}</span>
-                                        </div>
-                                    ))}
                                 </div>
                             </div>
-                        </div>
 
-                    </div>
-                )}
+                            {/* Infra + logs */}
+                            <div className="st-infra">
+                                <div className="st-panel">
+                                    <div className="st-panel__header"><HardDrive size={12} /> Cluster nodes</div>
+                                    <div className="st-panel__body">
+                                        {systemData?.infrastructure.map((node) => (
+                                            <div key={node.id} className="st-node">
+                                                <span className="st-node__name">{node.id}</span>
+                                                <div className="st-node__right">
+                                                    <span className="st-node__latency">{node.latency}</span>
+                                                    <span className="st-node__status">{node.status}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="st-panel">
+                                    <div className="st-panel__header"><FileText size={12} /> Stream logs</div>
+                                    <div className="st-panel__body">
+                                        {systemData?.logs.map((log, i) => (
+                                            <div key={i} className="st-log">
+                                                <span className="st-log__time">{log.timestamp}</span>
+                                                <span className={`st-log__type st-log__type--${log.type}`}>{log.type}</span>
+                                                <span className="st-log__msg">{log.message}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
+
+                <div className="st-footer">
+                    <Link href="/" className="st-footer__link">
+                        <ArrowLeft size={13} /> Back to home
+                    </Link>
+                </div>
             </div>
-
-            {/* Back Navigation Footer */}
-            <footer className="max-w-5xl w-full mx-auto border-t border-slate-900 pt-6">
-                <Link href="/" className="inline-flex items-center gap-2 text-xs text-slate-500 hover:text-white group transition-colors">
-                    <ArrowLeft size={14} className="transition-transform group-hover:-translate-x-1" />
-                    RETURN_TO_MAIN_MATRIX
-                </Link>
-            </footer>
-        </div>
+        </>
     );
 }
 
@@ -390,22 +420,21 @@ export function SysMonitorNavDeskLink() {
     return (
         <Link
             href="/status"
-            className="inline-flex items-center gap-1 bg-slate-950/40 hover:bg-cyan-500/10 border border-slate-900 hover:border-cyan-500/30 text-cyan-400 font-mono text-[11px] tracking-widest px-2.5 py-1 rounded-sm transition-all group max-md:hidden"
+            style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.1em",
+                textTransform: "uppercase", padding: "5px 10px",
+                background: "rgba(232,255,71,0.06)", border: "1px solid rgba(232,255,71,0.2)",
+                borderRadius: "var(--radius, 6px)", color: "var(--accent, #e8ff47)",
+                textDecoration: "none", transition: "background 0.15s",
+            }}
         >
-            <span className="w-1 h-1 rounded-full bg-cyan-400 animate-ping shrink-0" />
-            <span>SYS_MONITOR</span>
+            <span style={{ width: 5, height: 5, borderRadius: "50%", background: "var(--accent, #e8ff47)", animation: "st-ping 1.4s ease-out infinite", flexShrink: 0 }} />
+            Monitor
         </Link>
     );
 }
 
 export function SysMonitorNavMobLink() {
-    return (
-        <Link
-            href="/status"
-            className="inline-flex items-center gap-1 bg-slate-950/40 hover:bg-cyan-500/10 border border-slate-900 hover:border-cyan-500/30 text-cyan-400 font-mono text-[11px] tracking-widest px-2.5 py-1 rounded-sm transition-all group max-md:hidden"
-        >
-            <span className="w-1 h-1 rounded-full bg-cyan-400 animate-ping shrink-0" />
-            <span>SYS_MONITOR</span>
-        </Link>
-    );
+    return <SysMonitorNavDeskLink />;
 }

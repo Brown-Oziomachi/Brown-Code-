@@ -1,46 +1,26 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import {
-    Share,
-    LinkIcon,
-    Clock,
-    Twitter,
-    Instagram,
-    Youtube,
-    Terminal,
-    ArrowLeft
-} from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { useRouter, useParams } from "next/navigation";
+import { ArrowLeft, ArrowUpRight, Clock, Link as LinkIcon } from "lucide-react";
 
-// Utility functions
-const createSlug = (title) => {
-    return title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-};
+const createSlug = (title) =>
+    title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
 const extractIdFromSlug = (slug) => {
     const parts = slug.split("--");
     return parts.length > 1 ? parts[parts.length - 1] : slug;
 };
 
-const createFullSlug = (title, id) => {
-    return `${createSlug(title)}--${id}`;
-};
+const createFullSlug = (title, id) => `${createSlug(title)}--${id}`;
 
-// Blog content renderer
 const BlogDisplay = ({ body }) => {
     const isHTML = /<\/?[a-z][\s\S]*>/i.test(body || "");
-    const html = isHTML ? body : body?.replace(/\n/g, "<br />") || "";
-
+    const html = isHTML ? body : (body || "").replace(/\n/g, "<br />");
     return (
         <div
-            className={`prose prose-lg max-w-none dark:prose-invert prose-headings:font-bold prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-a:text-blue-600 hover:prose-a:text-blue-700 prose-img:rounded-lg ${!isHTML ? "whitespace-pre-line" : ""
-                }`}
+            className="cy-article__body"
             dangerouslySetInnerHTML={{ __html: html }}
         />
     );
@@ -51,388 +31,402 @@ export default function NewsDetails() {
     const router = useRouter();
     const [article, setArticle] = useState(null);
     const [relatedArticles, setRelatedArticles] = useState([]);
-    const [showShareMenu, setShowShareMenu] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
-    const [readingTime, setReadingTime] = useState(0);
     const [firebaseReady, setFirebaseReady] = useState(false);
-    const menuRef = useRef(null);
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [activeSection, setActiveSection] = useState("blog");
+    const [readingTime, setReadingTime] = useState(0);
+    const [copied, setCopied] = useState(false);
 
-    // Initialize Firebase on mount
     useEffect(() => {
-        const initFirebase = async () => {
-            try {
-                await import("@/config/firebase.config2");
-                setFirebaseReady(true);
-            } catch (error) {
-                console.error("Failed to initialize Firebase:", error);
-                setIsLoading(false);
-            }
-        };
-
-        initFirebase();
+        import("@/config/firebase.config2")
+            .then(() => setFirebaseReady(true))
+            .catch(() => setIsLoading(false));
     }, []);
 
-    // Calculate reading time
     useEffect(() => {
         if (article?.body) {
-            const words = article.body.split(/\s+/).length;
-            const minutes = Math.ceil(words / 200);
-            setReadingTime(minutes);
+            const words = article.body.replace(/<[^>]+>/g, " ").split(/\s+/).length;
+            setReadingTime(Math.max(1, Math.ceil(words / 200)));
         }
     }, [article]);
 
-    // Fetch article after Firebase is ready
     useEffect(() => {
         if (!slugParam || !firebaseReady) return;
-
-        async function fetchArticle() {
+        setIsLoading(true);
+        const fetch = async () => {
             try {
-                setIsLoading(true);
                 const { db2 } = await import("@/config/firebase.config2");
                 const { doc, getDoc } = await import("firebase/firestore");
-
                 const docId = extractIdFromSlug(slugParam);
-                const articleRef = doc(db2, "blogs", docId);
-                const articleDoc = await getDoc(articleRef);
-
-                if (articleDoc.exists()) {
-                    const data = articleDoc.data();
-                    setArticle({ id: docId, ...data });
-                }
-            } catch (error) {
-                console.error("Error fetching article:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-
-        fetchArticle();
+                const snap = await getDoc(doc(db2, "blogs", docId));
+                if (snap.exists()) setArticle({ id: docId, ...snap.data() });
+            } catch (e) { console.error(e); }
+            finally { setIsLoading(false); }
+        };
+        fetch();
     }, [slugParam, firebaseReady]);
 
-    // Update URL with full slug
     useEffect(() => {
         if (article && slugParam && !slugParam.includes("--")) {
-            const fullSlug = createFullSlug(article.title, article.id);
-            router.replace(`/news/${fullSlug}`);
+            router.replace(`/news/${createFullSlug(article.title, article.id)}`);
         }
     }, [article, slugParam, router]);
 
-    // Close share menu when clicking outside
-    useEffect(() => {
-        function handleClickOutside(event) {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
-                setShowShareMenu(false);
-            }
-        }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    const handleBack = () => {
-        router.push("/portfolio");
-    };
-
-    const scrollToSection = (sectionId) => {
-        router.push(`/#${sectionId}`);
-    };
-
-    // Fetch related articles after Firebase is ready
     useEffect(() => {
         if (!article || !firebaseReady) return;
-
-        async function fetchRelated() {
+        const fetch = async () => {
             try {
                 const { db2 } = await import("@/config/firebase.config2");
                 const { collection, getDocs } = await import("firebase/firestore");
-
-                const snapshot = await getDocs(collection(db2, "blogs"));
-                const allArticles = snapshot.docs
-                    .map((doc) => ({ id: doc.id, ...doc.data() }))
-                    .filter((a) =>
-                        a.id !== article.id &&
-                        a.category?.toLowerCase() === "technology"
-                    )
-                    .sort((a, b) => (b.createdAt?.toDate() || 0) - (a.createdAt?.toDate() || 0));
-                setRelatedArticles(allArticles.slice(0, 12));
-            } catch (error) {
-                console.error("Error fetching related articles:", error);
-            }
-        }
-
-        fetchRelated();
+                const snap = await getDocs(collection(db2, "blogs"));
+                const all = snap.docs
+                    .map(d => ({ id: d.id, ...d.data() }))
+                    .filter(a => a.id !== article.id && !a.isVideo)
+                    .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                setRelatedArticles(all.slice(0, 6));
+            } catch (e) { console.error(e); }
+        };
+        fetch();
     }, [article, firebaseReady]);
-
-    const handleShareClick = () => setShowShareMenu(!showShareMenu);
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(window.location.href);
-        alert("Link copied to clipboard!");
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const formatDate = (ts) => {
+        if (!ts) return "";
+        try {
+            const d = typeof ts.toDate === "function" ? ts.toDate() : new Date(ts.seconds * 1000);
+            return d.toLocaleDateString("en-US", { day: "2-digit", month: "long", year: "numeric" });
+        } catch { return ""; }
     };
 
     if (!firebaseReady || isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-cyan-500 border-t-transparent mb-4"></div>
-                    <p className="text-lg font-semibold">Loading News...</p>
-                </div>
+            <div style={{ minHeight: "100vh", background: "#0a0a0b", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "#52525b" }}>
+                    Loading news…
+                </span>
             </div>
         );
     }
 
     if (!article) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <h2 className="text-2xl font-bold mb-2">Article not found</h2>
-                    <Link href="/" className="text-cyan-600 hover:underline">
-                        Return to homepage
-                    </Link>
-                </div>
+            <div style={{ minHeight: "100vh", background: "#0a0a0b", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 16 }}>
+                <span style={{ fontFamily: "'DM Serif Display',serif", fontSize: 28, color: "#f4f4f5" }}>Article not found</span>
+                <Link href="/" style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: "#e8ff47", textDecoration: "none" }}>← Return home</Link>
             </div>
         );
     }
 
     return (
         <>
-            <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
-                <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3 group">
-                        <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
-                        <a href="/">
-                            <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                                BROWN_CODE_DEV // NEWS_HUB
+            <style>{`
+                *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+                :root {
+                    --bg:         #0a0a0b;
+                    --surface:    #111113;
+                    --border:     #1e1e22;
+                    --border-hi:  #2e2e34;
+                    --text-1:     #f4f4f5;
+                    --text-2:     #a1a1aa;
+                    --text-3:     #52525b;
+                    --accent:     #e8ff47;
+                    --accent-dim: rgba(232,255,71,0.08);
+                    --radius:     6px;
+                    --font-serif: 'DM Serif Display', 'Georgia', serif;
+                    --font-sans:  'Inter', system-ui, sans-serif;
+                    --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+                }
+                @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+                .cy-page { font-family: var(--font-sans); background: var(--bg); color: var(--text-1); min-height: 100vh; }
+
+                /* Nav */
+                .cy-nav {
+                    position: sticky; top: 0; z-index: 100;
+                    background: rgba(10,10,11,0.92); backdrop-filter: blur(12px);
+                    border-bottom: 1px solid var(--border);
+                    height: 56px; padding: 0 24px;
+                    display: flex; align-items: center; justify-content: space-between;
+                }
+                .cy-nav__brand { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; color: var(--text-1); text-decoration: none; }
+                .cy-nav__brand em { font-style: normal; color: var(--accent); }
+                .cy-nav__back {
+                    display: inline-flex; align-items: center; gap: 6px;
+                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+                    color: var(--text-2); text-decoration: none;
+                    padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+                    transition: color .15s, border-color .15s, background .15s;
+                }
+                .cy-nav__back:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
+
+                /* Article layout */
+                .cy-article-wrap { max-width: 760px; margin: 0 auto; padding: 52px 24px 80px; }
+
+                /* Header */
+                .cy-article__eyebrow {
+                    display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+                }
+                .cy-tag {
+                    display: inline-block; font-family: var(--font-mono); font-size: 10px;
+                    letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px;
+                    border-radius: 3px; background: var(--accent-dim); color: var(--accent);
+                    border: 1px solid rgba(232,255,71,0.2); line-height: 1;
+                }
+                .cy-article__readtime {
+                    display: flex; align-items: center; gap: 5px;
+                    font-family: var(--font-mono); font-size: 10px; color: var(--text-3);
+                }
+
+                .cy-article__title {
+                    font-family: var(--font-serif);
+                    font-size: clamp(28px, 4vw, 44px); font-weight: 400; line-height: 1.15;
+                    color: var(--text-1); margin-bottom: 20px;
+                }
+
+                .cy-article__meta {
+                    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+                    font-family: var(--font-mono); font-size: 11px; color: var(--text-3);
+                    padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 28px;
+                }
+                .cy-article__meta-author { color: var(--accent); }
+                .cy-article__meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border-hi); }
+
+                /* Share strip */
+                .cy-share {
+                    display: flex; align-items: center; gap: 8px; margin-bottom: 32px; flex-wrap: wrap;
+                }
+                .cy-share__label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-right: 4px; }
+                .cy-share__btn {
+                    display: inline-flex; align-items: center; gap: 5px;
+                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em;
+                    padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+                    background: var(--surface); color: var(--text-2); cursor: pointer;
+                    text-decoration: none; transition: color .15s, border-color .15s, background .15s;
+                }
+                .cy-share__btn:hover { color: var(--text-1); border-color: var(--border-hi); }
+                .cy-share__btn--accent { border-color: rgba(232,255,71,0.3); color: var(--accent); background: var(--accent-dim); }
+
+                /* Subtitle callout */
+                .cy-article__subtitle {
+                    border-left: 2px solid var(--accent); padding: 12px 20px;
+                    background: var(--surface); border-radius: 0 var(--radius) var(--radius) 0;
+                    font-size: 15px; color: var(--text-2); line-height: 1.65;
+                    font-style: italic; margin-bottom: 28px;
+                }
+
+                /* Image */
+                .cy-article__img-wrap { margin-bottom: 36px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+                .cy-article__img { width: 100%; height: auto; display: block; opacity: 0.9; }
+                .cy-article__caption { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); padding: 8px 12px; border-top: 1px solid var(--border); }
+
+                /* Body prose */
+                .cy-article__body {
+                    font-size: 15px; color: var(--text-2); line-height: 1.8;
+                    border-bottom: 1px solid var(--border); padding-bottom: 40px; margin-bottom: 40px;
+                }
+                .cy-article__body h1,
+                .cy-article__body h2,
+                .cy-article__body h3 { font-family: var(--font-serif); font-weight: 400; color: var(--text-1); margin: 28px 0 12px; line-height: 1.2; }
+                .cy-article__body h1 { font-size: 28px; }
+                .cy-article__body h2 { font-size: 22px; }
+                .cy-article__body h3 { font-size: 18px; }
+                .cy-article__body p { margin-bottom: 16px; }
+                .cy-article__body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+                .cy-article__body img { max-width: 100%; border-radius: var(--radius); margin: 16px 0; }
+                .cy-article__body blockquote {
+                    border-left: 2px solid var(--accent); padding: 10px 18px;
+                    background: var(--surface); margin: 20px 0; color: var(--text-2); font-style: italic;
+                }
+                .cy-article__body ul, .cy-article__body ol { padding-left: 20px; margin-bottom: 16px; }
+                .cy-article__body li { margin-bottom: 6px; }
+                .cy-article__body strong { color: var(--text-1); font-weight: 600; }
+
+                /* Subscribe CTA */
+                .cy-subscribe {
+                    border: 1px solid var(--border); border-radius: var(--radius);
+                    background: var(--surface); padding: 36px; text-align: center;
+                    position: relative; overflow: hidden; margin-bottom: 48px;
+                }
+                .cy-subscribe::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); }
+                .cy-subscribe__title { font-family: var(--font-serif); font-size: 24px; font-weight: 400; color: var(--text-1); margin-bottom: 8px; }
+                .cy-subscribe__desc { font-size: 13px; color: var(--text-2); line-height: 1.6; max-width: 340px; margin: 0 auto 20px; }
+
+                .cy-btn {
+                    display: inline-flex; align-items: center; gap: 6px;
+                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+                    padding: 8px 18px; border-radius: var(--radius); border: 1px solid var(--border);
+                    background: transparent; color: var(--text-2); text-decoration: none; cursor: pointer;
+                    transition: color .15s, border-color .15s, background .15s;
+                }
+                .cy-btn:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
+                .cy-btn--accent { border-color: rgba(232,255,71,0.3); color: var(--accent); background: var(--accent-dim); }
+                .cy-btn--accent:hover { background: rgba(232,255,71,0.15); border-color: rgba(232,255,71,0.5); }
+
+                /* Related */
+                .cy-related { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+                .cy-section-label {
+                    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+                    text-transform: uppercase; color: var(--text-3);
+                    display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+                }
+                .cy-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+                .cy-grid {
+                    display: grid; grid-template-columns: repeat(3, 1fr);
+                    gap: 1px; background: var(--border); border: 1px solid var(--border);
+                    border-radius: var(--radius); overflow: hidden;
+                }
+                @media (max-width: 900px) { .cy-grid { grid-template-columns: 1fr 1fr; } }
+                @media (max-width: 600px) { .cy-grid { grid-template-columns: 1fr; } }
+
+                .cy-card {
+                    display: flex; flex-direction: column; background: var(--surface);
+                    text-decoration: none; overflow: hidden; position: relative; transition: background .15s;
+                }
+                .cy-card:hover { background: #141417; }
+                .cy-card::before {
+                    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+                    background: var(--accent); transform: scaleY(0); transform-origin: bottom;
+                    transition: transform .2s ease; z-index: 5;
+                }
+                .cy-card:hover::before { transform: scaleY(1); }
+                .cy-card__img-wrap { height: 160px; background: var(--bg); overflow: hidden; flex-shrink: 0; }
+                .cy-card__img { width: 100%; height: 100%; object-fit: cover; opacity: 0.45; filter: grayscale(25%); transition: opacity .3s, transform .4s; }
+                .cy-card:hover .cy-card__img { opacity: 0.65; transform: scale(1.04); }
+                .cy-card__img-placeholder { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(255,255,255,0.015) 6px, rgba(255,255,255,0.015) 12px); }
+                .cy-card__body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
+                .cy-card__title { font-family: var(--font-serif); font-size: 16px; font-weight: 400; line-height: 1.3; color: var(--text-1); transition: color .15s; }
+                .cy-card:hover .cy-card__title { color: #fff; }
+                .cy-card__preview { font-size: 12px; color: var(--text-2); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+                .cy-card__meta { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--text-3); margin-top: auto; padding-top: 10px; }
+                .cy-card__meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border-hi); }
+            `}</style>
+
+            <div className="cy-page">
+                {/* Nav */}
+                <nav className="cy-nav">
+                    <a href="/" className="cy-nav__brand">
+                        brown<em>.</em>dev <span style={{ color: "var(--text-3)", marginLeft: 6 }}></span>
+                    </a>
+                    <Link href="/news" className="cy-nav__back">
+                        <ArrowLeft size={13} /> All News
+                    </Link>
+                </nav>
+
+                {/* Article */}
+                <div className="cy-article-wrap">
+
+                    {/* Eyebrow */}
+                    <div className="cy-article__eyebrow">
+                        <span className="cy-tag">{article.category || "Technology"}</span>
+                        {readingTime > 0 && (
+                            <span className="cy-article__readtime">
+                                <Clock size={11} /> {readingTime} min read
                             </span>
+                        )}
+                    </div>
+
+                    {/* Title */}
+                    <h1 className="cy-article__title">{article.title}</h1>
+
+                    {/* Meta */}
+                    <div className="cy-article__meta">
+                        <span className="cy-article__meta-author">NEWS</span>
+                        <span className="cy-article__meta-dot" />
+                        <span>{formatDate(article.createdAt)}</span>
+                    </div>
+
+                    {/* Share */}
+                    <div className="cy-share">
+                        <span className="cy-share__label">Share</span>
+                        <a
+                            href={`https://www.facebook.com/sharer/sharer.php?u=${typeof window !== "undefined" ? window.location.href : ""}`}
+                            target="_blank" rel="noopener noreferrer"
+                            className="cy-share__btn"
+                        >
+                            Facebook
+                        </a>
+                        <a
+                            href={`https://twitter.com/intent/tweet?url=${typeof window !== "undefined" ? window.location.href : ""}&text=${encodeURIComponent(article.title)}`}
+                            target="_blank" rel="noopener noreferrer"
+                            className="cy-share__btn"
+                        >
+                            𝕏 Twitter
+                        </a>
+                        <button className={`cy-share__btn${copied ? " cy-share__btn--accent" : ""}`} onClick={handleCopyLink}>
+                            <LinkIcon size={11} /> {copied ? "Copied!" : "Copy link"}
+                        </button>
+                    </div>
+
+                    {/* Subtitle */}
+                    {article.subtitle && (
+                        <div className="cy-article__subtitle">{article.subtitle}</div>
+                    )}
+
+                    {/* Image */}
+                    {article.imageUrl && (
+                        <div className="cy-article__img-wrap">
+                            <img src={article.imageUrl} alt={article.title} className="cy-article__img" />
+                            {article.imageCaption && (
+                                <p className="cy-article__caption">{article.imageCaption}</p>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Body */}
+                    <BlogDisplay body={article.body} />
+
+                    {/* Subscribe CTA */}
+                    <div className="cy-subscribe">
+                        <h2 className="cy-subscribe__title">Stay informed</h2>
+                        <p className="cy-subscribe__desc">
+                            Get the latest news and analysis delivered to your inbox.
+                        </p>
+                        <a
+                            href="https://thecyclopedia.substack.com/subscribe"
+                            target="_blank" rel="noopener noreferrer"
+                            className="cy-btn cy-btn--accent"
+                        >
+                            Subscribe <ArrowUpRight size={12} />
                         </a>
                     </div>
-                    <a
-                        href="/"
-                        className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
-                    >
-                        <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform uppercase" />
-                        <span>SYS.RETURN()</span>
-                    </a>
                 </div>
-            </nav>
 
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="min-h-screen"
-            >
-                <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-16">
-                    {/* Category Badge */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="mb-4 mt-10"
-                    >
-                        <span className="inline-block bg-cyan-600 text-white text-sm font-bold px-4 py-1.5 uppercase tracking-wide">
-                            {article.category || "News"}
-                        </span>
-                    </motion.div>
-
-                    {/* Article Title */}
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                        className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6"
-                    >
-                        {article.title}
-                    </motion.h1>
-
-                    {/* Author and Date */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="mb-6 flex items-center gap-2"
-                    >
-                        <Link href="/bc/about" className="text-sm font-semibold mr-4 text-gray-800 dark:text-gray-200">
-                            <p className="text-sm font-semibold mb-1 text-cyan-600">BROWN CODE</p>
-                        </Link>
-                        <div className="text-cyan-600">|</div>
-                        {article.createdAt && (
-                            <time className="text-xs text-gray-600 dark:text-gray-400">
-                                {article.createdAt.toDate().toLocaleDateString("en-US", {
-                                    day: "2-digit",
-                                    month: "long",
-                                    year: "numeric",
-                                })} {article.createdAt.toDate().toLocaleTimeString("en-US", {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                    hour12: true
-                                })}
-                            </time>
-                        )}
-                    </motion.div>
-
-                    {/* Social Share Buttons */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 }}
-                        className="flex gap-3 mb-8"
-                    >
-                        <a
-                            href={`https://www.facebook.com/sharer/sharer.php?u=${typeof window !== 'undefined' ? window.location.href : ''}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-10 h-10 rounded-full bg-[#1877F2] flex items-center justify-center hover:opacity-80 transition-opacity"
-                        >
-                            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                            </svg>
-                        </a>
-                        <a
-                            href={`https://twitter.com/intent/tweet?url=${typeof window !== 'undefined' ? window.location.href : ''}&text=${encodeURIComponent(article.title)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-10 h-10 rounded-full bg-black flex items-center justify-center hover:opacity-80 transition-opacity"
-                        >
-                            <span className="text-white font-bold text-sm">𝕏</span>
-                        </a>
-                        <button
-                            onClick={handleCopyLink}
-                            className="w-10 h-10 rounded-full bg-cyan-600 flex items-center justify-center hover:opacity-80 transition-opacity"
-                        >
-                            <LinkIcon className="w-5 h-5 text-white" />
-                            <p className="font-bold">Copy</p>
-                        </button>
-                    </motion.div>
-
-                    {/* Subtitle with highlighted style */}
-                    {article.subtitle && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5 }}
-                            className="mb-8 bg-gray-100 text-black p-6 border-l-4 border-cyan-600"
-                        >
-                            <p className="text-lg font-medium leading-relaxed">
-                                {article.subtitle}
-                            </p>
-                        </motion.div>
-                    )}
-
-                    {/* Featured Image */}
-                    {article.imageUrl && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.6 }}
-                            className="w-full mb-8 overflow-hidden"
-                        >
-                            <img
-                                src={article.imageUrl}
-                                alt={article.title}
-                                className="w-full h-auto"
-                            />
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 italic">
-                                {article.imageCaption || ""}
-                            </p>
-                        </motion.div>
-                    )}
-
-                    {/* Article Body */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.7 }}
-                        className="mb-16"
-                    >
-                        <BlogDisplay body={article.body} />
-                    </motion.div>
-
-                    {/* Newsletter CTA */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.8 }}
-                        className="relative overflow-hidden mb-16 bg-gradient-to-r from-cyan-600 to-cyan-800 rounded-lg"
-                    >
-                        <div className="relative py-8 px-8 text-center text-white">
-                            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                                Stay Informed
-                            </h2>
-                            <p className="text-base mb-6">
-                                Get the latest news and analysis delivered to your inbox.
-                            </p>
-                            <Link
-                                href="https://thecyclopedia.substack.com/subscribe"
-                                className="inline-block bg-white text-cyan-600 font-bold px-6 py-3 rounded hover:bg-cyan-600 hover:text-white hover:scale-105 transition-all duration-300 shadow-xl"
-                            >
-                                Subscribe Now
-                            </Link>
-                        </div>
-                    </motion.div>
-                </article>
-
-                {/* Related Articles */}
+                {/* Related articles */}
                 {relatedArticles.length > 0 && (
-                    <div className="py-16 bg-gray-50 ">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                            <h2 className="text-3xl font-bold mb-8 text-black">Related Articles</h2>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {relatedArticles.slice(0, 6).map((related) => (
-                                    <Link
-                                        key={related.id}
-                                        href={`/news/${createFullSlug(related.title, related.id)}`}
-                                        className="group"
-                                    >
-                                        <article className="overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 bg-black">
-                                            {related.imageUrl && (
-                                                <div className="relative h-48 overflow-hidden">
-                                                    <img
-                                                        src={related.imageUrl}
-                                                        alt={related.title}
-                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                                    />
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                                    <div className="absolute top-0 left-0 bg-cyan-600 text-xs font-bold px-3 py-1 shadow-lg text-white">
-                                                        {related.category || "News"}
-                                                    </div>
-                                                </div>
-                                            )}
-                                            <div className="p-6">
-                                                <h3 className="text-lg font-bold mb-2 group-hover:text-cyan-600 transition-colors line-clamp-2">
-                                                    {related.title}
-                                                </h3>
-                                                {related.subtitle && (
-                                                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
-                                                        {related.subtitle}
-                                                    </p>
-                                                )}
-                                                {related.createdAt && (
-                                                    <time className="text-xs text-gray-500">
-                                                        {related.createdAt.toDate().toLocaleDateString()}
-                                                    </time>
-                                                )}
-                                            </div>
-                                        </article>
-                                    </Link>
-                                ))}
-                            </div>
+                    <div className="cy-related">
+                        <p className="cy-section-label">Related articles</p>
+                        <div className="cy-grid">
+                            {relatedArticles.map(r => (
+                                <Link key={r.id} href={`/news/${createFullSlug(r.title, r.id)}`} className="cy-card">
+                                    <div className="cy-card__img-wrap">
+                                        {r.imageUrl
+                                            ? <img src={r.imageUrl} alt={r.title} className="cy-card__img" onError={e => e.target.style.display = "none"} />
+                                            : <div className="cy-card__img-placeholder" />
+                                        }
+                                    </div>
+                                    <div className="cy-card__body">
+                                        <span style={{ display: "inline-block", fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.08em", textTransform: "uppercase", padding: "2px 6px", borderRadius: 3, background: "var(--accent-dim)", color: "var(--accent)", border: "1px solid rgba(232,255,71,0.2)", lineHeight: 1 }}>
+                                            {r.category || "Technology"}
+                                        </span>
+                                        <h3 className="cy-card__title">{r.title}</h3>
+                                        {r.subtitle && <p className="cy-card__preview">{r.subtitle}</p>}
+                                        <div className="cy-card__meta">
+                                            <span>NEWS</span>
+                                            <span className="cy-card__meta-dot" />
+                                            <span>{formatDate(r.createdAt)}</span>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))}
                         </div>
                     </div>
                 )}
-            </motion.div>
+            </div>
         </>
     );
 }

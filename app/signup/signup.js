@@ -1,59 +1,47 @@
 "use client";
-
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth1, db1 } from "@/config/firebase.config1";
-import { Terminal, ShieldCheck, Mail, Lock, User, Loader2, AlertCircle } from "lucide-react";
+import { Mail, Lock, User, Loader2, AlertCircle, ArrowRight, CheckCircle, ShieldCheck } from "lucide-react";
 
 export default function AuthSignupClient() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirectTarget = searchParams.get("redirect");
 
-    const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-    });
+    const [formData, setFormData] = useState({ username: "", email: "", password: "", confirmPassword: "" });
     const [loading, setLoading] = useState(false);
-    const [systemLog, setSystemLog] = useState({ type: "", message: "" });
+    const [log, setLog] = useState({ type: "", message: "" });
 
-    const handleInputChange = (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        setFormData((p) => ({ ...p, [name]: value }));
     };
 
-    const executeRegistration = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setSystemLog({ type: "", message: "" });
+        setLog({ type: "", message: "" });
 
         const { username, email, password, confirmPassword } = formData;
 
         if (!username.trim() || !email.trim() || !password || !confirmPassword) {
-            setSystemLog({ type: "error", message: "CRITICAL_ERROR: Empty parameter strings detected." });
+            setLog({ type: "error", message: "All fields are required." });
             setLoading(false);
             return;
         }
-
         if (password !== confirmPassword) {
-            setSystemLog({ type: "error", message: "CRITICAL_ERROR: Password validation mismatch." });
+            setLog({ type: "error", message: "Passwords do not match." });
             setLoading(false);
             return;
         }
 
         try {
-            // 1. Initialize Authentication Node Creation
-            const userCredential = await createUserWithEmailAndPassword(auth1, email, password);
-            const user = userCredential.user;
-
-            // 2. Provision Metadata Node in Firestore (merge:true prevents overwrite)
-            const userDocRef = doc(db1, "users", user.uid);
-            await setDoc(userDocRef, {
-                uid: user.uid,
+            const cred = await createUserWithEmailAndPassword(auth1, email, password);
+            await setDoc(doc(db1, "users", cred.user.uid), {
+                uid: cred.user.uid,
                 username: username.trim(),
                 email: email.toLowerCase().trim(),
                 role: "client",
@@ -61,167 +49,117 @@ export default function AuthSignupClient() {
                 systemLogs: ["NODE_INITIALIZED"],
             }, { merge: true });
 
-            setSystemLog({
-                type: "success",
-                message: "SUCCESS: Authentication established. System access authorized."
-            });
-
+            setLog({ type: "success", message: "Account created. Redirecting…" });
             setFormData({ username: "", email: "", password: "", confirmPassword: "" });
 
-            // 3. EXECUTE ROUTING VECTOR HANDOFF
             setTimeout(() => {
-                if (redirectTarget === "open-chat") {
-                    router.push("/?autochat=true");
-                } else {
-                    router.push("/portfolio");
-                }
-            }, 1000);
-
-        } catch (error) {
-            console.error("Auth pipeline breakdown:", error);
-            let cleanMessage = error.message;
-            if (error.code === "auth/email-already-in-use") {
-                cleanMessage = "DENIED: Email identifier already bound to active network node.";
-            } else if (error.code === "auth/weak-password") {
-                cleanMessage = "DENIED: Security hash length insufficient. Use 6+ characters.";
-            } else if (error.code === "auth/invalid-email") {
-                cleanMessage = "DENIED: Character array syntax mismatch on input string.";
-            } else if (error.code === "permission-denied") {
-                cleanMessage = "DENIED: Firestore write blocked. Check security rules.";
-            }
-            setSystemLog({ type: "error", message: `SYS_FAULT: ${cleanMessage}` });
+                router.push(redirectTarget === "open-chat" ? "/?autochat=true" : "/portfolio");
+            }, 900);
+        } catch (err) {
+            const msgs = {
+                "auth/email-already-in-use": "An account with that email already exists.",
+                "auth/weak-password": "Password must be at least 6 characters.",
+                "auth/invalid-email": "Invalid email address.",
+                "permission-denied": "Permission denied. Check Firestore rules.",
+            };
+            setLog({ type: "error", message: msgs[err.code] || err.message });
         } finally {
             setLoading(false);
         }
     };
 
+    // Reuse the same auth styles — add ShieldCheck icon variant
     return (
-        <div className="min-h-screen bg-[#030712] text-slate-300 font-mono flex items-center justify-center p-4 selection:bg-cyan-500/20 selection:text-cyan-300">
-            <div className="absolute inset-0 opacity-5 pointer-events-none bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+        <>
+            <style>{`
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+          --bg: #0a0a0b; --surface: #111113; --border: #1e1e22; --border-hi: #2e2e34;
+          --text-1: #f4f4f5; --text-2: #a1a1aa; --text-3: #52525b;
+          --accent: #e8ff47; --accent-dim: rgba(232,255,71,0.08);
+          --radius: 6px;
+          --serif: 'DM Serif Display', Georgia, serif;
+          --sans: 'Inter', system-ui, sans-serif;
+          --mono: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-            <div className="w-full max-w-md bg-slate-950/80 border border-slate-900 rounded-2xl shadow-2xl p-6 sm:p-8 backdrop-blur-md relative overflow-hidden z-10">
-                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"></div>
+        .auth-page { min-height: 100vh; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 24px; font-family: var(--sans); }
+        .auth-card { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; border-top: 2px solid var(--accent); }
+        .auth-card__header { padding: 28px 28px 24px; border-bottom: 1px solid var(--border); text-align: center; }
+        .auth-card__icon { width: 44px; height: 44px; margin: 0 auto 14px; background: var(--accent-dim); border: 1px solid rgba(232,255,71,0.25); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--accent); }
+        .auth-card__title { font-family: var(--serif); font-size: 24px; color: var(--text-1); margin-bottom: 4px; }
+        .auth-card__sub { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+        .auth-card__body { padding: 24px 28px 28px; display: flex; flex-direction: column; gap: 16px; }
+        .auth-alert { display: flex; align-items: flex-start; gap: 9px; padding: 11px 14px; border-radius: var(--radius); font-size: 12px; line-height: 1.55; }
+        .auth-alert--error { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.25); color: #f87171; }
+        .auth-alert--success { background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.2); color: #4ade80; }
+        .auth-alert svg { flex-shrink: 0; margin-top: 1px; }
+        .auth-field { display: flex; flex-direction: column; gap: 6px; }
+        .auth-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+        .auth-input-wrap { position: relative; }
+        .auth-input-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-3); display: flex; pointer-events: none; }
+        .auth-input { width: 100%; padding: 9px 12px 9px 34px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); font-family: var(--mono); font-size: 12px; color: var(--text-1); outline: none; transition: border-color 0.15s; }
+        .auth-input::placeholder { color: var(--text-3); }
+        .auth-input:focus { border-color: rgba(232,255,71,0.4); }
+        .auth-submit { width: 100%; padding: 11px; border-radius: var(--radius); border: none; cursor: pointer; background: var(--accent); color: #0a0a0b; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.15s; }
+        .auth-submit:hover:not(:disabled) { opacity: 0.88; }
+        .auth-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .auth-footer { padding: 14px 28px 20px; border-top: 1px solid var(--border); text-align: center; font-family: var(--mono); font-size: 10px; color: var(--text-3); letter-spacing: 0.04em; }
+        .auth-footer a { color: var(--accent); text-decoration: none; }
+        .auth-footer a:hover { opacity: 0.75; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
 
-                <div className="flex flex-col items-center text-center space-y-2 mb-8">
-                    <div className="w-12 h-12 rounded-xl bg-cyan-950/30 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shadow-lg shadow-cyan-950/40">
-                        <Terminal size={22} className="animate-pulse" />
+            <div className="auth-page">
+                <div className="auth-card">
+                    <div className="auth-card__header">
+                        <div className="auth-card__icon"><ShieldCheck size={20} /></div>
+                        <div className="auth-card__title">Create account</div>
+                        <div className="auth-card__sub">brown.dev · register</div>
                     </div>
-                    <div>
-                        <h1 className="text-sm font-bold tracking-widest text-slate-100 uppercase">PROVISION_NEW_NODE</h1>
-                        <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-0.5">Secure Core Cluster Access Interface</p>
+
+                    <div className="auth-card__body">
+                        {log.message && (
+                            <div className={`auth-alert auth-alert--${log.type}`}>
+                                {log.type === "error" ? <AlertCircle size={14} /> : <CheckCircle size={14} />}
+                                {log.message}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                            {[
+                                { label: "Username", name: "username", type: "text", icon: <User size={13} />, placeholder: "Your name", auto: "off" },
+                                { label: "Email address", name: "email", type: "email", icon: <Mail size={13} />, placeholder: "you@email.com", auto: "email" },
+                                { label: "Password", name: "password", type: "password", icon: <Lock size={13} />, placeholder: "••••••••••••", auto: "new-password" },
+                                { label: "Confirm password", name: "confirmPassword", type: "password", icon: <Lock size={13} />, placeholder: "••••••••••••", auto: "new-password" },
+                            ].map((f) => (
+                                <div key={f.name} className="auth-field">
+                                    <label className="auth-label">{f.label}</label>
+                                    <div className="auth-input-wrap">
+                                        <span className="auth-input-icon">{f.icon}</span>
+                                        <input type={f.type} name={f.name} value={formData[f.name]}
+                                            onChange={handleChange} disabled={loading}
+                                            placeholder={f.placeholder} className="auth-input" autoComplete={f.auto} />
+                                    </div>
+                                </div>
+                            ))}
+
+                            <button type="submit" disabled={loading} className="auth-submit">
+                                {loading
+                                    ? <><Loader2 size={13} style={{ animation: "spin 1s linear infinite" }} /> Creating account…</>
+                                    : <>Create account <ArrowRight size={13} /></>
+                                }
+                            </button>
+                        </form>
+                    </div>
+
+                    <div className="auth-footer">
+                        Already have an account?{" "}
+                        <a href={`/signin${redirectTarget ? `?redirect=${redirectTarget}` : ""}`}>Sign in</a>
                     </div>
                 </div>
-
-                {systemLog.message && (
-                    <div className={`mb-6 p-3.5 border rounded-lg text-xs flex items-start gap-2.5 animate-in fade-in slide-in-from-top-2 duration-200 ${systemLog.type === "error"
-                            ? "bg-rose-950/20 border-rose-500/20 text-rose-400 font-bold"
-                            : "bg-emerald-950/20 border-emerald-500/20 text-emerald-400 font-bold"
-                        }`}>
-                        {systemLog.type === "error"
-                            ? <AlertCircle size={16} className="shrink-0 mt-0.5" />
-                            : <ShieldCheck size={16} className="shrink-0 mt-0.5" />
-                        }
-                        <span className="leading-relaxed">{systemLog.message}</span>
-                    </div>
-                )}
-
-                <form onSubmit={executeRegistration} className="space-y-4">
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] uppercase text-slate-500 tracking-widest block font-bold">Client Identity Token</label>
-                        <div className="relative">
-                            <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
-                            <input
-                                type="text"
-                                name="username"
-                                value={formData.username}
-                                onChange={handleInputChange}
-                                disabled={loading}
-                                className="w-full pl-9 pr-4 py-2.5 bg-slate-900/60 border border-slate-800 rounded-lg text-slate-200 placeholder-slate-700 text-xs outline-none focus:border-cyan-500/40 transition-colors"
-                                placeholder="ENTER_SIGNATURE_TAG..."
-                                autoComplete="off"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] uppercase text-slate-500 tracking-widest block font-bold">SMTP Mail Address</label>
-                        <div className="relative">
-                            <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
-                            <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleInputChange}
-                                disabled={loading}
-                                className="w-full pl-9 pr-4 py-2.5 bg-slate-900/60 border border-slate-800 rounded-lg text-slate-200 placeholder-slate-700 text-xs outline-none focus:border-cyan-500/40 transition-colors"
-                                placeholder="USER@NETWORK.COM..."
-                                autoComplete="email"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] uppercase text-slate-500 tracking-widest block font-bold">Secure Access Key</label>
-                        <div className="relative">
-                            <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
-                            <input
-                                type="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleInputChange}
-                                disabled={loading}
-                                className="w-full pl-9 pr-4 py-2.5 bg-slate-900/60 border border-slate-800 rounded-lg text-slate-200 placeholder-slate-700 text-xs outline-none focus:border-cyan-500/40 transition-colors"
-                                placeholder="••••••••••••"
-                                autoComplete="new-password"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-1.5">
-                        <label className="text-[10px] uppercase text-slate-500 tracking-widest block font-bold">Confirm Access Key</label>
-                        <div className="relative">
-                            <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
-                            <input
-                                type="password"
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handleInputChange}
-                                disabled={loading}
-                                className="w-full pl-9 pr-4 py-2.5 bg-slate-900/60 border border-slate-800 rounded-lg text-slate-200 placeholder-slate-700 text-xs outline-none focus:border-cyan-500/40 transition-colors"
-                                placeholder="••••••••••••"
-                                autoComplete="new-password"
-                            />
-                        </div>
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full mt-2 py-3 bg-cyan-950/40 hover:bg-cyan-950/80 border border-cyan-500/30 hover:border-cyan-400 text-cyan-400 hover:text-cyan-200 font-bold text-[10px] uppercase tracking-widest rounded-lg flex items-center justify-center gap-2 transition-all duration-200 shadow-md disabled:opacity-20 disabled:pointer-events-none"
-                    >
-                        {loading ? (
-                            <>
-                                <Loader2 size={14} className="animate-spin text-cyan-500" />
-                                SYNCHRONIZING_CORE...
-                            </>
-                        ) : (
-                            "INITIALIZE_ACCOUNT_NODE"
-                        )}
-                    </button>
-                </form>
-
-                <div className="mt-6 text-center border-t border-slate-900/80 pt-4">
-                    <p className="text-[10px] text-slate-600 uppercase tracking-wider">
-                        Identity already exists in network?{" "}
-
-                       <a a href={`/signin${redirectTarget ? `?redirect=${redirectTarget}` : ""}`}
-                        className="text-cyan-600 hover:text-cyan-400 underline transition-colors"
-                        >
-                        Request_Session_Tunnel
-                    </a>
-                </p>
             </div>
-        </div>
-        </div >
+        </>
     );
 }

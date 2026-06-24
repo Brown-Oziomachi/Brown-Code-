@@ -1,12 +1,10 @@
 import Link from "next/link";
-import { Terminal, ShieldCheck, Binary, ArrowLeft } from "lucide-react";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
 
 export const metadata = {
     title: "Privacy Policy | Brown Code",
-    description: "Learn how Brown Code handles data telemetry, information privacy, and client records securely.",
-    alternates: {
-        canonical: "https://browncode.name.ng/privacy",
-    },
+    description: "Learn how Brown Code handles data, information privacy, and client records securely.",
+    alternates: { canonical: "https://browncode.name.ng/privacy" },
 };
 
 export default function PrivacyPolicy() {
@@ -14,129 +12,235 @@ export default function PrivacyPolicy() {
 
     return (
         <>
-         <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
-                    <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                        <div className="flex items-center gap-3 group">
-                <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
-                            <a href="/">
-                                <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                                BROWN_CODE_DEV //  PRIV_MANIFES
-                                </span>
-                            </a>
+            <style>{`
+                *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+                :root {
+                    --bg:         #0a0a0b;
+                    --surface:    #111113;
+                    --border:     #1e1e22;
+                    --border-hi:  #2e2e34;
+                    --text-1:     #f4f4f5;
+                    --text-2:     #a1a1aa;
+                    --text-3:     #52525b;
+                    --accent:     #e8ff47;
+                    --accent-dim: rgba(232,255,71,0.08);
+                    --radius:     6px;
+                    --font-serif: 'DM Serif Display', 'Georgia', serif;
+                    --font-sans:  'Inter', system-ui, sans-serif;
+                    --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+                }
+                @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+                .pp-page { font-family: var(--font-sans); background: var(--bg); color: var(--text-1); min-height: 100vh; }
+
+                .pp-nav {
+                    position: sticky; top: 0; z-index: 100;
+                    background: rgba(10,10,11,0.92); backdrop-filter: blur(12px);
+                    border-bottom: 1px solid var(--border);
+                    padding: 0 24px; height: 56px;
+                    display: flex; align-items: center; justify-content: space-between;
+                }
+                .pp-nav__brand { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; color: var(--text-1); text-decoration: none; }
+                .pp-nav__brand em { font-style: normal; color: var(--accent); }
+                .pp-nav__back {
+                    display: inline-flex; align-items: center; gap: 6px;
+                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+                    color: var(--text-2); text-decoration: none;
+                    padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+                    transition: color .15s, border-color .15s, background .15s;
+                }
+                .pp-nav__back:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
+
+                .pp-main { max-width: 800px; margin: 0 auto; padding: 0 24px 80px; }
+
+                .pp-masthead {
+                    padding: 52px 0 40px;
+                    border-bottom: 1px solid var(--border); margin-bottom: 48px;
+                }
+                .pp-masthead__eyebrow {
+                    font-family: var(--font-mono); font-size: 11px; color: var(--accent);
+                    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px;
+                }
+                .pp-masthead__title {
+                    font-family: var(--font-serif);
+                    font-size: clamp(36px, 5vw, 56px); font-weight: 400; line-height: 1.05;
+                    color: var(--text-1); margin-bottom: 12px;
+                }
+                .pp-masthead__meta {
+                    font-family: var(--font-mono); font-size: 11px; color: var(--text-3);
+                    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+                }
+                .pp-masthead__badge {
+                    display: inline-flex; align-items: center; gap: 5px;
+                    background: var(--accent-dim); border: 1px solid rgba(232,255,71,0.2);
+                    border-radius: 3px; padding: 3px 10px;
+                    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em;
+                    color: var(--accent); text-transform: uppercase;
+                }
+
+                .pp-section-label {
+                    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+                    text-transform: uppercase; color: var(--text-3);
+                    display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+                }
+                .pp-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+                .pp-sections { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 48px; }
+
+                .pp-section {
+                    background: var(--surface); padding: 28px 32px;
+                    position: relative; transition: background .15s;
+                }
+                .pp-section:hover { background: #141417; }
+                .pp-section::before {
+                    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+                    background: var(--accent); transform: scaleY(0); transform-origin: bottom;
+                    transition: transform .2s ease;
+                }
+                .pp-section:hover::before { transform: scaleY(1); }
+
+                .pp-section__num {
+                    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+                    color: var(--accent); text-transform: uppercase; margin-bottom: 8px;
+                }
+                .pp-section__title {
+                    font-family: var(--font-serif); font-size: 20px; font-weight: 400;
+                    color: var(--text-1); margin-bottom: 14px;
+                }
+                .pp-section__body { font-size: 14px; color: var(--text-2); line-height: 1.7; }
+                .pp-section__body p + p { margin-top: 10px; }
+
+                .pp-code-block {
+                    background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+                    padding: 16px 20px; margin-top: 14px;
+                    font-family: var(--font-mono); font-size: 11px; color: var(--text-3);
+                    line-height: 2;
+                }
+                .pp-code-block span { color: var(--accent); }
+
+                .pp-list {
+                    list-style: none; margin-top: 12px; display: flex; flex-direction: column; gap: 8px;
+                }
+                .pp-list li {
+                    font-size: 13px; color: var(--text-2); line-height: 1.6;
+                    padding-left: 16px; position: relative;
+                }
+                .pp-list li::before {
+                    content: ''; position: absolute; left: 0; top: 9px;
+                    width: 4px; height: 4px; border-radius: 50%; background: var(--accent);
+                }
+                .pp-list strong { font-family: var(--font-mono); font-size: 11px; color: var(--accent); }
+
+                .pp-footer-row {
+                    display: flex; align-items: center; justify-content: space-between;
+                    flex-wrap: wrap; gap: 12px;
+                    padding-top: 32px; border-top: 1px solid var(--border);
+                }
+                .pp-footer__info {
+                    display: flex; align-items: center; gap: 6px;
+                    font-family: var(--font-mono); font-size: 10px; color: var(--text-3);
+                }
+
+                .pp-btn {
+                    display: inline-flex; align-items: center; gap: 6px;
+                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+                    padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius);
+                    background: transparent; color: var(--text-2); text-decoration: none;
+                    transition: color .15s, border-color .15s, background .15s;
+                }
+                .pp-btn:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
+            `}</style>
+
+            <div className="pp-page">
+                <nav className="pp-nav">
+                    <a href="/" className="pp-nav__brand">brown<em>.</em>dev</a>
+                    <a href="/" className="pp-nav__back"><ArrowLeft size={13} /> Home</a>
+                </nav>
+
+                <main className="pp-main">
+                    <header className="pp-masthead">
+                        <p className="pp-masthead__eyebrow">Legal</p>
+                        <h1 className="pp-masthead__title">Privacy<br />Policy</h1>
+                        <div className="pp-masthead__meta">
+                            <span>Effective: June 12, 2026</span>
+                            <span className="pp-masthead__badge">
+                                <ShieldCheck size={11} /> Verified
+                            </span>
                         </div>
-                        <a
-                            href="/"
-                            className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
-                        >
-                            <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
-                            <span>SYS.RETURN()</span>
-                        </a>
-                    </div>
-        </nav>
-        <div className="min-h-screen bg-[#030712] text-slate-100 antialiased font-mono pt-12 selection:bg-cyan-500/30 selection:text-cyan-200">
-            <main className="max-w-4xl mx-auto px-4 md:px-6 py-24 lg:py-32">
+                    </header>
 
-                {/* Developer / Security Header Block */}
-                <header className="relative w-full rounded-2xl border border-slate-800 bg-slate-950/40 backdrop-blur-md overflow-hidden p-6 md:p-10 shadow-2xl mb-12">
-                    <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none hidden sm:block">
-                        <Binary size={180} />
-                    </div>
+                    <p className="pp-section-label">Policy sections</p>
+                    <div className="pp-sections">
 
-                    <div className="relative z-10">
-                        <div className="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 text-cyan-400 text-xs px-4 py-1.5 rounded-md tracking-wider uppercase mb-6">
-                            <Terminal size={14} className="animate-pulse" />
-                            SECURE_SHELL // PRIV_MANIFEST
+                        <div className="pp-section">
+                            <p className="pp-section__num">[01]</p>
+                            <h2 className="pp-section__title">Operational overview</h2>
+                            <div className="pp-section__body">
+                                <p>
+                                    At <strong style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--text-1)" }}>Brown Code</strong> (browncode.name.ng), I respect data integrity. This document charts how client files, system metrics, and support variables are gathered, analysed, and stored.
+                                </p>
+                            </div>
                         </div>
 
-                        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white mb-3">
-                            PRIVACY_<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">POLICY</span>
-                        </h1>
-
-                        <p className="text-xs text-slate-500 tracking-wide mt-2">
-                            Effective Version: June 12, 2026 <span className="text-slate-700">//</span> Node Status: <span className="text-emerald-400 font-bold">LOCKED_AND_VERIFIED</span>
-                        </p>
-                    </div>
-                </header>
-
-                {/* Content Pipeline Stream */}
-                <div className="space-y-10 text-xs sm:text-sm text-slate-400 leading-relaxed font-sans border-b border-slate-900 pb-12">
-
-                    <section className="space-y-3">
-                        <h2 className="text-sm sm:text-base font-bold text-white font-mono flex items-center gap-2 tracking-tight">
-                            <span className="text-cyan-400">[01]</span> OPERATIONAL OVERVIEW
-                        </h2>
-                        <p className="pl-0 sm:pl-7">
-                            At <strong className="text-white font-bold font-mono text-xs">BROWN CODE</strong> (accessible via <code className="text-cyan-400 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800 font-mono text-xs">browncode.name.ng</code>), I respect data integrity. This documentation charts exactly how client files, system metrics, and real-time support variables are gathered, analyzed, and stored.
-                        </p>
-                    </section>
-
-                    <section className="space-y-3">
-                        <h2 className="text-sm sm:text-base font-bold text-white font-mono flex items-center gap-2 tracking-tight">
-                            <span className="text-cyan-400">[02]</span> TELEMETRY & DATA INPUTS
-                        </h2>
-                        <p className="pl-0 sm:pl-7">
-                            I run a minimal data footprint. The platform isolates data collection down to three explicit operational segments:
-                        </p>
-                        <ul className="list-inside list-disc pl-2 sm:pl-9 space-y-2 text-xs font-mono text-slate-300">
-                            <li><strong className="text-cyan-400">Voluntary Form Fields:</strong> Identity inputs like your name, electronic address, and specification targets shared via live chat widgets or WhatsApp routing steps.</li>
-                            <li><strong className="text-cyan-400">Chat Log Staging:</strong> Interactive dialogue components map records temporarily to Firestore layers to enable session recall during infrastructure support.</li>
-                            <li><strong className="text-cyan-400">Anonymized System Logs:</strong> Minor viewport parameters, network paths, and browser variables generated through Vercel CDN engines to optimize structural configuration speeds.</li>
-                        </ul>
-                    </section>
-
-                    <section className="space-y-3">
-                        <h2 className="text-sm sm:text-base font-bold text-white font-mono flex items-center gap-2 tracking-tight">
-                            <span className="text-cyan-400">[03]</span> UTILIZATION PROTOCOL
-                        </h2>
-                        <p className="pl-0 sm:pl-7">
-                            Information parameters are strictly processed through clean, non-malicious operations:
-                        </p>
-                        <div className="ml-0 sm:ml-7 text-xs bg-slate-950 border border-slate-900 p-4 rounded-xl font-mono text-slate-500 space-y-1">
-                            <div>$ execute --target="configure, build, and deploy personal software pipelines."</div>
-                            <div>$ execute --target="transmit active engineering assessments, quotes, and billing tables."</div>
-                            <div>$ execute --target="protect root site endpoints from bad actors and distributed layout attacks."</div>
+                        <div className="pp-section">
+                            <p className="pp-section__num">[02]</p>
+                            <h2 className="pp-section__title">Data inputs</h2>
+                            <div className="pp-section__body">
+                                <p>I run a minimal data footprint. Collection is limited to three explicit segments:</p>
+                                <ul className="pp-list">
+                                    <li><strong>Voluntary form fields:</strong> Identity inputs like your name, email address, and project details shared via contact forms or WhatsApp.</li>
+                                    <li><strong>Chat log staging:</strong> Interactive dialogue components map records temporarily to Firestore to enable session recall during support.</li>
+                                    <li><strong>Anonymised system logs:</strong> Minor viewport parameters and browser variables generated through Vercel CDN to optimise performance.</li>
+                                </ul>
+                            </div>
                         </div>
-                    </section>
 
-                    <section className="space-y-3">
-                        <h2 className="text-sm sm:text-base font-bold text-white font-mono flex items-center gap-2 tracking-tight">
-                            <span className="text-cyan-400">[04]</span> SHARING FRAMEWORK BOUNDARIES
-                        </h2>
-                        <p className="pl-0 sm:pl-7">
-                            I strictly do not monetize, distribute, or exchange personal data strings with marketing agencies. Information parameters are only routed through verified standard storage nodes (such as Firebase or Vercel cloud architectures) required to compile your system application views.
-                        </p>
-                    </section>
+                        <div className="pp-section">
+                            <p className="pp-section__num">[03]</p>
+                            <h2 className="pp-section__title">Utilisation protocol</h2>
+                            <div className="pp-section__body">
+                                <p>Information is strictly processed through clean, non-malicious operations:</p>
+                                <div className="pp-code-block">
+                                    <div><span>$</span> execute --target="configure, build, and deploy software pipelines"</div>
+                                    <div><span>$</span> execute --target="transmit engineering assessments, quotes, billing"</div>
+                                    <div><span>$</span> execute --target="protect endpoints from bad actors and layout attacks"</div>
+                                </div>
+                            </div>
+                        </div>
 
-                    <section className="space-y-3">
-                        <h2 className="text-sm sm:text-base font-bold text-white font-mono flex items-center gap-2 tracking-tight">
-                            <span className="text-cyan-400">[05]</span> EXECUTION RIGHTS
-                        </h2>
-                        <p className="pl-0 sm:pl-7">
-                            You maintain root authority over your data variables. You can invoke a complete, irrevocable wipe of historical support records or live chat data loops at any point by connecting directly to the network control node via WhatsApp.
-                        </p>
-                    </section>
+                        <div className="pp-section">
+                            <p className="pp-section__num">[04]</p>
+                            <h2 className="pp-section__title">Sharing boundaries</h2>
+                            <div className="pp-section__body">
+                                <p>
+                                    I do not monetise, distribute, or exchange personal data with marketing agencies. Information is only routed through verified storage nodes (Firebase, Vercel) required to serve your application.
+                                </p>
+                            </div>
+                        </div>
 
-                </div>
+                        <div className="pp-section">
+                            <p className="pp-section__num">[05]</p>
+                            <h2 className="pp-section__title">Your rights</h2>
+                            <div className="pp-section__body">
+                                <p>
+                                    You maintain full authority over your data. You can invoke a complete, irrevocable wipe of support records or chat data at any point by reaching out directly via WhatsApp.
+                                </p>
+                            </div>
+                        </div>
 
-                {/* Matrix Controls Footer */}
-                <footer className="mt-12 flex flex-col sm:flex-row justify-between items-center gap-6 font-mono">
-                    <Link
-                        href="/"
-                        className="w-full sm:w-auto group flex items-center justify-center gap-2 px-5 py-2.5 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all duration-200 rounded-md text-xs uppercase tracking-wider"
-                    >
-                        <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-                        RETURN_TO_BASE
-                    </Link>
-
-                    <div className="flex items-center gap-2 text-[11px] text-slate-600">
-                        <ShieldCheck size={14} className="text-emerald-500" />
-                        <span>© {currentYear} BROWN_CODE // SEC_VERIFIED</span>
                     </div>
-                </footer>
 
-            </main>
+                    <footer className="pp-footer-row">
+                        <div className="pp-footer__info">
+                            <ShieldCheck size={12} style={{ color: "#4ade80" }} />
+                            © {currentYear} Brown Code — privacy verified
+                        </div>
+                        <Link href="/" className="pp-btn">
+                            <ArrowLeft size={13} /> Return home
+                        </Link>
+                    </footer>
+                </main>
             </div>
         </>
-
     );
 }

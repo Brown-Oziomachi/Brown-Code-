@@ -1,134 +1,260 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { articles } from "@/app/data/article";
-import { Clock, ArrowRight, BookOpen } from "lucide-react";
+import { Clock, ArrowUpRight } from "lucide-react";
+
+const TECHNICAL_SLUGS = [
+    "moving-from-social-media-to-digital-asset",
+    "importance-of-a-personal-portfolio",
+    "why-branding-matters-online",
+    "power-of-ecommerce-global-sales",
+    "building-trust-online-cro",
+    "why-website-speed-matters",
+    "content-marketing-winning-with-value",
+    "how-users-help-ai-companies-make-billions",
+    "smart-automation-business-autopilot",
+    "cybersecurity-essentials-online-business",
+    "how-to-build-your-first-website",
+    "seo-fundamentals-getting-found",
+    "content-marketing-personal-brands",
+    "networking-digital-era",
+    "data-driven-decisions-web-analytics",
+];
+
+const getReadingTime = (content) =>
+    Math.max(1, Math.ceil((content?.split(" ").length || 0) / 200));
 
 export default function RelatedArticles({ currentSlug }) {
-    // 1. Unified technical slug list
-    const technicalSlugs = [
-        "moving-from-social-media-to-digital-asset",
-        "importance-of-a-personal-portfolio",
-        "why-branding-matters-online",
-        "power-of-ecommerce-global-sales",
-        "building-trust-online-cro",
-        "why-website-speed-matters",
-        "content-marketing-winning-with-value",
-        "how-users-help-ai-companies-make-billions",
-        "smart-automation-business-autopilot",
-        "cybersecurity-essentials-online-business",
-        "how-to-build-your-first-website",
-        "seo-fundamentals-getting-found",
-        "content-marketing-personal-brands",
-        "networking-digital-era",
-        "data-driven-decisions-web-analytics"
-    ];
-
-    // 2. Set up component state to hold display articles post-hydration
     const [displayArticles, setDisplayArticles] = useState([]);
 
-    // 3. Process data filtering and random shuffling safely on the client mount loop
     useEffect(() => {
-        // Strict Filter: Remove the current article immediately
-        const filteredArticles = articles.filter(article => article.slug !== currentSlug);
-
-        // Category matching logic
-        const isTechCategory = technicalSlugs.includes(currentSlug);
-        let related = filteredArticles.filter(article => {
-            if (isTechCategory) {
-                return technicalSlugs.includes(article.slug);
-            }
-            return !technicalSlugs.includes(article.slug);
-        });
-
-        // Fallback if no specific related matches found
-        if (related.length === 0) {
-            related = filteredArticles;
-        }
-
-        // Shuffle logic isolated to prevent SSR / Client mismatches
+        const filtered = articles.filter((a) => a.slug !== currentSlug);
+        const isTech = TECHNICAL_SLUGS.includes(currentSlug);
+        let related = filtered.filter((a) =>
+            isTech
+                ? TECHNICAL_SLUGS.includes(a.slug)
+                : !TECHNICAL_SLUGS.includes(a.slug)
+        );
+        if (related.length === 0) related = filtered;
         const shuffled = [...related].sort(() => 0.5 - Math.random());
-        setDisplayArticles(shuffled.slice(0, 8));
+        setDisplayArticles(shuffled.slice(0, 4));
     }, [currentSlug]);
 
-    const getReadingTime = (content) => {
-        const words = content ? content.split(" ").length : 0;
-        return Math.max(1, Math.ceil(words / 200));
-    };
-
-    // Prevent rendering mismatched markup placeholders before client execution resolves
-    if (displayArticles.length === 0) {
-        return null;
-    }
+    if (displayArticles.length === 0) return null;
 
     return (
-        <section className="mt-5 pt-16 border-t border-slate-200 dark:border-slate-800 p-4 sm:p-10">
-            <div className="flex items-center gap-2 mb-10">
-                <div className="p-2 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
-                    <BookOpen size={18} />
-                </div>
-                <div>
-                    <h2 className="text-sm font-bold tracking-wider text-slate-400 uppercase">
-                        SYS.SUGGESTED_READS // related_matrix_blocks
-                    </h2>
-                </div>
-            </div>
+        <>
+            <style>{`
+                .ra-section {
+                    border-top: 1px solid var(--border);
+                    padding: 48px 24px 64px;
+                    max-width: 1120px;
+                    margin: 0 auto;
+                }
 
-            {/* Grid layout parameters */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-                {displayArticles.map((article, index) => {
-                    const readTime = getReadingTime(article.content);
-                    // Use a clean dark workspace fallback if your article data missing standard image properties
-                    const fallbackImage = "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80";
+                .ra-header {
+                    display: flex;
+                    align-items: baseline;
+                    justify-content: space-between;
+                    gap: 16px;
+                    margin-bottom: 28px;
+                }
 
-                    return (
+                .ra-header__title {
+                    font-family: var(--font-serif);
+                    font-size: 22px;
+                    font-weight: 400;
+                    color: var(--text-1);
+                }
+
+                .ra-header__label {
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    color: var(--text-3);
+                }
+
+                /* ── Grid ── */
+                .ra-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 1px;
+                    background: var(--border);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    overflow: hidden;
+                }
+
+                @media (max-width: 900px) { .ra-grid { grid-template-columns: 1fr 1fr; } }
+                @media (max-width: 560px) { .ra-grid { grid-template-columns: 1fr; } }
+
+                /* ── Card ── */
+                .ra-card {
+                    display: flex;
+                    flex-direction: column;
+                    background: var(--surface);
+                    text-decoration: none;
+                    overflow: hidden;
+                    position: relative;
+                    transition: background 0.15s;
+                }
+
+                .ra-card:hover { background: #141417; }
+
+                .ra-card::before {
+                    content: '';
+                    position: absolute;
+                    left: 0; top: 0; bottom: 0;
+                    width: 2px;
+                    background: var(--accent);
+                    transform: scaleY(0);
+                    transform-origin: bottom;
+                    transition: transform 0.2s ease;
+                    z-index: 5;
+                }
+
+                .ra-card:hover::before { transform: scaleY(1); }
+
+                .ra-card__img-wrap {
+                    height: 140px;
+                    background: var(--bg);
+                    overflow: hidden;
+                    flex-shrink: 0;
+                    position: relative;
+                }
+
+                .ra-card__img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    opacity: 0.45;
+                    filter: grayscale(25%);
+                    transition: opacity 0.3s, transform 0.4s;
+                }
+
+                .ra-card:hover .ra-card__img {
+                    opacity: 0.65;
+                    transform: scale(1.04);
+                }
+
+                .ra-card__img-placeholder {
+                    width: 100%; height: 100%;
+                    background: repeating-linear-gradient(
+                        45deg, transparent, transparent 6px,
+                        rgba(255,255,255,0.015) 6px, rgba(255,255,255,0.015) 12px
+                    );
+                }
+
+                .ra-card__body {
+                    padding: 16px 18px 18px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                    flex: 1;
+                }
+
+                .ra-card__tag {
+                    display: inline-block;
+                    font-family: var(--font-mono);
+                    font-size: 9px;
+                    letter-spacing: 0.08em;
+                    text-transform: uppercase;
+                    padding: 2px 6px;
+                    border-radius: 3px;
+                    background: var(--accent-dim);
+                    color: var(--accent);
+                    border: 1px solid rgba(232,255,71,0.2);
+                    line-height: 1;
+                    align-self: flex-start;
+                }
+
+                .ra-card__title {
+                    font-family: var(--font-serif);
+                    font-size: 15px;
+                    font-weight: 400;
+                    line-height: 1.35;
+                    color: var(--text-1);
+                    transition: color 0.15s;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 3;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+                .ra-card:hover .ra-card__title { color: #fff; }
+
+                .ra-card__meta {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-top: auto;
+                    padding-top: 12px;
+                }
+
+                .ra-card__reading {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    color: var(--text-3);
+                }
+
+                .ra-card__arrow {
+                    color: var(--text-3);
+                    transition: color 0.15s, transform 0.15s;
+                }
+
+                .ra-card:hover .ra-card__arrow {
+                    color: var(--accent);
+                    transform: translate(2px, -2px);
+                }
+            `}</style>
+
+            <section className="ra-section">
+                <div className="ra-header">
+                    <h2 className="ra-header__title">Continue reading</h2>
+                    <span className="ra-header__label">{displayArticles.length} related</span>
+                </div>
+
+                <div className="ra-grid">
+                    {displayArticles.map((article) => (
                         <a
                             key={article.slug}
                             href={`/blog/${article.slug}`}
-                            className={`group relative flex flex-col justify-end h-80 p-6 border border-slate-800 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ${index >= 4 ? "hidden md:flex" : "flex"
-                                }`}
+                            className="ra-card"
                         >
-                            {/* Background Image layer */}
-                            <img
-                                src={article.image || fallbackImage}
-                                alt={article.title}
-                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                            />
-
-                            {/* Dark Gradient Overlay for optimal typographic readability */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-transparent z-10" />
-
-                            {/* Text Content Layer */}
-                            <div className="relative z-20 w-full">
-                                <div className="flex items-center gap-2 mb-3">
-                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-600 text-white tracking-wider uppercase">
-                                        {article.postedBy || "BROWN CODE"}
-                                    </span>
-                                    <span className="flex items-center gap-1 text-[11px] text-slate-300 font-medium">
-                                        <Clock size={11} />
-                                        {readTime} min read
-                                    </span>
-                                </div>
-
-                                <h3 className="text-white font-bold text-base leading-snug group-hover:text-indigo-400 transition-colors line-clamp-2">
-                                    {article.title}
-                                </h3>
-
-                                {article.preview && (
-                                    <p className="text-slate-300 text-xs mt-2 line-clamp-2 opacity-90">
-                                        {article.preview}
-                                    </p>
+                            <div className="ra-card__img-wrap">
+                                {article.image ? (
+                                    <img
+                                        src={article.image}
+                                        alt={article.title}
+                                        className="ra-card__img"
+                                        onError={(e) => (e.target.style.display = "none")}
+                                    />
+                                ) : (
+                                    <div className="ra-card__img-placeholder" />
                                 )}
-
-                                <div className="flex items-center text-xs font-semibold text-indigo-400 mt-4 pt-3 border-t border-slate-800 w-full group-hover:gap-2 transition-all">
-                                    <span>Read article</span>
-                                    <ArrowRight size={12} className="ml-1 opacity-80 group-hover:opacity-100 transition-opacity" />
+                            </div>
+                            <div className="ra-card__body">
+                                <span className="ra-card__tag">
+                                    {TECHNICAL_SLUGS.includes(article.slug) ? "Engineering" : "Insights"}
+                                </span>
+                                <h3 className="ra-card__title">{article.title}</h3>
+                                <div className="ra-card__meta">
+                                    <div className="ra-card__reading">
+                                        <Clock size={11} />
+                                        {getReadingTime(article.content)} min
+                                    </div>
+                                    <ArrowUpRight size={14} className="ra-card__arrow" />
                                 </div>
                             </div>
                         </a>
-                    );
-                })}
-            </div>
-        </section>
+                    ))}
+                </div>
+            </section>
+        </>
     );
 }

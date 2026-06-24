@@ -12,301 +12,876 @@ import {
     getDocs,
 } from "firebase/firestore";
 import { db2 } from "@/config/firebase.config2";
-import { Terminal, Cpu, Layers, Disc, ArrowLeft, AlertTriangle } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, ChevronRight } from "lucide-react";
 
+// ─── helpers ────────────────────────────────────────────────────────────────
+const createSlug = (title) =>
+    title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+
+const createFullSlug = (title, id) => `${createSlug(title)}--${id}`;
+
+const relativeTime = (ts) => {
+    if (!ts?.toDate) return null;
+    const date = ts.toDate();
+    const diffMs = Date.now() - date;
+    const diffDays = Math.floor(diffMs / 86400000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffMonths = Math.floor(diffDays / 30);
+    if (diffMonths > 0) return `${diffMonths}mo ago`;
+    if (diffDays > 0) return `${diffDays}d ago`;
+    if (diffHours > 0) return `${diffHours}h ago`;
+    return "Just now";
+};
+
+const shortDate = (ts) => {
+    if (!ts?.toDate) return "";
+    return ts
+        .toDate()
+        .toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+};
+
+// ─── sub-components ─────────────────────────────────────────────────────────
+
+/** Large card for the 2-column hero row */
+const HeroCard = ({ post }) => (
+    <Link
+        href={`/news/${createFullSlug(post.title, post.id)}`}
+        className="hero-card"
+    >
+        <div className="hero-card__image-wrap">
+            {post.imageUrl ? (
+                <img
+                    src={post.imageUrl}
+                    alt={post.title}
+                    className="hero-card__img"
+                    onError={(e) => (e.target.style.display = "none")}
+                />
+            ) : (
+                <div className="hero-card__img-placeholder" />
+            )}
+            <div className="hero-card__overlay" />
+        </div>
+
+        <div className="hero-card__body">
+            <span className="tag">{post.category || "Technology"}</span>
+            <h2 className="hero-card__title">{post.title}</h2>
+            {post.subtitle && (
+                <p className="hero-card__sub">{post.subtitle}</p>
+            )}
+            <div className="meta">
+                <span className="meta__author">{post.author || "Editorial"}</span>
+                <span className="meta__dot" />
+                <span className="meta__time">{relativeTime(post.createdAt)}</span>
+            </div>
+        </div>
+    </Link>
+);
+
+/** Horizontal compact card for the secondary row */
+const ListCard = ({ post }) => (
+    <Link
+        href={`/news/${createFullSlug(post.title, post.id)}`}
+        className="list-card"
+    >
+        <div className="list-card__thumb">
+            {post.imageUrl ? (
+                <img
+                    src={post.imageUrl}
+                    alt={post.title}
+                    className="list-card__img"
+                    onError={(e) => (e.target.style.display = "none")}
+                />
+            ) : (
+                <div className="list-card__img-placeholder" />
+            )}
+        </div>
+        <div className="list-card__body">
+            <span className="tag tag--sm">{post.category || "Technology"}</span>
+            <h3 className="list-card__title">{post.title}</h3>
+            {post.subtitle && (
+                <p className="list-card__sub">{post.subtitle}</p>
+            )}
+            <div className="meta">
+                <span className="meta__author">{post.author || "Editorial"}</span>
+                <span className="meta__dot" />
+                <span className="meta__time">{relativeTime(post.createdAt)}</span>
+            </div>
+        </div>
+        <ArrowUpRight className="list-card__arrow" size={16} />
+    </Link>
+);
+
+/** Minimal row for the archive */
+const ArchiveRow = ({ post, index }) => (
+    <Link
+        href={`/news/${createFullSlug(post.title, post.id)}`}
+        className="archive-row"
+    >
+        <span className="archive-row__index">
+            {String(index + 1).padStart(2, "0")}
+        </span>
+        <div className="archive-row__body">
+            <h4 className="archive-row__title">{post.title}</h4>
+            {post.subtitle && (
+                <p className="archive-row__sub">{post.subtitle}</p>
+            )}
+        </div>
+        <div className="archive-row__right">
+            <span className="tag tag--xs">{post.category || "Tech"}</span>
+            <span className="archive-row__date">{shortDate(post.createdAt)}</span>
+        </div>
+        <ChevronRight className="archive-row__chevron" size={14} />
+    </Link>
+);
+
+// ─── page ────────────────────────────────────────────────────────────────────
 const TechnologyPage = () => {
     const router = useRouter();
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const createSlug = (title) => {
-        return title
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-+|-+$/g, "");
-    };
-
-    const createFullSlug = (title, id) => `${createSlug(title)}--${id}`;
-
-    const handleBack = () => {
-        router.push("/portfolio");
-    };
-
-    const handleReturn = () => {
-        router.push('/')
-    }
-
-
     useEffect(() => {
         const fetchTechnologyPosts = async () => {
             try {
                 const postsRef = collection(db2, "blogs");
-
                 let q = query(
                     postsRef,
                     where("category", "==", "technology"),
                     orderBy("createdAt", "desc"),
                     limit(50)
                 );
-
-                let querySnapshot;
-
+                let snap;
                 try {
-                    querySnapshot = await getDocs(q);
-                } catch (err) {
-                    console.warn("Fallback: missing index allocation mapping structures.");
-
-                    q = query(postsRef, orderBy("createdAt", "desc"), limit(6));
-                    querySnapshot = await getDocs(q);
+                    snap = await getDocs(q);
+                } catch {
+                    snap = await getDocs(
+                        query(postsRef, orderBy("createdAt", "desc"), limit(50))
+                    );
                 }
-
-                const data = querySnapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-
-                setPosts(data);
-            } catch (error) {
-                console.error("Pipeline breakdown tracking data streams:", error);
+                setPosts(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+            } catch (e) {
+                console.error(e);
             } finally {
                 setLoading(false);
             }
         };
-
         fetchTechnologyPosts();
     }, []);
 
-    const firstTwoPosts = posts.slice(0, 2);
-    const nextTwoPosts = posts.slice(2, 4);
-    const remainingPosts = posts.slice(4);
+    const heroPosts = posts.slice(0, 4);
+    const listPosts = posts.slice(5, 9);
+    const archivePosts = posts.slice(10, 20);
 
     return (
         <>
-            <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
-                <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3 group">
-                        <Terminal nal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
-                        <span onClick={handleReturn}>
-                            <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                                BROWN_CODE_DEV // tech_feed_logs
-                            </span>
+            <style>{`
+                /* ── Reset / base ── */
+                *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+                /* ── Design tokens ── */
+                :root {
+                    --bg:        #0a0a0b;
+                    --surface:   #111113;
+                    --border:    #1e1e22;
+                    --border-hi: #2e2e34;
+                    --text-1:    #f4f4f5;
+                    --text-2:    #a1a1aa;
+                    --text-3:    #52525b;
+                    --accent:    #e8ff47;
+                    --accent-dim: rgba(232,255,71,0.08);
+                    --radius:    6px;
+                    --font-serif: 'DM Serif Display', 'Georgia', serif;
+                    --font-sans:  'Inter', system-ui, sans-serif;
+                    --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+                }
+
+                @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+                /* ── Page shell ── */
+                .tp-page {
+                    font-family: var(--font-sans);
+                    background: var(--bg);
+                    color: var(--text-1);
+                    min-height: 100vh;
+                }
+
+                /* ── Nav ── */
+                .tp-nav {
+                    position: sticky;
+                    top: 0;
+                    z-index: 100;
+                    background: rgba(10,10,11,0.92);
+                    backdrop-filter: blur(12px);
+                    border-bottom: 1px solid var(--border);
+                    padding: 0 24px;
+                    height: 56px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+
+                .tp-nav__brand {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    cursor: pointer;
+                    text-decoration: none;
+                }
+
+                .tp-nav__wordmark {
+                    font-family: var(--font-mono);
+                    font-size: 12px;
+                    font-weight: 500;
+                    letter-spacing: 0.08em;
+                    color: var(--text-1);
+                }
+
+                .tp-nav__wordmark em {
+                    font-style: normal;
+                    color: var(--accent);
+                }
+
+                .tp-nav__back {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    letter-spacing: 0.06em;
+                    color: var(--text-2);
+                    text-decoration: none;
+                    padding: 6px 12px;
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    transition: color 0.15s, border-color 0.15s, background 0.15s;
+                }
+
+                .tp-nav__back:hover {
+                    color: var(--text-1);
+                    border-color: var(--border-hi);
+                    background: var(--surface);
+                }
+
+                /* ── Inner layout ── */
+                .tp-main {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    padding: 0 24px 80px;
+                }
+
+                /* ── Masthead ── */
+                .tp-masthead {
+                    display: flex;
+                    align-items: flex-end;
+                    justify-content: space-between;
+                    gap: 16px;
+                    padding: 52px 0 32px;
+                    border-bottom: 1px solid var(--border);
+                    margin-bottom: 40px;
+                }
+
+                .tp-masthead__eyebrow {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--accent);
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    margin-bottom: 10px;
+                }
+
+                .tp-masthead__title {
+                    font-family: var(--font-serif);
+                    font-size: clamp(36px, 5vw, 60px);
+                    font-weight: 400;
+                    line-height: 1.05;
+                    letter-spacing: -0.01em;
+                    color: var(--text-1);
+                }
+
+                .tp-masthead__desc {
+                    font-size: 13px;
+                    color: var(--text-2);
+                    line-height: 1.6;
+                    max-width: 360px;
+                    text-align: right;
+                }
+
+                /* ── Section label ── */
+                .section-label {
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    letter-spacing: 0.12em;
+                    text-transform: uppercase;
+                    color: var(--text-3);
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    margin-bottom: 20px;
+                }
+
+                .section-label::after {
+                    content: '';
+                    flex: 1;
+                    height: 1px;
+                    background: var(--border);
+                }
+
+                /* ── Tags ── */
+                .tag {
+                    display: inline-block;
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    letter-spacing: 0.08em;
+                    text-transform: uppercase;
+                    padding: 3px 8px;
+                    border-radius: 3px;
+                    background: var(--accent-dim);
+                    color: var(--accent);
+                    border: 1px solid rgba(232,255,71,0.2);
+                    line-height: 1;
+                }
+
+                .tag--sm { font-size: 9px; padding: 2px 6px; }
+                .tag--xs { font-size: 9px; padding: 2px 6px; }
+
+                /* ── Meta ── */
+                .meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--text-3);
+                    margin-top: 12px;
+                }
+
+                .meta__author { color: var(--text-2); }
+
+                .meta__dot {
+                    width: 3px;
+                    height: 3px;
+                    border-radius: 50%;
+                    background: var(--border-hi);
+                    flex-shrink: 0;
+                }
+
+                /* ── Hero grid ── */
+                .hero-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 1px;
+                    background: var(--border);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    overflow: hidden;
+                    margin-bottom: 40px;
+                }
+
+                @media (max-width: 700px) {
+                    .hero-grid { grid-template-columns: 1fr; }
+                }
+
+                .hero-card {
+                    display: flex;
+                    flex-direction: column;
+                    position: relative;
+                    text-decoration: none;
+                    background: var(--surface);
+                    min-height: 360px;
+                    overflow: hidden;
+                    transition: background 0.15s;
+                }
+
+                .hero-card:hover { background: #141417; }
+
+                .hero-card__image-wrap {
+                    position: relative;
+                    height: 200px;
+                    flex-shrink: 0;
+                    background: var(--bg);
+                    overflow: hidden;
+                }
+
+                .hero-card__img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    opacity: 0.55;
+                    filter: grayscale(30%);
+                    transition: opacity 0.3s, transform 0.4s;
+                }
+
+                .hero-card:hover .hero-card__img {
+                    opacity: 0.7;
+                    transform: scale(1.03);
+                }
+
+                .hero-card__img-placeholder {
+                    width: 100%;
+                    height: 100%;
+                    background: repeating-linear-gradient(
+                        45deg,
+                        transparent,
+                        transparent 8px,
+                        rgba(255,255,255,0.015) 8px,
+                        rgba(255,255,255,0.015) 16px
+                    );
+                }
+
+                .hero-card__overlay {
+                    position: absolute;
+                    inset: 0;
+                    background: linear-gradient(to bottom, transparent 40%, var(--surface) 100%);
+                    transition: background 0.15s;
+                }
+
+                .hero-card:hover .hero-card__overlay {
+                    background: linear-gradient(to bottom, transparent 40%, #141417 100%);
+                }
+
+                .hero-card__body {
+                    padding: 20px 24px 24px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    flex: 1;
+                }
+
+                .hero-card__title {
+                    font-family: var(--font-serif);
+                    font-size: clamp(18px, 2.2vw, 24px);
+                    font-weight: 400;
+                    line-height: 1.25;
+                    color: var(--text-1);
+                    transition: color 0.15s;
+                }
+
+                .hero-card:hover .hero-card__title { color: #fff; }
+
+                .hero-card__sub {
+                    font-size: 13px;
+                    color: var(--text-2);
+                    line-height: 1.55;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+                /* ── List cards ── */
+                .list-grid {
+                    display: flex;
+                    flex-direction: column;
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    overflow: hidden;
+                    margin-bottom: 56px;
+                }
+
+                .list-card {
+                    display: flex;
+                    align-items: center;
+                    gap: 20px;
+                    padding: 20px 24px;
+                    background: var(--surface);
+                    text-decoration: none;
+                    border-bottom: 1px solid var(--border);
+                    transition: background 0.15s;
+                    position: relative;
+                }
+
+                .list-card:last-child { border-bottom: none; }
+                .list-card:hover { background: #141417; }
+
+                .list-card__thumb {
+                    width: 80px;
+                    height: 80px;
+                    flex-shrink: 0;
+                    border-radius: 4px;
+                    overflow: hidden;
+                    background: var(--bg);
+                    border: 1px solid var(--border);
+                }
+
+                .list-card__img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    opacity: 0.6;
+                    filter: grayscale(20%);
+                    transition: opacity 0.3s;
+                }
+
+                .list-card:hover .list-card__img { opacity: 0.8; }
+
+                .list-card__img-placeholder {
+                    width: 100%;
+                    height: 100%;
+                    background: repeating-linear-gradient(
+                        45deg,
+                        transparent,
+                        transparent 6px,
+                        rgba(255,255,255,0.02) 6px,
+                        rgba(255,255,255,0.02) 12px
+                    );
+                }
+
+                .list-card__body {
+                    flex: 1;
+                    min-width: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                }
+
+                .list-card__title {
+                    font-family: var(--font-serif);
+                    font-size: 18px;
+                    font-weight: 400;
+                    line-height: 1.3;
+                    color: var(--text-1);
+                    transition: color 0.15s;
+                }
+
+                .list-card:hover .list-card__title { color: #fff; }
+
+                .list-card__sub {
+                    font-size: 13px;
+                    color: var(--text-2);
+                    line-height: 1.5;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 1;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+                .list-card__arrow {
+                    color: var(--text-3);
+                    flex-shrink: 0;
+                    transition: color 0.15s, transform 0.15s;
+                }
+
+                .list-card:hover .list-card__arrow {
+                    color: var(--accent);
+                    transform: translate(2px, -2px);
+                }
+
+                /* ── Archive ── */
+                .archive-table {
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    overflow: hidden;
+                }
+
+                .archive-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 20px;
+                    padding: 16px 24px;
+                    background: var(--surface);
+                    text-decoration: none;
+                    border-bottom: 1px solid var(--border);
+                    transition: background 0.15s;
+                }
+
+                .archive-row:last-child { border-bottom: none; }
+                .archive-row:hover { background: #141417; }
+
+                .archive-row__index {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--text-3);
+                    width: 24px;
+                    flex-shrink: 0;
+                }
+
+                .archive-row__body {
+                    flex: 1;
+                    min-width: 0;
+                }
+
+                .archive-row__title {
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: var(--text-1);
+                    line-height: 1.4;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    transition: color 0.15s;
+                }
+
+                .archive-row:hover .archive-row__title { color: #fff; }
+
+                .archive-row__sub {
+                    font-size: 12px;
+                    color: var(--text-3);
+                    margin-top: 2px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .archive-row__right {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    gap: 6px;
+                    flex-shrink: 0;
+                }
+
+                .archive-row__date {
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    color: var(--text-3);
+                    letter-spacing: 0.04em;
+                }
+
+                .archive-row__chevron {
+                    color: var(--border-hi);
+                    flex-shrink: 0;
+                    transition: color 0.15s, transform 0.15s;
+                }
+
+                .archive-row:hover .archive-row__chevron {
+                    color: var(--text-2);
+                    transform: translateX(2px);
+                }
+
+                /* ── Loading / empty ── */
+                .tp-loading {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 14px;
+                    padding: 80px 0;
+                }
+
+                .tp-loading__bars {
+                    display: flex;
+                    gap: 4px;
+                    align-items: flex-end;
+                }
+
+                .tp-loading__bar {
+                    width: 3px;
+                    background: var(--accent);
+                    border-radius: 2px;
+                    animation: barPulse 1s ease-in-out infinite;
+                }
+
+                .tp-loading__bar:nth-child(1) { height: 16px; animation-delay: 0s; }
+                .tp-loading__bar:nth-child(2) { height: 24px; animation-delay: 0.15s; }
+                .tp-loading__bar:nth-child(3) { height: 20px; animation-delay: 0.3s; }
+                .tp-loading__bar:nth-child(4) { height: 28px; animation-delay: 0.45s; }
+                .tp-loading__bar:nth-child(5) { height: 18px; animation-delay: 0.6s; }
+
+                @keyframes barPulse {
+                    0%, 100% { opacity: 0.3; }
+                    50% { opacity: 1; }
+                }
+
+                .tp-loading__text {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--text-3);
+                    letter-spacing: 0.08em;
+                }
+
+                .tp-empty {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 80px 0;
+                    text-align: center;
+                }
+
+                .tp-empty__code {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--text-3);
+                    letter-spacing: 0.1em;
+                }
+
+                .tp-empty__msg {
+                    font-size: 14px;
+                    color: var(--text-2);
+                }
+
+                /* ── Footer row ── */
+                .tp-footer {
+                    padding-top: 40px;
+                    margin-top: 56px;
+                    border-top: 1px solid var(--border);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 16px;
+                }
+
+                .tp-footer__info {
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    color: var(--text-3);
+                    letter-spacing: 0.06em;
+                }
+
+                .tp-footer__back {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--text-2);
+                    cursor: pointer;
+                    border: none;
+                    background: none;
+                    padding: 8px 14px;
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    transition: color 0.15s, border-color 0.15s, background 0.15s;
+                }
+
+                .tp-footer__back:hover {
+                    color: var(--text-1);
+                    border-color: var(--border-hi);
+                    background: var(--surface);
+                }
+
+                /* ── Accent bar on hover focus ── */
+                .hero-card::before,
+                .list-card::before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 2px;
+                    background: var(--accent);
+                    transform: scaleY(0);
+                    transform-origin: bottom;
+                    transition: transform 0.2s ease;
+                }
+
+                .hero-card:hover::before,
+                .list-card:hover::before {
+                    transform: scaleY(1);
+                }
+
+                @media (max-width: 600px) {
+                    .tp-masthead { flex-direction: column; align-items: flex-start; }
+                    .tp-masthead__desc { text-align: left; }
+                    .list-card { gap: 14px; padding: 16px; }
+                    .list-card__thumb { width: 60px; height: 60px; }
+                    .archive-row { gap: 12px; padding: 14px 16px; }
+                    .archive-row__right { display: none; }
+                    .tp-footer { flex-direction: column; align-items: flex-start; }
+                }
+            `}</style>
+
+            <div className="tp-page">
+                {/* ── Nav ── */}
+                <nav className="tp-nav">
+                    <a href="/" className="tp-nav__brand">
+                        <span className="tp-nav__wordmark">
+                            brown<em>.</em>dev
                         </span>
-                    </div>
-                    <a
-                        href="/portfolio"
-                        className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
-                    >
-                        <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
-                        <span>SYS.RETURN()</span>
                     </a>
-                </div>
-            </nav>
+                    <a href="/portfolio" className="tp-nav__back">
+                        <ArrowLeft size={13} />
+                        Portfolio
+                    </a>
+                </nav>
 
-            <main className="w-full min-h-screen bg-[#030712] text-slate-100 pt-28 font-mono selection:bg-cyan-500/30 selection:text-cyan-200">
-                {/* ===== SYSTEM BANNER HEADER ===== */}
-                <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 pt-8 pb-12">
-                    <div className="relative w-full rounded-2xl border border-slate-900 bg-slate-950/40 backdrop-blur-md overflow-hidden p-6 md:p-12 shadow-2xl">
-                        <div className="absolute top-0 right-0 p-4 opacity-[0.02] pointer-events-none hidden md:block">
-                            <Cpu size={240} />
-                        </div>
-
-                        <div className="relative z-10 max-w-4xl">
-                            <div className="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 text-cyan-400 text-xs px-4 py-1.5 rounded-md tracking-wider uppercase mb-6">
-                                <Terminal size={14} className="animate-pulse" />
-                                fetch // tech_feed_logs
-                            </div>
-
-                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-4">
-                                TECH_NEWS_<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">STREAM</span>
+                <main className="tp-main">
+                    {/* ── Masthead ── */}
+                    <header className="tp-masthead">
+                        <div>
+                            <p className="tp-masthead__eyebrow">Technology</p>
+                            <h1 className="tp-masthead__title">
+                                Tech<br />Coverage
                             </h1>
-
-                            <p className="text-slate-400 text-sm md:text-base max-w-2xl leading-relaxed font-sans">
-                                Explore automated indices, architecture strategies, and deep technical innovations shaping optimization layers. From compiler components to cleaner computational logic.
-                            </p>
                         </div>
-                    </div>
-                </section>
+                        <p className="tp-masthead__desc">
+                            Architecture decisions, engineering culture, and the systems shaping how software gets built.
+                        </p>
+                    </header>
 
-                {/* ===== PIPELINE MODULE RECTIFY ===== */}
-                <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 pb-24">
+                    {/* ── Content ── */}
                     {loading ? (
-                        <div className="flex flex-col items-center justify-center py-20 gap-3">
-                            <Disc className="w-6 h-6 animate-spin text-cyan-500" />
-                            <p className="text-xs text-slate-500 uppercase tracking-widest">Querying database matrix endpoints...</p>
+                        <div className="tp-loading">
+                            <div className="tp-loading__bars">
+                                {[...Array(5)].map((_, i) => (
+                                    <div key={i} className="tp-loading__bar" />
+                                ))}
+                            </div>
+                            <span className="tp-loading__text">Fetching articles…</span>
                         </div>
                     ) : posts.length === 0 ? (
-                        <div className="border border-dashed border-slate-800 rounded-xl p-12 text-center max-w-xl mx-auto">
-                            <AlertTriangle size={24} className="text-amber-500 mx-auto mb-4" />
-                            <h3 className="text-sm font-bold text-slate-300 mb-2">ERR_EMPTY_RESULT_SET</h3>
-                            <p className="text-xs text-slate-500 font-sans">
-                                The tracking stream returned absolute zero values fitting standard query parameters.
-                            </p>
+                        <div className="tp-empty">
+                            <span className="tp-empty__code">404 / EMPTY_RESULT_SET</span>
+                            <p className="tp-empty__msg">No articles found in this category yet.</p>
                         </div>
                     ) : (
                         <>
-                            {/* Primary Nodes: Grid Matrix Blocks */}
-                            {firstTwoPosts.length > 0 && (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                                    {firstTwoPosts.map((post) => (
-                                        <Link
-                                            key={post.id}
-                                            href={`/news/${createFullSlug(post.title, post.id)}`}
-                                            className="group relative h-80 overflow-hidden rounded-xl border border-slate-900 bg-slate-950/40 hover:border-cyan-500/40 transition-all duration-300 shadow-lg flex flex-col justify-end"
-                                        >
-                                            {post.imageUrl ? (
-                                                <img
-                                                    src={post.imageUrl}
-                                                    alt={post.title}
-                                                    className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-luminosity group-hover:opacity-30 group-hover:scale-[1.02] transition duration-500"
-                                                    onError={(e) => {
-                                                        e.target.style.display = 'none';
-                                                    }}
-                                                />
-                                            ) : (
-                                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-950/10 to-slate-950/50"></div>
-                                            )}
-
-                                            <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/70 to-transparent z-10"></div>
-
-                                            <div className="relative z-20 p-6">
-                                                <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded border border-cyan-500/30 text-cyan-400 bg-cyan-950/30 mb-3 inline-block">
-                                                    {post.category || "SYS_TECH"}
-                                                </span>
-                                                <h3 className="text-lg md:text-xl font-bold text-white mb-3 group-hover:text-cyan-400 transition-colors duration-200 leading-snug">
-                                                    {post.title}
-                                                </h3>
-                                                <div className="flex items-center gap-4 text-[10px] text-slate-500">
-                                                    <span className="font-sans text-slate-400 font-medium">{post.author || "Core System"}</span>
-                                                    <span>//</span>
-                                                    <span>
-                                                        {post.createdAt?.toDate ? (() => {
-                                                            const date = post.createdAt.toDate();
-                                                            const now = new Date();
-                                                            const diffTime = Math.abs(now - date);
-                                                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                                            const diffMonths = Math.floor(diffDays / 30);
-
-                                                            if (diffMonths > 0) return `DELTA_${diffMonths}M_AGO`;
-                                                            if (diffDays > 0) return `DELTA_${diffDays}D_AGO`;
-                                                            return 'DELTA_TIMESTAMP_TODAY';
-                                                        })() : "UNKNOWN_TIME"}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-
-                            {/* Secondary Downstream Split-Nodes */}
-                            {nextTwoPosts.length > 0 && (
-                                <div className="grid grid-cols-1 gap-4 mb-14">
-                                    {nextTwoPosts.map((post) => (
-                                        <Link
-                                            key={post.id}
-                                            href={`/news/${createFullSlug(post.title, post.id)}`}
-                                            className="group flex flex-col sm:flex-row gap-6 items-start sm:items-center bg-slate-950/20 border border-slate-900/60 rounded-xl hover:border-cyan-500/30 p-4 transition-all duration-200"
-                                        >
-                                            <div className="relative w-full sm:w-24 h-24 flex-shrink-0 overflow-hidden rounded-md border border-slate-900 bg-slate-950">
-                                                {post.imageUrl ? (
-                                                    <img
-                                                        src={post.imageUrl}
-                                                        alt={post.title}
-                                                        className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-luminosity group-hover:scale-105 transition duration-300"
-                                                        onError={(e) => {
-                                                            e.target.style.display = 'none';
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <div className="absolute inset-0 bg-slate-900 flex items-center justify-center text-slate-700">
-                                                        <Layers size={18} />
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="flex-1">
-                                                <p className="text-[10px] text-cyan-500/70 font-bold uppercase tracking-wider mb-1">
-                                                    &gt;_ {post.category || "MODULE_ENG"}
-                                                </p>
-                                                <h3 className="text-base font-bold mb-2 group-hover:text-cyan-400 transition-colors text-slate-100">
-                                                    {post.title}
-                                                </h3>
-                                                <div className="flex items-center gap-3 text-[10px] text-slate-500">
-                                                    <span className="font-sans text-slate-400">{post.author || "System Dev"}</span>
-                                                    <span>•</span>
-                                                    <span>
-                                                        {post.createdAt?.toDate ? (() => {
-                                                            const date = post.createdAt.toDate();
-                                                            const now = new Date();
-                                                            const diffTime = Math.abs(now - date);
-                                                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                                            const diffMonths = Math.floor(diffDays / 30);
-
-                                                            if (diffMonths > 0) return `${diffMonths}m ago`;
-                                                            if (diffDays > 0) return `${diffDays}d ago`;
-                                                            return 'Today';
-                                                        })() : ""}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    ))}
-                                </div>
-                            )}
-
-                            {/* Outlying Registry Log Indices */}
-                            {remainingPosts.length > 0 && (
-                                <div className="mt-12">
-                                    <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                        <Layers size={14} className="text-cyan-500" />
-                                        DEEP_ARCHIVE_REGISTRY()
-                                    </h2>
-                                    <div className="border-t border-slate-900 divide-y divide-slate-900/60">
-                                        {remainingPosts.map((post) => (
-                                            <Link
-                                                key={post.id}
-                                                href={`/news/${createFullSlug(post.title, post.id)}`}
-                                                className="group block py-5 px-2 hover:bg-slate-950/40 transition duration-150"
-                                            >
-                                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                                    <div className="flex-1">
-                                                        <h3 className="text-sm font-bold text-slate-200 group-hover:text-cyan-400 transition-colors mb-1">
-                                                            {post.title}
-                                                        </h3>
-                                                        <p className="text-xs text-slate-500 font-sans line-clamp-1 max-w-3xl">
-                                                            {post.subtitle}
-                                                        </p>
-                                                    </div>
-                                                    <div className="flex items-center justify-between sm:justify-end gap-6 text-[10px] text-slate-600 font-mono">
-                                                        <span>
-                                                            {post.createdAt?.toDate
-                                                                ? post.createdAt.toDate().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }).toUpperCase()
-                                                                : "UNKNOWN_DATE"}
-                                                        </span>
-                                                        <span className="text-cyan-600 font-bold border border-cyan-950 px-1.5 py-0.5 rounded text-[9px]">
-                                                            {post.category?.toUpperCase() || "TECH"}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </Link>
+                            {/* Hero row */}
+                            {heroPosts.length > 0 && (
+                                <>
+                                    <p className="section-label">Featured</p>
+                                    <div className="hero-grid">
+                                        {heroPosts.map((post) => (
+                                            <HeroCard key={post.id} post={post} />
                                         ))}
                                     </div>
-                                </div>
+                                </>
+                            )}
+
+                            {/* List row */}
+                            {listPosts.length > 0 && (
+                                <>
+                                    <p className="section-label">Latest</p>
+                                    <div className="list-grid">
+                                        {listPosts.map((post) => (
+                                            <ListCard key={post.id} post={post} />
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+
+                            {/* Archive */}
+                            {archivePosts.length > 0 && (
+                                <>
+                                    <p className="section-label">Archive</p>
+                                    <div className="archive-table">
+                                        {archivePosts.map((post, i) => (
+                                            <ArchiveRow key={post.id} post={post} index={i} />
+                                        ))}
+                                    </div>
+                                </>
                             )}
                         </>
                     )}
 
-                    {/* Pipeline Termination Return Options */}
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-16 pt-8 border-t border-slate-900">
+                    {/* ── Footer ── */}
+                    <footer className="tp-footer">
+                        <span className="tp-footer__info">
+                            brown.dev — technology feed
+                        </span>
                         <button
-                            onClick={handleBack}
-                            className="w-full sm:w-auto group flex items-center justify-center gap-2 px-6 py-2.5 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all rounded-md text-xs uppercase tracking-wider"
+                            className="tp-footer__back"
+                            onClick={() => router.push("/portfolio")}
                         >
-                            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-                            RETURN_TO_BASE
+                            <ArrowLeft size={13} />
+                            Back to portfolio
                         </button>
-                    </div>
-                </div>
-            </main>
+                    </footer>
+                </main>
+            </div>
         </>
     );
 };

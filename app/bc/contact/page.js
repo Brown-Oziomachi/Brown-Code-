@@ -1,375 +1,279 @@
-"use client"
-import React, { useState } from 'react';
+"use client";
+import { useState } from "react";
 import {
-    Mail,
-    User,
-    MessageSquare,
-    Phone,
-    Send,
-    ArrowLeft,
-    CheckCircle,
-    Terminal,
-    ShieldAlert,
-    Network
-} from 'lucide-react';
+    ArrowLeft, Mail, User, MessageSquare,
+    Phone, Send, CheckCircle, Terminal, Network, ShieldAlert
+} from "lucide-react";
+import Footer from "@/components/footer";
 
 export default function ContactForm() {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
-    });
-
+    const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
     const [errors, setErrors] = useState({});
-
-    // WhatsApp infrastructure endpoint matching your profile number
-    const WHATSAPP_NUMBER = '2347013725529';
+    const WHATSAPP_NUMBER = "2347013725529";
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-        if (errors[name]) {
-            setErrors(prev => ({
-                ...prev,
-                [name]: ''
-            }));
-        }
+        setFormData((p) => ({ ...p, [name]: value }));
+        if (errors[name]) setErrors((p) => ({ ...p, [name]: "" }));
     };
 
-    const validateForm = () => {
-        const newErrors = {};
-
-        if (!formData.name.trim()) {
-            newErrors.name = 'Data parsing fail: Name string required';
-        }
-
-        if (!formData.email.trim()) {
-            newErrors.email = 'Data parsing fail: Email string required';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Format exception: Invalid email schema';
-        }
-
-        if (!formData.phone.trim()) {
-            newErrors.phone = 'Data parsing fail: Telecom pointer required';
-        }
-
-        if (!formData.subject.trim()) {
-            newErrors.subject = 'Data parsing fail: Subject payload required';
-        }
-
-        if (!formData.message.trim()) {
-            newErrors.message = 'Data parsing fail: Core message array required';
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+    const validate = () => {
+        const e = {};
+        if (!formData.name.trim()) e.name = "Name is required";
+        if (!formData.email.trim()) e.email = "Email is required";
+        else if (!/\S+@\S+\.\S+/.test(formData.email)) e.email = "Invalid email address";
+        if (!formData.phone.trim()) e.phone = "Phone number is required";
+        if (!formData.subject.trim()) e.subject = "Subject is required";
+        if (!formData.message.trim()) e.message = "Message is required";
+        setErrors(e);
+        return Object.keys(e).length === 0;
     };
 
     const handleSubmit = () => {
-        if (validateForm()) {
-            const whatsappMessage = `
-[SYS_SUBMISSION // PORTFOLIO_CONTACT]
------------------------------------------
-*Sender Identity:* ${formData.name}
-*Network Pointer:* ${formData.email}
-*Telecom Routing:* ${formData.phone}
-*Stream Subject:* ${formData.subject}
------------------------------------------
-*Payload Array:*
-${formData.message}
-            `.trim();
-
-            const encodedMessage = encodeURIComponent(whatsappMessage);
-            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
-
-            window.open(whatsappUrl, '_blank');
-
-            // Resetting data layers inside current runtime state
-            setFormData({
-                name: '',
-                email: '',
-                phone: '',
-                subject: '',
-                message: ''
-            });
-        }
+        if (!validate()) return;
+        const msg = `[PORTFOLIO CONTACT]\n---\nName: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nSubject: ${formData.subject}\n---\n${formData.message}`.trim();
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+        setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
     };
+
+    const Field = ({ label, name, type = "text", placeholder, icon }) => (
+        <div>
+            <label className="ct-label">{label} <span style={{ color: "#f87171" }}>*</span></label>
+            <div className="ct-input-wrap">
+                <span className="ct-input-icon">{icon}</span>
+                <input
+                    type={type} name={name} value={formData[name]}
+                    onChange={handleChange} placeholder={placeholder}
+                    className={`ct-input${errors[name] ? " ct-input--err" : ""}`}
+                />
+            </div>
+            {errors[name] && (
+                <p className="ct-err"><ShieldAlert size={10} /> {errors[name]}</p>
+            )}
+        </div>
+    );
 
     return (
         <>
-            <nav className="relative border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
-                <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Terminal size={18} className="text-cyan-400" />
-                        <a href='/'>
-                        <span className="text-sm font-bold text-white tracking-wider uppercase">
-                            BROWN_CODE_DEV // COMMS_GATEWAY
-                        </span>
-                        </a>
-                    </div>
-                    <a
-                        href="/portfolio"
-                        className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 transition-all"
-                    >
-                        <ArrowLeft size={14} />
-                        <span>SYS.RETURN()</span>
-                    </a>
-                </div>
-            </nav>
+            <style>{`
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        <div className="min-h-screen bg-[#090d16] text-slate-300 font-mono antialiased selection:bg-cyan-500/20 selection:text-cyan-300">
-            {/* Engineering Grid Layer Underlay */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b12_1px,transparent_1px),linear-gradient(to_bottom,#1e293b12_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none z-0"></div>
+        :root {
+          --bg:         #0a0a0b;
+          --surface:    #111113;
+          --border:     #1e1e22;
+          --border-hi:  #2e2e34;
+          --text-1:     #f4f4f5;
+          --text-2:     #a1a1aa;
+          --text-3:     #52525b;
+          --accent:     #e8ff47;
+          --accent-dim: rgba(232,255,71,0.08);
+          --radius:     6px;
+          --serif:      'DM Serif Display', Georgia, serif;
+          --sans:       'Inter', system-ui, sans-serif;
+          --mono:       'JetBrains Mono', 'Fira Code', monospace;
+        }
 
-            {/* Top Navigation Frame */}
-         
-            {/* Main Segment Wrapper */}
-            <main className="relative z-10 max-w-6xl mx-auto px-6 py-12 md:py-20">
-                <div className="grid md:grid-cols-12 gap-8 items-start">
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-                    {/* Left Column: Routing Metrics & Info */}
-                    <div className="md:col-span-5 space-y-6">
-                        <div>
-                            <div className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-1.5 flex items-center gap-2">
-                                <span className="w-2 h-2 bg-cyan-500 animate-pulse rounded-none"></span>
-                                SOCKET_OPEN // CONNECT_INTERFACE
+        .ct-page { background: var(--bg); color: var(--text-1); font-family: var(--sans); min-height: 100vh; }
+
+        /* Nav */
+        .ct-nav {
+          position: sticky; top: 0; z-index: 100;
+          background: rgba(10,10,11,0.92); backdrop-filter: blur(12px);
+          border-bottom: 1px solid var(--border);
+          height: 56px; padding: 0 24px;
+          display: flex; align-items: center; justify-content: space-between;
+        }
+        .ct-nav__brand { font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; color: var(--text-1); text-decoration: none; }
+        .ct-nav__brand em { font-style: normal; color: var(--accent); }
+        .ct-nav__back {
+          display: inline-flex; align-items: center; gap: 6px;
+          font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+          color: var(--text-2); text-decoration: none;
+          padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+          transition: color 0.15s, border-color 0.15s, background 0.15s;
+        }
+        .ct-nav__back:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
+
+        /* Layout */
+        .ct-main { max-width: 1120px; margin: 0 auto; padding: 52px 24px 80px; display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; align-items: start; }
+        @media (max-width: 780px) { .ct-main { grid-template-columns: 1fr; gap: 32px; } }
+
+        /* Left */
+        .ct-left__eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+        .ct-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: ct-pulse 2s ease-out infinite; }
+        @keyframes ct-pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+        .ct-left__eyebrow-text { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+
+        .ct-left__title { font-family: var(--serif); font-size: clamp(30px, 4vw, 44px); color: var(--text-1); line-height: 1.1; margin-bottom: 6px; }
+        .ct-left__sub { font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.06em; }
+        .ct-left__desc { font-size: 14px; color: var(--text-2); line-height: 1.7; font-weight: 300; border-left: 2px solid var(--border); padding-left: 16px; margin: 20px 0 28px; }
+
+        /* Info cards */
+        .ct-info-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+        .ct-info-card { display: flex; gap: 14px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+        .ct-info-card__icon { width: 34px; height: 34px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; }
+        .ct-info-card__label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 2px; }
+        .ct-info-card__val { font-size: 12px; color: var(--text-2); }
+        .ct-info-card__val--green { color: #4ade80; }
+
+        /* Specs */
+        .ct-specs { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+        .ct-specs__title { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 12px; }
+        .ct-specs__list { display: flex; flex-direction: column; gap: 7px; }
+        .ct-specs__item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-3); }
+        .ct-specs__item::before { content: ''; width: 4px; height: 4px; background: rgba(232,255,71,0.5); border-radius: 1px; flex-shrink: 0; }
+
+        /* Form */
+        .ct-form-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+        .ct-form-header { background: var(--bg); border-bottom: 1px solid var(--border); padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; }
+        .ct-form-header__label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 6px; }
+        .ct-form-header__label svg { color: var(--accent); }
+        .ct-form-header__dots { display: flex; gap: 5px; }
+        .ct-form-header__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+        .ct-form-header__dot--accent { background: rgba(232,255,71,0.4); }
+
+        .ct-form-body { padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+
+        .ct-label { display: block; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
+        .ct-input-wrap { position: relative; }
+        .ct-input-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-3); display: flex; pointer-events: none; }
+        .ct-input {
+          width: 100%; padding: 9px 12px 9px 34px;
+          background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+          font-family: var(--mono); font-size: 12px; color: var(--text-1);
+          outline: none; transition: border-color 0.15s;
+        }
+        .ct-input::placeholder { color: var(--text-3); }
+        .ct-input:focus { border-color: rgba(232,255,71,0.4); }
+        .ct-input--err { border-color: rgba(248,113,113,0.5); }
+        .ct-input--err:focus { border-color: #f87171; }
+
+        .ct-textarea {
+          width: 100%; padding: 9px 12px;
+          background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+          font-family: var(--mono); font-size: 12px; color: var(--text-1);
+          outline: none; resize: none; transition: border-color 0.15s; line-height: 1.6;
+        }
+        .ct-textarea::placeholder { color: var(--text-3); }
+        .ct-textarea:focus { border-color: rgba(232,255,71,0.4); }
+        .ct-textarea--err { border-color: rgba(248,113,113,0.5); }
+
+        .ct-err { display: flex; align-items: center; gap: 4px; font-family: var(--mono); font-size: 9px; color: #f87171; margin-top: 5px; }
+
+        .ct-submit {
+          width: 100%; padding: 11px; border-radius: var(--radius); border: none; cursor: pointer;
+          background: var(--accent); color: #0a0a0b;
+          font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+          display: flex; align-items: center; justify-content: center; gap: 8px;
+          transition: opacity 0.15s, transform 0.1s;
+        }
+        .ct-submit:hover { opacity: 0.9; }
+        .ct-submit:active { transform: scale(0.99); }
+
+        .ct-notice { font-family: var(--mono); font-size: 9px; color: var(--text-3); text-align: center; line-height: 1.6; border-top: 1px solid var(--border); padding-top: 14px; }
+      `}</style>
+
+            <div className="ct-page">
+
+                {/* Nav */}
+                <nav className="ct-nav">
+                    <a href="/" className="ct-nav__brand">brown<em>.</em>dev</a>
+                    <a href="/portfolio" className="ct-nav__back"><ArrowLeft size={13} /> Portfolio</a>
+                </nav>
+
+                <main className="ct-main">
+
+                    {/* Left */}
+                    <div>
+                        <div className="ct-left__eyebrow">
+                            <span className="ct-dot" />
+                            <span className="ct-left__eyebrow-text">Socket Open · Connect Interface</span>
+                        </div>
+                        <h1 className="ct-left__title">Get in<br />touch</h1>
+                        <p className="ct-left__sub">COMMS_GATEWAY · BROWN_CODE</p>
+                        <p className="ct-left__desc">
+                            Pipe your project dependencies, timeline frameworks, or structural queries directly into my workspace.
+                            Submissions are serialized and delivered via WhatsApp.
+                        </p>
+
+                        <div className="ct-info-cards">
+                            <div className="ct-info-card">
+                                <div className="ct-info-card__icon"><Mail size={14} /></div>
+                                <div>
+                                    <div className="ct-info-card__label">Email</div>
+                                    <div className="ct-info-card__val">browncemmanuel@gmail.com</div>
+                                </div>
                             </div>
-                            <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight uppercase leading-none">
-                                Request Website <br />
-                                <span className="text-slate-500 font-light text-2xl md:text-3xl">Integration</span>
-                            </h1>
-                            <p className="text-xs sm:text-sm text-slate-400 mt-4 leading-relaxed border-l-2 border-slate-800 pl-4">
-                                Pipe your project dependencies, timeline frameworks, or structural queries directly into my operational workspace. Form submissions are verified and serialized over encrypted WhatsApp protocols.
+                            <div className="ct-info-card">
+                                <div className="ct-info-card__icon"><Network size={14} /></div>
+                                <div>
+                                    <div className="ct-info-card__label">WhatsApp</div>
+                                    <div className="ct-info-card__val ct-info-card__val--green">Available 24/7</div>
+                                </div>
+                            </div>
+                            <div className="ct-info-card">
+                                <div className="ct-info-card__icon"><CheckCircle size={14} /></div>
+                                <div>
+                                    <div className="ct-info-card__label">Response Time</div>
+                                    <div className="ct-info-card__val">Within 24 hours</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="ct-specs">
+                            <div className="ct-specs__title">What I can help with</div>
+                            <div className="ct-specs__list">
+                                <div className="ct-specs__item">Modular component structures optimized for performance</div>
+                                <div className="ct-specs__item">Clean asynchronous state routing architectures</div>
+                                <div className="ct-specs__item">Strict type checks and scalable schema validations</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Form */}
+                    <div className="ct-form-wrap">
+                        <div className="ct-form-header">
+                            <span className="ct-form-header__label"><Terminal size={11} /> contact.sh</span>
+                            <div className="ct-form-header__dots">
+                                <span className="ct-form-header__dot" />
+                                <span className="ct-form-header__dot" />
+                                <span className="ct-form-header__dot ct-form-header__dot--accent" />
+                            </div>
+                        </div>
+
+                        <div className="ct-form-body">
+                            <Field label="Your name" name="name" placeholder="e.g. John Doe" icon={<User size={13} />} />
+                            <Field label="Email address" name="email" type="email" placeholder="e.g. dev@network.com" icon={<Mail size={13} />} />
+                            <Field label="Phone number" name="phone" type="tel" placeholder="e.g. +234 701 000 0000" icon={<Phone size={13} />} />
+                            <Field label="Subject" name="subject" placeholder="e.g. Architecture Optimization" icon={<MessageSquare size={13} />} />
+
+                            <div>
+                                <label className="ct-label">Message <span style={{ color: "#f87171" }}>*</span></label>
+                                <textarea
+                                    name="message" rows={5} value={formData.message}
+                                    onChange={handleChange} placeholder="Describe your project, goals, or questions..."
+                                    className={`ct-textarea${errors.message ? " ct-textarea--err" : ""}`}
+                                />
+                                {errors.message && <p className="ct-err"><ShieldAlert size={10} /> {errors.message}</p>}
+                            </div>
+
+                            <button className="ct-submit" onClick={handleSubmit}>
+                                Send via WhatsApp <Send size={12} />
+                            </button>
+
+                            <p className="ct-notice">
+                                Submitting constructs a formatted message and opens WhatsApp with your details pre-filled.
                             </p>
                         </div>
-
-                        {/* Static Diagnostics Cards */}
-                        <div className="space-y-3">
-                            <div className="bg-slate-900/40 border border-slate-800 p-4 rounded-none">
-                                <div className="flex items-start gap-4">
-                                    <div className="p-2 bg-slate-950 border border-slate-850 text-cyan-400 shrink-0">
-                                        <Mail size={16} />
-                                    </div>
-                                    <div className="text-xs font-mono">
-                                        <div className="font-bold text-white uppercase tracking-wider mb-0.5">SMTP_LINK_POINTER</div>
-                                        <div className="text-slate-400">browncemmanuel@gmail.com</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-slate-900/40 border border-slate-800 p-4 rounded-none">
-                                <div className="flex items-start gap-4">
-                                    <div className="p-2 bg-slate-950 border border-slate-850 text-cyan-400 shrink-0">
-                                        <Network size={16} />
-                                    </div>
-                                    <div className="text-xs font-mono">
-                                        <div className="font-bold text-white uppercase tracking-wider mb-0.5">TELECOM_PROTOCOL</div>
-                                        <div className="text-emerald-400">WHATSAPP_HANDSHAKE_24_7</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-slate-900/40 border border-slate-800 p-4 rounded-none">
-                                <div className="flex items-start gap-4">
-                                    <div className="p-2 bg-slate-950 border border-slate-850 text-cyan-400 shrink-0">
-                                        <CheckCircle size={16} />
-                                    </div>
-                                    <div className="text-xs font-mono">
-                                        <div className="font-bold text-white uppercase tracking-wider mb-0.5">AVERAGE_LATENCY</div>
-                                        <div className="text-slate-400">Response loops drop within &lt; 24Hrs</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Architectural Validation Constraints */}
-                        <div className="bg-slate-950/60 border border-slate-800 p-4 font-mono">
-                            <h3 className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">WEBSITE_INTEGRITY_SPECS</h3>
-                            <ul className="space-y-2 text-[11px] text-slate-500">
-                                <li className="flex items-center gap-2">
-                                    <span className="w-1 h-1 bg-cyan-500"></span> [01] Modular component structures optimized for performance
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <span className="w-1 h-1 bg-cyan-500"></span> [02] Clean asynchronous state routing architectures
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <span className="w-1 h-1 bg-cyan-500"></span> [03] Strict type checks and scalable schema validations
-                                </li>
-                            </ul>
-                        </div>
                     </div>
 
-                    {/* Right Column: Code-Terminal Form Interface */}
-                    <div className="md:col-span-7 relative">
-                        <div className="border border-slate-800 bg-slate-900/20 backdrop-blur-sm">
+                </main>
 
-                            {/* Terminal Pseudo Control Bar Header */}
-                            <div className="bg-slate-950 border-b border-slate-800 px-4 py-2 flex items-center justify-between">
-                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                                    <Terminal size={12} className="text-cyan-500" />
-                                    COMMS_INPUT_BUFFER.SH
-                                </div>
-                                <div className="flex gap-1.5">
-                                    <span className="w-2 h-2 rounded-none bg-slate-800"></span>
-                                    <span className="w-2 h-2 rounded-none bg-slate-800"></span>
-                                    <span className="w-2 h-2 rounded-none bg-cyan-500/40"></span>
-                                </div>
-                            </div>
-
-                            <div className="p-6 space-y-5">
-
-                                {/* Name Input segment */}
-                                <div>
-                                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-                                        SENDER_IDENTITY_STRING <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-slate-600">
-                                            <User size={14} />
-                                        </div>
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            className={`w-full pl-10 pr-4 py-2.5 bg-slate-950 border ${errors.name ? 'border-red-500/70 focus:border-red-500' : 'border-slate-800 focus:border-cyan-500/50'} rounded-none text-xs text-white placeholder-slate-700 font-mono focus:outline-none transition-all`}
-                                            placeholder="e.g., John Doe"
-                                        />
-                                    </div>
-                                    {errors.name && (
-                                        <p className="text-red-400 text-[10px] mt-1.5 font-bold flex items-center gap-1">
-                                            <ShieldAlert size={10} /> {errors.name}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Email Input segment */}
-                                <div>
-                                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-                                        NETWORK_SMTP_ADDRESS <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-slate-600">
-                                            <Mail size={14} />
-                                        </div>
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            className={`w-full pl-10 pr-4 py-2.5 bg-slate-950 border ${errors.email ? 'border-red-500/70 focus:border-red-500' : 'border-slate-800 focus:border-cyan-500/50'} rounded-none text-xs text-white placeholder-slate-700 font-mono focus:outline-none transition-all`}
-                                            placeholder="e.g., dev@network.com"
-                                        />
-                                    </div>
-                                    {errors.email && (
-                                        <p className="text-red-400 text-[10px] mt-1.5 font-bold flex items-center gap-1">
-                                            <ShieldAlert size={10} /> {errors.email}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Phone Input segment */}
-                                <div>
-                                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-                                        TELECOM_ROUTING_POINTER <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-slate-600">
-                                            <Phone size={14} />
-                                        </div>
-                                        <input
-                                            type="tel"
-                                            name="phone"
-                                            value={formData.phone}
-                                            onChange={handleChange}
-                                            className={`w-full pl-10 pr-4 py-2.5 bg-slate-950 border ${errors.phone ? 'border-red-500/70 focus:border-red-500' : 'border-slate-800 focus:border-cyan-500/50'} rounded-none text-xs text-white placeholder-slate-700 font-mono focus:outline-none transition-all`}
-                                            placeholder="e.g., +234 7010000000"
-                                        />
-                                    </div>
-                                    {errors.phone && (
-                                        <p className="text-red-400 text-[10px] mt-1.5 font-bold flex items-center gap-1">
-                                            <ShieldAlert size={10} /> {errors.phone}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Subject Input segment */}
-                                <div>
-                                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-                                        STREAM_SUBJECT_HEADER <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <div className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-slate-600">
-                                            <MessageSquare size={14} />
-                                        </div>
-                                        <input
-                                            type="text"
-                                            name="subject"
-                                            value={formData.subject}
-                                            onChange={handleChange}
-                                            className={`w-full pl-10 pr-4 py-2.5 bg-slate-950 border ${errors.subject ? 'border-red-500/70 focus:border-red-500' : 'border-slate-800 focus:border-cyan-500/50'} rounded-none text-xs text-white placeholder-slate-700 font-mono focus:outline-none transition-all`}
-                                            placeholder="e.g., Architecture Optimization Pipeline"
-                                        />
-                                    </div>
-                                    {errors.subject && (
-                                        <p className="text-red-400 text-[10px] mt-1.5 font-bold flex items-center gap-1">
-                                            <ShieldAlert size={10} /> {errors.subject}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Message Input segment */}
-                                <div>
-                                    <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-                                        CORE_PAYLOAD_ARRAY (MESSAGE) <span className="text-red-500">*</span>
-                                    </label>
-                                    <textarea
-                                        name="message"
-                                        value={formData.message}
-                                        onChange={handleChange}
-                                        rows={4}
-                                        className={`w-full px-3.5 py-2.5 bg-slate-950 border ${errors.message ? 'border-red-500/70 focus:border-red-500' : 'border-slate-800 focus:border-cyan-500/50'} rounded-none text-xs text-white placeholder-slate-700 font-mono focus:outline-none transition-all resize-none`}
-                                        placeholder="Enter architectural specs, project directives, or system conditions..."
-                                    ></textarea>
-                                    {errors.message && (
-                                        <p className="text-red-400 text-[10px] mt-1.5 font-bold flex items-center gap-1">
-                                            <ShieldAlert size={10} /> {errors.message}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Core Redirection Action Engine Button */}
-                                <button
-                                    onClick={handleSubmit}
-                                    className="w-full py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-none transition-all tracking-wider uppercase flex items-center justify-center gap-2 group"
-                                >
-                                    <span>INITIATE_REDIRECT(WHATSAPP)</span>
-                                    <Send size={12} className="group-hover:translate-x-0.5 transition-transform" />
-                                </button>
-
-                                <div className="text-center text-[10px] text-slate-500 leading-normal border-t border-slate-900 pt-3">
-                                    [NOTICE] Runtime submission constructs text payloads and redirects execution blocks directly into safe external communication matrices.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </main>
-
-            {/* Footer Console Out block */}
-            <footer className="relative z-10 border-t border-slate-900 bg-slate-950/60 py-6 mt-16">
-                <div className="max-w-6xl mx-auto px-6 text-center text-[10px] font-bold text-slate-600 tracking-widest uppercase font-mono">
-                    <p>&copy; {new Date().getFullYear()} BROWN_CODE.SYS. ALL RIGHTS RESERVED. SECURE_BUILD_V2.0.6</p>
-                </div>
-            </footer>
+                <Footer />
             </div>
         </>
-
     );
 }

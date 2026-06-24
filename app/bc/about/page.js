@@ -1,278 +1,389 @@
-"use client"
-import React, { useState } from 'react';
+"use client";
+import { useState } from "react";
+import Link from "next/link";
 import {
-    ArrowLeft,
-    Code,
-    Award,
-    Briefcase,
-    GraduationCap,
-    Heart,
-    Coffee,
-    Lightbulb,
-    Target,
-    Zap,
-    Users,
-    TrendingUp,
-    Github,
-    Linkedin,
-    Mail,
-    Download,
-    Terminal,
-    Cpu,
-    Database,
-    Layers,
-    GitBranch,
-    Binary,
-    User
-} from 'lucide-react';
-import Link from 'next/link';
+    ArrowLeft, ArrowRight, Terminal, Cpu, Database,
+    Layers, GitBranch, Binary, Briefcase, Download,
+    Github, Linkedin, Mail, User
+} from "lucide-react";
+import Footer from "@/components/footer";
 
 export default function AboutMePage() {
-    const [activeTab, setActiveTab] = useState('story');
+    const [activeTab, setActiveTab] = useState("story");
 
     const skills = [
-        { name: 'React Architecture & Next.js SSR', level: 70, status: 'Production Ready' },
-        { name: 'Node.js Core & Vercel Serverless Platforms', level: 50, status: 'Stable Backend' },
-        { name: 'JavaScript Engine Paradigms (ES6+ Runtime)', level: 45, status: 'Intermediate Core' },
-        { name: 'Database Architecture & Management', level: 70, status: 'Scalabl websites' },
+        { name: "React Architecture & Next.js SSR", level: 70, tag: "Production Ready" },
+        { name: "Node.js Core & Vercel Serverless", level: 50, tag: "Stable Backend" },
+        { name: "JavaScript Engine Paradigms (ES6+)", level: 45, tag: "Intermediate Core" },
+        { name: "Database Architecture & Management", level: 70, tag: "Scalable Sites" },
     ];
 
     const exps = [
-        { num: '02+', name: 'YRS EXP' },
-        { num: '05+', name: 'SHIPPED PROJ' },
-        { num: '100%', name: 'UNIT TESTS' }
+        { num: "02+", label: "YRS EXP" },
+        { num: "05+", label: "SHIPPED" },
+        { num: "100%", label: "UNIT TESTS" },
     ];
 
     const timeline = [
         {
-            year: '2024',
-            title: 'Full Stack Software Developer',
-            description: 'Architecting full functional interfaces, handling data streams, and building integrated Node.js solutions.',
-            icon: <Briefcase size={16} />
+            year: "2024",
+            title: "Full Stack Software Developer",
+            body: "Architecting full functional interfaces, handling data streams, and building integrated Node.js solutions.",
+            icon: <Briefcase size={14} />,
         },
         {
-            year: '2025',
-            title: 'Software Development & Developing Foundation',
-            description: 'Initiated programmatic core tracks. Discovered deep Developing patterns, data parsing structures, and script logic basics.',
-            icon: <Cpu size={16} />
+            year: "2025",
+            title: "Software Development & Foundation",
+            body: "Initiated programmatic core tracks. Discovered deep patterns, data parsing structures, and script logic basics.",
+            icon: <Cpu size={14} />,
         },
     ];
 
     const values = [
-        {
-            icon: <Binary size={20} className="text-cyan-400" />,
-            title: 'Algorithmic Precision',
-            description: 'Writing maintainable, predictable, and clean modular structures Developered to minimize technical debt.'
-        },
-        {
-            icon: <Terminal size={20} className="text-cyan-400" />,
-            title: 'Asynchronous Architecture',
-            description: 'Optimizing network data round-trips, layout renders, and server workloads for raw performance velocity.'
-        },
-        {
-            icon: <GitBranch size={20} className="text-cyan-400" />,
-            title: 'Robust Modularity',
-            description: 'Isolating reusable logic into components and functional code ecosystems built for clean scaling.'
-        },
-        {
-            icon: <Layers size={20} className="text-cyan-400" />,
-            title: 'Software Adaptability',
-            description: 'Continually tracking state web patterns, security layers, and fresh structural updates.'
-        },
+        { icon: <Binary size={18} />, title: "Algorithmic Precision", body: "Writing maintainable, predictable, and clean modular structures to minimize technical debt." },
+        { icon: <Terminal size={18} />, title: "Async Architecture", body: "Optimizing network round-trips, layout renders, and server workloads for raw performance velocity." },
+        { icon: <GitBranch size={18} />, title: "Robust Modularity", body: "Isolating reusable logic into components and functional ecosystems built for clean scaling." },
+        { icon: <Layers size={18} />, title: "Software Adaptability", body: "Continually tracking web patterns, security layers, and fresh structural updates." },
     ];
 
     const interests = [
-        { icon: <Code size={16} />, text: 'Application Architecture' },
-        { icon: <Cpu size={16} />, text: 'API & Integration Protocols' },
-        { icon: <Terminal size={16} />, text: 'Control Flow & Application Logic' },
-        { icon: <Database size={16} />, text: 'Data Modeling & State Management' },
+        { icon: <Terminal size={13} />, text: "Application Architecture" },
+        { icon: <Cpu size={13} />, text: "API & Integration Protocols" },
+        { icon: <GitBranch size={13} />, text: "Control Flow & App Logic" },
+        { icon: <Database size={13} />, text: "Data Modeling & State" },
     ];
 
     return (
         <>
-          {/* Top Navigation Frame */}
-            <nav className="relative border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
-                <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3 group">
-                        <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
-                        <a href="/">
-                        <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
-                            BROWN_CODE_DEV // DEV_PORTFOLIO
-                        </span>
-                        </a>
-                    </div>
-                    <a
-                        href="/portfolio"
-                        className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
-                    >
-                        <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
-                        <span>SYS.RETURN()</span>
-                    </a>
-                </div>
-            </nav>
-        <div className="min-h-screen bg-[#090d16] text-slate-300 font-mono antialiased selection:bg-cyan-500/20 selection:text-cyan-300 relative overflow-x-hidden">
-            {/* Developing Grid Underlay Overlay */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b1a_1px,transparent_1px),linear-gradient(to_bottom,#1e293b1a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none z-0"></div>
+            <style>{`
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-            {/* Subtle Matrix Ambient Spotlights */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                <div className="absolute w-[500px] h-[500px] bg-cyan-500/[0.04] rounded-full blur-[120px] -top-40 -left-40"></div>
-                <div className="absolute w-[500px] h-[500px] bg-blue-600/[0.04] rounded-full blur-[120px] bottom-1/4 -right-40"></div>
-            </div>
+        :root {
+          --bg:         #0a0a0b;
+          --surface:    #111113;
+          --border:     #1e1e22;
+          --border-hi:  #2e2e34;
+          --text-1:     #f4f4f5;
+          --text-2:     #a1a1aa;
+          --text-3:     #52525b;
+          --accent:     #e8ff47;
+          --accent-dim: rgba(232,255,71,0.08);
+          --radius:     6px;
+          --serif:      'DM Serif Display', Georgia, serif;
+          --sans:       'Inter', system-ui, sans-serif;
+          --mono:       'JetBrains Mono', 'Fira Code', monospace;
+        }
 
-          
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-            <main className="relative z-10 max-w-6xl mx-auto px-6 py-12 md:py-20">
-                {/* Main Identity Manifest block */}
-                <div className="grid md:grid-cols-12 gap-8 items-start mb-16">
+        .ab-page { background: var(--bg); color: var(--text-1); font-family: var(--sans); min-height: 100vh; }
 
-                    {/* Dev Software Diagnostic Profile Column */}
-                    <div className="md:col-span-4 space-y-4">
-                        <div className="bg-slate-900/60 border border-slate-800/80 rounded p-4 relative group hover:border-slate-700/50 transition-all duration-300 shadow-md backdrop-blur-sm">
-                            <div className="absolute top-3 right-3 flex gap-1.5">
-                                <span className="w-2 h-2 rounded-full bg-red-500/40 group-hover:bg-red-500/60 transition-colors"></span>
-                                <span className="w-2 h-2 rounded-full bg-yellow-500/40 group-hover:bg-yellow-500/60 transition-colors"></span>
-                                <span className="w-2 h-2 rounded-full bg-green-500/40 group-hover:bg-green-500/60 transition-colors"></span>
-                            </div>
+        /* Nav */
+        .ab-nav {
+          position: sticky; top: 0; z-index: 100;
+          background: rgba(10,10,11,0.92); backdrop-filter: blur(12px);
+          border-bottom: 1px solid var(--border);
+          height: 56px; padding: 0 24px;
+          display: flex; align-items: center; justify-content: space-between;
+        }
+        .ab-nav__brand { font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; color: var(--text-1); text-decoration: none; }
+        .ab-nav__brand em { font-style: normal; color: var(--accent); }
+        .ab-nav__back {
+          display: inline-flex; align-items: center; gap: 6px;
+          font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+          color: var(--text-2); text-decoration: none;
+          padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+          transition: color 0.15s, border-color 0.15s, background 0.15s;
+        }
+        .ab-nav__back:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
 
-                            {/* Terminal Image Wrapper */}
-                            <div className="border border-slate-800 rounded overflow-hidden aspect-square bg-slate-950 mb-4 relative shadow-inner">
-                                <img
-                                    src="/coder1.png"
-                                    alt="Brown Oziomachi Engine Layout"
-                                    className="w-full h-full object-cover grayscale opacity-75 mix-blend-luminosity group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-500 ease-out"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/10 to-transparent"></div>
-                                <div className="absolute bottom-2.5 left-2.5 right-2.5 text-[11px] bg-slate-900/95 p-2.5 rounded border border-slate-800/80 backdrop-blur-sm shadow-xl">
-                                    <div className="text-white font-bold tracking-wide">Sir Brown AD</div>
-                                    <div className="text-cyan-400 text-[10px] font-semibold mt-0.5 tracking-wider">ROLE: FULL_STACK_DEV</div>
+        /* Hero */
+        .ab-hero { max-width: 1120px; margin: 0 auto; padding: 52px 24px 0; display: grid; grid-template-columns: 280px 1fr; gap: 48px; align-items: start; }
+        @media (max-width: 780px) { .ab-hero { grid-template-columns: 1fr; gap: 32px; } }
+
+        /* Profile card */
+        .ab-profile {
+          background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+          overflow: hidden;
+        }
+        .ab-profile__img-wrap { position: relative; aspect-ratio: 1; background: var(--bg); }
+        .ab-profile__img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; filter: grayscale(20%); display: block; }
+        .ab-profile__img-overlay {
+          position: absolute; inset: 0;
+          background: linear-gradient(to top, #0a0a0b 0%, transparent 50%);
+        }
+        .ab-profile__img-badge {
+          position: absolute; bottom: 12px; left: 12px; right: 12px;
+          background: rgba(17,17,19,0.95); border: 1px solid var(--border);
+          border-radius: var(--radius); padding: 10px 12px;
+        }
+        .ab-profile__img-name { font-family: var(--serif); font-size: 15px; color: var(--text-1); }
+        .ab-profile__img-role { font-family: var(--mono); font-size: 9px; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+
+        .ab-profile__meta { padding: 16px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border); }
+        .ab-profile__meta-row { display: flex; justify-content: space-between; align-items: center; }
+        .ab-profile__meta-key { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+        .ab-profile__meta-val { font-family: var(--mono); font-size: 10px; color: var(--text-2); }
+        .ab-profile__meta-val--accent { color: var(--accent); }
+        .ab-profile__status {
+          display: inline-flex; align-items: center; gap: 6px;
+          font-family: var(--mono); font-size: 9px; color: #4ade80;
+          background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2);
+          padding: 3px 8px; border-radius: 3px;
+        }
+        .ab-profile__status-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; animation: ab-ping 1.4s ease-out infinite; }
+        @keyframes ab-ping { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.4); } 100% { box-shadow: 0 0 0 6px rgba(74,222,128,0); } }
+
+        /* Stats */
+        .ab-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow: hidden; }
+        .ab-stat { background: var(--surface); padding: 12px 8px; text-align: center; }
+        .ab-stat__num { font-family: var(--serif); font-size: 20px; color: var(--text-1); }
+        .ab-stat__label { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-top: 2px; }
+
+        /* Right column */
+        .ab-intro { padding-top: 8px; }
+        .ab-intro__eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+        .ab-intro__dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: ab-ping2 2s ease-out infinite; }
+        @keyframes ab-ping2 { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .ab-intro__eyebrow-text { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+
+        .ab-intro__title { font-family: var(--serif); font-size: clamp(30px, 4vw, 48px); color: var(--text-1); line-height: 1.1; margin-bottom: 8px; }
+        .ab-intro__subtitle { font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.06em; margin-bottom: 28px; }
+
+        .ab-intro__body { border-left: 2px solid var(--border); padding-left: 20px; display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+        .ab-intro__p { font-size: 15px; line-height: 1.75; color: var(--text-2); font-weight: 300; }
+        .ab-intro__p strong { color: var(--text-1); font-weight: 500; }
+
+        .ab-intro__actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .ab-btn {
+          display: inline-flex; align-items: center; gap: 6px;
+          font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
+          padding: 10px 18px; border-radius: var(--radius);
+          border: 1px solid var(--border); background: var(--surface);
+          color: var(--text-2); cursor: pointer; text-decoration: none;
+          transition: color 0.15s, border-color 0.15s, background 0.15s;
+        }
+        .ab-btn:hover { color: var(--text-1); border-color: var(--border-hi); }
+        .ab-btn--accent { background: var(--accent-dim); border-color: rgba(232,255,71,0.3); color: var(--accent); }
+        .ab-btn--accent:hover { background: rgba(232,255,71,0.14); border-color: rgba(232,255,71,0.5); color: var(--accent); }
+
+        /* Tabs */
+        .ab-tabs { max-width: 1120px; margin: 48px auto 0; padding: 0 24px 80px; }
+        .ab-tabs__bar {
+          display: flex; gap: 2px; background: var(--surface);
+          border: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0;
+          padding: 6px; overflow-x: auto;
+        }
+        .ab-tab-btn {
+          font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+          padding: 8px 16px; border-radius: 4px; border: 1px solid transparent;
+          background: transparent; color: var(--text-3); cursor: pointer; white-space: nowrap;
+          transition: color 0.15s, border-color 0.15s, background 0.15s;
+        }
+        .ab-tab-btn:hover { color: var(--text-2); }
+        .ab-tab-btn--active { background: var(--bg); border-color: var(--border); color: var(--accent); }
+
+        .ab-tabs__panel {
+          background: var(--surface); border: 1px solid var(--border); border-top: none;
+          border-radius: 0 0 var(--radius) var(--radius); padding: 32px; min-height: 320px;
+        }
+
+        /* Story tab */
+        .ab-story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        @media (max-width: 600px) { .ab-story-grid { grid-template-columns: 1fr; } }
+        .ab-story-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+        .ab-story-card__label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .ab-story-card__label::before { content: ''; width: 5px; height: 5px; background: rgba(232,255,71,0.4); border-radius: 1px; flex-shrink: 0; }
+        .ab-story-card__text { font-size: 13px; color: var(--text-2); line-height: 1.7; font-weight: 300; }
+
+        .ab-interests { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        @media (max-width: 600px) { .ab-interests { grid-template-columns: 1fr 1fr; } }
+        .ab-interest {
+          display: flex; align-items: center; gap: 8px;
+          background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+          padding: 10px 12px; font-size: 11px; color: var(--text-2);
+          transition: border-color 0.15s, color 0.15s;
+        }
+        .ab-interest:hover { border-color: var(--border-hi); color: var(--text-1); }
+        .ab-interest svg { color: var(--accent); flex-shrink: 0; }
+
+        /* Skills tab */
+        .ab-skill-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+        .ab-skill {
+          background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+          padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+        }
+        .ab-skill__info { flex: 1; min-width: 0; }
+        .ab-skill__name { font-size: 13px; font-weight: 500; color: var(--text-1); margin-bottom: 3px; }
+        .ab-skill__tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; color: var(--text-3); text-transform: uppercase; }
+        .ab-skill__bar-wrap { width: 120px; height: 3px; background: var(--border); border-radius: 2px; flex-shrink: 0; }
+        .ab-skill__bar { height: 100%; background: var(--accent); border-radius: 2px; }
+        .ab-skill__pct { font-family: var(--mono); font-size: 10px; color: var(--accent); width: 32px; text-align: right; flex-shrink: 0; }
+
+        .ab-stack-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; border-top: 1px solid var(--border); padding-top: 24px; }
+        @media (max-width: 600px) { .ab-stack-grid { grid-template-columns: 1fr; } }
+        .ab-stack-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+        .ab-stack-card__title { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .ab-stack-card__body { font-size: 11px; color: var(--text-3); line-height: 1.6; }
+
+        /* Journey tab */
+        .ab-timeline { border-left: 1px solid var(--border); padding-left: 24px; margin-left: 8px; display: flex; flex-direction: column; gap: 24px; }
+        .ab-tl-item { position: relative; }
+        .ab-tl-dot { position: absolute; left: -31px; top: 6px; width: 8px; height: 8px; background: var(--bg); border: 2px solid var(--accent); border-radius: 50%; }
+        .ab-tl-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+        .ab-tl-card__year { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; color: var(--accent); background: var(--accent-dim); border: 1px solid rgba(232,255,71,0.2); padding: 2px 8px; border-radius: 3px; display: inline-block; margin-bottom: 8px; }
+        .ab-tl-card__title { font-size: 14px; font-weight: 600; color: var(--text-1); margin-bottom: 6px; }
+        .ab-tl-card__body { font-size: 12px; color: var(--text-2); line-height: 1.65; font-weight: 300; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 4px; }
+
+        /* Values tab */
+        .ab-values-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        @media (max-width: 600px) { .ab-values-grid { grid-template-columns: 1fr; } }
+        .ab-value-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; display: flex; gap: 14px; align-items: flex-start; transition: border-color 0.15s; }
+        .ab-value-card:hover { border-color: var(--border-hi); }
+        .ab-value-icon { width: 36px; height: 36px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--accent); flex-shrink: 0; }
+        .ab-value-card__title { font-size: 13px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+        .ab-value-card__body { font-size: 12px; color: var(--text-3); line-height: 1.6; font-weight: 300; }
+
+        .ab-cta {
+          background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+          padding: 24px 28px; display: flex; align-items: center; justify-content: space-between; gap: 20px;
+          border-left: 3px solid var(--accent);
+        }
+        @media (max-width: 600px) { .ab-cta { flex-direction: column; align-items: flex-start; } }
+        .ab-cta__title { font-size: 14px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
+        .ab-cta__sub { font-size: 12px; color: var(--text-3); line-height: 1.6; max-width: 400px; }
+        .ab-cta__actions { display: flex; gap: 8px; flex-shrink: 0; }
+      `}</style>
+
+            <div className="ab-page">
+
+                {/* Nav */}
+                <nav className="ab-nav">
+                    <a href="/" className="ab-nav__brand">brown<em>.</em>dev</a>
+                    <a href="/portfolio" className="ab-nav__back"><ArrowLeft size={13} /> Portfolio</a>
+                </nav>
+
+                {/* Hero */}
+                <div className="ab-hero">
+
+                    {/* Profile card */}
+                    <div>
+                        <div className="ab-profile">
+                            <div className="ab-profile__img-wrap">
+                                <img src="/coder1.png" alt="Brown AD" className="ab-profile__img" />
+                                <div className="ab-profile__img-overlay" />
+                                <div className="ab-profile__img-badge">
+                                    <div className="ab-profile__img-name">Sir Brown AD</div>
+                                    <div className="ab-profile__img-role">Full Stack Developer</div>
                                 </div>
                             </div>
-
-                            {/* Operational Diagnostic Streams */}
-                            <div className="space-y-2 text-[11px] text-slate-400 border-t border-slate-800/60 pt-3.5 font-mono">
-                                <div className="flex justify-between items-center"><span className="text-slate-500 font-medium">NET_LOC:</span> <span className="text-slate-300 font-semibold hover:text-white transition-colors">NIGERIA // REMOTE</span></div>
-                                <div className="flex justify-between items-center"><span className="text-slate-500 font-medium">CORE_STACK:</span> <span className="text-cyan-400 font-bold tracking-wide">JAVASCRIPT // NODE</span></div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-slate-500 font-medium">STATUS:</span> 
-                                    <span className="inline-flex items-center gap-1.5 text-emerald-400 font-bold bg-emerald-950/30 border border-emerald-900/30 px-1.5 py-0.5 rounded text-[10px]">
-                                        <span className="w-1 h-1 rounded-full bg-emerald-400 animate-ping"></span>
-                                        ACTIVE_FOR_HIRE
+                            <div className="ab-profile__meta">
+                                <div className="ab-profile__meta-row">
+                                    <span className="ab-profile__meta-key">Location</span>
+                                    <span className="ab-profile__meta-val">Nigeria · Remote</span>
+                                </div>
+                                <div className="ab-profile__meta-row">
+                                    <span className="ab-profile__meta-key">Stack</span>
+                                    <span className="ab-profile__meta-val ab-profile__meta-val--accent">JS · Node · React</span>
+                                </div>
+                                <div className="ab-profile__meta-row">
+                                    <span className="ab-profile__meta-key">Status</span>
+                                    <span className="ab-profile__status">
+                                        <span className="ab-profile__status-dot" /> Available
                                     </span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Developing Metrics Indicators */}
-                        <div className="bg-slate-900/40 border border-slate-800/60 rounded p-3 grid grid-cols-3 gap-2.5 text-center backdrop-blur-sm">
-                            {exps.map((e, idx) => (
-                                <div key={idx} className="bg-slate-950/60 p-2.5 rounded border border-slate-900/80 hover:border-slate-800 transition-colors shadow-sm">
-                                    <div className="text-base font-black text-white tracking-tight">{e.num}</div>
-                                    <div className="text-[9px] font-extrabold text-slate-500 mt-0.5 tracking-widest">{e.name}</div>
+                        {/* Stats */}
+                        <div className="ab-stats">
+                            {exps.map((e) => (
+                                <div key={e.label} className="ab-stat">
+                                    <div className="ab-stat__num">{e.num}</div>
+                                    <div className="ab-stat__label">{e.label}</div>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Technical Profile Breakdown Specs */}
-                    <div className="md:col-span-8 space-y-6 md:pl-4">
-                        <div>
-                            <div className="text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 bg-cyan-500 animate-pulse rounded-none"></span>
-                                DEV_MANIFEST // OBJECTIVE_DATA
-                            </div>
-                            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight uppercase">
-                                Software Developer Portfolio <br />
-                                <span className="text-slate-500 font-light text-2xl sm:text-3xl tracking-wide ">ID: BC_CORE_v2.0.6</span>
-                            </h1>
+                    {/* Intro */}
+                    <div className="ab-intro">
+                        <div className="ab-intro__eyebrow">
+                            <span className="ab-intro__dot" />
+                            <span className="ab-intro__eyebrow-text">Dev Manifest · Objective Data</span>
+                        </div>
+                        <h1 className="ab-intro__title">Software<br />Developer</h1>
+                        <p className="ab-intro__subtitle">ID: BC_CORE_v2.0.6</p>
+
+                        <div className="ab-intro__body">
+                            <p className="ab-intro__p">
+                                Specializing in predictable structural web applications within the high-velocity JavaScript stack.
+                                Core expertise centers around component encapsulation with <strong>React & Next.js</strong> alongside
+                                reliable background task structures fueled by Node.js integration channels.
+                            </p>
+                            <p className="ab-intro__p">
+                                My methodology rejects messy script solutions. Instead: explicit component workflows, clean data
+                                layer constraints, and clear data indexing patterns via custom modern schema infrastructures.
+                            </p>
                         </div>
 
-                        {/* Text Readout Block */}
-                        <div className="space-y-4 text-sm sm:text-base text-slate-400 border-l-2 border-slate-800/80 pl-5 leading-relaxed font-normal">
-                            <p className="hover:text-slate-300 transition-colors">
-                                I specialize in building predictable structural web applications within the high-velocity JavaScript stack. My core expertise centers around component encapsulation patterns with <span className="text-white font-medium underline decoration-cyan-500/30 underline-offset-4">React & Next.js</span> alongside reliable background task structures fueled by Node.js integration channels.
-                            </p>
-                            <p className="hover:text-slate-300 transition-colors">
-                                My methodology rejects messy script solutions. Instead, I choose explicit component workflows, clean data layer constraints, and clear data indexing patterns via custom modern schema infrastructures.
-                            </p>
-                            <Link
-                                href="/bc_dev"
-                                className="inline-flex items-center gap-2 px-5 py-3 bg-slate-900/60 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-300 hover:text-white transition-all uppercase tracking-wider rounded-sm"
-                            >
-                                <User size={12} className="text-cyan-400" />
-                                  MORE_ABOUT_ME()
-                            </Link>                        </div>
-
-                        {/* Action Interface Controls */}
-                        <div className="flex flex-wrap gap-3 pt-3">
-                            <a
-                                href="/bc/contact"
-                                className="px-5 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs rounded transition-all duration-300 tracking-wider uppercase shadow-md shadow-cyan-500/10 hover:shadow-cyan-400/20 active:scale-[0.98]"
-                            >
-                                INITIALIZE_CONTACT()
+                        <div className="ab-intro__actions">
+                            <a href="/bc/contact" className="ab-btn ab-btn--accent">
+                                Initialize Contact <ArrowRight size={12} />
                             </a>
-                            <a
-                                href="/cv/pdf"
-                                className="inline-flex items-center gap-2 px-5 py-3 bg-slate-900 border border-slate-800 hover:border-slate-700 hover:bg-slate-950 text-xs font-bold text-slate-300 hover:text-white rounded transition-all duration-300 uppercase tracking-wider shadow-sm active:scale-[0.98]"
-                            >
-                                <Download size={14} className="text-cyan-400" />
-                                FETCH_RESUME.EXE
+                            <a href="/cv/pdf" className="ab-btn">
+                                <Download size={12} /> Resume
+                            </a>
+                            <a href="https://github.com/Brown-Oziomachi" target="_blank" rel="noopener noreferrer" className="ab-btn">
+                                <Github size={12} /> GitHub
                             </a>
                         </div>
                     </div>
                 </div>
 
-                {/* Developing Tab Interfaces Grid Block */}
-                <div className="border border-slate-800/90 rounded bg-slate-900/20 overflow-hidden shadow-xl backdrop-blur-sm">
-
-                    {/* Control Panel Headers Bar */}
-                    <div className="bg-slate-950 border-b border-slate-800/80 p-2 flex overflow-x-auto gap-1 scrollbar-none">
-                        {['story', 'skills', 'journey', 'values'].map((tab) => (
+                {/* Tabs */}
+                <div className="ab-tabs">
+                    <div className="ab-tabs__bar">
+                        {["story", "skills", "journey", "values"].map((t) => (
                             <button
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={`px-4 py-2.5 text-xs font-bold font-mono uppercase rounded transition-all duration-300 tracking-wider shrink-0 active:scale-95 ${activeTab === tab
-                                        ? 'bg-slate-900 text-cyan-400 border border-slate-800 shadow-md shadow-black/40'
-                                        : 'text-slate-500 hover:text-slate-300 border border-transparent hover:bg-slate-900/30'
-                                    }`}
+                                key={t}
+                                className={`ab-tab-btn${activeTab === t ? " ab-tab-btn--active" : ""}`}
+                                onClick={() => setActiveTab(t)}
                             >
-                                [ {tab.toUpperCase()} ]
+                                {t}
                             </button>
                         ))}
                     </div>
 
-                    {/* Interactive Tab Target Output Buffer */}
-                    <div className="p-6 min-h-[360px] transition-all duration-300">
+                    <div className="ab-tabs__panel">
 
-                        {/* Tab Module: Story / Manifest */}
-                        {activeTab === 'story' && (
-                            <div className="space-y-6 transition-all duration-500 opacity-100 transform translate-y-0">
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <div className="bg-slate-900/40 border border-slate-800/80 p-5 rounded hover:border-slate-700/60 transition-all duration-300 hover:-translate-y-0.5">
-                                        <div className="text-xs font-bold text-slate-500 mb-2.5 uppercase flex items-center gap-2">
-                                            <span className="w-1.5 h-1.5 bg-cyan-500/50"></span> 01 // ORIGIN_METRICS
-                                        </div>
-                                        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-mono">
-                                            My journey began with local infrastructure curiosity and low-level programmatic scripts. I was determined to reverse-Developer layout payloads to parse functional components myself. That pure structural challenge turned an experimental past-time into full stack software construction Developing.
+                        {/* Story */}
+                        {activeTab === "story" && (
+                            <div>
+                                <div className="ab-story-grid">
+                                    <div className="ab-story-card">
+                                        <div className="ab-story-card__label">Origin</div>
+                                        <p className="ab-story-card__text">
+                                            My journey began with local infrastructure curiosity and low-level programmatic scripts.
+                                            Determined to reverse-engineer layout payloads, that pure structural challenge turned an
+                                            experimental past-time into full stack software construction.
                                         </p>
                                     </div>
-                                    <div className="bg-slate-900/40 border border-slate-800/80 p-5 rounded hover:border-slate-700/60 transition-all duration-300 hover:-translate-y-0.5">
-                                        <div className="text-xs font-bold text-slate-500 mb-2.5 uppercase flex items-center gap-2">
-                                            <span className="w-1.5 h-1.5 bg-cyan-500/50"></span> 02 // RUNTIME_OBJECTIVES
-                                        </div>
-                                        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-mono">
-                                            Currently, I construct integrated full-spectrum website. I manage complex React routing structures and connect them to relational engines or modern documents. My long-term roadmap focuses on architectural optimizations and secure data flow controls.
+                                    <div className="ab-story-card">
+                                        <div className="ab-story-card__label">Current Runtime</div>
+                                        <p className="ab-story-card__text">
+                                            I construct integrated full-spectrum websites, managing complex React routing structures
+                                            connected to relational engines. My roadmap focuses on architectural optimizations and
+                                            secure data flow controls.
                                         </p>
                                     </div>
                                 </div>
-
-                                <div className="bg-slate-950/60 border border-slate-800 p-5 rounded">
-                                    <div className="text-xs font-bold text-slate-500 mb-3.5 uppercase tracking-widest">DEVELOPER_CORE_INTERESTS // ROUTING</div>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                        {interests.map((item, idx) => (
-                                            <div key={idx} className="flex items-center gap-2.5 bg-slate-900/50 p-3 rounded border border-slate-800/80 text-[12px] hover:border-slate-700 hover:bg-slate-900 transition-all duration-300 shadow-sm">
-                                                <div className="text-cyan-500 group-hover:scale-110 transition-transform">{item.icon}</div>
-                                                <span className="text-slate-300 font-semibold tracking-tight">{item.text}</span>
+                                <div style={{ marginBottom: 12 }}>
+                                    <div className="ab-story-card__label" style={{ marginBottom: 12 }}>Core Interests</div>
+                                    <div className="ab-interests">
+                                        {interests.map((item) => (
+                                            <div key={item.text} className="ab-interest">
+                                                {item.icon} {item.text}
                                             </div>
                                         ))}
                                     </div>
@@ -280,130 +391,86 @@ export default function AboutMePage() {
                             </div>
                         )}
 
-                        {/* Tab Module: Skill Matrix Readout */}
-                        {activeTab === 'skills' && (
-                            <div className="space-y-6 transition-all duration-500 opacity-100 transform translate-y-0">
-                                <div className="space-y-3.5">
-                                    {skills.map((skill, idx) => (
-                                        <div key={idx} className="bg-slate-950/40 border border-slate-800 p-4 rounded flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-slate-700/60 transition-all duration-300">
-                                            <div className="space-y-1 max-w-md">
-                                                <div className="text-xs sm:text-sm font-bold text-slate-200 tracking-wide">{skill.name}</div>
-                                                <div className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest">DIAGNOSTIC_STATE: <span className="text-slate-400">{skill.status}</span></div>
+                        {/* Skills */}
+                        {activeTab === "skills" && (
+                            <div>
+                                <div className="ab-skill-list">
+                                    {skills.map((s) => (
+                                        <div key={s.name} className="ab-skill">
+                                            <div className="ab-skill__info">
+                                                <div className="ab-skill__name">{s.name}</div>
+                                                <div className="ab-skill__tag">{s.tag}</div>
                                             </div>
-                                            <div className="flex items-center gap-4 w-full sm:w-auto shrink-0">
-                                                <div className="w-full sm:w-36 h-2 bg-slate-950 rounded-none overflow-hidden border border-slate-800 shadow-inner relative">
-                                                    <div className="h-full bg-gradient-to-r from-cyan-600 to-cyan-400 transition-all duration-1000 ease-out" style={{ width: `${skill.level}%` }}></div>
-                                                </div>
-                                                <span className="text-xs font-black text-cyan-400 w-8 text-right font-mono tracking-tighter">{skill.level}%</span>
+                                            <div className="ab-skill__bar-wrap">
+                                                <div className="ab-skill__bar" style={{ width: `${s.level}%` }} />
                                             </div>
+                                            <div className="ab-skill__pct">{s.level}%</div>
                                         </div>
                                     ))}
                                 </div>
-
-                                {/* Stack Sub-categories Registry Matrix */}
-                                <div className="grid sm:grid-cols-3 gap-4 border-t border-slate-800/60 pt-6">
+                                <div className="ab-stack-grid">
                                     {[
-                                        { title: 'FRONTEND_ENGINE', stack: 'React, Next.js, Core Hooks, HTML5 / Tailwind Architecture' },
-                                        { title: 'BACKEND_RUNTIME', stack: 'Node.js Engine Execution, API Pipeline Integration, Vercel Edge' },
-                                        { title: 'DATA_PERSISTENCE', stack: 'MongoDB Structures, Firebase Storage Streams, Relational MySQL Layer' }
-                                    ].map((cat, idx) => (
-                                        <div key={idx} className="bg-slate-900/30 p-4 rounded border border-slate-800/80 hover:border-slate-700/60 transition-colors shadow-sm">
-                                            <div className="text-xs font-extrabold text-cyan-400 uppercase tracking-widest mb-2 border-b border-slate-800/50 pb-1">{cat.title}</div>
-                                            <div className="text-[11px] text-slate-400 leading-relaxed font-mono">{cat.stack}</div>
+                                        { title: "Frontend Engine", body: "React, Next.js, Core Hooks, HTML5, Tailwind Architecture" },
+                                        { title: "Backend Runtime", body: "Node.js, API Pipeline Integration, Vercel Edge Functions" },
+                                        { title: "Data Persistence", body: "MongoDB, Firebase Storage Streams, Relational MySQL Layer" },
+                                    ].map((c) => (
+                                        <div key={c.title} className="ab-stack-card">
+                                            <div className="ab-stack-card__title">{c.title}</div>
+                                            <div className="ab-stack-card__body">{c.body}</div>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         )}
 
-                        {/* Tab Module: Career Registry Timeline */}
-                        {activeTab === 'journey' && (
-                            <div className="relative pl-6 border-l border-slate-800/80 space-y-6 transition-all duration-500 opacity-100 transform translate-y-0 ml-2">
-                                {timeline.map((item, idx) => (
-                                    <div key={idx} className="relative group">
-                                        {/* Line Node Point Crosshair */}
-                                        <div className="absolute -left-[31px] top-2 w-2 h-2 bg-slate-950 border-2 border-cyan-500 group-hover:bg-cyan-400 transition-colors z-10"></div>
-
-                                        <div className="bg-slate-950/40 border border-slate-800 p-4 rounded space-y-2.5 hover:border-slate-700/60 transition-all duration-300 shadow-sm">
-                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                                <div>
-                                                    <span className="text-[9px] font-black text-cyan-400 tracking-widest uppercase bg-cyan-950/40 border border-cyan-900/50 px-2 py-0.5 rounded shadow-sm">
-                                                        TIMESTAMP // {item.year}
-                                                    </span>
-                                                    <h4 className="text-sm font-extrabold text-white mt-2 uppercase tracking-wide">{item.title}</h4>
-                                                </div>
-                                                <div className="text-slate-500 group-hover:text-cyan-400 transition-colors shrink-0 self-start sm:self-center bg-slate-900/80 p-1.5 border border-slate-800 rounded">
-                                                    {item.icon}
-                                                </div>
-                                            </div>
-                                            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-mono border-t border-slate-900/60 pt-2">{item.description}</p>
+                        {/* Journey */}
+                        {activeTab === "journey" && (
+                            <div className="ab-timeline">
+                                {timeline.map((item) => (
+                                    <div key={item.year} className="ab-tl-item">
+                                        <div className="ab-tl-dot" />
+                                        <div className="ab-tl-card">
+                                            <span className="ab-tl-card__year">{item.year}</span>
+                                            <div className="ab-tl-card__title">{item.title}</div>
+                                            <div className="ab-tl-card__body">{item.body}</div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         )}
 
-                        {/* Tab Module: Softwar Integrity Values */}
-                        {activeTab === 'values' && (
-                            <div className="space-y-6 transition-all duration-500 opacity-100 transform translate-y-0">
-                                <div className="grid sm:grid-cols-2 gap-4">
-                                    {values.map((v, idx) => (
-                                        <div key={idx} className="bg-slate-950/40 border border-slate-800 p-4 rounded flex gap-3.5 items-start hover:border-slate-700/60 transition-all duration-300 shadow-sm hover:-translate-y-0.5">
-                                            <div className="p-2 bg-slate-900 border border-slate-800 rounded shrink-0 text-cyan-400 shadow-inner">
-                                                {v.icon}
-                                            </div>
-                                            <div className="space-y-1">
-                                                <h4 className="text-xs font-bold text-white uppercase tracking-wider">{v.title}</h4>
-                                                <p className="text-xs text-slate-400 leading-relaxed font-mono">{v.description}</p>
+                        {/* Values */}
+                        {activeTab === "values" && (
+                            <div>
+                                <div className="ab-values-grid">
+                                    {values.map((v) => (
+                                        <div key={v.title} className="ab-value-card">
+                                            <div className="ab-value-icon">{v.icon}</div>
+                                            <div>
+                                                <div className="ab-value-card__title">{v.title}</div>
+                                                <div className="ab-value-card__body">{v.body}</div>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-
-                                {/* Action Console Frame Segment */}
-                                <div className="bg-slate-950/80 border border-slate-800 rounded p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mt-6 shadow-inner relative overflow-hidden group">
-                                    <div className="absolute top-0 left-0 w-1 h-full bg-cyan-500/50"></div>
-                                    <div className="space-y-1 relative z-10">
-                                        <div className="text-xs font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
-                                            EXECUTE_NEW_PROJECT // INSTANTIATE
-                                        </div>
-                                        <p className="text-xs text-slate-500 max-w-xl font-mono leading-relaxed">
-                                            Software sockets are currently configured to accept remote development profiles, custom structural integrations, and full-stack software optimizations.
-                                        </p>
+                                <div className="ab-cta">
+                                    <div>
+                                        <div className="ab-cta__title">Start a project</div>
+                                        <div className="ab-cta__sub">Sockets configured to accept remote development profiles, custom structural integrations, and full-stack optimizations.</div>
                                     </div>
-                                    <div className="flex gap-2 w-full md:w-auto shrink-0 relative z-10">
-                                        <a
-                                            href="/bc/contact"
-                                            className="inline-flex items-center justify-center gap-2 text-[11px] font-black tracking-wider uppercase px-4 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded transition-all duration-300 w-full sm:w-auto shadow-md shadow-cyan-500/5 hover:shadow-cyan-400/10 active:scale-95"
-                                        >
-                                            <Mail size={12} />
-                                            OPEN_COMMS()
-                                        </a>
-                                        <a
-                                            href="https://github.com/Brown-Oziomachi"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center justify-center gap-2 text-[11px] font-bold tracking-wider uppercase px-4 py-2.5 bg-slate-900 border border-slate-800 hover:border-slate-700 text-white hover:bg-slate-950 rounded transition-all duration-300 w-full sm:w-auto shadow-sm active:scale-95"
-                                        >
-                                            <Github size={12} className="text-slate-400" />
-                                            GIT_HUB
-                                        </a>
+                                    <div className="ab-cta__actions">
+                                        <a href="/bc/contact" className="ab-btn ab-btn--accent"><Mail size={12} /> Contact</a>
+                                        <a href="https://github.com/Brown-Oziomachi" target="_blank" rel="noopener noreferrer" className="ab-btn"><Github size={12} /> GitHub</a>
                                     </div>
                                 </div>
                             </div>
                         )}
+
                     </div>
                 </div>
-            </main>
 
-            {/* Bottom Output Navigation Panel */}
-            <footer className="relative z-10 border-t border-slate-900 bg-slate-950/60 py-6 mt-16 backdrop-blur-sm">
-                <div className="max-w-6xl mx-auto px-6 text-center text-[10px] font-bold text-slate-600 tracking-widest uppercase font-mono">
-                    <p className="hover:text-slate-500 transition-colors duration-300">&copy; {new Date().getFullYear()} BROWN_CODE.SYS. ALL RIGHTS RESERVED. SECURE_BUILD_V2.0.6</p>
-                </div>
-            </footer>
+                <Footer />
             </div>
         </>
-
     );
 }

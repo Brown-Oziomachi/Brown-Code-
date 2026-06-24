@@ -7,16 +7,13 @@ import {
   Trash2,
   LogOut,
   Users,
-  Clock,
   CheckCircle,
-  Activity,
-  Terminal,
-  Cpu,
   Radio,
   Inbox,
-  ShieldAlert,
+  Terminal,
   Database,
   UserCheck,
+  ArrowLeft,
 } from "lucide-react";
 import {
   collection,
@@ -41,7 +38,7 @@ export default function AdminDashboardClient() {
   const [admin, setAdmin] = useState(null);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [conversations, setConversations] = useState([]);
-  const [identityLogs, setIdentityLogs] = useState([]); // Array for explicit name injections
+  const [identityLogs, setIdentityLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
   const router = useRouter();
@@ -52,9 +49,8 @@ export default function AdminDashboardClient() {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth1, (user) => {
-      if (user && ADMIN_EMAIL && user.email === ADMIN_EMAIL) {
-        setAdmin(user);
-      } else {
+      if (user && ADMIN_EMAIL && user.email === ADMIN_EMAIL) setAdmin(user);
+      else {
         setAdmin(null);
         router.push("/admin_sys_node/console/dashboard");
       }
@@ -63,86 +59,77 @@ export default function AdminDashboardClient() {
     return () => unsub();
   }, [router]);
 
-  // Live stream parsing loop
   useEffect(() => {
     const q = query(
       collection(db1, "chat-messages"),
       orderBy("timestamp", "asc"),
     );
-    const unsub = onSnapshot(q, (snapshot) => {
-      const list = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+    const unsub = onSnapshot(q, (snap) => {
+      const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
       setMessages(list);
 
       const grouped = {};
       const identities = [];
-
       list.forEach((msg) => {
         if (!msg.isAdmin) {
-          // If message is a dedicated identity footprint injection, isolate it for the summary ledger
-          if (msg.isIdentityInjection) {
+          if (msg.isIdentityInjection)
             identities.unshift({
               id: msg.id,
               name: msg.userName,
               timestamp: msg.userTimestamp,
             });
-          }
-
-          if (!grouped[msg.userName]) {
-    grouped[msg.userName] = {
-        userName: msg.userName,
-        userId: msg.userId, // 
-        messages: [],
-        lastMessage: msg.text,
-        lastTimestamp: msg.userTimestamp,
-    };
-}
+          if (!grouped[msg.userName])
+            grouped[msg.userName] = {
+              userName: msg.userName,
+              userId: msg.userId,
+              messages: [],
+              lastMessage: msg.text,
+              lastTimestamp: msg.userTimestamp,
+            };
           grouped[msg.userName].messages.push(msg);
           grouped[msg.userName].lastMessage = msg.text;
           grouped[msg.userName].lastTimestamp = msg.userTimestamp;
-          if (msg.isIdentityInjection) {
+          if (msg.isIdentityInjection)
             grouped[msg.userName].isIdentityVerified = true;
-          }
         }
       });
-
       setConversations(Object.values(grouped));
       setIdentityLogs(identities);
 
       const latest = list[list.length - 1];
       if (latest && !latest.isAdmin) {
         new Audio("/notify.mp3").play().catch(() => {});
-        if (Notification.permission === "granted") {
-          new Notification("New Payload", {
+        if (Notification.permission === "granted")
+          new Notification("New message", {
             body: `${latest.userName}: ${latest.text}`,
             icon: "/icon.png",
           });
-        }
       }
     });
     return () => unsub();
   }, []);
 
- const handleSendMessage = async (e) => {
-   e.preventDefault();
-   if (!newMessage.trim() || !selectedConversation) return;
-   try {
-     await addDoc(collection(db1, "chat-messages"), {
-       text: newMessage.trim(),
-       userName: "Admin",
-       isAdmin: true,
-       replyTo: selectedConversation.userName,
-       targetUserId: selectedConversation.userId, // ✅ attach target userId
-       timestamp: serverTimestamp(),
-       userTimestamp: new Date().toISOString(),
-     });
-     setNewMessage("");
-   } catch (err) {
-     console.error("Send error:", err);
-   }
- };
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!newMessage.trim() || !selectedConversation) return;
+    try {
+      await addDoc(collection(db1, "chat-messages"), {
+        text: newMessage.trim(),
+        userName: "Admin",
+        isAdmin: true,
+        replyTo: selectedConversation.userName,
+        targetUserId: selectedConversation.userId,
+        timestamp: serverTimestamp(),
+        userTimestamp: new Date().toISOString(),
+      });
+      setNewMessage("");
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleDeleteMessage = async (id) => {
-    if (!window.confirm("Delete this payload?")) return;
+    if (!window.confirm("Delete this message?")) return;
     try {
       await deleteDoc(doc(db1, "chat-messages", id));
     } catch (err) {
@@ -151,7 +138,7 @@ export default function AdminDashboardClient() {
   };
 
   const handleClearAll = async () => {
-    if (!window.confirm("PURGE ALL MESSAGES? This cannot be undone.")) return;
+    if (!window.confirm("Purge ALL messages? This cannot be undone.")) return;
     const snap = await getDocs(collection(db1, "chat-messages"));
     await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)));
     setSelectedConversation(null);
@@ -165,10 +152,10 @@ export default function AdminDashboardClient() {
   const relativeTime = (ts) => {
     if (!ts) return "";
     const diff = Date.now() - new Date(ts).getTime();
-    const m = Math.floor(diff / 60000);
-    const h = Math.floor(diff / 3600000);
-    const d = Math.floor(diff / 86400000);
-    if (m < 1) return "NOW";
+    const m = Math.floor(diff / 60000),
+      h = Math.floor(diff / 3600000),
+      d = Math.floor(diff / 86400000);
+    if (m < 1) return "now";
     if (m < 60) return `${m}m`;
     if (h < 24) return `${h}h`;
     return `${d}d`;
@@ -183,339 +170,440 @@ export default function AdminDashboardClient() {
     );
   };
 
+  const stats = [
+    {
+      label: "Threads",
+      value: conversations.length,
+      icon: <Users size={14} />,
+    },
+    {
+      label: "Identities",
+      value: identityLogs.length,
+      icon: <UserCheck size={14} />,
+    },
+    {
+      label: "Inbound",
+      value: messages.filter((m) => !m.isAdmin).length,
+      icon: <Inbox size={14} />,
+    },
+    {
+      label: "Outbound",
+      value: messages.filter((m) => m.isAdmin).length,
+      icon: <Radio size={14} />,
+    },
+  ];
+
   if (loading)
     return (
-      <div className="min-h-screen bg-[#050811] flex items-center justify-center font-mono">
-        <div className="text-center space-y-4">
-          <div className="w-10 h-10 border border-cyan-500/40 border-t-cyan-500 rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-slate-500 tracking-widest uppercase animate-pulse">
-            AUTHENTICATING_SESSION…
-          </p>
-        </div>
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "#0a0a0b",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          gap: 14,
+        }}
+      >
+        <div
+          style={{
+            width: 32,
+            height: 32,
+            border: "2px solid #1e1e22",
+            borderTopColor: "#e8ff47",
+            borderRadius: "50%",
+            animation: "ad-spin 0.8s linear infinite",
+          }}
+        />
+        <span
+          style={{
+            fontFamily: "'JetBrains Mono',monospace",
+            fontSize: 10,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "#52525b",
+          }}
+        >
+          Authenticating…
+        </span>
+        <style>{`@keyframes ad-spin{to{transform:rotate(360deg)}}`}</style>
       </div>
     );
 
   if (!admin) return null;
 
-  const stats = [
-    {
-      label: "ACTIVE_THREADS",
-      value: conversations.length,
-      icon: <Users size={14} className="text-cyan-500" />,
-    },
-    {
-      label: "IDENTITY_SIGNATURES",
-      value: identityLogs.length,
-      icon: <UserCheck size={14} className="text-amber-500" />,
-    },
-    {
-      label: "INBOUND_MSGS",
-      value: messages.filter((m) => !m.isAdmin).length,
-      icon: <Inbox size={14} className="text-cyan-500" />,
-    },
-    {
-      label: "OUTBOUND_MSGS",
-      value: messages.filter((m) => m.isAdmin).length,
-      icon: <Radio size={14} className="text-cyan-500" />,
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-[#050811] text-slate-400 font-mono antialiased selection:bg-cyan-500/20 selection:text-cyan-300 relative overflow-x-hidden">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b0d_1px,transparent_1px),linear-gradient(to_bottom,#1e293b0d_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none z-0" />
+    <>
+      <style>{`
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+          --bg: #0a0a0b; --surface: #111113; --border: #1e1e22; --border-hi: #2e2e34;
+          --text-1: #f4f4f5; --text-2: #a1a1aa; --text-3: #52525b;
+          --accent: #e8ff47; --accent-dim: rgba(232,255,71,0.08);
+          --radius: 6px;
+          --serif: 'DM Serif Display', Georgia, serif;
+          --sans: 'Inter', system-ui, sans-serif;
+          --mono: 'JetBrains Mono', 'Fira Code', monospace;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+        @keyframes ad-spin { to { transform: rotate(360deg); } }
+        @keyframes ad-pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
 
-      {/* Header bar */}
-      <header className="relative z-20 border-b border-slate-900 bg-[#050811]/90 backdrop-blur-sm px-4 sm:px-8 py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-1 items-center">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-              <span className="w-1.5 h-1.5 rounded-full bg-slate-700" />
-            </div>
-            <span className="text-[10px] font-bold text-slate-500 tracking-widest uppercase">
-              // COMM_DASHBOARD
-            </span>
-            <span className="hidden sm:inline text-[10px] font-bold text-cyan-400 tracking-widest uppercase">
-              Brown Code
-            </span>
+        .ad-page { min-height: 100vh; background: var(--bg); color: var(--text-2); font-family: var(--sans); display: flex; flex-direction: column; }
+
+        /* ── Header ── */
+        .ad-header {
+          position: sticky; top: 0; z-index: 50;
+          background: rgba(10,10,11,0.95); backdrop-filter: blur(12px);
+          border-bottom: 1px solid var(--border);
+          height: 56px; padding: 0 24px;
+          display: flex; align-items: center; justify-content: space-between;
+        }
+        .ad-header__brand { font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; color: var(--text-1); display: flex; align-items: center; gap: 8px; }
+        .ad-header__brand-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: ad-pulse 2s ease-out infinite; }
+        .ad-header__actions { display: flex; align-items: center; gap: 8px; }
+        .ad-logout {
+          display: inline-flex; align-items: center; gap: 6px;
+          font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
+          padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+          background: var(--surface); color: var(--text-2); cursor: pointer;
+          transition: color 0.15s, border-color 0.15s;
+        }
+        .ad-logout:hover { color: #f87171; border-color: rgba(248,113,113,0.3); }
+
+        /* ── Stats ── */
+        .ad-stats { padding: 16px 24px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+        @media (max-width: 640px) { .ad-stats { grid-template-columns: 1fr 1fr; } }
+        .ad-stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: flex-end; justify-content: space-between; }
+        .ad-stat__label { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
+        .ad-stat__val { font-family: var(--serif); font-size: 28px; color: var(--text-1); line-height: 1; }
+        .ad-stat__icon { color: var(--accent); }
+
+        /* ── Main ── */
+        .ad-main { padding: 20px 24px; flex: 1; display: flex; flex-direction: column; gap: 16px; max-width: 1200px; width: 100%; margin: 0 auto; }
+
+        /* Identity logs */
+        .ad-identities { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+        .ad-identities__header { display: flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 12px; }
+        .ad-identities__header svg { color: var(--accent); }
+        .ad-identities__chips { display: flex; flex-wrap: wrap; gap: 7px; }
+        .ad-id-chip {
+          display: inline-flex; align-items: center; gap: 6px;
+          background: var(--bg); border: 1px solid rgba(232,255,71,0.2);
+          border-radius: 3px; padding: 3px 10px;
+          font-family: var(--mono); font-size: 10px; color: var(--accent);
+        }
+        .ad-id-chip__dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); animation: ad-pulse 1.4s ease-out infinite; }
+        .ad-id-chip__time { color: var(--text-3); font-size: 9px; }
+        .ad-identities__empty { font-size: 11px; color: var(--text-3); font-style: italic; }
+
+        /* Chat grid */
+        .ad-chat-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 7px; }
+        .ad-chat-label svg { color: var(--accent); }
+        .ad-chat-grid { display: grid; grid-template-columns: 280px 1fr; gap: 12px; height: calc(100vh - 380px); min-height: 400px; }
+        @media (max-width: 768px) { .ad-chat-grid { grid-template-columns: 1fr; height: auto; } }
+
+        /* Thread list */
+        .ad-threads { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden; }
+        .ad-threads__header { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--bg); }
+        .ad-threads__count { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 6px; }
+        .ad-threads__count svg { color: var(--accent); }
+        .ad-purge { display: inline-flex; align-items: center; gap: 4px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em; padding: 4px 8px; border: 1px solid var(--border); border-radius: 3px; background: none; color: var(--text-3); cursor: pointer; transition: color 0.15s, border-color 0.15s; }
+        .ad-purge:hover { color: #f87171; border-color: rgba(248,113,113,0.3); }
+
+        .ad-threads__list { flex: 1; overflow-y: auto; }
+        .ad-thread-btn {
+          width: 100%; padding: 12px 14px; border-bottom: 1px solid var(--border);
+          text-align: left; background: none; border-left: 2px solid transparent; cursor: pointer;
+          transition: background 0.12s, border-left-color 0.12s;
+          display: flex; align-items: flex-start; gap: 10px;
+        }
+        .ad-thread-btn:hover { background: var(--bg); }
+        .ad-thread-btn--active { background: var(--bg); border-left-color: var(--accent); }
+
+        .ad-thread-avatar {
+          width: 30px; height: 30px; border-radius: var(--radius);
+          background: var(--surface); border: 1px solid var(--border);
+          display: flex; align-items: center; justify-content: center;
+          font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--text-2);
+          flex-shrink: 0;
+        }
+        .ad-thread-btn--active .ad-thread-avatar { border-color: rgba(232,255,71,0.3); color: var(--accent); }
+        .ad-thread__body { flex: 1; min-width: 0; }
+        .ad-thread__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+        .ad-thread__name { font-size: 12px; font-weight: 500; color: var(--text-1); }
+        .ad-thread-btn--active .ad-thread__name { color: var(--accent); }
+        .ad-thread__time { font-family: var(--mono); font-size: 9px; color: var(--text-3); }
+        .ad-thread__preview { font-size: 11px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ad-verified { display: inline-block; font-family: var(--mono); font-size: 8px; letter-spacing: 0.06em; background: var(--accent-dim); border: 1px solid rgba(232,255,71,0.2); color: var(--accent); padding: 1px 5px; border-radius: 2px; margin-left: 5px; }
+
+        .ad-threads__empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 32px; }
+        .ad-threads__empty svg { color: var(--border-hi); }
+        .ad-threads__empty p { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+
+        /* Message panel */
+        .ad-stream { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden; }
+        .ad-stream__header { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--bg); }
+        .ad-stream__user { display: flex; align-items: center; gap: 10px; }
+        .ad-stream__avatar { width: 32px; height: 32px; border-radius: var(--radius); background: var(--accent-dim); border: 1px solid rgba(232,255,71,0.25); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--accent); }
+        .ad-stream__name { font-size: 13px; font-weight: 500; color: var(--text-1); margin-bottom: 1px; }
+        .ad-stream__badge { font-family: var(--mono); font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: #4ade80; background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.2); padding: 1px 6px; border-radius: 3px; display: inline-block; }
+
+        .ad-stream__msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+
+        .ad-msg { display: flex; flex-direction: column; }
+        .ad-msg--admin { align-items: flex-end; }
+        .ad-msg--user { align-items: flex-start; }
+        .ad-msg__meta { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-family: var(--mono); font-size: 9px; color: var(--text-3); }
+        .ad-msg--admin .ad-msg__meta { color: var(--accent); }
+        .ad-msg__bubble-wrap { display: flex; align-items: flex-start; gap: 6px; }
+        .ad-msg__bubble {
+          max-width: 72%; padding: 9px 13px; font-size: 13px; line-height: 1.55;
+          border-radius: var(--radius); border: 1px solid var(--border);
+        }
+        .ad-msg--admin .ad-msg__bubble { background: var(--accent-dim); border-color: rgba(232,255,71,0.2); color: var(--text-1); border-bottom-right-radius: 2px; }
+        .ad-msg--user .ad-msg__bubble { background: var(--bg); color: var(--text-2); border-bottom-left-radius: 2px; }
+        .ad-msg__bubble--identity { background: rgba(251,191,36,0.07); border-color: rgba(251,191,36,0.2); color: #fbbf24; }
+        .ad-del {
+          background: none; border: none; cursor: pointer; color: var(--text-3); padding: 4px;
+          opacity: 0; transition: color 0.15s, opacity 0.15s; display: flex; margin-top: 4px;
+        }
+        .ad-msg__bubble-wrap:hover .ad-del { opacity: 1; }
+        .ad-del:hover { color: #f87171; }
+
+        /* Input */
+        .ad-stream__form { padding: 12px 14px; border-top: 1px solid var(--border); }
+        .ad-stream__input-wrap {
+          display: flex; align-items: center; gap: 8px;
+          background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+          padding: 8px 12px; transition: border-color 0.15s;
+        }
+        .ad-stream__input-wrap:focus-within { border-color: rgba(232,255,71,0.3); }
+        .ad-stream__prefix { font-family: var(--mono); font-size: 11px; color: var(--accent); flex-shrink: 0; }
+        .ad-stream__input { flex: 1; background: none; border: none; outline: none; font-family: var(--mono); font-size: 12px; color: var(--text-1); }
+        .ad-stream__input::placeholder { color: var(--text-3); }
+        .ad-send {
+          display: inline-flex; align-items: center; gap: 5px;
+          font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+          padding: 5px 12px; border-radius: 4px; border: none; cursor: pointer;
+          background: var(--accent); color: #0a0a0b;
+          transition: opacity 0.15s;
+        }
+        .ad-send:hover:not(:disabled) { opacity: 0.88; }
+        .ad-send:disabled { opacity: 0.35; cursor: not-allowed; }
+
+        /* Empty stream */
+        .ad-stream__empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+        .ad-stream__empty svg { color: var(--border-hi); }
+        .ad-stream__empty p { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+      `}</style>
+
+      <div className="ad-page">
+        {/* Header */}
+        <header className="ad-header">
+          <div className="ad-header__brand">
+            <span className="ad-header__brand-dot" />
+            brown.dev · admin
           </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-800 hover:border-red-500/30 hover:text-red-400 text-slate-400 text-[10px] font-bold uppercase tracking-widest transition-all rounded-sm"
-            >
-              <LogOut size={11} /> DISCONNECT()
+          <div className="ad-header__actions">
+            <button className="ad-logout" onClick={handleLogout}>
+              <LogOut size={12} /> Sign out
             </button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Stats strip */}
-      <div className="relative z-10 border-b border-slate-900 px-4 sm:px-8 py-4">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3">
+        {/* Stats */}
+        <div className="ad-stats">
           {stats.map((s) => (
-            <div
-              key={s.label}
-              className="bg-[#0b132b]/20 border border-slate-800/60 p-4 rounded relative"
-            >
-              <div className="absolute top-0 left-4 -translate-y-1/2 bg-[#050811] px-1.5 text-[9px] font-bold text-cyan-400 tracking-widest uppercase">
-                {s.label}
+            <div key={s.label} className="ad-stat">
+              <div>
+                <div className="ad-stat__label">{s.label}</div>
+                <div className="ad-stat__val">{s.value}</div>
               </div>
-              <div className="flex items-end justify-between mt-1">
-                <span className="text-2xl font-black text-white">
-                  {s.value}
-                </span>
-                {s.icon}
-              </div>
+              <div className="ad-stat__icon">{s.icon}</div>
             </div>
           ))}
         </div>
-      </div>
 
-      {/* Main Grid Sections */}
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-6">
-        {/* IDENTITY SIGNATURE HISTORY PANEL */}
-        <div className="bg-[#0b132b]/10 border border-slate-900 p-4 rounded-md space-y-3">
-          <div className="flex items-center gap-2 text-[10px] font-bold text-amber-400 uppercase tracking-widest">
-            <Database size={12} /> INTERCEPTED_IDENTITY_INJECTIONS //
-            AUDIT_TRAIL
-          </div>
-
-          {identityLogs.length === 0 ? (
-            <p className="text-[10px] text-slate-600 italic">
-              No custom identities declared on server nodes yet...
-            </p>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {identityLogs.map((log) => (
-                <div
-                  key={log.id}
-                  className="bg-slate-950 border border-amber-500/20 text-amber-400 text-[10px] px-3 py-1 rounded-sm font-mono flex items-center gap-2"
-                >
-                  <span className="w-1 h-1 rounded-full bg-amber-400 animate-pulse" />
-                  <span className="font-bold tracking-tight">
-                    {log.name.toUpperCase()}
-                  </span>
-                  <span className="text-slate-600 text-[9px]">
-                    ({relativeTime(log.timestamp)})
-                  </span>
-                </div>
-              ))}
+        <main className="ad-main">
+          {/* Identity logs */}
+          <div className="ad-identities">
+            <div className="ad-identities__header">
+              <Database size={11} /> Identity signatures
             </div>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-          <Terminal size={13} className="text-cyan-500" /> LIVE_COMM_ROUTING //
-          MESSAGE_THREADS
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 h-[calc(100vh-420px)] min-h-[440px]">
-          {/* Thread Index */}
-          <div className="lg:col-span-4 bg-[#0b132b]/20 border border-slate-800/60 rounded relative flex flex-col overflow-hidden">
-            <div className="absolute top-0 left-5 -translate-y-1/2 bg-[#050811] px-2 text-[9px] font-bold text-cyan-400 tracking-widest uppercase z-10">
-              01 // THREAD_INDEX
-            </div>
-
-            <div className="flex items-center justify-between px-4 pt-5 pb-3 border-b border-slate-900">
-              <div className="flex items-center gap-2">
-                <Users size={12} className="text-cyan-500" />
-                <span className="text-[10px] font-bold text-slate-300 tracking-wider uppercase">
-                  {conversations.length} Thread
-                  {conversations.length !== 1 ? "s" : ""}
-                </span>
+            {identityLogs.length === 0 ? (
+              <div className="ad-identities__empty">
+                No identities declared yet.
               </div>
-              <button
-                onClick={handleClearAll}
-                className="flex items-center gap-1.5 px-2 py-1 text-[9px] font-bold text-red-400/60 hover:text-red-400 hover:bg-red-400/5 border border-transparent hover:border-red-900/40 uppercase tracking-widest transition-all rounded-sm"
-              >
-                <Trash2 size={10} /> PURGE_ALL()
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto">
-              {conversations.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full gap-3 text-center px-4">
-                  <Inbox size={28} className="text-slate-700" />
-                  <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">
-                    NO_ACTIVE_THREADS
-                  </p>
-                </div>
-              ) : (
-                conversations.map((conv) => {
-                  const isActive =
-                    selectedConversation?.userName === conv.userName;
-                  return (
-                    <button
-                      key={conv.userName}
-                      onClick={() => setSelectedConversation(conv)}
-                      className={`w-full px-4 py-3 border-b border-slate-900 text-left transition-all group ${
-                        isActive
-                          ? "bg-cyan-950/20 border-l-2 border-l-cyan-500"
-                          : "hover:bg-slate-900/40 border-l-2 border-l-transparent"
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 bg-[#0b132b] border border-slate-800 flex items-center justify-center flex-shrink-0 rounded-sm">
-                          <span
-                            className={`text-xs font-black ${isActive ? "text-cyan-400" : "text-slate-400"}`}
-                          >
-                            {conv.userName.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-center mb-0.5">
-                            <div className="flex items-center gap-1.5 min-w-0">
-                              <span
-                                className={`text-[11px] font-black uppercase tracking-tight truncate ${isActive ? "text-cyan-400" : "text-slate-300"}`}
-                              >
-                                {conv.userName}
-                              </span>
-                              {conv.isIdentityVerified && (
-                                <span className="bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded text-[8px] font-bold px-1 py-0.2 shrink-0">
-                                  VERIFIED_ID
-                                </span>
-                              )}
-                            </div>
-                            <span className="text-[9px] text-slate-600 font-bold tracking-widest shrink-0">
-                              {relativeTime(conv.lastTimestamp)}
-                            </span>
-                          </div>
-                          <p className="text-[10px] text-slate-500 truncate">
-                            {conv.lastMessage}
-                          </p>
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })
-              )}
-            </div>
-          </div>
-
-          {/* Chat Stream View */}
-          <div className="lg:col-span-8 bg-[#0b132b]/20 border border-slate-800/60 rounded relative flex flex-col overflow-hidden">
-            <div className="absolute top-0 left-5 -translate-y-1/2 bg-[#050811] px-2 text-[9px] font-bold text-cyan-400 tracking-widest uppercase z-10">
-              02 // ACTIVE_STREAM
-            </div>
-
-            {selectedConversation ? (
-              <>
-                <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-900">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-[#0b132b] border border-cyan-900/40 flex items-center justify-center rounded-sm">
-                      <span className="text-sm font-black text-cyan-400">
-                        {selectedConversation.userName.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-black text-white uppercase tracking-tight">
-                          {selectedConversation.userName}
-                        </span>
-                        <span className="text-[9px] font-bold text-emerald-400 bg-emerald-950/20 border border-emerald-900/30 px-1.5 py-0.5 rounded-sm tracking-widest">
-                          CONNECTED
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <CheckCircle size={14} className="text-emerald-400" />
-                </div>
-
-                <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-                  {convMessages().map((msg) => (
-                    <div
-                      key={msg.id}
-                      className={`flex flex-col ${msg.isAdmin ? "items-end" : "items-start"}`}
-                    >
-                      <div className="flex items-center gap-2 mb-1">
-                        <span
-                          className={`text-[9px] font-bold tracking-widest uppercase ${msg.isAdmin ? "text-cyan-400" : "text-slate-500"}`}
-                        >
-                          {msg.isAdmin
-                            ? "// ADMIN_REPLY"
-                            : `// ${msg.userName}`}
-                        </span>
-                        <span className="text-[9px] text-slate-700">
-                          {relativeTime(msg.userTimestamp)}
-                        </span>
-                      </div>
-
-                      <div className="flex items-start gap-2 group">
-                        {!msg.isAdmin && (
-                          <button
-                            onClick={() => handleDeleteMessage(msg.id)}
-                            className="opacity-0 group-hover:opacity-100 p-1 text-slate-700 hover:text-red-400 transition-all mt-1"
-                          >
-                            <Trash2 size={11} />
-                          </button>
-                        )}
-                        <div
-                          className={`px-4 py-2.5 max-w-[75%] text-xs leading-relaxed font-sans border ${
-                            msg.isIdentityInjection
-                              ? "bg-amber-950/10 border-amber-900/30 text-amber-200 rounded-sm"
-                              : msg.isAdmin
-                                ? "bg-cyan-950/30 border-cyan-900/40 text-cyan-200 rounded-sm rounded-br-none"
-                                : "bg-slate-900 border-slate-800 text-slate-300 rounded-sm rounded-bl-none"
-                          }`}
-                        >
-                          {msg.text}
-                        </div>
-                        {msg.isAdmin && (
-                          <button
-                            onClick={() => handleDeleteMessage(msg.id)}
-                            className="opacity-0 group-hover:opacity-100 p-1 text-slate-700 hover:text-red-400 transition-all mt-1"
-                          >
-                            <Trash2 size={11} />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                  <div ref={messagesEndRef} />
-                </div>
-
-                <form
-                  onSubmit={handleSendMessage}
-                  className="px-5 py-4 border-t border-slate-900"
-                >
-                  <div className="flex items-center gap-2 bg-slate-950 border border-slate-800 px-3 py-2 rounded-sm focus-within:border-cyan-900/60 transition-colors">
-                    <span className="text-[10px] font-bold text-cyan-500 tracking-widest flex-shrink-0">
-                      ›_
-                    </span>
-                    <input
-                      type="text"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder={`TRANSMIT_TO // ${selectedConversation.userName}…`}
-                      className="flex-1 bg-transparent text-xs text-slate-300 placeholder-slate-700 outline-none font-mono"
-                    />
-                    <button
-                      type="submit"
-                      disabled={!newMessage.trim()}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-500 hover:bg-cyan-400 disabled:bg-slate-800 disabled:text-slate-600 text-slate-950 font-black text-[9px] uppercase tracking-widest transition-all rounded-sm"
-                    >
-                      <Send size={10} /> SEND()
-                    </button>
-                  </div>
-                </form>
-              </>
             ) : (
-              <div className="flex-1 flex items-center justify-center">
-                <div className="text-center space-y-4 px-8">
-                  <div className="w-14 h-14 bg-[#0b132b]/40 border border-slate-800/60 flex items-center justify-center mx-auto rounded">
-                    <MessageCircle size={22} className="text-slate-700" />
+              <div className="ad-identities__chips">
+                {identityLogs.map((log) => (
+                  <div key={log.id} className="ad-id-chip">
+                    <span className="ad-id-chip__dot" />
+                    {log.name}
+                    <span className="ad-id-chip__time">
+                      {relativeTime(log.timestamp)}
+                    </span>
                   </div>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                    NO_STREAM_SELECTED
-                  </p>
-                </div>
+                ))}
               </div>
             )}
           </div>
-        </div>
-      </main>
-    </div>
+
+          <div className="ad-chat-label">
+            <Terminal size={12} /> Live message threads
+          </div>
+
+          {/* Chat grid */}
+          <div className="ad-chat-grid">
+            {/* Thread list */}
+            <div className="ad-threads">
+              <div className="ad-threads__header">
+                <div className="ad-threads__count">
+                  <Users size={11} /> {conversations.length} thread
+                  {conversations.length !== 1 ? "s" : ""}
+                </div>
+                <button className="ad-purge" onClick={handleClearAll}>
+                  <Trash2 size={10} /> Purge all
+                </button>
+              </div>
+              <div className="ad-threads__list">
+                {conversations.length === 0 ? (
+                  <div className="ad-threads__empty">
+                    <Inbox size={24} />
+                    <p>No threads yet</p>
+                  </div>
+                ) : (
+                  conversations.map((conv) => {
+                    const active =
+                      selectedConversation?.userName === conv.userName;
+                    return (
+                      <button
+                        key={conv.userName}
+                        className={`ad-thread-btn${active ? " ad-thread-btn--active" : ""}`}
+                        onClick={() => setSelectedConversation(conv)}
+                      >
+                        <div className="ad-thread-avatar">
+                          {conv.userName.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="ad-thread__body">
+                          <div className="ad-thread__top">
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <span className="ad-thread__name">
+                                {conv.userName}
+                              </span>
+                              {conv.isIdentityVerified && (
+                                <span className="ad-verified">verified</span>
+                              )}
+                            </div>
+                            <span className="ad-thread__time">
+                              {relativeTime(conv.lastTimestamp)}
+                            </span>
+                          </div>
+                          <div className="ad-thread__preview">
+                            {conv.lastMessage}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            {/* Message stream */}
+            <div className="ad-stream">
+              {selectedConversation ? (
+                <>
+                  <div className="ad-stream__header">
+                    <div className="ad-stream__user">
+                      <div className="ad-stream__avatar">
+                        {selectedConversation.userName.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="ad-stream__name">
+                          {selectedConversation.userName}
+                        </div>
+                        <span className="ad-stream__badge">connected</span>
+                      </div>
+                    </div>
+                    <CheckCircle size={14} style={{ color: "#4ade80" }} />
+                  </div>
+
+                  <div className="ad-stream__msgs">
+                    {convMessages().map((msg) => (
+                      <div
+                        key={msg.id}
+                        className={`ad-msg ad-msg--${msg.isAdmin ? "admin" : "user"}`}
+                      >
+                        <div className="ad-msg__meta">
+                          {msg.isAdmin ? "You" : msg.userName} ·{" "}
+                          {relativeTime(msg.userTimestamp)}
+                        </div>
+                        <div className="ad-msg__bubble-wrap">
+                          {!msg.isAdmin && (
+                            <button
+                              className="ad-del"
+                              onClick={() => handleDeleteMessage(msg.id)}
+                            >
+                              <Trash2 size={11} />
+                            </button>
+                          )}
+                          <div
+                            className={`ad-msg__bubble${msg.isIdentityInjection ? " ad-msg__bubble--identity" : ""}`}
+                          >
+                            {msg.text}
+                          </div>
+                          {msg.isAdmin && (
+                            <button
+                              className="ad-del"
+                              onClick={() => handleDeleteMessage(msg.id)}
+                            >
+                              <Trash2 size={11} />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                    <div ref={messagesEndRef} />
+                  </div>
+
+                  <form
+                    className="ad-stream__form"
+                    onSubmit={handleSendMessage}
+                  >
+                    <div className="ad-stream__input-wrap">
+                      <span className="ad-stream__prefix">›_</span>
+                      <input
+                        type="text"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder={`Reply to ${selectedConversation.userName}…`}
+                        className="ad-stream__input"
+                      />
+                      <button
+                        type="submit"
+                        disabled={!newMessage.trim()}
+                        className="ad-send"
+                      >
+                        <Send size={11} /> Send
+                      </button>
+                    </div>
+                  </form>
+                </>
+              ) : (
+                <div className="ad-stream__empty">
+                  <MessageCircle size={28} />
+                  <p>Select a thread</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </main>
+      </div>
+    </>
   );
 }

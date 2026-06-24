@@ -2,29 +2,38 @@
 
 import { useState, useEffect } from "react";
 import { MessageSquare, Send, X, Mail, CheckCircle, Loader2 } from "lucide-react";
-import { collection, addDoc, query, where, orderBy, onSnapshot, getDocs, serverTimestamp, updateDoc, doc } from "firebase/firestore";
+import {
+    collection, addDoc, query, where, orderBy,
+    onSnapshot, getDocs, serverTimestamp, updateDoc, doc
+} from "firebase/firestore";
 import { db1 } from "@/config/firebase.config1";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth1 } from "@/config/firebase.config1";
 
 const OWNER_EMAIL = "browncemmanuel@gmail.com";
 
+const formatDate = (ts) => {
+    if (!ts?.toDate) return "—";
+    return ts.toDate().toLocaleDateString("en-US", {
+        month: "short", day: "numeric", year: "numeric"
+    });
+};
+
 export default function CommentsSection({ articleSlug }) {
     const [comments, setComments] = useState([]);
     const [name, setName] = useState("");
     const [commentText, setCommentText] = useState("");
     const [isOwner, setIsOwner] = useState(false);
+    const [showForm, setShowForm] = useState(false);
+    const [justPosted, setJustPosted] = useState(false);
 
-    // Email modal state
+    // Email modal
     const [showEmailModal, setShowEmailModal] = useState(false);
     const [email, setEmail] = useState("");
     const [pendingComment, setPendingComment] = useState(null);
     const [emailError, setEmailError] = useState("");
     const [emailSubmitting, setEmailSubmitting] = useState(false);
-    const [justPosted, setJustPosted] = useState(false);
-    const [showForm, setShowForm] = useState(false);
 
-    // Check if the logged-in user is the owner (Brown)
     useEffect(() => {
         const unsub = onAuthStateChanged(auth1, (user) => {
             setIsOwner(!!user && user.email === OWNER_EMAIL);
@@ -32,28 +41,19 @@ export default function CommentsSection({ articleSlug }) {
         return () => unsub();
     }, []);
 
-    // Real-time comments sync
     useEffect(() => {
         if (!articleSlug) return;
-
-        const commentsRef = collection(db1, "comments");
         const q = query(
-            commentsRef,
+            collection(db1, "comments"),
             where("articleSlug", "==", articleSlug),
             orderBy("createdAt", "desc")
         );
-
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            const fetched = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-            setComments(fetched);
-        }, (err) => {
-            console.error("Comments sync error:", err);
-        });
-
-        return () => unsubscribe();
+        const unsub = onSnapshot(q, (snap) => {
+            setComments(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+        }, console.error);
+        return () => unsub();
     }, [articleSlug]);
 
-    // Step 1: intercept submit — open email modal
     const handleInitialSubmit = (e) => {
         e.preventDefault();
         if (!name.trim() || !commentText.trim()) return;
@@ -63,31 +63,24 @@ export default function CommentsSection({ articleSlug }) {
         setShowEmailModal(true);
     };
 
-    // Step 2: confirm email — dedupe check then commit
     const handleEmailConfirm = async () => {
         if (!email.trim() || !email.includes("@")) {
-            setEmailError("INVALID_EMAIL_FORMAT // Please enter a valid address.");
+            setEmailError("Please enter a valid email address.");
             return;
         }
-
         setEmailSubmitting(true);
         setEmailError("");
-
         try {
-            const commentsRef = collection(db1, "comments");
-            const existingQuery = query(
-                commentsRef,
+            const existing = await getDocs(query(
+                collection(db1, "comments"),
                 where("articleSlug", "==", articleSlug),
                 where("authorEmail", "==", email.trim().toLowerCase())
-            );
-            const existingSnap = await getDocs(existingQuery);
-
-            if (!existingSnap.empty) {
-                setEmailError("EMAIL_ALREADY_REGISTERED // This address has already submitted a comment on this article.");
+            ));
+            if (!existing.empty) {
+                setEmailError("This email has already submitted a comment on this article.");
                 setEmailSubmitting(false);
                 return;
             }
-
             await addDoc(collection(db1, "comments"), {
                 articleSlug,
                 authorName: pendingComment.name,
@@ -95,34 +88,26 @@ export default function CommentsSection({ articleSlug }) {
                 text: pendingComment.text,
                 createdAt: serverTimestamp(),
             });
-
-            setName("");
-            setCommentText("");
-            setPendingComment(null);
-            setEmail("");
-            setShowEmailModal(false);
+            setName(""); setCommentText(""); setPendingComment(null);
+            setEmail(""); setShowEmailModal(false); setShowForm(false);
             setJustPosted(true);
-            setShowForm(false);
             setTimeout(() => setJustPosted(false), 5000);
         } catch (err) {
-            console.error("Comment commit error:", err);
-            setEmailError("COMMIT_FAILED // Server error. Try again.");
+            console.error(err);
+            setEmailError("Server error. Please try again.");
         } finally {
             setEmailSubmitting(false);
         }
     };
 
-
-    // Mark a comment as replied — called when owner clicks the reply link
     const handleMarkReplied = async (commentId) => {
         try {
-            await updateDoc(doc(db1, "comments", commentId), {
-                brownReplied: true,
-            });
+            await updateDoc(doc(db1, "comments", commentId), { brownReplied: true });
         } catch (err) {
-            console.error("Failed to mark replied:", err);
+            console.error(err);
         }
     };
+
     const handleModalClose = () => {
         setShowEmailModal(false);
         setPendingComment(null);
@@ -132,146 +117,566 @@ export default function CommentsSection({ articleSlug }) {
 
     return (
         <>
-            {/* ─── Comment Section ─── */}
-            <section className="mt-16 pt-12 border-t border-slate-900/60">
+            <style>{`
+                .cs-section {
+                    margin-top: 56px;
+                    padding-top: 40px;
+                    border-top: 1px solid var(--border);
+                }
 
+                /* ── Header ── */
+                .cs-header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 28px;
+                }
+
+                .cs-header__left {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+
+                .cs-header__icon { color: var(--accent); }
+
+                .cs-header__title {
+                    font-family: var(--font-serif);
+                    font-size: 20px;
+                    color: var(--text-1);
+                    font-weight: 400;
+                }
+
+                .cs-header__count {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--text-3);
+                }
+
+                /* ── Success banner ── */
+                .cs-success {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 12px 16px;
+                    background: rgba(74,222,128,0.06);
+                    border: 1px solid rgba(74,222,128,0.2);
+                    border-radius: var(--radius);
+                    font-size: 13px;
+                    color: #4ade80;
+                    margin-bottom: 20px;
+                }
+
+                /* ── Toggle trigger ── */
+                .cs-trigger {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    padding: 12px;
+                    border: 1px dashed var(--border);
+                    border-radius: var(--radius);
+                    background: transparent;
+                    color: var(--text-3);
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    letter-spacing: 0.06em;
+                    cursor: pointer;
+                    transition: color 0.15s, border-color 0.15s, background 0.15s;
+                    margin-bottom: 24px;
+                }
+
+                .cs-trigger:hover {
+                    color: var(--accent);
+                    border-color: rgba(232,255,71,0.3);
+                    background: var(--accent-dim);
+                }
+
+                /* ── Form ── */
+                .cs-form {
+                    background: var(--surface);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    padding: 20px;
+                    margin-bottom: 28px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 16px;
+                }
+
+                .cs-form__top {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+
+                .cs-form__label-group {
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    color: var(--text-3);
+                }
+
+                .cs-form__close {
+                    background: none;
+                    border: none;
+                    color: var(--text-3);
+                    cursor: pointer;
+                    padding: 4px;
+                    transition: color 0.15s;
+                    display: flex;
+                }
+
+                .cs-form__close:hover { color: var(--text-1); }
+
+                .cs-field label {
+                    display: block;
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    letter-spacing: 0.08em;
+                    text-transform: uppercase;
+                    color: var(--text-3);
+                    margin-bottom: 6px;
+                }
+
+                .cs-field input,
+                .cs-field textarea {
+                    width: 100%;
+                    background: var(--bg);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    padding: 10px 12px;
+                    font-family: var(--font-sans);
+                    font-size: 13px;
+                    color: var(--text-1);
+                    outline: none;
+                    transition: border-color 0.15s;
+                }
+
+                .cs-field input::placeholder,
+                .cs-field textarea::placeholder { color: var(--text-3); }
+
+                .cs-field input:focus,
+                .cs-field textarea:focus { border-color: var(--border-hi); }
+
+                .cs-field textarea { resize: none; }
+
+                .cs-form__actions {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+
+                /* ── Shared button ── */
+                .cs-btn {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    letter-spacing: 0.06em;
+                    padding: 8px 16px;
+                    border-radius: var(--radius);
+                    border: 1px solid var(--border);
+                    background: transparent;
+                    color: var(--text-2);
+                    cursor: pointer;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    transition: color 0.15s, border-color 0.15s, background 0.15s;
+                }
+
+                .cs-btn:hover {
+                    color: var(--text-1);
+                    border-color: var(--border-hi);
+                    background: var(--surface);
+                }
+
+                .cs-btn--accent {
+                    background: var(--accent-dim);
+                    border-color: rgba(232,255,71,0.3);
+                    color: var(--accent);
+                }
+
+                .cs-btn--accent:hover {
+                    background: rgba(232,255,71,0.15);
+                    border-color: rgba(232,255,71,0.5);
+                }
+
+                .cs-btn:disabled {
+                    opacity: 0.4;
+                    cursor: not-allowed;
+                }
+
+                /* ── Comment list ── */
+                .cs-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0;
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    overflow: hidden;
+                }
+
+                .cs-empty {
+                    padding: 40px 24px;
+                    text-align: center;
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--text-3);
+                    letter-spacing: 0.06em;
+                }
+
+                /* ── Single comment ── */
+                .cs-comment {
+                    padding: 18px 20px;
+                    background: var(--surface);
+                    border-bottom: 1px solid var(--border);
+                    transition: background 0.15s;
+                }
+
+                .cs-comment:last-child { border-bottom: none; }
+                .cs-comment:hover { background: #141417; }
+
+                .cs-comment__head {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 8px;
+                }
+
+                .cs-comment__author {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
+                .cs-comment__avatar {
+                    width: 28px;
+                    height: 28px;
+                    border-radius: 50%;
+                    background: var(--accent-dim);
+                    border: 1px solid rgba(232,255,71,0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    color: var(--accent);
+                    flex-shrink: 0;
+                }
+
+                .cs-comment__name {
+                    font-family: var(--font-mono);
+                    font-size: 12px;
+                    color: var(--text-1);
+                    font-weight: 500;
+                }
+
+                .cs-comment__date {
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    color: var(--text-3);
+                }
+
+                .cs-comment__text {
+                    font-size: 14px;
+                    color: var(--text-2);
+                    line-height: 1.65;
+                    font-weight: 300;
+                    white-space: pre-wrap;
+                }
+
+                .cs-comment__footer {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-top: 12px;
+                    padding-top: 10px;
+                    border-top: 1px solid var(--border);
+                }
+
+                .cs-comment__replied {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 5px;
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    color: #4ade80;
+                    background: rgba(74,222,128,0.06);
+                    border: 1px solid rgba(74,222,128,0.2);
+                    padding: 2px 8px;
+                    border-radius: 99px;
+                }
+
+                .cs-comment__pending {
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    color: var(--text-3);
+                }
+
+                .cs-comment__reply-link {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 5px;
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    color: var(--text-3);
+                    text-decoration: none;
+                    transition: color 0.15s;
+                    margin-left: auto;
+                }
+
+                .cs-comment__reply-link:hover { color: var(--accent); }
+
+                /* ── Modal ── */
+                .cs-modal-backdrop {
+                    position: fixed;
+                    inset: 0;
+                    z-index: 9999;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 24px;
+                }
+
+                .cs-modal-bg {
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(0,0,0,0.75);
+                    backdrop-filter: blur(8px);
+                }
+
+                .cs-modal {
+                    position: relative;
+                    width: 100%;
+                    max-width: 440px;
+                    background: var(--surface);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    overflow: hidden;
+                    box-shadow: 0 32px 64px rgba(0,0,0,0.6);
+                }
+
+                .cs-modal__accent-bar {
+                    height: 2px;
+                    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+                }
+
+                .cs-modal__body {
+                    padding: 24px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                }
+
+                .cs-modal__head {
+                    display: flex;
+                    align-items: flex-start;
+                    justify-content: space-between;
+                    gap: 12px;
+                }
+
+                .cs-modal__eyebrow {
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    color: var(--accent);
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    margin-bottom: 6px;
+                }
+
+                .cs-modal__title {
+                    font-family: var(--font-serif);
+                    font-size: 20px;
+                    color: var(--text-1);
+                    font-weight: 400;
+                }
+
+                .cs-modal__sub {
+                    font-size: 12px;
+                    color: var(--text-3);
+                    line-height: 1.6;
+                    margin-top: 4px;
+                }
+
+                .cs-modal__close {
+                    background: none;
+                    border: none;
+                    color: var(--text-3);
+                    cursor: pointer;
+                    padding: 4px;
+                    transition: color 0.15s;
+                    display: flex;
+                    flex-shrink: 0;
+                }
+
+                .cs-modal__close:hover { color: var(--text-1); }
+
+                /* Preview of pending comment */
+                .cs-modal__preview {
+                    background: var(--bg);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    padding: 12px 14px;
+                }
+
+                .cs-modal__preview-label {
+                    font-family: var(--font-mono);
+                    font-size: 9px;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    color: var(--text-3);
+                    display: block;
+                    margin-bottom: 6px;
+                }
+
+                .cs-modal__preview-author {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--accent);
+                    margin-bottom: 4px;
+                }
+
+                .cs-modal__preview-text {
+                    font-size: 12px;
+                    color: var(--text-2);
+                    line-height: 1.55;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+                .cs-modal__error {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: #f87171;
+                    margin-top: 6px;
+                }
+
+                .cs-modal__actions {
+                    display: flex;
+                    gap: 10px;
+                }
+
+                .cs-modal__actions .cs-btn--accent { flex: 1; justify-content: center; }
+            `}</style>
+
+            <section className="cs-section">
                 {/* Header */}
-                <div className="flex items-center gap-2.5 mb-8">
-                    <MessageSquare size={16} className="text-cyan-400" />
-                    <h3 className="text-sm font-mono tracking-widest uppercase text-slate-400 font-bold">
-            // COM_STREAM_SYS ({comments.length})
-                    </h3>
+                <div className="cs-header">
+                    <div className="cs-header__left">
+                        <MessageSquare size={16} className="cs-header__icon" />
+                        <h3 className="cs-header__title">
+                            Discussion
+                        </h3>
+                    </div>
+                    <span className="cs-header__count">{comments.length} comment{comments.length !== 1 ? "s" : ""}</span>
                 </div>
 
-                {/* Success flash */}
+                {/* Success */}
                 {justPosted && (
-                    <div className="flex items-center gap-2.5 mb-6 px-4 py-3 bg-emerald-950/30 border border-emerald-500/30 rounded text-xs font-mono text-emerald-400">
+                    <div className="cs-success">
                         <CheckCircle size={14} />
-                        <span>COMMIT_SUCCESS // Your comment has been logged to the stream.</span>
+                        Your comment has been posted.
                     </div>
                 )}
 
-                {/* Toggle trigger */}
+                {/* Toggle */}
                 {!showForm && !justPosted && (
-                    <button
-                        onClick={() => setShowForm(true)}
-                        className="w-full mb-8 flex items-center justify-center gap-2 px-4 py-3 border border-dashed border-slate-800 text-slate-500 hover:border-cyan-500/40 hover:text-cyan-400 hover:bg-cyan-950/10 rounded-lg text-xs font-mono uppercase tracking-wider transition-all"
-                    >
+                    <button className="cs-trigger" onClick={() => setShowForm(true)}>
                         <MessageSquare size={13} />
-                        <span>Leave a comment</span>
+                        Leave a comment
                     </button>
                 )}
 
-                {/* Input Form — shown only when toggled */}
+                {/* Form */}
                 {showForm && (
-                    <form onSubmit={handleInitialSubmit} className="bg-slate-950/40 border border-slate-900 p-5 rounded-lg space-y-4 mb-8">
-                        <div className="flex items-center justify-between mb-1">
-                            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500">// New comment</span>
-                            <button
-                                type="button"
-                                onClick={() => setShowForm(false)}
-                                className="text-slate-600 hover:text-slate-300 transition-colors"
-                            >
+                    <form className="cs-form" onSubmit={handleInitialSubmit}>
+                        <div className="cs-form__top">
+                            <span className="cs-form__label-group">New comment</span>
+                            <button type="button" className="cs-form__close" onClick={() => setShowForm(false)}>
                                 <X size={14} />
                             </button>
                         </div>
-                        <div>
-                            <label className="block text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-1">
-                                Identity Token / Name
-                            </label>
+                        <div className="cs-field">
+                            <label>Name</label>
                             <input
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                placeholder="e.g. Guest_User"
+                                placeholder="Your name"
                                 required
-                                className="w-full bg-[#0b0b0f] border border-slate-800 rounded px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-cyan-500/50 transition-colors"
                             />
                         </div>
-                        <div>
-                            <label className="block text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-1">
-                                Transmission Data / Comment
-                            </label>
+                        <div className="cs-field">
+                            <label>Comment</label>
                             <textarea
-                                rows={3}
+                                rows={4}
                                 value={commentText}
                                 onChange={(e) => setCommentText(e.target.value)}
-                                placeholder="Write your constructive critique or thoughts..."
+                                placeholder="Share your thoughts…"
                                 required
-                                className="w-full bg-[#0b0b0f] border border-slate-800 rounded px-3 py-2 text-xs font-sans text-slate-200 focus:outline-none focus:border-cyan-500/50 transition-colors resize-none"
                             />
                         </div>
-                        <div className="flex items-center gap-3">
-                            <button
-                                type="submit"
-                                className="inline-flex items-center gap-2 px-4 py-2 border border-cyan-500 text-cyan-400 bg-cyan-950/10 hover:bg-cyan-500 hover:text-black rounded text-xs font-bold font-mono uppercase transition-all tracking-wider"
-                            >
-                                <span>COMMIT_DATA()</span>
+                        <div className="cs-form__actions">
+                            <button type="submit" className="cs-btn cs-btn--accent">
+                                Post comment
                                 <Send size={12} />
                             </button>
-                            <button
-                                type="button"
-                                onClick={() => setShowForm(false)}
-                                className="px-4 py-2 border border-slate-800 text-slate-600 hover:text-slate-300 rounded text-xs font-mono uppercase tracking-wider transition-all"
-                            >
+                            <button type="button" className="cs-btn" onClick={() => setShowForm(false)}>
                                 Cancel
                             </button>
                         </div>
                     </form>
                 )}
 
-                {/* Comments Feed */}
-                <div className="space-y-4">
+                {/* Comments list */}
+                <div className="cs-list">
                     {comments.length === 0 ? (
-                        <div className="text-center py-6 border border-dashed border-slate-900 rounded text-xs font-mono text-slate-600">
-                            NO_ACTIVE_RECORDS_FOUND // Be the first to start the feed.
-                        </div>
+                        <div className="cs-empty">No comments yet — be the first.</div>
                     ) : (
                         comments.map((comment) => {
-                            const replySubject = encodeURIComponent(`Brown Code Blog — Reply to your comment`);
+                            const initials = comment.authorName?.slice(0, 2).toUpperCase() || "?";
+                            const replySubject = encodeURIComponent("Re: Your comment on Brown's blog");
                             const replyBody = encodeURIComponent(
-                                `Hi ${comment.authorName},\n\nThank you for your comment on my article.\n\nYou wrote:\n"${comment.text}"\n\n[Type your reply here]\n\n— Sir Brown AD\nbrowncemmanuel@gmail.com`
+                                `Hi ${comment.authorName},\n\nThanks for your comment.\n\nYou wrote:\n"${comment.text}"\n\n[Your reply here]\n\n— Sir Brown AD`
                             );
                             const replyHref = `mailto:${comment.authorEmail}?subject=${replySubject}&body=${replyBody}`;
 
                             return (
-                                <div
-                                    key={comment.id}
-                                    className="bg-slate-950/20 border border-slate-900 p-4 rounded space-y-2 transition-all hover:border-slate-800 group"
-                                >
-                                    <div className="flex items-center justify-between text-[11px] font-mono">
-                                        <span className="text-cyan-400 font-bold">@{comment.authorName}</span>
-                                        <span className="text-slate-600">
-                                            {comment.createdAt?.toDate
-                                                ? comment.createdAt.toDate().toLocaleDateString()
-                                                : "Syncing..."}
-                                        </span>
+                                <div key={comment.id} className="cs-comment">
+                                    <div className="cs-comment__head">
+                                        <div className="cs-comment__author">
+                                            <div className="cs-comment__avatar">{initials}</div>
+                                            <span className="cs-comment__name">{comment.authorName}</span>
+                                        </div>
+                                        <span className="cs-comment__date">{formatDate(comment.createdAt)}</span>
                                     </div>
-                                    <p className="text-xs text-slate-400 font-sans leading-relaxed font-light whitespace-pre-wrap">
-                                        {comment.text}
-                                    </p>
-
-                                    <div className="pt-1 border-t border-slate-900/80 flex items-center justify-between">
-                                        {/* Public badge — visible to everyone when Brown has replied */}
-                                        {comment.brownReplied && (
-                                            <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-400 bg-emerald-950/30 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                                    <p className="cs-comment__text">{comment.text}</p>
+                                    <div className="cs-comment__footer">
+                                        {comment.brownReplied ? (
+                                            <span className="cs-comment__replied">
                                                 <Mail size={9} />
-                                               Sir Brown replied
+                                                Replied
                                             </span>
+                                        ) : (
+                                            !isOwner && (
+                                                <span className="cs-comment__pending">Awaiting reply</span>
+                                            )
                                         )}
-                                        {!comment.brownReplied && !isOwner && (
-                                            <span className="text-[10px] font-mono text-slate-700">— awaiting reply</span>
-                                        )}
-
-                                        {/* Owner-only reply link — marks comment as replied on click */}
                                         {isOwner && (
                                             <a
                                                 href={replyHref}
                                                 onClick={() => handleMarkReplied(comment.id)}
-                                                className="inline-flex items-center gap-1.5 text-[10px] font-mono text-slate-600 hover:text-cyan-400 transition-colors group/reply ml-auto"
+                                                className="cs-comment__reply-link"
                                             >
-                                                <Mail size={10} className="group-hover/reply:text-cyan-400 transition-colors" />
-                                                <span>{comment.brownReplied ? "Reply again" : "Brown replies via email"}</span>
+                                                <Mail size={10} />
+                                                {comment.brownReplied ? "Reply again" : "Reply via email"}
                                             </a>
                                         )}
                                     </div>
@@ -282,97 +687,66 @@ export default function CommentsSection({ articleSlug }) {
                 </div>
             </section>
 
-            {/* ─── Email Verification Modal ─── */}
+            {/* Email verification modal */}
             {showEmailModal && (
-                <div className="fixed inset-0 z-[99999] flex items-center justify-center px-4">
-                    <div
-                        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-                        onClick={handleModalClose}
-                    />
-                    <div className="relative w-full max-w-md bg-[#0b0b0f] border border-slate-800 rounded-xl shadow-2xl shadow-black/60 overflow-hidden">
-                        <div className="h-[2px] w-full bg-gradient-to-r from-cyan-500/0 via-cyan-500 to-cyan-500/0" />
-                        <div className="p-6 space-y-5">
-                            <div className="flex items-start justify-between">
-                                <div className="space-y-1">
-                                    <div className="flex items-center gap-2">
-                                        <Mail size={14} className="text-cyan-400" />
-                                        <span className="text-[10px] font-mono tracking-widest uppercase text-cyan-400 font-bold">
-                                            IDENTITY_VERIFY()
-                                        </span>
+                <div className="cs-modal-backdrop">
+                    <div className="cs-modal-bg" onClick={handleModalClose} />
+                    <div className="cs-modal">
+                        <div className="cs-modal__accent-bar" />
+                        <div className="cs-modal__body">
+                            <div className="cs-modal__head">
+                                <div>
+                                    <div className="cs-modal__eyebrow">
+                                        <Mail size={12} />
+                                        Verify email
                                     </div>
-                                    <h4 className="text-base font-bold text-white tracking-tight">
-                                        Confirm your email
-                                    </h4>
-                                    <p className="text-xs text-slate-500 font-sans leading-relaxed">
-                                        Your email is used to prevent duplicate submissions. It won't be displayed publicly.
+                                    <h4 className="cs-modal__title">Confirm your address</h4>
+                                    <p className="cs-modal__sub">
+                                        Used to prevent duplicate submissions — not displayed publicly.
                                     </p>
                                 </div>
-                                <button
-                                    onClick={handleModalClose}
-                                    className="p-1.5 text-slate-600 hover:text-slate-300 hover:bg-slate-900 rounded transition-all"
-                                >
+                                <button className="cs-modal__close" onClick={handleModalClose}>
                                     <X size={15} />
                                 </button>
                             </div>
 
                             {pendingComment && (
-                                <div className="bg-slate-950/60 border border-slate-900 rounded p-3 space-y-1">
-                                    <span className="text-[9px] font-mono uppercase tracking-widest text-slate-600">
-                                        PENDING_PAYLOAD
-                                    </span>
-                                    <p className="text-[11px] font-mono text-cyan-400">@{pendingComment.name}</p>
-                                    <p className="text-xs text-slate-400 font-sans leading-relaxed line-clamp-2">
-                                        {pendingComment.text}
-                                    </p>
+                                <div className="cs-modal__preview">
+                                    <span className="cs-modal__preview-label">Your comment</span>
+                                    <p className="cs-modal__preview-author">{pendingComment.name}</p>
+                                    <p className="cs-modal__preview-text">{pendingComment.text}</p>
                                 </div>
                             )}
 
-                            <div className="space-y-1.5">
-                                <label className="block text-[10px] font-mono uppercase tracking-wider text-slate-500">
-                                    Email Address
-                                </label>
+                            <div className="cs-field">
+                                <label>Email address</label>
                                 <input
                                     type="email"
                                     value={email}
-                                    onChange={(e) => {
-                                        setEmail(e.target.value);
-                                        setEmailError("");
-                                    }}
+                                    onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
                                     placeholder="you@example.com"
                                     autoFocus
                                     onKeyDown={(e) => e.key === "Enter" && handleEmailConfirm()}
-                                    className="w-full bg-[#060608] border border-slate-800 rounded px-3 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-cyan-500/50 transition-colors placeholder:text-slate-700"
                                 />
                                 {emailError && (
-                                    <p className="text-[10px] font-mono text-rose-400 leading-relaxed pt-0.5">
-                                        {emailError}
-                                    </p>
+                                    <p className="cs-modal__error">{emailError}</p>
                                 )}
                             </div>
 
-                            <div className="flex items-center gap-3 pt-1">
+                            <div className="cs-modal__actions">
                                 <button
+                                    className="cs-btn cs-btn--accent"
                                     onClick={handleEmailConfirm}
                                     disabled={emailSubmitting}
-                                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-cyan-500 text-cyan-400 bg-cyan-950/10 hover:bg-cyan-500 hover:text-black rounded text-xs font-bold font-mono uppercase tracking-wider transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                                 >
                                     {emailSubmitting ? (
-                                        <>
-                                            <Loader2 size={12} className="animate-spin" />
-                                            <span>VERIFYING...</span>
-                                        </>
+                                        <><Loader2 size={12} className="animate-spin" /> Posting…</>
                                     ) : (
-                                        <>
-                                            <span>CONFIRM_AND_COMMIT()</span>
-                                            <Send size={12} />
-                                        </>
+                                        <><Send size={12} /> Post comment</>
                                     )}
                                 </button>
-                                <button
-                                    onClick={handleModalClose}
-                                    className="px-4 py-2.5 border border-slate-800 text-slate-500 hover:text-slate-300 hover:border-slate-700 rounded text-xs font-mono uppercase tracking-wider transition-all"
-                                >
-                                    ABORT
+                                <button className="cs-btn" onClick={handleModalClose}>
+                                    Cancel
                                 </button>
                             </div>
                         </div>
