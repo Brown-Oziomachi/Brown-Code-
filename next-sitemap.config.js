@@ -1,6 +1,5 @@
 // next-sitemap.config.js
-import { articles } from "./src/app/data/article";
-// ☝️ adjust this path if your article.js is somewhere else
+import { articles } from "./app/data/article";
 
 /** @type {import('next-sitemap').IConfig} */
 export const siteUrl = "https://browncode.name.ng";
