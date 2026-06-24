@@ -6,7 +6,6 @@ import {
     Layers, GitBranch, Binary, Briefcase, Download,
     Github, Linkedin, Mail, User
 } from "lucide-react";
-import Footer from "@/components/footer";
 
 export default function AboutMePage() {
     const [activeTab, setActiveTab] = useState("story");
@@ -331,7 +330,7 @@ export default function AboutMePage() {
                             <a href="/bc/contact" className="ab-btn ab-btn--accent">
                                 Initialize Contact <ArrowRight size={12} />
                             </a>
-                            <a href="/cv/pdf" className="ab-btn">
+                            <a href="/cv" className="ab-btn">
                                 <Download size={12} /> Resume
                             </a>
                             <a href="https://github.com/Brown-Oziomachi" target="_blank" rel="noopener noreferrer" className="ab-btn">
@@ -469,7 +468,6 @@ export default function AboutMePage() {
                     </div>
                 </div>
 
-                <Footer />
             </div>
         </>
     );

@@ -83,7 +83,6 @@ export default function RelatedArticles({ currentSlug }) {
                     gap: 1px;
                     background: var(--border);
                     border: 1px solid var(--border);
-                    border-radius: var(--radius);
                     overflow: hidden;
                 }
 

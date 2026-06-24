@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, Clock, Link as LinkIcon } from "lucide-react";
+import Footer from "@/components/footer";
 
 const createSlug = (title) =>
     title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -219,7 +220,7 @@ export default function NewsDetails() {
                 }
 
                 /* Image */
-                .cy-article__img-wrap { margin-bottom: 36px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+                .cy-article__img-wrap { margin-bottom: 36px; border: 1px solid var(--border);  overflow: hidden; }
                 .cy-article__img { width: 100%; height: auto; display: block; opacity: 0.9; }
                 .cy-article__caption { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); padding: 8px 12px; border-top: 1px solid var(--border); }
 
@@ -399,7 +400,7 @@ export default function NewsDetails() {
                 {/* Related articles */}
                 {relatedArticles.length > 0 && (
                     <div className="cy-related">
-                        <p className="cy-section-label">Related articles</p>
+                        <p className="cy-section-label">Related News</p>
                         <div className="cy-grid">
                             {relatedArticles.map(r => (
                                 <Link key={r.id} href={`/news/${createFullSlug(r.title, r.id)}`} className="cy-card">
@@ -427,6 +428,7 @@ export default function NewsDetails() {
                     </div>
                 )}
             </div>
+            <Footer />
         </>
     );
 }

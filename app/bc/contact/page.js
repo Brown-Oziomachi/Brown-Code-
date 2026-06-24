@@ -4,7 +4,6 @@ import {
     ArrowLeft, Mail, User, MessageSquare,
     Phone, Send, CheckCircle, Terminal, Network, ShieldAlert
 } from "lucide-react";
-import Footer from "@/components/footer";
 
 export default function ContactForm() {
     const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
@@ -272,7 +271,6 @@ export default function ContactForm() {
 
                 </main>
 
-                <Footer />
             </div>
         </>
     );

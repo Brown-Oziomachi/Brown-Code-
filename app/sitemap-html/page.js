@@ -21,6 +21,7 @@ const corePages = [
     { name: "Home", href: "/portfolio" },
     { name: "About", href: "/bc/about" },
     { name: "Blog", href: "/blog" },
+    { name: "Tech-News", href: "/tech-news" },
     { name: "Contact", href: "/bc/contact" },
     { name: "Jobs", href: "/jobs" },
     { name: "Projects", href: "/bc/projects" },

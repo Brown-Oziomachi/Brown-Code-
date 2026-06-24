@@ -136,14 +136,6 @@ But platforms like Brown Code will continue shedding light on the truth behind m
     "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1024&q=80"
   },
     {
-      "title": "What Your Website Can Do to Bring You More Clients",
-      "slug": "website-tools-to-get-more-clients",
-      "postedBy": "Brown Code",
-      "preview": "Practical, client-focused features you can add to your website to attract, qualify, and convert more leads.",
-      "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1024&q=80",
-      "content": "Your website can be your best salesperson if it's built to attract the right visitors and convert them into clients. Here are clear, actionable ways a website drives client growth:\n\n1. Lead magnets & email capture\nOffer a free resource (guide, checklist, template) in exchange for an email. Use a simple signup form and automated welcome sequence to nurture leads until they’re ready to hire.\n\n2. Clear value proposition and focused CTAs\nMake the main benefit obvious within seconds. Use single-action CTAs (Book a Call, Get a Quote, View Pricing) on the homepage and service pages to reduce friction.\n\n3. Booking and scheduling integrations\nAdd an integrated scheduler (Calendly, Acuity, or built-in) to let prospects book discovery calls instantly—reduces back-and-forth and speeds up conversion.\n\n4. Portfolio and case studies with outcomes\nShowcase real projects with problem → approach → results. Quantify impact (conversion lifts, revenue, time saved) to build credibility and pre-sell your services.\n\n5. Testimonials and trust signals\nDisplay client quotes, logos, before/after photos, and certifications prominently. Social proof shortens buyer hesitation and increases inquiries.\n\n6. Conversion-focused landing pages\nCreate dedicated landing pages for campaigns, ad traffic, or specific services. Keep them focused on one goal and remove distractions to maximize conversion rates.\n\n7. Online payments and proposals\nOffer deposits, invoices, or one-click purchases for fixed services. Fast, secure payments close deals sooner and reduce no-shows.\n\n8. Live chat and chatbots\nUse live chat or simple bots to answer FAQs, qualify visitors, and capture contact info outside business hours. Even a basic bot can turn curious visitors into booked calls.\n\n9. Blog + SEO for discoverability\nPublish content that answers client questions and targets long-tail search terms. Helpful guides attract organic traffic and position you as an expert prospects trust.\n\n10. Local SEO & business listings\nOptimize for city- or region-based searches, claim Google Business Profile, and include consistent contact info—critical for local service providers.\n\n11. Analytics and conversion tracking\nTrack which pages drive leads, where visitors drop off, and which campaigns deliver ROI. Use that data to iterate and double down on what works.\n\n12. Retargeting and follow-up\nUse simple pixels and email automation to re-engage visitors who didn’t convert the first time. A well-timed follow-up often turns fence-sitters into clients.\n\n13. FAQ and pricing clarity\nAnswer common objections up front and provide transparent pricing or pricing ranges to reduce friction and attract qualified leads.\n\n14. Accessibility and performance\nFast, mobile-friendly sites keep visitors engaged. If pages load quickly and navigation is clear, more visitors will stay and convert.\n\nStart by choosing 2–3 of these elements that match your audience and add them to your site. Measure results, iterate, and scale proven tactics—your website will move from brochure to growth engine."
-    },
-    {
       "title": "The Zero-Day Vulnerability in Your Pocket: How Social Accounts are Actually Intercepted/hacked",
       "slug": "how-social-media-accounts-are-hacked-zero-day",
       "postedBy": "Brown Code",
@@ -364,8 +356,8 @@ But platforms like Brown Code will continue shedding light on the truth behind m
     "slug": "website-tools-to-get-more-clients",
     "postedBy": "Brown Code",
     "preview": "Practical, client-focused features you can add to your website to attract, qualify, and convert more leads.",
-    "content": "\n\n###Your website can be your best salesperson if it's built to attract the right visitors and convert them into clients. Here are clear, actionable ways a website drives client growth:\n\n 1. Lead magnets & email capture\n Offer a free resource (guide, checklist, template) in exchange for an email. Use a simple signup form and automated welcome sequence to nurture leads until they’re ready to hire.\n\n 2. Clear value proposition and focused CTAs\n Make the main benefit obvious within seconds. Use single-action CTAs (Book a Call, Get a Quote, View Pricing) on the homepage and service pages to reduce friction.\n\n 3. Booking and scheduling integrations\n Add an integrated scheduler (Calendly, Acuity, or built-in) to let prospects book discovery calls instantly—reduces back-and-forth and speeds up conversion.\n\n 4. Portfolio and case studies with outcomes\n Showcase real projects with problem → approach → results. Quantify impact (conversion lifts, revenue, time saved) to build credibility and pre-sell your services.\n\n 5. Testimonials and trust signals\n Display client quotes, logos, before/after photos, and certifications prominently. Social proof shortens buyer hesitation and increases inquiries.\n\n 6. Conversion-focused landing pages\n Create dedicated landing pages for campaigns, ad traffic, or specific services. Keep them focused on one goal and remove distractions to maximize conversion rates.\n\n 7. Online payments and proposals\n Offer deposits, invoices, or one-click purchases for fixed services. Fast, secure payments close deals sooner and reduce no-shows.\n\n 8. Live chat and chatbots\n Use live chat or simple bots to answer FAQs, qualify visitors, and capture contact info outside business hours. Even a basic bot can turn curious visitors into booked calls.\n\n 9. Blog + SEO for discoverability\n Publish content that answers client questions and targets long-tail search terms. Helpful guides attract organic traffic and position you as an expert prospects trust.\n\n 10. Local SEO & business listings\n Optimize for city- or region-based searches, claim Google Business Profile, and include consistent contact info—critical for local service providers.\n\n 11. Analytics and conversion tracking\n Track which pages drive leads, where visitors drop off, and which campaigns deliver ROI. Use that data to iterate and double down on what works.\n\n 12. Retargeting and follow-up\n Use simple pixels and email automation to re-engage visitors who didn’t convert the first time. A well-timed follow-up often turns fence-sitters into clients.\n\n 13. FAQ and pricing clarity\n Answer common objections up front and provide transparent pricing or pricing ranges to reduce friction and attract qualified leads.\n\n 14. Accessibility and performance\n Fast, mobile-friendly sites keep visitors engaged. If pages load quickly and navigation is clear, more visitors will stay and convert.\n\n Start by choosing 2–3 of these elements that match your audience and add them to your site. Measure results, iterate, and scale proven tactics—your website will move from brochure to growth engine.\n",
-    "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1024&q=80",
+    "content": "\n\n###Your website can be your best salesperson if it's built to attract the right visitors and convert them into clients. Here are clear, actionable ways a website drives client growth:\n\n 1. Lead magnets & email capture\n Offer a free resource (guide, checklist, template) in exchange for an email. Use a simple signup form and automated welcome sequence to nurture leads until they’re ready to hire.\n\n### 2. \n\n Clear value proposition and focused CTAs\n Make the main benefit obvious within seconds. Use single-action CTAs (Book a Call, Get a Quote, View Pricing) on the homepage and service pages to reduce friction.\n\n### 3. \n\n  Booking and scheduling integrations\n Add an integrated scheduler (Calendly, Acuity, or built-in) to let prospects book discovery calls instantly—reduces back-and-forth and speeds up conversion.\n\n### 4. \n\n Portfolio and case studies with outcomes\n Showcase real projects with problem → approach → results. Quantify impact (conversion lifts, revenue, time saved) to build credibility and pre-sell your services.\n\n### 5. \n\n Testimonials and trust signals\n Display client quotes, logos, before/after photos, and certifications prominently. Social proof shortens buyer hesitation and increases inquiries.\n\n### 6. \n\n Conversion-focused landing pages\n Create dedicated landing pages for campaigns, ad traffic, or specific services. Keep them focused on one goal and remove distractions to maximize conversion rates.\n\n### 7. \n\n Online payments and proposals\n Offer deposits, invoices, or one-click purchases for fixed services. Fast, secure payments close deals sooner and reduce no-shows.\n\n### 8. \n\n Live chat and chatbots\n Use live chat or simple bots to answer FAQs, qualify visitors, and capture contact info outside business hours. Even a basic bot can turn curious visitors into booked calls.\n\n### 9. \n\n Blog + SEO for discoverability\n Publish content that answers client questions and targets long-tail search terms. Helpful guides attract organic traffic and position you as an expert prospects trust.\n\n### 10. \n\n Local SEO & business listings\n Optimize for city- or region-based searches, claim Google Business Profile, and include consistent contact info—critical for local service providers.\n\n### 11.\n\n Analytics and conversion tracking\n Track which pages drive leads, where visitors drop off, and which campaigns deliver ROI. Use that data to iterate and double down on what works.\n\n### 12. \n\n Retargeting and follow-up\n Use simple pixels and email automation to re-engage visitors who didn’t convert the first time. A well-timed follow-up often turns fence-sitters into clients.\n\n 13. FAQ and pricing clarity\n Answer common objections up front and provide transparent pricing or pricing ranges to reduce friction and attract qualified leads.\n\n### 14. \n\n Accessibility and performance\n Fast, mobile-friendly sites keep visitors engaged. If pages load quickly and navigation is clear, more visitors will stay and convert.\n\n### Start by choosing 2–3 of these elements that match your audience and add them to your site. Measure results, iterate, and scale proven tactics—your website will move from brochure to growth engine.\n",
+    "image": "/web.jpeg",
   },
 
   {
@@ -549,7 +541,7 @@ A smooth payment experience is just as vital as product-market fit. By treating 
     content: `
 There is a dangerous misconception among early-stage founders that cyber criminals only target enterprise giants like Apple, Google, or major banks. The reality is exactly the opposite. Cyber attacks on small-to-medium businesses have skyrocketed over the past few years. Hackers know that early-stage startups are highly focused on survival, speed, and product development, which usually means their cyber security protocols are practically non-existent. A single ransomware attack or data breach can bankrupt a small company before it ever gets the chance to scale.
 
-The True Cost of a Security Breach
+\n\n### The True Cost of a Security Breach
 When a startup experiences a security breach, the financial toll goes far beyond fixing the immediate technical bug. It triggers a cascade of compounding disasters: severe legal liabilities, compliance fines, and worst of all, an absolute destruction of consumer trust. If your platform leaks customer emails, passwords, or payment details, recovering your brand reputation is an incredibly uphill battle. It is vastly cheaper to protect your data today than to manage a public relations crisis tomorrow.
 
 The Vulnerability of the Remote Workforce
@@ -558,7 +550,7 @@ The rise of distributed teams has inadvertently expanded the attack surface for 
 API Security: The Leaky Pipe
 Modern apps rely on web APIs to communicate with payment processors, database servers, and third-party tools. If these APIs are built without proper authentication, token expiration limits, or rate limiting, they become massive vulnerabilities. Malicious actors can exploit these open endpoints to scrape sensitive proprietary data or inject malicious payloads straight into your database architecture.
 
-Essential Low-Cost Security Steps
+\n\n### Essential Low-Cost Security Steps
 Protecting your digital assets does not require a multi-million dollar enterprise security budget. You can secure 90% of your vulnerabilities by enforcing these protocols:
 
 Mandate MFA Across All Systems
@@ -567,10 +559,10 @@ Enforce strict Multi-Factor Authentication (MFA) across your entire team for acc
 Adopt a Zero-Trust Architecture
 Never grant blanket administrative permissions. Limit data access explicitly to what an employee needs to complete their specific task, and revoke access immediately when their role changes.
 
-Regular Penetration Testing
+\n\n### Regular Penetration Testing
 Schedule routine internal vulnerability scans and basic penetration testing to find unpatched software bugs, open ports, and configuration flaws before bad actors do.
 
-Conclusion
+\n\n### Conclusion\n\n
 In the modern digital market, robust cyber security is not a luxury feature reserved for massive corporations—it is an absolute foundational prerequisite for staying in business. Treating security as a core component of your operational hygiene
  `,
     image:
@@ -684,10 +676,10 @@ Find the single most powerful feature of your product and make it flawless. Stri
 Prioritize Micro-Interactions
 Smooth transitions, clear error messages, and intuitive navigation cost very little time but significantly elevate the perceived value of your product.
 
-Design for Scalability Early
+\n\n### Design for Scalability Early
 Ensure your software architecture can handle a sudden influx of users. Cloud infrastructure should be flexible, not rigid.
 
-Conclusion
+\n\n### Conclusion\n\n
 Speed to market matters, but not at the expense of pride in execution. A bad product launch is harder to recover from than a delayed product launch. By shifting your mindset from what is merely "viable" to what is truly "lovable," you protect your brand reputation, earn genuine user loyalty, and build a tech infrastructure designed for the long haul.
   `,
   image:
@@ -703,7 +695,7 @@ Speed to market matters, but not at the expense of pride in execution. A bad pro
   content: `
 Every entrepreneur encounters the valley of death: that period where growth stalls, marketing costs rise, and revenue plateaus. In these defining moments, a founder faces the ultimate dilemma: Do I double down and push through with grit, or do I pivot the business model entirely? Misjudging this crossroads is one of the leading causes of startup failure, resulting either in premature quitting or the stubborn drain of precious capital into a dying idea.
 
-The Myth of Blind Perseverance
+\n\n### The Myth of Blind Perseverance
 Popular culture romanticizes the stubborn founder who ignores everyone, pushes through a wall, and strikes gold. While grit is mandatory, blind perseverance without data is just arrogance. If your target market is consistently telling you—through lack of sales or high churn rates—that they do not want your product, doing the same thing harder will not change the outcome.
 
 Signs It's Time to Pivot
@@ -715,22 +707,22 @@ You are great at convincing people to try your service through marketing, but th
 The Side-Feature Phenomenon
 Sometimes, users ignore the main value proposition of your software but obsessively use one small, secondary tool you threw in. This is a massive indicator that your real business is that secondary tool.
 
-Changing Market Realities
+\n\n### Changing Market Realities
 A business model that worked perfectly last year can be rendered obsolete overnight by a new AI tool, economic shifts, or a change in consumer habits. Fighting the tide of macro-trends is a losing battle.
 
-How to Execute a Graceful Pivot
+\n\n### How to Execute a Graceful Pivot
 A pivot is not a chaotic admission of defeat; it is a calculated, strategic evolution.
 
-Protect Core Capital
+\n\n###  Core Capital
 Don't wait until you have two weeks of runway left to pivot. Change direction while you still have the financial cushion to test the new hypothesis.
 
-Communicate Transparently
+\n\n### Communicate Transparently
 Bring your team, stakeholders, and investors into the loop. Explain the data that drove the decision so that morale remains high.
 
-Preserve What Worked
+\n\n### Preserve What Worked
 A pivot rarely means burning the whole company down. Identify your core strengths—whether it’s your proprietary tech stack, your team talent, or a specific customer segment—and repurpose them.
 
-Conclusion
+\n\n### Conclusion \n\n
 Pivoting is not failure; it is the ultimate form of market optimization. Some of the world’s most successful tech giants started as entirely different businesses. The best entrepreneurs aren't married to their original ideas; they are married to solving the problem. Learn to listen to the data, swallow your pride, and adapt before the market forces your hand.
   `,
   image:
@@ -1308,37 +1300,37 @@ In the digital age, networking is not about collecting contacts—it's about bui
     content: `
   In the digital age, having a website is essential for any business. However, the method you choose to create that website can significantly impact your brand's online presence and effectiveness. While website templates offer a quick and easy solution, custom coding your website provides numerous advantages that can elevate your business to new heights.
 
-   1. Unique Branding and Identity
+   \n\n### 1. Unique Branding and Identity
 
   One of the most significant benefits of custom coding is the ability to create a unique website that reflects your brand's identity. Templates often come with predefined layouts and designs that can make your website look similar to countless others. This lack of originality can dilute your brand's message and make it harder for potential customers to remember you. Custom coding allows you to design every aspect of your site, ensuring it aligns perfectly with your brand's vision and values.
 
-   2. Tailored Functionality
+   \n\n### 2. Tailored Functionality
 
   Every business has unique needs, and a one-size-fits-all template may not provide the specific functionalities you require. Custom coding allows you to build features tailored to your business processes, whether it's a specialized booking system, a unique product showcase, or an integrated customer relationship management tool. This level of customization enhances user experience and can lead to higher conversion rates.
 
-  3. Improved Performance and Speed
+  \n\n### 3. Improved Performance and Speed
 
   Website performance is crucial for user experience and search engine optimization (SEO). Templates often come with unnecessary code and features that can slow down your site. Custom coding enables you to streamline your website, ensuring it loads quickly and efficiently. A faster website not only improves user satisfaction but also positively impacts your search engine rankings, making it easier for potential customers to find you online.
 
-   4. Enhanced SEO Capabilities
+   \n\n### 4. Enhanced SEO Capabilities
 
   Search engine optimization is vital for driving organic traffic to your website. Custom-coded websites allow for better optimization opportunities, such as clean URL structures, optimized images, and tailored meta tags. While some templates offer basic SEO features, they may not provide the flexibility needed to implement advanced strategies. Custom coding gives you full control over your site's SEO, helping you rank higher in search results.
 
-   5. Scalability and Future-Proofing
+   \n\n### 5. Scalability and Future-Proofing
 
   As your business grows, your website needs to evolve with it. Custom-coded websites are inherently more scalable than templates, allowing you to add new features, pages, and functionalities without the constraints of a predefined structure. This adaptability ensures that your website can grow alongside your business, accommodating new products, services, or market demands without requiring a complete redesign.
 
-   6. Better Security
+   \n\n### 6. Better Security
 
   Security is a top concern for any online business. Templates can be more vulnerable to attacks due to their widespread use and potential for outdated code. Custom coding allows you to implement robust security measures tailored to your specific needs, reducing the risk of data breaches and ensuring your customers' information is protected. This level of security builds trust with your audience, which is essential for any successful business.
 
-   7. Full Ownership and Control
+  \n\n### 7. Full Ownership and Control
 
   When you use a template, you are often limited by the platform's restrictions and licensing agreements. Custom coding your website gives you full ownership and control over your digital property. You can make changes, updates, and improvements as needed without relying on third-party providers. This autonomy is crucial for maintaining your website's relevance and effectiveness in a rapidly changing digital landscape.
 
-   Conclusion
+  \n\n### Conclusion
 
-  While templates may seem like a convenient option for building a website, the long-term benefits of custom coding far outweigh the initial ease of use. A custom-coded website offers unique branding, tailored functionality, improved performance, enhanced SEO capabilities, scalability, better security, and full ownership. Investing in a custom website is an investment in your business's future, ensuring you stand out in a crowded marketplace and effectively meet the needs of your customers.
+  \n\n### While templates may seem like a convenient option for building a website, the long-term benefits of custom coding far outweigh the initial ease of use. A custom-coded website offers unique branding, tailored functionality, improved performance, enhanced SEO capabilities, scalability, better security, and full ownership. Investing in a custom website is an investment in your business's future, ensuring you stand out in a crowded marketplace and effectively meet the needs of your customers.
 
   If you're ready to take your online presence to the next level, consider custom coding your website. The advantages are clear, and the potential for growth is limitless.
   `,
@@ -1388,7 +1380,7 @@ In the digital age, networking is not about collecting contacts—it's about bui
     content: `
   Many small businesses delay building a website because they fear cost, complexity, or ongoing overhead. Brown Code offers simple, transparent packages that remove those barriers and get you online quickly with results that matter.
 
-  Why a small budget can still deliver big impact
+  \n\n### Why a small budget can still deliver big impact
   A focused, well-structured website—tailored to your audience—outperforms an expensive, unfocused one. We concentrate on the essentials: a compelling homepage, services or products page, an easy contact flow, mobile optimization, and basic SEO. That combination is all you need to start attracting customers.
 
   Package options that match your needs
@@ -1396,13 +1388,13 @@ In the digital age, networking is not about collecting contacts—it's about bui
   - Growth Package: Full multi-page site, portfolio or product gallery, basic SEO, analytics, and a blog starter for ongoing growth.
   - E-commerce Starter: Product pages, secure payments, inventory basics, and checkout optimized for conversions.
 
-  Clear pricing, no surprises
+  \n\n### Clear pricing, no surprises
   Every package lists exactly what’s included, so you know what to expect. We explain optional extras—like advanced integrations or ongoing content support—so you can choose only what benefits your business.
 
   Training and handover included
   After launch we provide a short training session so you can update content, add blog posts, and manage simple tasks yourself. If you prefer, we also offer maintenance and content support so your site stays current without you doing the heavy lifting.
 
-  Fast turnaround, long-term value
+  \n\n### Fast turnaround, long-term value
   You don’t need months to get online. With focused requirements, many small-business websites launch in a few weeks. Once live, your site works continuously to generate leads and sales—delivering compounding value over time.
 
   Ready to get started?

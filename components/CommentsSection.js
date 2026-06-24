@@ -197,7 +197,6 @@ export default function CommentsSection({ articleSlug }) {
                 .cs-form {
                     background: var(--surface);
                     border: 1px solid var(--border);
-                    border-radius: var(--radius);
                     padding: 20px;
                     margin-bottom: 28px;
                     display: flex;
@@ -314,7 +313,6 @@ export default function CommentsSection({ articleSlug }) {
                     flex-direction: column;
                     gap: 0;
                     border: 1px solid var(--border);
-                    border-radius: var(--radius);
                     overflow: hidden;
                 }
 

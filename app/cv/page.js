@@ -1,7 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { FileText, Layers, User, Code2, Fingerprint, ArrowLeft, ArrowRight } from "lucide-react";
-import Footer from "@/components/footer";
 
 export default function AboutCVPage() {
     const router = useRouter();
@@ -184,7 +183,6 @@ export default function AboutCVPage() {
                     </div>
                 </main>
 
-                <Footer />
             </div>
         </>
     );
