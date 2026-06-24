@@ -58,9 +58,9 @@ export default function PortfolioClients() {
             title: " Yotapoint // E-Commerce Store",
             description: "Highly scalable transactional client platform built with integrated state machines, secure payment protocols, and a centralized operational dashboard.",
             image: "/yota.jpg",
-            link: "https://yotapoint.com/feeds",
+            link: "https://yotapoint.com",
             tags: ["State Logic", "API Sockets", "Schema Panel"],
-            year: "2024",
+            year: "2025",
             status: "DEPLOYED // LIVE"
         },
         {
@@ -70,7 +70,7 @@ export default function PortfolioClients() {
             image: "/the.jpg",
             link: "https://www.thecyclopedia.com.ng",
             tags: ["Next.js", "React Architecture", "Data Streams"],
-            year: "2024",
+            year: "2025",
             status: "DEPLOYED // PRODUCTION"
         },
         {
@@ -80,7 +80,7 @@ export default function PortfolioClients() {
             image: "/ijs.jpg",
             link: "https://ij-stitches.vercel.app/main",
             tags: ["React Engine", "UI Hooks", "Asset Optimization"],
-            year: "2024",
+            year: "2025",
             status: "OPTIMIZED // STABLE"
         },
     ];
@@ -269,7 +269,7 @@ export default function PortfolioClients() {
                                 <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
                             </button>
                             <Link
-                                href="/cv/pdf"
+                                href="/cv"
                                 className="inline-flex items-center gap-2 px-5 py-3 bg-slate-900/60 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-300 hover:text-white transition-all uppercase tracking-wider rounded-sm"
                             >
                                 <Download size={12} className="text-cyan-400" />
@@ -522,7 +522,7 @@ export default function PortfolioClients() {
                                 <ShieldAlert size={12} className="text-cyan-500" />
                                 CONTEXT_INTERRUPT_ALERT
                             </div>
-                            <h3 className="text-base font-black text-white uppercase tracking-tight">Active Remote Pipelines</h3>
+                            <h3 className="text-base font-black text-white uppercase tracking-tight">Active Remote Pipelines | Jobs</h3>
                             <p className="text-xs text-slate-400 leading-relaxed font-sans">
                                 Distributed global remote endpoints are currently open for deep structural integration. Execute trace logs now.
                             </p>

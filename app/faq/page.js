@@ -16,7 +16,7 @@ export default function FAQSection() {
         },
         {
             question: "What is the Forensic Scam Checker tool on your platform?",
-            answer: "The Forensic Scam Checker (/client/scam-checker) is a custom web application built to help users verify transaction authenticity and check suspicious details or metadata patterns to avoid online scams.",
+            answer: "The Forensic Scam Checker is a custom web application built to help users verify transaction authenticity and check suspicious details or metadata patterns to avoid online scams.",
         },
         {
             question: "How long does it take to build and launch a website?",
@@ -48,11 +48,11 @@ export default function FAQSection() {
         },
         {
             question: "What technology stack do you use to write your applications?",
-            answer: "I specialize in modern web development technologies including Next.js, React, Tailwind CSS, TypeScript, Node.js, Firebase, PostgreSQL, and Vercel hosting.",
+            answer: "I specialize in modern web development technologies including Next.js, React, Tailwind CSS, JavaScript, Node.js, Firebase, PostgreSQL, and Vercel hosting.",
         },
         {
             question: "How do I get in touch to start a project?",
-            answer: "You can head over to the Secure Contact page (/bc/contact) on browncode.name.ng to submit your project requirements, goals, and desired timeline so we can get started.",
+            answer: "You can head over to the Secure Contact page on browncode.name.ng/bc/contact to submit your project requirements, goals, and desired timeline so we can get started.",
         },
     ];
 
@@ -64,21 +64,21 @@ export default function FAQSection() {
 
     return (
         <>
-          <nav className="relative z-10 border-b border-slate-800 bg-[#090d16]/80 backdrop-blur-sm">
+            <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Terminal size={18} className="text-cyan-400" />
-                        <a href='/'>
-                        <span className="text-sm font-bold text-white tracking-wider uppercase">
+                    <div className="flex items-center gap-3 group">
+                        <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
+                        <a href="/">
+                            <span className="text-sm font-bold text-white tracking-wider uppercase bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
                                 BROWN_CODE_DEV // faq_manifest
-                        </span>
+                            </span>
                         </a>
                     </div>
                     <a
-                        href="/portfolio"
-                        className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 transition-all"
+                        href="/"
+                        className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 hover:bg-slate-950/80 transition-all duration-300 shadow-sm hover:shadow-cyan-500/5"
                     >
-                        <ArrowLeft size={14} />
+                        <ArrowLeft size={14} className="group-hover:-translate-x-0.5 transition-transform" />
                         <span>SYS.RETURN()</span>
                     </a>
                 </div>
@@ -90,7 +90,7 @@ export default function FAQSection() {
             <div className="max-w-4xl mx-auto">
 
                 {/* FAQ Header Section */}
-                <header className="relative w-full rounded-2xl border border-slate-800 bg-slate-950/40 backdrop-blur-md overflow-hidden p-6 md:p-10 shadow-2xl mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <header className="relative w-full rounded-2xl border border-slate-800 bg-[#0b0b0f] backdrop-blur-md overflow-hidden p-6 md:p-10 shadow-2xl mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
                     <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none hidden md:block">
                         <Binary size={180} />
                     </div>
@@ -98,7 +98,7 @@ export default function FAQSection() {
                     <div className="relative z-10 text-center md:text-left">
                         <div className="inline-flex items-center gap-2 bg-slate-900 border border-slate-800 text-cyan-400 text-xs px-4 py-1.5 rounded-md tracking-wider uppercase mb-4">
                             <HelpCircle size={14} className="animate-pulse" />
-                            developer_queries // faq_manifest
+                            Clients_queries // faq_manifest
                         </div>
                         <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white">
                             FREQUENT_ASKED_<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">QUESTIONS</span>
@@ -117,7 +117,7 @@ export default function FAQSection() {
                         return (
                             <div
                                 key={index}
-                                className="bg-slate-950/40 border border-slate-900 rounded-xl shadow-xl hover:border-slate-800/80 transition-colors duration-300 overflow-hidden"
+                                className="bg-[#0b0b0f] border border-slate-900 rounded-xl shadow-xl hover:border-slate-800/80 transition-colors duration-300 overflow-hidden"
                             >
                                 <button
                                     onClick={() => toggleFAQ(index)}

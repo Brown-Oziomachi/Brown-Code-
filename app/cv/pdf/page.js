@@ -44,7 +44,7 @@ export default function CVResume() {
         {
             title: 'SENIOR SECONDARY CERTIFICATE',
             period: '2009 - 2014',
-            description: 'Star Brain Secondary School - WAEC/NECO Certification'
+            description: 'SouthLand Secondary School - WAEC/NECO Certification'
         },
         {
             title: 'PRIMARY SCHOOL CERTIFICATE',

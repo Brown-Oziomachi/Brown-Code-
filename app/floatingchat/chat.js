@@ -60,7 +60,7 @@ export default function FloatingClient({ onChatOpen }) {
                     >
                         {/* WhatsApp Protocol Node */}
                         <a
-                            href="https://wa.me/qr/RX4M5D4PGB7CO1"
+                            href="https://wa.me/2347013725529"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center justify-center w-12 h-12 bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 rounded-full shadow-xl hover:bg-emerald-500 hover:text-white hover:border-emerald-400 hover:scale-110 transition-all duration-200 group relative"

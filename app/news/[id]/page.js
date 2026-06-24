@@ -14,7 +14,6 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRouter, useParams } from "next/navigation";
-import Navbar from "@/components/Navbar";
 
 // Utility functions
 const createSlug = (title) => {

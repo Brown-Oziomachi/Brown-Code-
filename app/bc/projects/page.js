@@ -13,6 +13,7 @@ import {
     Binary,
     Activity
 } from "lucide-react";
+import Footer from "@/components/footer";
 
 const projects = [
     {
@@ -31,7 +32,7 @@ const projects = [
         title: "E-Commerce Store/Yotapoint",
         description: "Scalable e-commerce solution with secure payment integration, inventory management system, and comprehensive admin dashboard.",
         image: "/yota.jpg",
-        link: "https://yotapoint.com/feeds",
+        link: "https://yotapoint.com",
         tags: ["E-Commerce", "Payment Sockets", "Admin Schema"],
         year: "2024",
         role: "LEAD_ENGINEER",
@@ -289,6 +290,7 @@ export default function ProjectsPage() {
 
                 </main>
             </div>
+            <Footer />
         </>
     );
 }

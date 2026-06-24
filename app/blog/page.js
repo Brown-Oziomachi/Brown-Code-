@@ -32,6 +32,8 @@ export default function BlogList() {
         filtered = architectureArticles;
       } else if (selectedCategory === 'engineering') {
         filtered = engineeringArticles;
+      } else if (selectedCategory === 'core') {
+        filtered = engineeringArticles;
       }
 
       if (searchTerm) {
@@ -67,15 +69,15 @@ export default function BlogList() {
       return { label: "System Architecture", color: "border-cyan-500/30 text-cyan-400 bg-cyan-950/30" };
     }
     if (engineeringArticles.some(a => a.slug === slug)) {
-      return { label: "Core Engineering", color: "border-emerald-500/30 text-emerald-400 bg-emerald-950/30" };
+      return { label: "Core Engineering", color: "border-emerald-500/30 text-emerald-400 bg-emerald-750/30" };
     }
-    return { label: "Documentation", color: "border-slate-700 text-slate-400 bg-slate-900/40" };
+    return { label: "TECHNOLOGY", color: "border-slate-700 text-slate-400 bg-slate-900/40" };
   };
 
   return (
     <>
       {/* Top Navigation Frame */}
-      <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
+      <nav className="relative z-10 border-b border-slate-800/80 bg-[#0b0b0f] backdrop-blur-md sticky top-0 z-[9999]">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3 group">
             <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
@@ -95,11 +97,11 @@ export default function BlogList() {
         </div>
       </nav>
 
-      <section className="min-h-screen bg-[#030712] text-slate-100 pt-32 pb-20 px-4 md:px-8 lg:px-12 font-mono selection:bg-cyan-500/30 selection:text-cyan-200">
+      <section className="min-h-screen bg-[#0b0b0f] text-slate-100 pt-32 pb-20 px-4 md:px-8 lg:px-12 font-mono  selection:text-cyan-200">
         <div className="max-w-7xl mx-auto">
 
           {/* Developer / Engineering Header Section */}
-          <div className="relative w-full rounded-2xl border border-slate-800 bg-slate-950/40 backdrop-blur-md overflow-hidden p-6 md:p-12 shadow-2xl mb-12">
+          <div className="relative w-full rounded-2xl border border-slate-800 bg-[#0b0b0f] backdrop-blur-md overflow-hidden p-6 md:p-12 shadow-2xl mb-12">
             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none hidden md:block">
               <Binary size={240} />
             </div>
@@ -152,13 +154,24 @@ export default function BlogList() {
                 }`}
             >
               <Terminal size={14} />
+              TECH
+            </button>
+
+            <button
+              onClick={() => setSelectedCategory('core')}
+              className={`flex items-center gap-2 px-4 py-2 border rounded-md transition-all duration-200 ${selectedCategory === 'core'
+                ? 'bg-cyan-950/40 border-cyan-500 text-cyan-400 shadow-sm'
+                : 'bg-transparent border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                }`}
+            >
+              <Terminal size={14} />
               CORE_ENG
             </button>
           </div>
 
           {/* CLI Search Shell */}
-          <div className="max-w-3xl mb-16">
-            <div className="relative flex items-center bg-slate-950 border border-slate-800 rounded-lg focus-within:border-cyan-500/50 transition-all duration-200">
+          <div className="max-w-3xl mb-16 ">
+            <div className="relative flex items-center bg-[#0b0b0f] border border-slate-800 rounded-lg focus-within:border-cyan-500/50 transition-all duration-200">
               <span className="pl-4 text-cyan-500 select-none text-xs font-bold">$ grep -ri</span>
               <input
                 type="text"
@@ -192,16 +205,15 @@ export default function BlogList() {
             )}
           </div>
 
-          {/* Dev Node/Articles Grid */}
           {filteredArticles.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
               {filteredArticles.map((article, index) => {
                 const badge = getCategoryBadge(article.slug);
                 return (
                   <a
-                    key={article.slug}
+                    key={`${article.slug}-${index}`} //  Guarantees uniqueness across updates
                     href={`/blog/${article.slug}`}
-                    className="group flex flex-col justify-between bg-slate-950/40 border border-slate-900 rounded-xl overflow-hidden hover:border-cyan-500/40 transition-all duration-300"
+                    className="group relative flex flex-col justify-between bg-slate-950 border border-slate-900 overflow-hidden hover:border-cyan-500/40 transition-all duration-300 shadow-xl"
                     style={{
                       animationName: "fadeInUp",
                       animationDuration: "0.4s",
@@ -211,13 +223,25 @@ export default function BlogList() {
                       opacity: 0,
                     }}
                   >
-                    <div className="p-6">
+                    {/* Background Image Container */}
+                    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                      <img
+                        src={article.image}
+                        alt={article.title}
+                        className="w-full h-full object-cover opacity-20  transition-all duration-500 mix-blend-luminosity"
+                      />
+                      {/* Ambient Dark Overlay to protect text legibility */}
+                      <div className="absolute inset-0 " />
+                    </div>
+
+                    {/* Foreground Card Content Block */}
+                    <div className="relative z-10 p-6 flex-1 flex flex-col">
                       {/* Meta Node Classification */}
                       <div className="flex items-center justify-between mb-4">
-                        <span className={`text-[10px] uppercase px-2 py-0.5 rounded border ${badge.color}`}>
+                        <span className={`text-[10px] uppercase px-2 py-0.5 rounded border backdrop-blur-sm ${badge.color}`}>
                           {badge.label}
                         </span>
-                        <span className="text-[10px] text-slate-600">ID: {article.slug.slice(0, 7)}</span>
+                        <span className="text-[10px] text-slate-500 font-mono">ID: {article.slug.slice(0, 7)}</span>
                       </div>
 
                       {/* Technical Title */}
@@ -226,13 +250,13 @@ export default function BlogList() {
                       </h3>
 
                       {/* Abstract / Preview */}
-                      <p className="text-slate-400 text-xs font-sans leading-relaxed line-clamp-3 mb-4">
+                      <p className="text-slate-400 text-xs font-sans leading-relaxed line-clamp-3 mb-4 mt-auto">
                         {article.preview}
                       </p>
                     </div>
 
                     {/* Node Footer metrics */}
-                    <div className="px-6 py-4 border-t border-slate-900/60 bg-slate-950/60 flex items-center justify-between text-[11px] text-slate-500">
+                    <div className="relative z-10 px-6 py-4 border-t border-slate-900/60 bg-[#0b0b0f] backdrop-blur-sm flex items-center justify-between text-[11px] text-slate-500">
                       <div className="flex items-center gap-1.5">
                         <User size={12} className="text-slate-600" />
                         <span className="text-slate-400">{article.postedBy}</span>
@@ -247,7 +271,7 @@ export default function BlogList() {
               })}
             </div>
           ) : (
-            <div className="border border-dashed border-slate-800 rounded-xl p-12 text-center max-w-xl mx-auto my-12">
+            <div className="border border-dashed border-slate-800 rounded-xl p-12 text-center max-w-xl mx-auto my-12 relative z-10">
               <Terminal size={24} className="text-rose-500 mx-auto mb-4" />
               <h3 className="text-sm font-bold text-slate-300 mb-2">ERR_NO_MATCHING_RECORDS</h3>
               <p className="text-xs text-slate-500 font-sans mb-4">

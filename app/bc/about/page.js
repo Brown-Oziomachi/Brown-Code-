@@ -89,18 +89,9 @@ export default function AboutMePage() {
     ];
 
     return (
-        <div className="min-h-screen bg-[#090d16] text-slate-300 font-mono antialiased selection:bg-cyan-500/20 selection:text-cyan-300 relative overflow-x-hidden">
-            {/* Developing Grid Underlay Overlay */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b1a_1px,transparent_1px),linear-gradient(to_bottom,#1e293b1a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none z-0"></div>
-
-            {/* Subtle Matrix Ambient Spotlights */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                <div className="absolute w-[500px] h-[500px] bg-cyan-500/[0.04] rounded-full blur-[120px] -top-40 -left-40"></div>
-                <div className="absolute w-[500px] h-[500px] bg-blue-600/[0.04] rounded-full blur-[120px] bottom-1/4 -right-40"></div>
-            </div>
-
-            {/* Top Navigation Frame */}
-            <nav className="relative z-10 border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0">
+        <>
+          {/* Top Navigation Frame */}
+            <nav className="relative border-b border-slate-800/80 bg-[#090d16]/80 backdrop-blur-md sticky top-0 z-[9999]">
                 <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3 group">
                         <Terminal size={18} className="text-cyan-400 group-hover:rotate-6 transition-transform" />
@@ -119,6 +110,17 @@ export default function AboutMePage() {
                     </a>
                 </div>
             </nav>
+        <div className="min-h-screen bg-[#090d16] text-slate-300 font-mono antialiased selection:bg-cyan-500/20 selection:text-cyan-300 relative overflow-x-hidden">
+            {/* Developing Grid Underlay Overlay */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b1a_1px,transparent_1px),linear-gradient(to_bottom,#1e293b1a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none z-0"></div>
+
+            {/* Subtle Matrix Ambient Spotlights */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                <div className="absolute w-[500px] h-[500px] bg-cyan-500/[0.04] rounded-full blur-[120px] -top-40 -left-40"></div>
+                <div className="absolute w-[500px] h-[500px] bg-blue-600/[0.04] rounded-full blur-[120px] bottom-1/4 -right-40"></div>
+            </div>
+
+          
 
             <main className="relative z-10 max-w-6xl mx-auto px-6 py-12 md:py-20">
                 {/* Main Identity Manifest block */}
@@ -400,6 +402,8 @@ export default function AboutMePage() {
                     <p className="hover:text-slate-500 transition-colors duration-300">&copy; {new Date().getFullYear()} BROWN_CODE.SYS. ALL RIGHTS RESERVED. SECURE_BUILD_V2.0.6</p>
                 </div>
             </footer>
-        </div>
+            </div>
+        </>
+
     );
 }

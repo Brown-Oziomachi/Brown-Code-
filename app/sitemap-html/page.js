@@ -8,15 +8,15 @@ import Footer from "@/components/footer";
 // Simulated fetch layer for production blog nodes
 const getBlogSlugs = async () => {
     return [
-        "why-business-owners-need-websites",
+        "moving-from-social-media-to-digital-asset",
         "how-users-help-ai-companies-make-billions",
-        "importance-of-a-personal-portfolio",
-        "why-branding-matters-online",
-        "future-proofing-your-career-online",
-        "cost-of-neglect-website-maintenance",
-        "how-to-build-your-first-website",
-        "seo-fundamentals-getting-found",
-        "content-marketing-personal-brands",
+        "mastering-local-seo-for-startups",
+        "power-of-ecommerce-global-sales",
+        "building-trust-online-cro",
+        "why-website-speed-matters",
+        "smart-automation-business-autopilot",
+        "cybersecurity-essentials-online-business",
+        "content-marketing-winning-with-value",
     ];
 };
 

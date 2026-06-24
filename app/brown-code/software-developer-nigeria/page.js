@@ -92,16 +92,16 @@ export default function WebDeveloperNigeria() {
                         </h1>
                         <p className="text-lg text-[rgba(248,248,255,.4)] mt-6 leading-relaxed max-w-xl">
                             Looking for a reliable <strong className="text-[#f8f8ff] font-medium"> developer in Nigeria</strong>?
-                            Brown Code engineers high-speed, modern, and SEO-optimized interfaces that empower brands across the federation to process payments, track leads, and capture markets.
+                            Brown Code developes high-speed, modern, and SEO-optimized interfaces that empower brands across the federation to process payments, track leads, and capture markets.
                         </p>
                     </div>
 
                     {/* Right Hand Context Box (DARK #11111a) */}
                     <div className="lg:col-span-5 bg-[#11111a] border border-[rgba(124,58,237,.25)] p-6 rounded-2xl relative overflow-hidden shadow-2xl">
                         <div className="absolute top-0 right-0 w-24 h-24 bg-[#7c3aed]/10 blur-2xl pointer-events-none"></div>
-                        <h3 className="text-sm font-mono text-[#a855f7] uppercase tracking-wider mb-4">// Engineering Architecture</h3>
+                        <h3 className="text-sm font-mono text-[#a855f7] uppercase tracking-wider mb-4">// Developing Architecture</h3>
                         <p className="text-xs text-[rgba(248,248,255,.4)] leading-relaxed mb-4">
-                            Physical operations are located in **Abuja (FCT)**, with remote deployment capabilities and engineering consultations available across all states, including Lagos, Port Harcourt, and Kano.
+                            Physical operations are located in **Abuja (FCT)**, with remote deployment capabilities and developing consultations available across all states, including Lagos, Port Harcourt, and Kano.
                         </p>
                         <div className="flex gap-2 text-[10px] font-mono text-[rgba(248,248,255,.4)]">
                             <span className="bg-[#0b0b0f] px-2 py-1 rounded border border-[rgba(248,248,255,.07)]">Next.js</span>

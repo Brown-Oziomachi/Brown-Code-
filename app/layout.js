@@ -3,10 +3,14 @@ import "./globals.css";
 import Script from "next/script";
 
 export const metadata = {
-  title: "Brown code | Software Developer",
+  metadataBase: new URL("https://browncode.name.ng"),
+  alternates: {
+    canonical: "/",
+  },
+  title: "Brown Code — Full-Stack Software Developer | Portfolio",
   // 🚀 Added standard description and keywords array directly to the metadata root
   description:
-    "Portfolio of Brown Oziomachi (Brown code / Brown ad / Bown). I build modern websites, blogs, e-commerce stores, and business platforms for brands in Nigeria and worldwide.",
+    "Sir Brown AD (Brown Oziomachi) — Full-Stack Software Developer based in Abuja, Nigeria. Specializing in Next.js, Firebase, scalable web systems, and African market payment infrastructure. View projects, blog, and contact.",
   keywords: [
     "Brown code",
     "Brown ad",
@@ -20,7 +24,7 @@ export const metadata = {
 
   // ✅ Open Graph optimized with your search phrases
   openGraph: {
-    title: "Brown Code | Software Developer",
+    title: "Brown Code — Full-Stack Software Developer | Portfolio",
     description:
       "Portfolio of Brown Oziomachi (Brown code / Brown ad). Professional web applications, distributed platforms, and full-stack architecture.",
     url: "https://browncode.name.ng",
@@ -40,7 +44,7 @@ export const metadata = {
   // ✅ Twitter Cards optimized with your terms
   twitter: {
     card: "summary_large_image",
-    title: "Brown Code (Brown Oziomachi) — Software Developer",
+    title: "Brown Code — Full-Stack Software Developer | Portfolio",
     description:
       "Get a professional website built by Brown code / Brown ad and grow your business or platform online.",
     images: ["https://browncode.name.ng/logoo.png"],
