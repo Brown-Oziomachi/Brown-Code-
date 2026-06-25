@@ -26,7 +26,7 @@ const structuredData = {
     url: "https://browncode.name.ng",
     logo: "https://browncode.name.ng/logo.png",
     description: "Professional web development services in Nigeria, Nigeria — websites, e-commerce, portfolios, web apps, SEO.",
-    telephone: "+234-701-372-5529",
+    telephone: "+234-814-299-5114",
     address: {
         "@type": "PostalAddress",
         streetAddress: "Kubwa",
@@ -204,7 +204,7 @@ export default function WebDeveloperNigeria() {
                         Ready to build your website? Reach out directly via WhatsApp or secure a consultation block via email.
                     </p>
                     <div className="mt-4 text-xs text-[rgba(248,248,255,.4)] (MUTED) space-y-1">
-                        <p>Line Secure: <span className="text-[#a3e635] (LIME) font-mono">+234-701-372-5529</span></p>
+                        <p>Line Secure: <span className="text-[#a3e635] (LIME) font-mono">+234-814-299-5114</span></p>
                         <p>Routing: <span className="text-[#a855f7] (PURPLEL) font-mono">browncemmanuel@gmail.com</span></p>
                     </div>
 

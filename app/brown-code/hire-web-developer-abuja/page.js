@@ -25,7 +25,7 @@ const structuredData = {
     name: "Brown Code",
     image: "https://browncode.name.ng/logo.png",
     url: "https://browncode.name.ng",
-    telephone: "+234-701-372-5529",
+    telephone: "+234-814-299-5114",
     priceRange: "₦100,000 - ₦500,000+",
     address: {
         "@type": "PostalAddress",
@@ -224,7 +224,7 @@ export default function HireWebDeveloperAbuja() {
                     </p>
 
                     <div className="mt-6 flex flex-col sm:flex-row justify-center items-center gap-4 text-xs font-mono text-[rgba(248,248,255,.4)]">
-                        <span>FCT Office Pipeline: <strong className="text-[#a3e635]">+234-701-372-5529</strong></span>
+                        <span>FCT Office Pipeline: <strong className="text-[#a3e635]">+234-814-299-5114</strong></span>
                         <span>Asynchronous Routing: <strong className="text-[#a855f7]">browncemmanuel@gmail.com</strong></span>
                     </div>
 

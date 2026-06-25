@@ -8,7 +8,7 @@ import {
 export default function ContactForm() {
     const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
     const [errors, setErrors] = useState({});
-    const WHATSAPP_NUMBER = "2347013725529";
+    const WHATSAPP_NUMBER = "2348142995114";
 
     const handleChange = (e) => {
         const { name, value } = e.target;

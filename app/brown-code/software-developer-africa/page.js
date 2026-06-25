@@ -25,7 +25,7 @@ const structuredData = {
     name: "Brown Code",
     image: "https://browncode.name.ng/logo.png",
     url: "https://browncode.name.ng",
-    telephone: "+234-701-372-5529",
+    telephone: "+234-814-299-5114",
     priceRange: "$500 - $10,000+", // Switched to international standard pricing reference
     address: {
         "@type": "PostalAddress",
@@ -195,7 +195,7 @@ export default function WebDeveloperAfrica() {
                             </p>
 
                             <div className="mt-6 flex flex-col sm:flex-row justify-center items-center gap-4 text-xs font-mono text-[rgba(248,248,255,.4)]">
-                                <span>WhatsApp Secure: <strong className="text-[#a3e635]">+234-701-372-5529</strong></span>
+                                <span>WhatsApp Secure: <strong className="text-[#a3e635]">+234-814-299-5114</strong></span>
                                 <span>Corporate Mail: <strong className="text-[#a855f7]">browncemmanuel@gmail.com</strong></span>
                             </div>
 

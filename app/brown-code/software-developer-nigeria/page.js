@@ -26,7 +26,7 @@ const structuredData = {
     url: "https://browncode.name.ng",
     logo: "https://browncode.name.ng/logo.png",
     description: "Professional full-stack web development services (Next.js, React, Tailwind CSS) available nationwide across Nigeria.",
-    telephone: "+234-701-372-5529",
+    telephone: "+234-814-299-5114",
     priceRange: "₦300,000 - ₦1,500,000+",
     address: {
         "@type": "PostalAddress",
@@ -200,7 +200,7 @@ export default function WebDeveloperNigeria() {
                     </p>
 
                     <div className="mt-6 flex flex-col sm:flex-row justify-center items-center gap-4 text-xs font-mono">
-                        <span className="text-[rgba(248,248,255,.4)]">WhatsApp: <strong className="text-[#a3e635]">+234-701-372-5529</strong></span>
+                        <span className="text-[rgba(248,248,255,.4)]">WhatsApp: <strong className="text-[#a3e635]">+234-814-299-5114</strong></span>
                         <span className="text-[rgba(248,248,255,.4)]">Mail routing: <strong className="text-[#a855f7]">browncemmanuel@gmail.com</strong></span>
                     </div>
 

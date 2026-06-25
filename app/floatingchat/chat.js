@@ -155,7 +155,7 @@ export default function FloatingClient({ onChatOpen }) {
                         <div className="fc-actions">
                             {/* WhatsApp */}
                             <a
-                                href="https://wa.me/2347013725529"
+                                href="https://wa.me/2348142995114"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="fc-action-btn"

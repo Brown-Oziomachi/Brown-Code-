@@ -29,7 +29,7 @@ const structuredData = {
     name: "Browncode",
     image: "https://browncode.name.ng/logo.png",
     url: "https://browncode.name.ng",
-    telephone: "+234-701-372-5529",
+    telephone: "+234-814-299-5114",
     priceRange: "₦100,000 - ₦1,200,000",
     address: {
         "@type": "PostalAddress",

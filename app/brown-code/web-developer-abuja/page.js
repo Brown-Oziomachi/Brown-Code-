@@ -24,7 +24,7 @@ const structuredData = {
   url: "https://browncode.name.ng",
   logo: "https://browncode.name.ng/logo.png",
   description: "Professional web development services in Abuja, Nigeria — websites, e-commerce, portfolios, web apps, SEO.",
-  telephone: "+234-701-372-5529",
+  telephone: "+234-814-299-5114",
   priceRange: "₦100,000 - ₦500,000+",
   address: {
     "@type": "PostalAddress",
@@ -200,7 +200,7 @@ export default function WebDeveloperAbuja() {
             Ready to deploy an enterprise-grade website or web app? Reach out on WhatsApp or secure a consultation block via email.
           </p>
           <div className="mt-4 text-xs text-[rgba(248,248,255,.4)] space-y-1">
-            <p>Secure Link: <span className="text-[#a3e635] font-mono">+234-701-372-5529</span></p>
+            <p>Secure Link: <span className="text-[#a3e635] font-mono">+234-814-299-5114</span></p>
             <p>Routing: <span className="text-[#a855f7] font-mono">browncemmanuel@gmail.com</span></p>
           </div>
 
