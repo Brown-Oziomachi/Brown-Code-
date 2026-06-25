@@ -670,6 +670,84 @@ export default function ArticleClient({ params }) {
                     color: var(--text-2);
                     line-height: 1.6;
                 }
+                    .ap-article__list-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+}
+
+.ap-article__list-number {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid rgba(232,255,71,0.2);
+    border-radius: 3px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.ap-article__list-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-2);
+    font-weight: 300;
+    margin: 0;
+}
+
+.ap-article__bullet-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.ap-article__bullet-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 8px;
+}
+
+.ap-article__bullet-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-2);
+    font-weight: 300;
+    margin: 0;
+}
+
+.ap-article__quote {
+    border-left: 3px solid var(--accent);
+    padding: 12px 20px;
+    margin: 24px 0;
+    background: var(--accent-dim);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-1);
+    font-style: italic;
+    font-weight: 300;
+}
+
+.ap-article__callout {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    border: 1px solid rgba(232,255,71,0.2);
+    background: var(--accent-dim);
+    border-radius: var(--radius);
+}
             `}</style>
 
       <div className="ap-page">
@@ -728,19 +806,64 @@ export default function ArticleClient({ params }) {
 
           {/* Article + comments + author */}
           <div className="ap-article">
-            {article.content.split("\n\n").map((para, i) => {
-              if (para.trim().startsWith("###")) {
-                return (
-                  <h2 key={i} className="ap-article__section-heading">
-                    <CornerDownRight size={15} />
-                    {para.replace("###", "").trim()}
-                  </h2>
-                );
-              }
-              return (
-                <p key={i} className="ap-article__paragraph">{para}</p>
-              );
-            })}
+                      {article.content.split("\n\n").map((para, i) => {
+                          const trimmed = para.trim();
+
+                          if (trimmed.startsWith("###")) {
+                              return (
+                                  <h2 key={i} className="ap-article__section-heading">
+                                      <CornerDownRight size={15} />
+                                      {trimmed.replace(/^###/, "").trim()}
+                                  </h2>
+                              );
+                          }
+
+                          // Numbered list item: starts with "1." "2." etc
+                          if (/^\d+\.\s/.test(trimmed)) {
+                              return (
+                                  <div key={i} className="ap-article__list-item">
+                                      <span className="ap-article__list-number">
+                                          {trimmed.match(/^(\d+)\./)[1]}
+                                      </span>
+                                      <p className="ap-article__list-text">
+                                          {trimmed.replace(/^\d+\.\s/, "")}
+                                      </p>
+                                  </div>
+                              );
+                          }
+
+                          // Bullet item: starts with "- "
+                          if (trimmed.startsWith("- ")) {
+                              return (
+                                  <div key={i} className="ap-article__bullet-item">
+                                      <span className="ap-article__bullet-dot" />
+                                      <p className="ap-article__bullet-text">
+                                          {trimmed.replace(/^-\s/, "")}
+                                      </p>
+                                  </div>
+                              );
+                          }
+
+                          // Blockquote: starts with ">"
+                          if (trimmed.startsWith(">")) {
+                              return (
+                                  <blockquote key={i} className="ap-article__quote">
+                                      {trimmed.replace(/^>\s?/, "")}
+                                  </blockquote>
+                              );
+                          }
+
+                          // Short bold-style callout: all caps or very short (under 6 words)
+                          if (trimmed === trimmed.toUpperCase() && trimmed.length > 3 && trimmed.length < 80) {
+                              return (
+                                  <p key={i} className="ap-article__callout">{trimmed}</p>
+                              );
+                          }
+
+                          return (
+                              <p key={i} className="ap-article__paragraph">{trimmed}</p>
+                          );
+                      })}
 
             {/* Mobile share */}
             <div className="ap-share-mobile">

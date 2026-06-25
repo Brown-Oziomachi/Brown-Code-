@@ -172,7 +172,7 @@ export default function AboutCVPage() {
                             <div className="cv-cta__title">Professional résumé</div>
                             <div className="cv-cta__sub">Full work history, skills, and project references.</div>
                         </div>
-                        <a href="/cv/pdf" target="_blank" rel="noopener noreferrer" className="cv-btn">
+                        <a href="/cv.pdf" target="_blank" rel="noopener noreferrer" className="cv-btn">
                             View CV <ArrowRight size={13} />
                         </a>
                     </div>

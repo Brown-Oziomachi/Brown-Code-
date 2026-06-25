@@ -2,22 +2,6 @@
 
 /* Font declarations */
 @font-face {
-  font-family: "Geist Sans";
-  src: url("/fonts/Geist-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Geist Sans";
-  src: url("/fonts/Geist-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
   font-family: "JetBrains Mono";
   src: url("/fonts/JetBrainsMono-Regular.woff2") format("woff2");
   font-weight: 400;
@@ -29,7 +13,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --font-geist-sans: "Geist Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  --font-geist-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
   --font-geist-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
 }
 
@@ -64,26 +48,68 @@ kbd {
 }
 
 @keyframes float1 {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  50% { transform: translate(20px, -30px) rotate(15deg); }
-}
-@keyframes float2 {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  50% { transform: translate(-25px, 40px) rotate(-20deg); }
-}
-@keyframes float3 {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  50% { transform: translate(15px, -50px) rotate(25deg); }
-}
-@keyframes float4 {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  50% { transform: translate(-30px, 60px) rotate(-10deg); }
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate(20px, -30px) rotate(15deg);
+  }
 }
 
-.animate-float-1 { animation: float1 8s ease-in-out infinite; }
-.animate-float-2 { animation: float2 10s ease-in-out infinite; }
-.animate-float-3 { animation: float3 12s ease-in-out infinite; }
-.animate-float-4 { animation: float4 9s ease-in-out infinite; }
+@keyframes float2 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate(-25px, 40px) rotate(-20deg);
+  }
+}
+
+@keyframes float3 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate(15px, -50px) rotate(25deg);
+  }
+}
+
+@keyframes float4 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate(-30px, 60px) rotate(-10deg);
+  }
+}
+
+.animate-float-1 {
+  animation: float1 8s ease-in-out infinite;
+}
+
+.animate-float-2 {
+  animation: float2 10s ease-in-out infinite;
+}
+
+.animate-float-3 {
+  animation: float3 12s ease-in-out infinite;
+}
+
+.animate-float-4 {
+  animation: float4 9s ease-in-out infinite;
+}
 
 .tiptap p {
   margin-bottom: 1rem;

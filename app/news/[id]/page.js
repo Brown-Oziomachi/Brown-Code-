@@ -313,7 +313,7 @@ export default function NewsDetails() {
                     <a href="/" className="cy-nav__brand">
                         brown<em>.</em>dev <span style={{ color: "var(--text-3)", marginLeft: 6 }}></span>
                     </a>
-                    <Link href="/news" className="cy-nav__back">
+                    <Link href="/tech-news" className="cy-nav__back">
                         <ArrowLeft size={13} /> All News
                     </Link>
                 </nav>
