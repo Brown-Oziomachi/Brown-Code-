@@ -692,7 +692,7 @@ export default function PortfolioClients() {
                                         Every application stack I initialise prioritises layout render performance,
                                         robust data schema safety boundaries, and modular component isolation.
                                     </p>
-                                    <Link href="/bc/about" className="pf-btn" style={{ display: "inline-flex" }}>
+                                    <Link href="/bc_dev" className="pf-btn" style={{ display: "inline-flex" }}>
                                         Full profile <ArrowRight size={12} />
                                     </Link>
                                 </div>
