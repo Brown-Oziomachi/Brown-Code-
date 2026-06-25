@@ -26,7 +26,7 @@ const corePages = [
     { name: "Jobs", href: "/jobs" },
     { name: "Projects", href: "/bc/projects" },
     { name: "Scam Checker", href: "/client/scam-checker" },
-    { name: "CV / Resume", href: "/cv-pdf" },
+    { name: "CV / Resume", href: "/cv" },
 ];
 
 const seoNodes = [
