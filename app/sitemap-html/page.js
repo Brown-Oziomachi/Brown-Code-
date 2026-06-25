@@ -1,4 +1,4 @@
-import SitemapClient from "./sitemap";
+import SitemapClient from "./SitemapClient";
 
 export const metadata = {
     title: "Site Directory — Brown Code",

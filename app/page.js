@@ -1,4 +1,4 @@
-import SitemapPage from "./sitemap-html/page";
+import SitemapClient from "./sitemap-html/SitemapClient";
 
 export const metadata = {
   title: "Brown Code — Full-Stack Software Developer | Portfolio",
@@ -6,5 +6,5 @@ export const metadata = {
 };
 
 export default function Home() {
-  return <SitemapPage />;
+  return <SitemapClient />;
 }
