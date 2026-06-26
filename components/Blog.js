@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 const articles = [
   {
     title: "Why You Need a Website",
-    PostedBY: "Brown Code",
+    PostedBY: "Sir Brown AD",
     preview:
       "A website builds credibility and makes your work accessible to the world...",
     content: `In today's digital era, having a website is no longer optional. 
@@ -15,7 +15,7 @@ const articles = [
   },
   {
     title: "Importance of a Personal Portfolio",
-    PostedBY: "Brown Code",
+    PostedBY: "Sir Brown AD",
 
     preview:
       "Your portfolio is your story—showing employers or clients what you can do...",
@@ -26,7 +26,7 @@ const articles = [
   },
   {
     title: "Why Branding Matters Online",
-    PostedBY: "Brown Code",
+    PostedBY: "Sir Brown AD",
 
     preview:
       "Your brand is how people perceive you. Consistent branding makes you memorable...",
@@ -36,7 +36,7 @@ const articles = [
   },
   {
     title: "Future-Proofing Your Career Online",
-    PostedBY: "Brown Code",
+    PostedBY: "Sir Brown AD",
     preview:
       "In a digital-first world, an online presence opens doors to unlimited opportunities...",
     content: `The job market is rapidly evolving, and having an online presence future-proofs your career. 

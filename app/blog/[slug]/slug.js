@@ -6,7 +6,7 @@ import {
   ArrowLeft, ArrowRight, Clock, CornerDownRight,
   Twitter, Linkedin, Facebook, Instagram, Github, Mail
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import { useState, use, useEffect } from "react";
 import Link from "next/link";
 import RelatedArticles from "@/components/relatedarticle";
@@ -92,12 +92,7 @@ export default function ArticleClient({ params }) {
   };
 
   if (!article) {
-    return (
-      <>
-        <NotFoundStyles />
-        <NotFound onBack={() => router.push("/blog")} />
-      </>
-    );
+    notFound(); // This halts rendering and automatically shows your custom 404 UI
   }
 
   return (
@@ -671,83 +666,83 @@ export default function ArticleClient({ params }) {
                     line-height: 1.6;
                 }
                     .ap-article__list-item {
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    margin-bottom: 14px;
-}
+                    display: flex;
+                    gap: 14px;
+                    align-items: flex-start;
+                    margin-bottom: 14px;
+                  }
 
-.ap-article__list-number {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--accent);
-    background: var(--accent-dim);
-    border: 1px solid rgba(232,255,71,0.2);
-    border-radius: 3px;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 2px;
-}
+                  .ap-article__list-number {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--accent);
+                    background: var(--accent-dim);
+                    border: 1px solid rgba(232,255,71,0.2);
+                    border-radius: 3px;
+                    width: 24px;
+                    height: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                    margin-top: 2px;
+                  }
 
-.ap-article__list-text {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--text-2);
-    font-weight: 300;
-    margin: 0;
-}
+                  .ap-article__list-text {
+                    font-size: 15px;
+                    line-height: 1.7;
+                    color: var(--text-2);
+                    font-weight: 300;
+                    margin: 0;
+                  }
 
-.ap-article__bullet-item {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    margin-bottom: 10px;
-}
+                  .ap-article__bullet-item {
+                    display: flex;
+                    gap: 12px;
+                    align-items: flex-start;
+                    margin-bottom: 10px;
+                  }
 
-.ap-article__bullet-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    flex-shrink: 0;
-    margin-top: 8px;
-}
+                  .ap-article__bullet-dot {
+                    width: 6px;
+                    height: 6px;
+                    border-radius: 50%;
+                    background: var(--accent);
+                    flex-shrink: 0;
+                    margin-top: 8px;
+                  }
 
-.ap-article__bullet-text {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--text-2);
-    font-weight: 300;
-    margin: 0;
-}
+                  .ap-article__bullet-text {
+                    font-size: 15px;
+                    line-height: 1.7;
+                    color: var(--text-2);
+                    font-weight: 300;
+                    margin: 0;
+                  }
 
-.ap-article__quote {
-    border-left: 3px solid var(--accent);
-    padding: 12px 20px;
-    margin: 24px 0;
-    background: var(--accent-dim);
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--text-1);
-    font-style: italic;
-    font-weight: 300;
-}
+                  .ap-article__quote {
+                    border-left: 3px solid var(--accent);
+                    padding: 12px 20px;
+                    margin: 24px 0;
+                    background: var(--accent-dim);
+                    font-size: 15px;
+                    line-height: 1.7;
+                    color: var(--text-1);
+                    font-style: italic;
+                    font-weight: 300;
+                  }
 
-.ap-article__callout {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    margin-bottom: 16px;
-    padding: 10px 14px;
-    border: 1px solid rgba(232,255,71,0.2);
-    background: var(--accent-dim);
-    border-radius: var(--radius);
-}
+                  .ap-article__callout {
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    letter-spacing: 0.08em;
+                    color: var(--accent);
+                    margin-bottom: 16px;
+                    padding: 10px 14px;
+                    border: 1px solid rgba(232,255,71,0.2);
+                    background: var(--accent-dim);
+                    border-radius: var(--radius);
+                  }
             `}</style>
 
       <div className="ap-page">
@@ -806,64 +801,123 @@ export default function ArticleClient({ params }) {
 
           {/* Article + comments + author */}
           <div className="ap-article">
-                      {article.content.split("\n\n").map((para, i) => {
-                          const trimmed = para.trim();
+            {article.content.split("\n\n").map((para, i) => {
+              const trimmed = para.trim();
 
-                          if (trimmed.startsWith("###")) {
-                              return (
-                                  <h2 key={i} className="ap-article__section-heading">
-                                      <CornerDownRight size={15} />
-                                      {trimmed.replace(/^###/, "").trim()}
-                                  </h2>
-                              );
-                          }
+              // Helper function to turn markdown links [text](url) into actual clickable <a> tags
+              const renderInlineElements = (text) => {
+                const markdownLinkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+                const parts = [];
+                let lastIndex = 0;
+                let match;
 
-                          // Numbered list item: starts with "1." "2." etc
-                          if (/^\d+\.\s/.test(trimmed)) {
-                              return (
-                                  <div key={i} className="ap-article__list-item">
-                                      <span className="ap-article__list-number">
-                                          {trimmed.match(/^(\d+)\./)[1]}
-                                      </span>
-                                      <p className="ap-article__list-text">
-                                          {trimmed.replace(/^\d+\.\s/, "")}
-                                      </p>
-                                  </div>
-                              );
-                          }
+                while ((match = markdownLinkRegex.exec(text)) !== null) {
+                  // Add the text before the link
+                  if (match.index > lastIndex) {
+                    parts.push(text.substring(lastIndex, match.index));
+                  }
+                  // Add the clickable link component
+                  parts.push(
+                    <a
+                      key={match.index}
+                      href={match[2]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ap-article__inline-link"
+                      style={{ color: '#3b82f6', textDecoration: 'underline' }} // Style as needed
+                    >
+                      {match[1]}
+                    </a>
+                  );
+                  lastIndex = markdownLinkRegex.lastIndex;
+                }
 
-                          // Bullet item: starts with "- "
-                          if (trimmed.startsWith("- ")) {
-                              return (
-                                  <div key={i} className="ap-article__bullet-item">
-                                      <span className="ap-article__bullet-dot" />
-                                      <p className="ap-article__bullet-text">
-                                          {trimmed.replace(/^-\s/, "")}
-                                      </p>
-                                  </div>
-                              );
-                          }
+                if (lastIndex < text.length) {
+                  parts.push(text.substring(lastIndex));
+                }
 
-                          // Blockquote: starts with ">"
-                          if (trimmed.startsWith(">")) {
-                              return (
-                                  <blockquote key={i} className="ap-article__quote">
-                                      {trimmed.replace(/^>\s?/, "")}
-                                  </blockquote>
-                              );
-                          }
+                return parts.length > 0 ? parts : text;
+              };
 
-                          // Short bold-style callout: all caps or very short (under 6 words)
-                          if (trimmed === trimmed.toUpperCase() && trimmed.length > 3 && trimmed.length < 80) {
-                              return (
-                                  <p key={i} className="ap-article__callout">{trimmed}</p>
-                              );
-                          }
+              // NEW: Check for Markdown Images: ![Alt Text](URL)
+              if (trimmed.startsWith("![") && trimmed.endsWith(")")) {
+                const match = trimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
+                if (match) {
+                  const altText = match[1];
+                  const imageUrl = match[2];
+                  return (
+                    <div key={i} className="ap-article__image-container" style={{ margin: '24px 0' }}>
+                      <img
+                        src={imageUrl}
+                        alt={altText}
+                        className="ap-article__body-image"
+                        style={{ width: '100%', height: 'auto',}}
+                      />
+                      {altText && <span className="ap-article__image-caption" style={{ display: 'block', fontSize: '14px', color: '#6b7280', marginTop: '8px', textAlign: 'center' }}>{altText}</span>}
+                    </div>
+                  );
+                }
+              }
 
-                          return (
-                              <p key={i} className="ap-article__paragraph">{trimmed}</p>
-                          );
-                      })}
+              // Section Headings
+              if (trimmed.startsWith("###")) {
+                return (
+                  <h2 key={i} className="ap-article__section-heading">
+                    <CornerDownRight size={15} />
+                    {renderInlineElements(trimmed.replace(/^###/, "").trim())}
+                  </h2>
+                );
+              }
+
+              // Numbered list item
+              if (/^\d+\.\s/.test(trimmed)) {
+                return (
+                  <div key={i} className="ap-article__list-item">
+                    <span className="ap-article__list-number">
+                      {trimmed.match(/^(\d+)\./)[1]}
+                    </span>
+                    <p className="ap-article__list-text">
+                      {renderInlineElements(trimmed.replace(/^\d+\.\s/, ""))}
+                    </p>
+                  </div>
+                );
+              }
+
+              // Bullet item
+              if (trimmed.startsWith("- ")) {
+                return (
+                  <div key={i} className="ap-article__bullet-item">
+                    <span className="ap-article__bullet-dot" />
+                    <p className="ap-article__bullet-text">
+                      {renderInlineElements(trimmed.replace(/^-\s/, ""))}
+                    </p>
+                  </div>
+                );
+              }
+
+              // Blockquote
+              if (trimmed.startsWith(">")) {
+                return (
+                  <blockquote key={i} className="ap-article__quote">
+                    {renderInlineElements(trimmed.replace(/^>\s?/, ""))}
+                  </blockquote>
+                );
+              }
+
+              // Short bold-style callout
+              if (trimmed === trimmed.toUpperCase() && trimmed.length > 3 && trimmed.length < 80) {
+                return (
+                  <p key={i} className="ap-article__callout">{renderInlineElements(trimmed)}</p>
+                );
+              }
+
+              // Default Paragraph
+              return (
+                <p key={i} className="ap-article__paragraph">
+                  {renderInlineElements(trimmed)}
+                </p>
+              );
+            })}
 
             {/* Mobile share */}
             <div className="ap-share-mobile">
@@ -882,6 +936,74 @@ export default function ArticleClient({ params }) {
                 </button>
               ))}
             </div>
+
+            {/* This sits right below your article content */}
+            <footer className="mt-12 pt-6 border-t border-neutral-200 dark:border-neutral-800 italic">
+              {article.isSponsored ? (
+                // Sponsored Article Footer Box
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 text-center border border-neutral-200 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/50 backdrop-blur-sm">
+                  <div className="max-w-xl">
+                    <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                      This article was sponsored and contributed by{" "}
+                      <a
+                        href={article.companyLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-neutral-900 dark:text-neutral-100 underline font-semibold hover:underline decoration-neutral-400"
+                      >
+                        {article.companyName}
+                      </a>
+                      . Published via{" "}
+                      <a
+                        href="https://browncode.name.ng/blog" target="_blank"
+                        className="text-neutral-950 dark:text-neutral-50 underline font-medium hover:underline"
+                      >
+                        <p className="ap-nav__brand" target="_blank">
+                          brown<em>.</em>dev
+                        </p>
+                      </a>.
+                    </p>
+                  </div>
+
+                  <a
+                    href="/google_index/advertise" target="_blank"
+                    className="inline-flex items-center justify-center shrink-0 gap-2 px-4 py-2 text-sm font-medium text-neutral-900 bg-white border border-neutral-300 shadow-sm hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700 transition-all duration-200 group"
+                  >
+                    <span>Advertise with us</span>
+                    <ArrowRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-transform group-hover:translate-x-0.5" />
+                  </a>
+                </div>
+              ) : (
+                  // Standard Publication Footer
+                  <div className="text-center">
+                    <span className="text-sm">
+                    This article was originally written and published by{" "}
+                  <a
+                      href={article.slug}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-neutral-800 underline dark:text-neutral-200 hover:underline"
+                  >
+                      <p className="ap-nav__brand">
+                        brown<em>.</em>dev
+                      </p>
+                    </a>
+                      
+                    </span>
+                    <span className="text-xs">
+                <p className="text-sm text-neutral-500 dark:text-neutral-400 italic">
+                    <a
+                      href="/google_index/advertise" target="_blank"
+                      className="inline-flex items-center justify-center shrink-0 gap-2 px-4 py-2 text-sm font-medium text-neutral-900 bg-white border border-neutral-300 shadow-sm hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700 transition-all duration-200 group"
+                    >
+                      <span className="text-xs">Advertise with us</span>
+                      <ArrowRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-transform group-hover:translate-x-0.5" />
+                    </a>
+                </p>
+                    </span>
+                  </div>
+              )}
+            </footer>
 
             {/* Author card */}
             <div className="ap-author-card">

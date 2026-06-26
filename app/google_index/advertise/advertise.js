@@ -526,7 +526,7 @@ export default function AdvertiseClient() {
                         <div>
                             <div className="ad-contact__title">Not sure which duration fits?</div>
                             <div className="ad-contact__sub">Reach out and we'll help you pick the right campaign length for your goals.</div>
-                            <div className="ad-contact__email">browncemmanuel@gmail.com</div>
+                            <div className="ad-contact__email">Sir Brown AD</div>
                         </div>
                         <div className="ad-contact__actions">
                             

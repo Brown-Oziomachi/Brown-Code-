@@ -9,7 +9,7 @@ export async function generateMetadata({ params }) {
   if (!article) return {};
 
   return {
-    title: `${article.title} | Brown Code`,
+    title: `${article.title} | Sir Brown AD`,
     description: article.preview,
     alternates: {
       canonical: `https://browncode.name.ng/blog/${slug}`,
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }) {
       title: article.title,
       description: article.preview,
       url: `https://browncode.name.ng/blog/${slug}`,
-      siteName: "Brown Code",
+      siteName: "Sir Brown AD",
       type: "article",
     },
   };

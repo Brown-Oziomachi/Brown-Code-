@@ -228,6 +228,8 @@ export default function ContactForm() {
                                 <div className="ct-specs__item">Modular component structures optimized for performance</div>
                                 <div className="ct-specs__item">Clean asynchronous state routing architectures</div>
                                 <div className="ct-specs__item">Strict type checks and scalable schema validations</div>
+                                <div className="ct-specs__item"> High-impact, Google-indexed articles showcasing your business and products for 1, 3, or 6 months
+                                </div>
                             </div>
                         </div>
                     </div>

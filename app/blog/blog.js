@@ -54,6 +54,7 @@ const FeaturedCard = ({ article }) => (
                     alt={article.title}
                     className="bl-feat-card__img"
                     onError={(e) => (e.target.style.display = "none")}
+                    title={article.content}
                 />
             ) : (
                 <div className="bl-feat-card__img-placeholder" />
@@ -65,9 +66,13 @@ const FeaturedCard = ({ article }) => (
             <h2 className="bl-feat-card__title">{article.title}</h2>
             <p className="bl-feat-card__preview">{article.preview}</p>
             <div className="bl-meta">
-                <span className="bl-meta__author">{article.postedBy}</span>
-                <span className="bl-meta__dot" />
-                <span>{getReadingTime(article.content)} min read</span>
+                <div className="flex items-center gap-2">
+                    <img src="/coder1.png" className="h-5 w-5 rounded-full" />
+                    <span className="bl-meta__author">
+                        {article.postedBy}</span>
+                    <span className="bl-meta__dot" />
+                    <span>{getReadingTime(article.content)} min read</span>
+                </div>
             </div>
         </div>
         <span className="bl-feat-card__arrow-wrap">
@@ -90,6 +95,7 @@ const ArticleCard = ({ article, index }) => (
                     alt={article.title}
                     className="bl-card__img"
                     onError={(e) => (e.target.style.display = "none")}
+                    title={article.content}
                 />
             ) : (
                 <div className="bl-card__img-placeholder" />
@@ -102,9 +108,16 @@ const ArticleCard = ({ article, index }) => (
             <h3 className="bl-card__title">{article.title}</h3>
             <p className="bl-card__preview">{article.preview}</p>
             <div className="bl-meta bl-meta--sm">
-                <span className="bl-meta__author">{article.postedBy}</span>
-                <span className="bl-meta__dot" />
-                <span>{getReadingTime(article.content)} min read</span>
+                <div className="flex items-center gap-2">
+                    <img
+                        src={article.isSponsored ? article.image : "/coder1.png"}
+                        className="h-5 w-5 rounded-full object-cover"
+                        alt={article.postedBy || "Author"}
+                    />
+                    <span className="bl-meta__author">{article.postedBy}</span>
+                    <span className="bl-meta__dot" />
+                    <span>{getReadingTime(article.content)} min read</span>
+                </div>
             </div>
         </div>
     </a>

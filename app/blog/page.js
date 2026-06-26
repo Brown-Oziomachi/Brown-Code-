@@ -2,8 +2,8 @@ import { Suspense } from "react";
 import BlogListClient from "./blog";
 
 export const metadata = {
-  title: "Engineering Insights & Web Development Blog | Brown Code",
-  description: "Deep dives into web architecture, digital infrastructure, SEO, cybersecurity, and business growth strategies. Written by Brown Code — Nigeria's leading web development studio.",
+  title: "Engineering Insights & Web Development Blog | Sir Brown AD",
+  description: "Deep dives into web architecture, digital infrastructure, SEO, cybersecurity, and business growth strategies. Written by Sir Brown AD — Nigeria's leading web development studio.",
   keywords: [
     "web development blog Nigeria",
     "engineering insights",
@@ -11,13 +11,13 @@ export const metadata = {
     "website development Abuja",
     "cybersecurity blog",
     "digital infrastructure",
-    "Brown Code blog",
+    "Sir Brown AD blog",
   ],
   openGraph: {
-    title: "Engineering Insights & Web Development Blog | Brown Code",
+    title: "Engineering Insights & Web Development Blog | Sir Brown AD",
     description: "Deep dives into web architecture, digital infrastructure, SEO, cybersecurity, and business growth strategies.",
     url: "https://browncode.name.ng/blog",
-    siteName: "Brown Code",
+    siteName: "Sir Brown AD",
     type: "website",
   },
 };

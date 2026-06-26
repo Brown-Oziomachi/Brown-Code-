@@ -12,38 +12,9 @@ import {
 const STACK = [
     { label: "Next.js" }, { label: "React" }, { label: "Firebase" },
     { label: "Node.js" }, { label: "Firestore" }, { label: "Tailwind CSS" },
-    { label: "JavaScript ES6+" }, { label: "Vercel" }, { label: "REST APIs" }, { label: "PostgreSQL" },
+    { label: "JavaScript ES6+" }, { label: "Vercel" },,
 ];
 
-const PROJECTS = [
-    {
-        name: "LAN Library",
-        desc: "Pan-African academic document marketplace across 30+ countries. Seller dashboards, bounty board, affiliate suite, Flutterwave payments.",
-        url: "https://lanlibrary.com",
-        tag: "LIVE",
-        tagColor: "rgba(74,222,128,0.12)",
-        tagBorder: "rgba(74,222,128,0.3)",
-        tagText: "#4ade80",
-    },
-    {
-        name: "Forensic Scam Checker",
-        desc: "Security utility that audits transaction footprints, metadata patterns, and structural anomalies to limit ecosystem fraud risks.",
-        url: "/client/scam-checker",
-        tag: "TOOL",
-        tagColor: "rgba(248,113,113,0.1)",
-        tagBorder: "rgba(248,113,113,0.25)",
-        tagText: "#f87171",
-    },
-    {
-        name: "Brown Code Portfolio",
-        desc: "Personal engineering portfolio — dark terminal design language, blog with Firestore comment system, and project showcase.",
-        url: "https://browncode.name.ng",
-        tag: "PORTFOLIO",
-        tagColor: "rgba(232,255,71,0.08)",
-        tagBorder: "rgba(232,255,71,0.25)",
-        tagText: "#e8ff47",
-    },
-];
 
 export default function AboutMePage() {
     const [activeTab, setActiveTab] = useState("story");
@@ -66,7 +37,7 @@ export default function AboutMePage() {
         { name: "JavaScript Engine Paradigms (ES6+)", level: 45, tag: "Intermediate Core" },
         { name: "Database Architecture & Management", level: 70, tag: "Scalable Systems" },
     ];
-
+   
     const timeline = [
         {
             year: "2023",
@@ -430,13 +401,11 @@ export default function AboutMePage() {
         .ab-footer__link:hover { color: var(--accent); }
       `}</style>
 
-            <div className="ab">
-
-                {/* ── Nav ── */}
                 <nav className="ab-nav">
                     <a href="/" className="ab-nav__brand">brown<em>.</em>dev</a>
                     <a href="/portfolio" className="ab-nav__back"><ArrowLeft size={12} /> Portfolio</a>
                 </nav>
+            <div className="ab">
 
                 {/* ── Status bar ── */}
                 <div className="ab-status">
@@ -696,9 +665,19 @@ export default function AboutMePage() {
                                     Sir Brown AD (Brown Oziomachi) — Full-Stack Software Developer based in Abuja, Nigeria. Specializing in Next.js, Firebase, scalable web systems, and African market payment infrastructure. View projects, blog, and contact.
                                 </p>
                                 <div className="ab-search-result__links">
-                                    {["Portfolio", "Blog", "Projects", "Contact", "Tech News"].map((l) => (
-                                        <span key={l} className="ab-search-result__link">{l}</span>
-                                    ))}
+                                    {["Portfolio", "Blog", "Projects", "bc/Contact", "Tech News"].map((l) => {
+                                        // Generates web-standard slugs (e.g., "Tech News" becomes "/tech-news")
+                                        const slug = l.toLowerCase().replace(/\s+/g, '-');
+                                        return (
+                                            <a
+                                                key={l}
+                                                href={`/${slug}`}
+                                                className="ab-search-result__link"
+                                            >
+                                                {l}
+                                            </a>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -786,7 +765,7 @@ export default function AboutMePage() {
                     <div className="ab-footer">
                         <span className="ab-footer__copy">© {new Date().getFullYear()} Brown Code // browncode.name.ng</span>
                         <div className="ab-footer__links">
-                            <a href="tel:07013725529" className="ab-footer__link"><Phone size={10} /> 07013725529</a>
+                            <a href="tel:07013725529" className="ab-footer__link"><Phone size={10} /> 08142995114</a>
                             <a href="mailto:browncemmanuel@gmail.com" className="ab-footer__link"><Mail size={10} /> browncemmanuel@gmail.com</a>
                         </div>
                     </div>
