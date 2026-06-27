@@ -399,8 +399,7 @@ export default function Footer() {
                     {/* ── Base bar ── */}
                     <div className="ft-base">
                         <span className="ft-base__copy">
-                            &copy; {year} Sir Brown AD — All rights reserved
-                        </span>
+                            <p>© {new Date().getFullYear()} brown.dev / Sir Brown AD · browncode.name.ng</p>                        </span>
                         <span className="ft-base__url">browncode.name.ng</span>
                     </div>
 

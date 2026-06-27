@@ -1,10 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
+  },
   async rewrites() {
     return [
       {
-        source: '/sitemap.xml',   // the URL users and Google see
-        destination: '/api/sitemap', // your API route
+        source: '/sitemap.xml',
+        destination: '/api/sitemap',
       },
     ];
   },
