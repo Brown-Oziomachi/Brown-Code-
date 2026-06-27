@@ -8,7 +8,6 @@ export const metadata = {
     canonical: "/",
   },
   title: "Brown Code — Full-Stack Software Developer | Portfolio",
-  // 🚀 Added standard description and keywords array directly to the metadata root
   description:
     "Sir Brown AD (Brown Oziomachi) — Full-Stack Software Developer based in Abuja, Nigeria. Specializing in Next.js, Firebase, scalable web systems, and African market payment infrastructure. View projects, blog, and contact.",
   keywords: [
@@ -23,7 +22,6 @@ export const metadata = {
   ],
   icons: { icon: "/logo.png", shortcut: "/logo.png", apple: "/logo.png" },
 
-  // ✅ Open Graph optimized with your search phrases
   openGraph: {
     title: "Sir Brown AD — Full-Stack Software Developer | brown.dev",
     description:
@@ -32,7 +30,7 @@ export const metadata = {
     siteName: "Sir Brown AD",
     images: [
       {
-        url: "https://browncode.name.ng/logoo.png", // <-- upload this image in /public
+        url: "https://browncode.name.ng/logoo.png",
         width: 1200,
         height: 630,
         alt: "Sir Brown AD Portfolio Preview",
@@ -42,7 +40,6 @@ export const metadata = {
     type: "website",
   },
 
-  // ✅ Twitter Cards optimized with your terms
   twitter: {
     card: "summary_large_image",
     title: "Brown Code — Full-Stack Software Developer | brown.dev",
@@ -52,6 +49,7 @@ export const metadata = {
   },
 
   verification: {
+    yandex: "5edb60b150103ef4",  // ✅ Added
     other: {
       "impact-site-verification": "e9768684-9c09-4886-b2db-ec34003c5283",
       monetag: "f078e1ec3e8e3ad7a3b1fde84ea75d8e",
@@ -64,9 +62,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="" suppressHydrationWarning>
-        {/* 🕵️‍♂️ THE LIVE INTERACTION TRACKER (Runs client-side tracking across all nodes) */}
         <InteractionTracker />
-
         <div className="gradient" />
         {children}
         <Script
