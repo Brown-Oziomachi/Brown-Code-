@@ -30,7 +30,7 @@ export const metadata = {
     siteName: "Sir Brown AD",
     images: [
       {
-        url: "https://browncode.name.ng/logoo.png",
+        url: "https://browncode.name.ng/logo.png",
         width: 1200,
         height: 630,
         alt: "Sir Brown AD Portfolio Preview",
@@ -45,7 +45,7 @@ export const metadata = {
     title: "Brown Code — Full-Stack Software Developer | brown.dev",
     description:
       "Get a professional website built by Sir Brown AD / Brown ad and grow your business or platform online.",
-    images: ["https://browncode.name.ng/logoo.png"],
+    images: ["https://browncode.name.ng/logo.png"],
   },
 
   verification: {

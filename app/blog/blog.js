@@ -54,7 +54,7 @@ const FeaturedCard = ({ article }) => (
                     alt={article.title}
                     className="bl-feat-card__img"
                     onError={(e) => (e.target.style.display = "none")}
-                    title={article.content}
+                    title={article.metaDescription}
                 />
             ) : (
                 <div className="bl-feat-card__img-placeholder" />
