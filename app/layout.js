@@ -46,6 +46,7 @@ export const metadata = {
   },
 
   verification: {
+    google: "qq5tnpKsPjJBKYLtHTZt9V-NR6bgUyxzLUX4AOB8jIQ",  
     yandex: "5edb60b150103ef4",
     other: {
       "impact-site-verification": "e9768684-9c09-4886-b2db-ec34003c5283",
