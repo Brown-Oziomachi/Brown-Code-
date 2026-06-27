@@ -12,7 +12,7 @@ const adPackages = [
         tag: "Short campaign",
         features: [
             "1 sponsored article written for your brand",
-            "Published and indexed on Google",
+            "Published and indexed on Google, Bing & Yandex",
             "Live for 30 days, then removed",
             "Link to your website or landing page",
             "Keyword-optimized for search visibility",
@@ -27,7 +27,7 @@ const adPackages = [
         accent: true,
         features: [
             "1 sponsored article written for your brand",
-            "Published and indexed on Google",
+            "Published and indexed on Google, Bing & Yandex",
             "Live for 90 days, then removed",
             "Link to your website or landing page",
             "Keyword-optimized for your niche",
@@ -42,7 +42,7 @@ const adPackages = [
         tag: "Maximum exposure",
         features: [
             "1 sponsored article written for your brand",
-            "Published and indexed on Google",
+            "Published and indexed on Google, Bing & Yandex",
             "Live for 180 days, then removed",
             "Link to your website or landing page",
             "Keyword-optimized for your niche",
@@ -53,16 +53,40 @@ const adPackages = [
 ];
 
 const stats = [
-    { label: "Articles Indexed", value: "60+", desc: "Live on Google" },
-    { label: "Countries Reached", value: "15+", desc: "Via search traffic" },
+    { label: "Google Indexed", value: "80+", desc: "Pages live on Google" },
+    { label: "Search Engines", value: "3", desc: "Google · Bing · Yandex" },
     { label: "Campaign Options", value: "3", desc: "1, 3, or 6 months" },
+];
+
+const engines = [
+    {
+        name: "Google",
+        status: "Indexed",
+        statusType: "live",
+        desc: "80+ pages crawled and ranking in search results",
+        detail: "Sitemap submitted · generateMetadata active · Search Console verified",
+    },
+    {
+        name: "Bing",
+        status: "Indexing",
+        statusType: "live",
+        desc: "80 URLs discovered via IndexNow",
+        detail: "IndexNow active · Webmaster Tools verified · Crawling in progress",
+    },
+    {
+        name: "Yandex",
+        status: "Processing",
+        statusType: "pending",
+        desc: "Sitemap submitted and in processing queue",
+        detail: "Verified · Sitemap accepted · 1–2 week processing window",
+    },
 ];
 
 const benefits = [
     {
         icon: <Search size={16} />,
-        title: "Google Indexed",
-        desc: "Your article is published on a domain with 60+ indexed pages, giving it an immediate trust signal with search engines.",
+        title: "Multi-Engine Indexed",
+        desc: "Your article is published on a domain with 80+ indexed pages across Google, Bing, and Yandex — giving it an immediate trust signal with all major search engines.",
     },
     {
         icon: <FileText size={16} />,
@@ -101,6 +125,8 @@ export default function AdvertiseClient() {
                     --accent-dim:  rgba(232,255,71,0.08);
                     --wa:          #25d366;
                     --wa-dim:      rgba(37,211,102,0.08);
+                    --green:       #4ade80;
+                    --yellow:      #facc15;
                     --radius:      6px;
                     --font-serif:  'DM Serif Display', 'Georgia', serif;
                     --font-sans:   'Inter', system-ui, sans-serif;
@@ -179,9 +205,8 @@ export default function AdvertiseClient() {
                     display: grid; grid-template-columns: repeat(3, 1fr);
                     gap: 1px; background: var(--border);
                     border: 1px solid var(--border); border-radius: var(--radius);
-                    overflow: hidden; margin-bottom: 56px;
+                    overflow: hidden; margin-bottom: 32px;
                 }
-                @media (max-width: 600px) { .ad-stats { grid-template-columns: repeat(3, 1fr); } }
                 .ad-stat {
                     background: var(--surface); padding: 24px 28px;
                     display: flex; flex-direction: column; gap: 4px;
@@ -197,6 +222,49 @@ export default function AdvertiseClient() {
                     color: var(--accent); line-height: 1;
                 }
                 .ad-stat__desc { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+                /* ── Engine coverage ── */
+                .ad-engines {
+                    display: grid; grid-template-columns: repeat(3, 1fr);
+                    gap: 1px; background: var(--border);
+                    border: 1px solid var(--border); border-radius: var(--radius);
+                    overflow: hidden; margin-bottom: 56px;
+                }
+                @media (max-width: 700px) { .ad-engines { grid-template-columns: 1fr; } }
+                .ad-engine {
+                    background: var(--surface); padding: 24px 28px;
+                    display: flex; flex-direction: column; gap: 8px;
+                    transition: background 0.15s; position: relative;
+                }
+                .ad-engine:hover { background: #141417; }
+                .ad-engine::after {
+                    content: ''; position: absolute; bottom: 0; left: 28px; right: 28px;
+                    height: 1px; background: var(--border);
+                }
+                .ad-engine__name {
+                    font-family: var(--font-serif); font-size: 20px; font-weight: 400;
+                    color: var(--text-1); letter-spacing: -0.01em;
+                }
+                .ad-engine__status {
+                    display: inline-flex; align-items: center; gap: 6px;
+                    font-family: var(--font-mono); font-size: 10px;
+                    letter-spacing: 0.08em; text-transform: uppercase; width: fit-content;
+                    padding: 3px 8px; border-radius: 3px;
+                }
+                .ad-engine__status--live {
+                    color: var(--green); background: rgba(74,222,128,0.08);
+                    border: 1px solid rgba(74,222,128,0.2);
+                }
+                .ad-engine__status--pending {
+                    color: var(--yellow); background: rgba(250,204,21,0.08);
+                    border: 1px solid rgba(250,204,21,0.2);
+                }
+                .ad-engine__dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+                .ad-engine__desc { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+                .ad-engine__detail {
+                    font-family: var(--font-mono); font-size: 10px; color: var(--text-3);
+                    line-height: 1.6; letter-spacing: 0.02em;
+                }
 
                 /* ── Why section ── */
                 .ad-why {
@@ -318,8 +386,6 @@ export default function AdvertiseClient() {
                     font-size: 12px; color: var(--text-2); line-height: 1.5;
                 }
                 .ad-package__check { color: var(--accent); flex-shrink: 0; margin-top: 1px; }
-
-                /* ── Package CTA buttons ── */
                 .ad-package__actions { display: flex; flex-direction: column; gap: 8px; }
                 .ad-package__cta {
                     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
@@ -403,16 +469,17 @@ export default function AdvertiseClient() {
                 </nav>
 
                 <main className="ad-main">
+
                     {/* Masthead */}
                     <header className="ad-masthead">
                         <div>
                             <p className="ad-masthead__eyebrow">Sponsored Content</p>
                             <h1 className="ad-masthead__title">
-                                Get Your Brand<br />On Google
+                                Get Your Brand<br />On Google, Bing<br />& Yandex
                             </h1>
                         </div>
                         <p className="ad-masthead__desc">
-                            We write and publish a sponsored article about your business — indexed on Google for 1, 3, or 6 months, then removed.
+                            We write and publish a sponsored article about your business — indexed across Google, Bing, and Yandex for 1, 3, or 6 months, then removed cleanly.
                         </p>
                     </header>
 
@@ -428,18 +495,34 @@ export default function AdvertiseClient() {
                         ))}
                     </div>
 
+                    {/* Search Engine Coverage */}
+                    <p className="ad-section-label">Search engine coverage</p>
+                    <div className="ad-engines">
+                        {engines.map((e) => (
+                            <div key={e.name} className="ad-engine">
+                                <span className="ad-engine__name">{e.name}</span>
+                                <span className={`ad-engine__status ad-engine__status--${e.statusType}`}>
+                                    <span className="ad-engine__dot" />
+                                    {e.status}
+                                </span>
+                                <span className="ad-engine__desc">{e.desc}</span>
+                                <span className="ad-engine__detail">{e.detail}</span>
+                            </div>
+                        ))}
+                    </div>
+
                     {/* Why */}
                     <div className="ad-why">
                         <div className="ad-why__title">How this works</div>
                         <div className="ad-why__body">
                             <p>
-                                You choose a campaign duration — 1, 3, or 6 months. We write a keyword-optimized article about your brand and publish it on this domain, which already has 60+ pages indexed by Google. Your article goes live, gets crawled, and starts appearing in relevant search results.
+                                You choose a campaign duration — 1, 3, or 6 months. We write a keyword-optimized article about your brand and publish it on this domain, which has 80+ pages actively indexed across Google, Bing, and Yandex. Your article goes live, gets crawled by all three engines, and starts appearing in relevant search results.
                             </p>
                             <p>
                                 When your campaign ends, the article is cleanly removed. No awkward permanent footprint, no lingering outdated content about your brand. If the placement delivered value, you simply renew before expiry to keep your visibility running.
                             </p>
                             <p>
-                                You provide your brand name, website, and the message or keywords you want to target. We handle the writing, publishing, and indexing — you get search visibility without writing a single word.
+                                You provide your brand name, website, and the message or keywords you want to target. We handle the writing, publishing, and indexing across Google, Bing, and Yandex — you get search visibility without writing a single word.
                             </p>
                         </div>
                     </div>
@@ -450,7 +533,7 @@ export default function AdvertiseClient() {
                         {[
                             { num: "01", title: "Pick your duration", desc: "Choose 1, 3, or 6 months depending on your campaign goals and budget." },
                             { num: "02", title: "Send your brand details", desc: "Share your business name, website, target keywords, and what you want the article to communicate." },
-                            { num: "03", title: "We write and publish", desc: "We write a professional, keyword-optimized article and publish it. Google indexes it within days." },
+                            { num: "03", title: "We write and publish", desc: "We write a professional, keyword-optimized article and publish it. Google, Bing, and Yandex index it within days." },
                             { num: "04", title: "Campaign ends, article removed", desc: "At the end of your chosen period, the article is taken down cleanly. Renew anytime to continue." },
                         ].map((step) => (
                             <div key={step.num} className="ad-step">
@@ -502,14 +585,14 @@ export default function AdvertiseClient() {
                                     ))}
                                 </div>
                                 <div className="ad-package__actions">
-                                    
-                                     <a   href={`mailto:browncemmanuel@gmail.com?subject=Sponsored Article Inquiry — ${pkg.name} Package`}
+                                    <a
+                                        href={`mailto:browncemmanuel@gmail.com?subject=Sponsored Article Inquiry — ${pkg.name} Package`}
                                         className={`ad-package__cta${pkg.accent ? " ad-package__cta--accent" : ""}`}
                                     >
                                         Email us <ArrowUpRight size={12} />
                                     </a>
-                                    
-                                      <a  href={`https://wa.me/${WHATSAPP}?text=Hi%2C%20I%27m%20interested%20in%20the%20${encodeURIComponent(pkg.name)}%20sponsored%20article%20package.`}
+                                    <a
+                                        href={`https://wa.me/${WHATSAPP}?text=Hi%2C%20I%27m%20interested%20in%20the%20${encodeURIComponent(pkg.name)}%20sponsored%20article%20package.`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="ad-package__cta ad-package__cta--wa"
@@ -529,14 +612,14 @@ export default function AdvertiseClient() {
                             <div className="ad-contact__email">Sir Brown AD</div>
                         </div>
                         <div className="ad-contact__actions">
-                            
-                              <a  href="mailto:browncemmanuel@gmail.com?subject=Sponsored Content Inquiry"
+                            <a
+                                href="mailto:browncemmanuel@gmail.com?subject=Sponsored Content Inquiry"
                                 className="ad-btn"
                             >
                                 Email us <ArrowUpRight size={13} />
                             </a>
-                            
-                               <a href={`https://wa.me/${WHATSAPP}?text=Hi%2C%20I%27m%20interested%20in%20advertising%20on%20Brown%20Code.`}
+                            <a
+                                href={`https://wa.me/${WHATSAPP}?text=Hi%2C%20I%27m%20interested%20in%20advertising%20on%20Brown%20Code.`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="ad-btn ad-btn--wa"
@@ -548,7 +631,7 @@ export default function AdvertiseClient() {
 
                     {/* Footer */}
                     <footer className="ad-footer">
-                        <span className="ad-footer__info">brown.dev — sponsored content & SEO placement</span>
+                        <span className="ad-footer__info">brown.dev — indexed on Google · Bing · Yandex</span>
                         <div className="ad-footer__actions">
                             <a href="/bc/contact" className="ad-footer-btn ad-footer-btn--accent">
                                 Contact directly
@@ -558,6 +641,7 @@ export default function AdvertiseClient() {
                             </a>
                         </div>
                     </footer>
+
                 </main>
             </div>
 

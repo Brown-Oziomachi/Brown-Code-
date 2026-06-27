@@ -3,7 +3,7 @@ import BlogListClient from "./blog";
 
 export const metadata = {
   title: "Engineering Insights & Web Development Blog | Sir Brown AD",
-  description: "Deep dives into web architecture, digital infrastructure, SEO, cybersecurity, and business growth strategies. Written by Sir Brown AD — Nigeria's leading web development studio.",
+  description: "Deep dives into digital infrastructure, SEO, cybersecurity, and business growth strategies. Written by Sir Brown AD.",
   keywords: [
     "web development blog Nigeria",
     "engineering insights",

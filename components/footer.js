@@ -18,7 +18,7 @@ export default function Footer() {
         { label: "Privacy", href: "/privacy" },
         { label: "Terms", href: "/terms" },
         { label: "Sitemap", href: "/sitemap-html" },
-        { label: "Advertise", href: "/advertise" },
+        { label: "Advertise", href: "/google_index/advertise" },
     ];
 
     const socials = [

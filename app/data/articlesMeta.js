@@ -115,6 +115,10 @@ export const articlesMeta = {
         metaTitle: "Investment Fraud: Real Opportunity vs Engineered Trap",
         metaDescription: "Investment fraud has destroyed more generational wealth than almost any other financial crime. The warning signs are increasingly subtle today.",
     },
+    "fake-pos-alert-fraud-how-to-detect": {
+        metaTitle: "Fake POS Alert Scam: How to Detect It Before Losing Cash",
+        metaDescription: "POS agents are losing thousands to fake transfer alerts daily. Here is exactly how the scam works and the seven checks every agent must do before releasing cash.",
+    },
     "how-to-recover-after-bank-fraud": {
         metaTitle: "How to Recover After Bank Fraud: Steps Most Victims Miss",
         metaDescription: "Being defrauded is devastating. The actions you take in the first hours after discovering fraud dramatically affect how much you can recover.",
@@ -285,7 +289,7 @@ export const articlesMeta = {
     },
     "cost-of-neglect-website-maintenance": {
         metaTitle: "Neglecting Website Maintenance: A Silent Business Killer",
-        metaDescription: "Understanding the risks of neglecting website maintenance—from security vulnerabilities and SEO penalties to damaged reputation and lost customer trust.",
+        metaDescription: "Most businesses launch a website and abandon it. That neglect compounds into security breaches, lost rankings, and a brand reputation that quietly collapses over time.",
     },
     "the-mvp-fallacy-product-strategy": {
         metaTitle: "The MVP Fallacy: Why Building Fast Can Cost Everything",
