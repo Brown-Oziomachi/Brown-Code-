@@ -7,6 +7,18 @@ export const articlesMeta = {
         metaTitle: "Move From Social Media to Owning Your Platform",
         metaDescription: "Relying on Instagram or WhatsApp to run your business is risky. Discover why owning your website is the ultimate power move for lasting growth.",
     },
+    "why-nigerians-trust-whatsapp-over-banks": {
+        metaTitle: "Why Nigerians Trust WhatsApp More Than Their Banks | Brown Code",
+        metaDescription: "WhatsApp is Nigeria's primary trust infrastructure. This is why fraudsters exploit it — and what the cultural architecture of that trust actually looks like.",
+    },
+    "church-referral-network-financial-fraud-nigeria": {
+        metaTitle: "How Financial Fraud Hides Inside Nigerian Religious Communities",
+        metaDescription: "Nigerian churches are built on deep trust. Fraudsters have systematically identified that trust as infrastructure and built entire schemes inside it.",
+    },
+    "ponzi-ecosystem-nigeria-investment-fraud-survival": {
+        metaTitle: "The Ponzi Ecosystem: How Nigeria's Fraud Schemes Survive Exposure",
+        metaDescription: "MMM collapsed. Loom collapsed. Racksterli collapsed. Yet the same Nigerians joined the next scheme. This is the story of an ecosystem that was never dismantled.",
+    },
     "how-social-media-accounts-are-hacked-zero-day": {
         metaTitle: "The Zero-Day Vulnerability in Your Pocket: How Social Accounts are Actually Intercepted/hacked",
         metaDescription: "Session hijacking, token theft, and platform exploits are how hackers take your Meta, TikTok, and Instagram—not by guessing your password.",

@@ -4,9 +4,6 @@ import Script from "next/script";
 
 export const metadata = {
   metadataBase: new URL("https://browncode.name.ng"),
-  alternates: {
-    canonical: "/",
-  },
   title: "Brown Code — Full-Stack Software Developer | Portfolio",
   description:
     "Sir Brown AD (Brown Oziomachi) — Full-Stack Software Developer based in Abuja, Nigeria. Specializing in Next.js, Firebase, scalable web systems, and African market payment infrastructure. View projects, blog, and contact.",
@@ -49,7 +46,7 @@ export const metadata = {
   },
 
   verification: {
-    yandex: "5edb60b150103ef4",  // ✅ Added
+    yandex: "5edb60b150103ef4",
     other: {
       "impact-site-verification": "e9768684-9c09-4886-b2db-ec34003c5283",
       monetag: "f078e1ec3e8e3ad7a3b1fde84ea75d8e",

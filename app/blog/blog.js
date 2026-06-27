@@ -45,6 +45,7 @@ const CATEGORY_LABELS = {
 // ─── sub-components ─────────────────────────────────────────────────────────
 
 /** Featured (large) card — first 2 articles */
+/** Featured (large) card — first 2 articles */
 const FeaturedCard = ({ article }) => (
     <a href={`/blog/${article.slug}`} className="bl-feat-card">
         <div className="bl-feat-card__img-wrap">
@@ -54,7 +55,6 @@ const FeaturedCard = ({ article }) => (
                     alt={article.title}
                     className="bl-feat-card__img"
                     onError={(e) => (e.target.style.display = "none")}
-                    title={article.metaDescription}
                 />
             ) : (
                 <div className="bl-feat-card__img-placeholder" />
@@ -67,9 +67,12 @@ const FeaturedCard = ({ article }) => (
             <p className="bl-feat-card__preview">{article.preview}</p>
             <div className="bl-meta">
                 <div className="flex items-center gap-2">
-                    <img src="/coder1.png" className="h-5 w-5 rounded-full" />
-                    <span className="bl-meta__author">
-                        {article.postedBy}</span>
+                    <img
+                        src="/coder1.png"
+                        className="h-5 w-5 rounded-full"
+                        alt={article.postedBy}
+                    />
+                    <span className="bl-meta__author">{article.postedBy}</span>
                     <span className="bl-meta__dot" />
                     <span>{getReadingTime(article.content)} min read</span>
                 </div>
@@ -83,10 +86,10 @@ const FeaturedCard = ({ article }) => (
 
 /** Standard card — grid of remaining articles */
 const ArticleCard = ({ article, index }) => (
-    <a
-        href={`/blog/${article.slug}`}
-        className="bl-card"
-        style={{ animationDelay: `${index * 40}ms` }}
+
+    <a href = {`/blog/${article.slug}`}
+className = "bl-card"
+style = {{ animationDelay: `${index * 40}ms` }}
     >
         <div className="bl-card__img-wrap">
             {article.image ? (
@@ -95,7 +98,6 @@ const ArticleCard = ({ article, index }) => (
                     alt={article.title}
                     className="bl-card__img"
                     onError={(e) => (e.target.style.display = "none")}
-                    title={article.content}
                 />
             ) : (
                 <div className="bl-card__img-placeholder" />
@@ -110,7 +112,7 @@ const ArticleCard = ({ article, index }) => (
             <div className="bl-meta bl-meta--sm">
                 <div className="flex items-center gap-2">
                     <img
-                        src={article.isSponsored ? article.image : "/coder1.png"}
+                        src={article.isSponsored ? "/coder1.png" : "/coder1.png"}
                         className="h-5 w-5 rounded-full object-cover"
                         alt={article.postedBy || "Author"}
                     />
@@ -120,7 +122,7 @@ const ArticleCard = ({ article, index }) => (
                 </div>
             </div>
         </div>
-    </a>
+    </a >
 );
 
 // ─── page ────────────────────────────────────────────────────────────────────
