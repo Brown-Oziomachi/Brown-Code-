@@ -20,7 +20,7 @@ export const metadata = {
   icons: { icon: "/logo.png", shortcut: "/logo.png", apple: "/logo.png" },
 
   openGraph: {
-    title: "Sir Brown AD — Full-Stack Software Developer | brown.dev",
+    title: "Brown Code — Full-Stack Software Developer | browncode.name.ng",
     description:
       "Portfolio of Brown Oziomachi (Sir Brown AD / Brown ad). Professional web applications, distributed platforms, and full-stack architecture.",
     url: "https://browncode.name.ng",
@@ -39,7 +39,7 @@ export const metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Brown Code — Full-Stack Software Developer | brown.dev",
+    title: "Brown Code — Full-Stack Software Developer | browncode.name.ng",
     description:
       "Get a professional website built by Sir Brown AD / Brown ad and grow your business or platform online.",
     images: ["https://browncode.name.ng/logo.png"],
