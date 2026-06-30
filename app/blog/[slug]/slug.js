@@ -938,6 +938,7 @@ export default function ArticleClient({ params }) {
             </div>
 
             {/* This sits right below your article content */}
+            {/* This sits right below your article content */}
             <footer className="mt-12 pt-6 border-t border-neutral-200 dark:border-neutral-800 italic">
               {article.isSponsored ? (
                 // Sponsored Article Footer Box
@@ -945,65 +946,71 @@ export default function ArticleClient({ params }) {
                   <div className="max-w-xl">
                     <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                       This article was sponsored and contributed by{" "}
-                      <a
-                        href={article.companyLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-neutral-900 dark:text-neutral-100 underline font-semibold hover:underline decoration-neutral-400"
-                      >
-                        {article.companyName}
-                      </a>
-                      . Published via{" "}
-                      <a
-                        href="https://browncode.name.ng/blog" target="_blank"
-                        className="text-neutral-950 dark:text-neutral-50 underline font-medium hover:underline"
-                      >
-                        <p className="ap-nav__brand" target="_blank">
-                          brown<em>.</em>dev
-                        </p>
-                      </a>.
-                    </p>
-                  </div>
 
-                  <a
-                    href="/google_index/advertise" target="_blank"
-                    className="inline-flex items-center justify-center shrink-0 gap-2 px-4 py-2 text-sm font-medium text-neutral-900 bg-white border border-neutral-300 shadow-sm hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700 transition-all duration-200 group"
-                  >
-                    <span>Advertise with us</span>
-                    <ArrowRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-transform group-hover:translate-x-0.5" />
-                  </a>
-                </div>
-              ) : (
-                  // Standard Publication Footer
-                  <div className="text-center">
-                    <span className="text-sm">
-                    This article was originally written and published by{" "}
-                  <a
-                      href={article.slug}
+                    <a  href={article.companyLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-neutral-900 dark:text-neutral-100 underline font-semibold hover:underline decoration-neutral-400"
+          >
+                      {article.companyName}
+                    </a>
+                    . Published via{" "}
+
+                <a    href="https://browncode.name.ng/blog"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-neutral-800 underline dark:text-neutral-200 hover:underline"
-                  >
-                      <p className="ap-nav__brand">
-                        brown<em>.</em>dev
-                      </p>
-                    </a>
-                      
+                    className="text-neutral-950 dark:text-neutral-50 underline font-medium hover:underline"
+          >
+                    <span className="ap-nav__brand">
+                      brown<em>.</em>dev
                     </span>
-                    <span className="text-xs">
-                <p className="text-sm text-neutral-500 dark:text-neutral-400 italic">
-                    <a
-                      href="/google_index/advertise" target="_blank"
-                      className="inline-flex items-center justify-center shrink-0 gap-2 px-4 py-2 text-sm font-medium text-neutral-900 bg-white border border-neutral-300 shadow-sm hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700 transition-all duration-200 group"
-                    >
-                      <span className="text-xs">Advertise with us</span>
-                      <ArrowRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-transform group-hover:translate-x-0.5" />
-                    </a>
+                  </a>.
                 </p>
-                    </span>
-                  </div>
-              )}
-            </footer>
+      </div>
+
+
+        <a  href="/google_index/advertise"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center shrink-0 gap-2 px-4 py-2 text-sm font-medium text-neutral-900 bg-white border border-neutral-300 shadow-sm hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700 transition-all duration-200 group"
+      >
+          <span>Advertise with us</span>
+          <ArrowRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-transform group-hover:translate-x-0.5" />
+        </a>
+      </div>
+      ) : (
+      // Standard Publication Footer
+      <div className="text-center">
+        <span className="text-sm">
+          This article was originally written and published by{" "}
+
+        <a  href={shareUrl(article.slug)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-neutral-800 underline dark:text-neutral-200 hover:underline"
+        >
+          <span className="ap-nav__brand">
+            brown<em>.</em>dev
+          </span>
+        </a>
+      </span>
+      <span className="text-xs">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 italic">
+
+         <a href="/google_index/advertise"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center shrink-0 gap-2 px-4 py-2 text-sm font-medium text-neutral-900 bg-white border border-neutral-300 shadow-sm hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700 transition-all duration-200 group"
+          >
+          <span className="text-xs">Advertise with us</span>
+          <ArrowRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-transform group-hover:translate-x-0.5" />
+        </a>
+      </p>
+    </span >
+    </div >
+  )
+}
+</footer >
 
             {/* Author card */}
             <div className="ap-author-card">

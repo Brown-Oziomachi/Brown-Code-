@@ -269,7 +269,7 @@ export default function RelatedArticles({ currentSlug }) {
                                     <div className="flex items-center gap-2">
                                         <img
                                             src={article.isSponsored ? "/coder1.png" : "/coder1.png"}
-                                            className="h-5 w-5 rounded-full object-cover"
+                                            className="h-5 w-5 rounded-full object-cover flex-shrink-0"
                                             alt={article.postedBy || "Author"}
                                         />
                                         <span className="bl-meta__author">{article.postedBy}</span>
