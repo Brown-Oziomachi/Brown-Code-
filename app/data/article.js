@@ -2002,7 +2002,7 @@ Verify everything. Control your own process. And never let a buyer choose the re
     slug: "whatsapp-business-impersonation-scam-nigeria",
     postedBy: "Sir Brown AD",
     preview: "Scammers are cloning Nigerian business WhatsApp accounts — same name, same photo, same status — and messaging your loyal customers to pay into a different account. Your customers lose money and blame you.",
-    image: "/whatsapp.jpg",
+    image: "/inperson.webp",
     content: `You built your WhatsApp Business presence carefully. Your profile photo is professional. Your catalogue is updated. Your customers know and trust your number. You have spent months or years earning that trust.
 
 Then one morning a loyal customer calls you — confused, upset, and asking why you sent them a different account number to pay into. You never sent any such message. But someone did. Someone who looked exactly like you.
