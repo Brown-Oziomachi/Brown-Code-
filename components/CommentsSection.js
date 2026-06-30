@@ -10,7 +10,7 @@ import { db1 } from "@/config/firebase.config1";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth1 } from "@/config/firebase.config1";
 
-const OWNER_EMAIL = "browncemmanuel@gmail.com";
+const OWNER_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 const PREVIEW_LIMIT = 6;
 
 const formatDate = (ts) => {
