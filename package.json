@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "postbuild": "next-sitemap",
-    "start": "next start"
-  },
+"scripts": {
+  "dev": "next dev --turbopack",
+  "build": "next build",
+  "postbuild": "next-sitemap",
+  "start": "next start"
+},
   "dependencies": {
     "@fontsource/jetbrains-mono": "^5.2.8",
     "chokidar": "^5.0.0",

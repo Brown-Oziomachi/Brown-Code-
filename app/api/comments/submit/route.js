@@ -1,4 +1,4 @@
-import { adminDb } from "@/lib/firebaseAdmin";
+import { adminDb } from "@/lib/firebaseAdminApp";
 import { FieldValue } from "firebase-admin/firestore";
 
 export async function POST(req) {

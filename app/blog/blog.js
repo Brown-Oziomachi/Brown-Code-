@@ -43,8 +43,6 @@ const CATEGORY_LABELS = {
 };
 
 // ─── sub-components ─────────────────────────────────────────────────────────
-
-/** Featured (large) card — first 2 articles */
 /** Featured (large) card — first 2 articles */
 const FeaturedCard = ({ article }) => (
     <a href={`/blog/${article.slug}`} className="bl-feat-card">
@@ -69,7 +67,7 @@ const FeaturedCard = ({ article }) => (
                 <div className="flex items-center gap-2">
                     <img
                         src="/coder1.png"
-                        className="h-5 w-5 rounded-full"
+                        className="h-5 w-5 rounded-full object-cover flex-shrink-0"
                         alt={article.postedBy}
                     />
                     <span className="bl-meta__author">{article.postedBy}</span>
@@ -87,7 +85,7 @@ const FeaturedCard = ({ article }) => (
 /** Standard card — grid of remaining articles */
 const ArticleCard = ({ article, index }) => (
 
-    <a href = {`/blog/${article.slug}`}
+   <a  href = {`/blog/${article.slug}`}
 className = "bl-card"
 style = {{ animationDelay: `${index * 40}ms` }}
     >
@@ -114,7 +112,7 @@ style = {{ animationDelay: `${index * 40}ms` }}
                 <div className="flex items-center gap-2">
                     <img
                         src={article.isSponsored ? "/coder1.png" : "/coder1.png"}
-                        className="h-5 w-5 rounded-full object-cover"
+                        className="h-5 w-5 rounded-full object-cover flex-shrink-0"
                         alt={article.postedBy || "Author"}
                     />
                     <span className="bl-meta__author">{article.postedBy}</span>
