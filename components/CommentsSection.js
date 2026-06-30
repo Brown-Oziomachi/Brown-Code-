@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import { MessageSquare, Send, X, Mail, CheckCircle, Loader2 } from "lucide-react";
 import {
     collection, addDoc, query, where, orderBy,
-    onSnapshot, getDocs, serverTimestamp, updateDoc, doc
+    onSnapshot, serverTimestamp, updateDoc, doc, setDoc
 } from "firebase/firestore";
 import { db1 } from "@/config/firebase.config1";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth1 } from "@/config/firebase.config1";
 
 const OWNER_EMAIL = "browncemmanuel@gmail.com";
+const PREVIEW_LIMIT = 6;
 
 const formatDate = (ts) => {
     if (!ts?.toDate) return "—";
@@ -19,6 +20,44 @@ const formatDate = (ts) => {
     });
 };
 
+function CommentItem({ comment, isOwner, handleMarkReplied }) {
+    const initials = comment.authorName?.slice(0, 2).toUpperCase() || "?";
+
+    return (
+        <div className="cs-comment">
+            <div className="cs-comment__head">
+                <div className="cs-comment__author">
+                    <div className="cs-comment__avatar">{initials}</div>
+                    <span className="cs-comment__name">{comment.authorName}</span>
+                </div>
+                <span className="cs-comment__date">{formatDate(comment.createdAt)}</span>
+            </div>
+            <p className="cs-comment__text">{comment.text}</p>
+            <div className="cs-comment__footer">
+                {comment.brownReplied ? (
+                    <span className="cs-comment__replied">
+                        <Mail size={9} />
+                        Replied
+                    </span>
+                ) : (
+                    !isOwner && (
+                        <span className="cs-comment__pending">Awaiting reply</span>
+                    )
+                )}
+                {isOwner && (
+                    <button
+                        onClick={() => handleMarkReplied(comment.id)}
+                        className="cs-comment__reply-link"
+                    >
+                        <Mail size={10} />
+                        {comment.brownReplied ? "Reply again" : "Reply via email"}
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+}
+
 export default function CommentsSection({ articleSlug }) {
     const [comments, setComments] = useState([]);
     const [name, setName] = useState("");
@@ -26,6 +65,7 @@ export default function CommentsSection({ articleSlug }) {
     const [isOwner, setIsOwner] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [justPosted, setJustPosted] = useState(false);
+    const [showAllModal, setShowAllModal] = useState(false);
 
     // Email modal
     const [showEmailModal, setShowEmailModal] = useState(false);
@@ -71,23 +111,36 @@ export default function CommentsSection({ articleSlug }) {
         setEmailSubmitting(true);
         setEmailError("");
         try {
-            const existing = await getDocs(query(
-                collection(db1, "comments"),
-                where("articleSlug", "==", articleSlug),
-                where("authorEmail", "==", email.trim().toLowerCase())
-            ));
-            if (!existing.empty) {
+            // Duplicate check via server route (email never exposed client-side)
+            const checkRes = await fetch("/api/comments/check-duplicate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    articleSlug,
+                    email: email.trim().toLowerCase()
+                }),
+            });
+            const { isDuplicate } = await checkRes.json();
+            if (isDuplicate) {
                 setEmailError("This email has already submitted a comment on this article.");
                 setEmailSubmitting(false);
                 return;
             }
-            await addDoc(collection(db1, "comments"), {
+
+            // Write public comment (no email)
+            const newRef = await addDoc(collection(db1, "comments"), {
                 articleSlug,
                 authorName: pendingComment.name,
-                authorEmail: email.trim().toLowerCase(),
                 text: pendingComment.text,
                 createdAt: serverTimestamp(),
+                brownReplied: false,
             });
+
+            // Write email to restricted subcollection only
+            await setDoc(doc(db1, "comments", newRef.id, "private", "data"), {
+                authorEmail: email.trim().toLowerCase(),
+            });
+
             setName(""); setCommentText(""); setPendingComment(null);
             setEmail(""); setShowEmailModal(false); setShowForm(false);
             setJustPosted(true);
@@ -102,7 +155,26 @@ export default function CommentsSection({ articleSlug }) {
 
     const handleMarkReplied = async (commentId) => {
         try {
-            await updateDoc(doc(db1, "comments", commentId), { brownReplied: true });
+            const { currentUser } = auth1;
+            if (!currentUser) return;
+            const token = await currentUser.getIdToken();
+
+            const res = await fetch("/api/comments/reply", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ commentId, token }),
+            });
+
+            const { email: authorEmail } = await res.json();
+
+            // Open mail client with the fetched email — never stored in browser
+            if (authorEmail) {
+                const subject = encodeURIComponent("Re: Your comment on Brown's blog");
+                const body = encodeURIComponent(
+                    `Hi,\n\nThanks for your comment.\n\n[Your reply here]\n\n— Sir Brown AD`
+                );
+                window.location.href = `mailto:${authorEmail}?subject=${subject}&body=${body}`;
+            }
         } catch (err) {
             console.error(err);
         }
@@ -114,6 +186,9 @@ export default function CommentsSection({ articleSlug }) {
         setEmailError("");
         setEmail("");
     };
+
+    const visibleComments = comments.slice(0, PREVIEW_LIMIT);
+    const hasMore = comments.length > PREVIEW_LIMIT;
 
     return (
         <>
@@ -427,7 +502,118 @@ export default function CommentsSection({ articleSlug }) {
 
                 .cs-comment__reply-link:hover { color: var(--accent); }
 
-                /* ── Modal ── */
+                /* ── View all button ── */
+                .cs-view-all {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    padding: 12px;
+                    border: 1px solid var(--border);
+                    border-top: none;
+                    background: var(--surface);
+                    color: var(--text-3);
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    letter-spacing: 0.06em;
+                    cursor: pointer;
+                    transition: color 0.15s, background 0.15s;
+                }
+
+                .cs-view-all:hover {
+                    color: var(--accent);
+                    background: var(--accent-dim);
+                }
+
+                /* ── All comments modal ── */
+                .cs-all-modal-backdrop {
+                    position: fixed;
+                    inset: 0;
+                    z-index: 9998;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 24px;
+                }
+
+                .cs-all-modal-bg {
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(0,0,0,0.75);
+                    backdrop-filter: blur(8px);
+                }
+
+                .cs-all-modal {
+                    position: relative;
+                    width: 100%;
+                    max-width: 600px;
+                    max-height: 80vh;
+                    background: var(--surface);
+                    border: 1px solid var(--border);
+                    border-radius: var(--radius);
+                    overflow: hidden;
+                    box-shadow: 0 32px 64px rgba(0,0,0,0.6);
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .cs-all-modal__accent-bar {
+                    height: 2px;
+                    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+                    flex-shrink: 0;
+                }
+
+                .cs-all-modal__head {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 20px 24px;
+                    border-bottom: 1px solid var(--border);
+                    flex-shrink: 0;
+                }
+
+                .cs-all-modal__title {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+
+                .cs-all-modal__title-text {
+                    font-family: var(--font-serif);
+                    font-size: 18px;
+                    color: var(--text-1);
+                    font-weight: 400;
+                }
+
+                .cs-all-modal__count {
+                    font-family: var(--font-mono);
+                    font-size: 10px;
+                    color: var(--text-3);
+                }
+
+                .cs-all-modal__close {
+                    background: none;
+                    border: none;
+                    color: var(--text-3);
+                    cursor: pointer;
+                    padding: 4px;
+                    transition: color 0.15s;
+                    display: flex;
+                }
+
+                .cs-all-modal__close:hover { color: var(--text-1); }
+
+                .cs-all-modal__body {
+                    overflow-y: auto;
+                    flex: 1;
+                }
+
+                .cs-all-modal__body .cs-list {
+                    border: none;
+                }
+                
+                /* ── Email modal ── */
                 .cs-modal-backdrop {
                     position: fixed;
                     inset: 0;
@@ -514,7 +700,6 @@ export default function CommentsSection({ articleSlug }) {
 
                 .cs-modal__close:hover { color: var(--text-1); }
 
-                /* Preview of pending comment */
                 .cs-modal__preview {
                     background: var(--bg);
                     border: 1px solid var(--border);
@@ -569,9 +754,7 @@ export default function CommentsSection({ articleSlug }) {
                 <div className="cs-header">
                     <div className="cs-header__left">
                         <MessageSquare size={16} className="cs-header__icon" />
-                        <h3 className="cs-header__title">
-                            Discussion
-                        </h3>
+                        <h3 className="cs-header__title">Discussion</h3>
                     </div>
                     <span className="cs-header__count">{comments.length} comment{comments.length !== 1 ? "s" : ""}</span>
                 </div>
@@ -633,57 +816,62 @@ export default function CommentsSection({ articleSlug }) {
                     </form>
                 )}
 
-                {/* Comments list */}
+                {/* Comments list — preview only */}
                 <div className="cs-list">
                     {comments.length === 0 ? (
                         <div className="cs-empty">No comments yet — be the first.</div>
                     ) : (
-                        comments.map((comment) => {
-                            const initials = comment.authorName?.slice(0, 2).toUpperCase() || "?";
-                            const replySubject = encodeURIComponent("Re: Your comment on Brown's blog");
-                            const replyBody = encodeURIComponent(
-                                `Hi ${comment.authorName},\n\nThanks for your comment.\n\nYou wrote:\n"${comment.text}"\n\n[Your reply here]\n\n— Sir Brown AD`
-                            );
-                            const replyHref = `mailto:${comment.authorEmail}?subject=${replySubject}&body=${replyBody}`;
-
-                            return (
-                                <div key={comment.id} className="cs-comment">
-                                    <div className="cs-comment__head">
-                                        <div className="cs-comment__author">
-                                            <div className="cs-comment__avatar">{initials}</div>
-                                            <span className="cs-comment__name">{comment.authorName}</span>
-                                        </div>
-                                        <span className="cs-comment__date">{formatDate(comment.createdAt)}</span>
-                                    </div>
-                                    <p className="cs-comment__text">{comment.text}</p>
-                                    <div className="cs-comment__footer">
-                                        {comment.brownReplied ? (
-                                            <span className="cs-comment__replied">
-                                                <Mail size={9} />
-                                                Replied
-                                            </span>
-                                        ) : (
-                                            !isOwner && (
-                                                <span className="cs-comment__pending">Awaiting reply</span>
-                                            )
-                                        )}
-                                        {isOwner && (
-                                            <a
-                                                href={replyHref}
-                                                onClick={() => handleMarkReplied(comment.id)}
-                                                className="cs-comment__reply-link"
-                                            >
-                                                <Mail size={10} />
-                                                {comment.brownReplied ? "Reply again" : "Reply via email"}
-                                            </a>
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })
+                        visibleComments.map((comment) => (
+                            <CommentItem
+                                key={comment.id}
+                                comment={comment}
+                                isOwner={isOwner}
+                                handleMarkReplied={handleMarkReplied}
+                            />
+                        ))
                     )}
                 </div>
+
+                {/* View all button */}
+                {hasMore && (
+                    <button className="cs-view-all" onClick={() => setShowAllModal(true)}>
+                        <MessageSquare size={12} />
+                        View all {comments.length} comments
+                    </button>
+                )}
             </section>
+
+            {/* All comments modal */}
+            {showAllModal && (
+                <div className="cs-all-modal-backdrop">
+                    <div className="cs-all-modal-bg" onClick={() => setShowAllModal(false)} />
+                    <div className="cs-all-modal">
+                        <div className="cs-all-modal__accent-bar" />
+                        <div className="cs-all-modal__head">
+                            <div className="cs-all-modal__title">
+                                <MessageSquare size={15} style={{ color: "var(--accent)" }} />
+                                <span className="cs-all-modal__title-text">All Comments</span>
+                                <span className="cs-all-modal__count">{comments.length} total</span>
+                            </div>
+                            <button className="cs-all-modal__close" onClick={() => setShowAllModal(false)}>
+                                <X size={15} />
+                            </button>
+                        </div>
+                        <div className="cs-all-modal__body">
+                            <div className="cs-list">
+                                {comments.map((comment) => (
+                                    <CommentItem
+                                        key={comment.id}
+                                        comment={comment}
+                                        isOwner={isOwner}
+                                        handleMarkReplied={handleMarkReplied}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Email verification modal */}
             {showEmailModal && (

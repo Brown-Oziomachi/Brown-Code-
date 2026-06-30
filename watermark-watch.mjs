@@ -8,7 +8,7 @@ import fs from "fs";
 import path from "path";
 
 const WATCH_DIR = "./public";
-const WATERMARK_TEXT = "browncode.name.ng";
+const WATERMARK_TEXT = "sirbrownad.name.ng"; 
 const OPACITY = 0.45;
 
 const SKIP = [

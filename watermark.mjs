@@ -11,7 +11,7 @@ import path from "path";
 
 const INPUT_DIR = "./public";
 const OUTPUT_DIR = "./public-watermarked";
-const WATERMARK_TEXT = "browncode.name.ng";
+const WATERMARK_TEXT = "sirbrownad.name.ng"; 
 const OPACITY = 0.45;
 
 // Font scales with image width

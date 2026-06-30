@@ -29,6 +29,7 @@ import {
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { auth1, db1 } from "@/config/firebase.config1";
+import AdminCommentsPanel from "@/components/AdminCommentsPanel";
 
 const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
@@ -301,8 +302,15 @@ export default function AdminDashboardClient() {
         /* Chat grid */
         .ad-chat-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 7px; }
         .ad-chat-label svg { color: var(--accent); }
-        .ad-chat-grid { display: grid; grid-template-columns: 280px 1fr; gap: 12px; height: calc(100vh - 380px); min-height: 400px; }
-        @media (max-width: 768px) { .ad-chat-grid { grid-template-columns: 1fr; height: auto; } }
+/* change this line in your <style> block */
+.ad-chat-grid { 
+    display: grid; 
+    grid-template-columns: 260px 1fr 280px;  /* ← was 280px 1fr */
+    gap: 12px; 
+    height: calc(100vh - 380px); 
+    min-height: 400px; 
+}
+            @media (max-width: 768px) { .ad-chat-grid { grid-template-columns: 1fr; height: auto; } }
 
         /* Thread list */
         .ad-threads { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden; }
@@ -602,6 +610,7 @@ export default function AdminDashboardClient() {
               )}
             </div>
           </div>
+          <AdminCommentsPanel />
         </main>
       </div>
     </>

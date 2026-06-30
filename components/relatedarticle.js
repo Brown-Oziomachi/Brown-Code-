@@ -210,6 +210,28 @@ export default function RelatedArticles({ currentSlug }) {
                     color: var(--accent);
                     transform: translate(2px, -2px);
                 }
+
+                 /* ── Meta ── */
+                .bl-meta {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--text-3);
+                    margin-top: 12px;
+                }
+
+                .bl-meta--sm { font-size: 10px; margin-top: 10px; }
+                .bl-meta__author { color: var(--text-2); }
+
+                .bl-meta__dot {
+                    width: 3px;
+                    height: 3px;
+                    border-radius: 50%;
+                    background: var(--border-hi);
+                    flex-shrink: 0;
+                }
             `}</style>
 
             <section className="ra-section">
@@ -232,6 +254,7 @@ export default function RelatedArticles({ currentSlug }) {
                                         alt={article.title}
                                         className="ra-card__img"
                                         onError={(e) => (e.target.style.display = "none")}
+                                        title={article.content.split(" ").slice(0, 250).join(" ") + "..."}
                                     />
                                 ) : (
                                     <div className="ra-card__img-placeholder" />
@@ -242,6 +265,18 @@ export default function RelatedArticles({ currentSlug }) {
                                     {TECHNICAL_SLUGS.includes(article.slug) ? "Engineering" : "Insights"}
                                 </span>
                                 <h3 className="ra-card__title">{article.title}</h3>
+                                <div className="bl-meta bl-meta--sm">
+                                    <div className="flex items-center gap-2">
+                                        <img
+                                            src={article.isSponsored ? "/coder1.png" : "/coder1.png"}
+                                            className="h-5 w-5 rounded-full object-cover"
+                                            alt={article.postedBy || "Author"}
+                                        />
+                                        <span className="bl-meta__author">{article.postedBy}</span>
+                                        <span className="bl-meta__dot" />
+                                        <span>{getReadingTime(article.content)} min read</span>
+                                    </div>
+                                </div>
                                 <div className="ra-card__meta">
                                     <div className="ra-card__reading">
                                         <Clock size={11} />

@@ -1,5 +1,5 @@
 // app/api/paypal/capture-order/route.js
-import { db } from "@/lib/firebaseAdmin";
+import { db1 } from "@/config/firebase.config1";
 import { NextResponse } from "next/server";
 
 const PAYPAL_BASE = "https://api-m.paypal.com";
@@ -56,7 +56,7 @@ export async function POST(req) {
         const captureStatus = capture?.status; // COMPLETED, PENDING, DECLINED
 
         // ── Optional: save to your DB / Firestore here ──────────────────────
-        await db.collection("ad_payments").add({
+        await db1.collection("ad_payments").add({
             transactionID,
             orderID,
             status: captureStatus,

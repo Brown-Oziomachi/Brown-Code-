@@ -2,43 +2,42 @@ import { Suspense } from "react";
 import BlogListClient from "./blog";
 
 export const metadata = {
-  title: "Engineering Insights & Web Development Blog | Sir Brown AD",
+  title: "Blog — Business, Fraud Awareness & Tech | Sir Brown AD",
   description:
-    "Deep dives into digital infrastructure, SEO, cybersecurity, and business growth strategies. Written by Sir Brown AD.",
+    "Articles on Nigerian business scams, fake transfer alerts, cybersecurity, web development, and digital growth strategies by Sir Brown AD.",
   keywords: [
+    "fake transfer alert Nigeria",
+    "Nigerian business scam awareness",
+    "Moniepoint OPay fake alert",
+    "how to avoid fraud Nigeria",
     "web development blog Nigeria",
-    "engineering insights",
-    "SEO tips for businesses",
-    "website development Abuja",
-    "cybersecurity blog",
-    "digital infrastructure",
+    "cybersecurity Nigeria",
     "Sir Brown AD blog",
+    "small business protection Nigeria",
+    "fake dispatch rider scam",
+    "POS reversal fraud Nigeria",
+    "WhatsApp business scam Nigeria",
+    "digital fraud awareness Abuja",
+    "SEO tips Nigeria",
+    "website development Abuja",
   ],
   alternates: {
     canonical: "https://browncode.name.ng/blog",
   },
   openGraph: {
-    title: "Engineering Insights & Web Development Blog | Sir Brown AD",
+    title: "Blog — Business, Fraud Awareness & Tech | Sir Brown AD",
     description:
-      "Deep dives into web architecture, digital infrastructure, SEO, cybersecurity, and business growth strategies.",
+      "Articles on Nigerian business scams, fake transfer alerts, cybersecurity, web development, and digital growth by Sir Brown AD.",
     url: "https://browncode.name.ng/blog",
     siteName: "Sir Brown AD",
-    images: [
-      {
-        url: "https://browncode.name.ng/logo.png",
-        width: 1200,
-        height: 630,
-        alt: "Sir Brown AD Blog",
-      },
-    ],
+    images: [{ url: "https://browncode.name.ng/logo.png", width: 1200, height: 630, alt: "Sir Brown AD Blog" }],
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Engineering Insights & Web Development Blog | Sir Brown AD",
-    description:
-      "Deep dives into web architecture, digital infrastructure, SEO, cybersecurity, and business growth strategies.",
+    title: "Blog — Business, Fraud Awareness & Tech | Sir Brown AD",
+    description: "Articles on Nigerian business scams, fake transfer alerts, cybersecurity, and web development.",
     images: ["https://browncode.name.ng/logo.png"],
   },
 };

@@ -98,6 +98,7 @@ style = {{ animationDelay: `${index * 40}ms` }}
                     alt={article.title}
                     className="bl-card__img"
                     onError={(e) => (e.target.style.display = "none")}
+                    title={article.content.split(" ").slice(0, 250).join(" ") + "..."}
                 />
             ) : (
                 <div className="bl-card__img-placeholder" />

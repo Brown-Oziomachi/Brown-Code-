@@ -10,19 +10,29 @@ export const metadata = {
   keywords: [
     "Sir Brown AD",
     "Brown Code",
-    "Brown ad",
-    "Bown",
     "Brown Oziomachi",
+    "Brown ad",
     "Software Developer Nigeria",
-    "Web Developer",
-    "Next.js Developer"
+    "Full-Stack Developer Abuja Nigeria",
+    "Next.js Developer Nigeria",
+    "Web Developer Nigeria",
+    "Firebase Developer Nigeria",
+    "Nigerian fintech developer",
+    "digital fraud awareness Nigeria",
+    "fake transfer alert Nigeria",
+    "website development Abuja Nigeria",
+    "browncode.name.ng",
   ],
   icons: { icon: "/logo.png", shortcut: "/logo.png", apple: "/logo.png" },
+
+  alternates: {
+    canonical: "https://browncode.name.ng",
+  },
 
   openGraph: {
     title: "Brown Code — Full-Stack Software Developer | browncode.name.ng",
     description:
-      "Portfolio of Brown Oziomachi (Sir Brown AD / Brown ad). Professional web applications, distributed platforms, and full-stack architecture.",
+      "Portfolio of Brown Oziomachi (Sir Brown AD). Professional web applications, distributed platforms, and full-stack architecture for Nigerian and African businesses.",
     url: "https://browncode.name.ng",
     siteName: "Sir Brown AD",
     images: [
@@ -41,12 +51,12 @@ export const metadata = {
     card: "summary_large_image",
     title: "Brown Code — Full-Stack Software Developer | browncode.name.ng",
     description:
-      "Get a professional website built by Sir Brown AD / Brown ad and grow your business or platform online.",
+      "Get a professional website built by Sir Brown AD and grow your business or platform online. Based in Abuja, Nigeria.",
     images: ["https://browncode.name.ng/logo.png"],
   },
 
   verification: {
-    google: "qq5tnpKsPjJBKYLtHTZt9V-NR6bgUyxzLUX4AOB8jIQ",  
+    google: "qq5tnpKsPjJBKYLtHTZt9V-NR6bgUyxzLUX4AOB8jIQ",
     yandex: "5edb60b150103ef4",
     other: {
       "impact-site-verification": "e9768684-9c09-4886-b2db-ec34003c5283",
