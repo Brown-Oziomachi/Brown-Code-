@@ -111,35 +111,23 @@ export default function CommentsSection({ articleSlug }) {
         setEmailSubmitting(true);
         setEmailError("");
         try {
-            // Duplicate check via server route (email never exposed client-side)
-            const checkRes = await fetch("/api/comments/check-duplicate", {
+            const res = await fetch("/api/comments/submit", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     articleSlug,
-                    email: email.trim().toLowerCase()
+                    email: email.trim(),
+                    authorName: pendingComment.name,
+                    text: pendingComment.text,
                 }),
             });
-            const { isDuplicate } = await checkRes.json();
+            const { isDuplicate } = await res.json();
+
             if (isDuplicate) {
                 setEmailError("This email has already submitted a comment on this article.");
                 setEmailSubmitting(false);
                 return;
             }
-
-            // Write public comment (no email)
-            const newRef = await addDoc(collection(db1, "comments"), {
-                articleSlug,
-                authorName: pendingComment.name,
-                text: pendingComment.text,
-                createdAt: serverTimestamp(),
-                brownReplied: false,
-            });
-
-            // Write email to restricted subcollection only
-            await setDoc(doc(db1, "comments", newRef.id, "private", "data"), {
-                authorEmail: email.trim().toLowerCase(),
-            });
 
             setName(""); setCommentText(""); setPendingComment(null);
             setEmail(""); setShowEmailModal(false); setShowForm(false);
