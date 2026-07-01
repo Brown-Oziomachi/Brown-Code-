@@ -17,6 +17,21 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "sirbrownad.name.ng",
+          },
+        ],
+        destination: "https://browncode.name.ng/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

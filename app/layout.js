@@ -27,6 +27,9 @@ export const metadata = {
 
   alternates: {
     canonical: "https://browncode.name.ng",
+    types: {
+      "application/rss+xml": "https://browncode.name.ng/feed.xml",
+    },
   },
 
   openGraph: {
