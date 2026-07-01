@@ -1,8 +1,10 @@
-import { adminDb } from "@/lib/firebaseAdminApp";
-import { adminAuth } from "@/lib/firebaseAdminAuth";
+import { getAdminAuth, getAdminDb } from "@/lib/firebaseAdmin";
 
 export async function POST(req) {
     try {
+        const adminDb = getAdminDb();
+        const adminAuth = getAdminAuth();
+
         const { commentId, token } = await req.json();
 
         if (!commentId || !token) {

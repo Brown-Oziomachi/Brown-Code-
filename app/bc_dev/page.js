@@ -19,7 +19,7 @@ const STACK = [
 export default function AboutMePage() {
     const [activeTab, setActiveTab] = useState("story");
     const [typed, setTyped] = useState("");
-    const fullText = "Brown Oziomachi";
+    const fullText = "Brown Oziomachi or Sir Brown AD";
 
     useEffect(() => {
         let i = 0;
@@ -651,7 +651,7 @@ export default function AboutMePage() {
                         <div className="ab-search-card">
                             <div className="ab-search-bar">
                                 <Search size={14} />
-                                <span className="ab-search-bar__text">Brown Oziomachi</span>
+                                <span className="ab-search-bar__text">Brown Oziomachi | Sir Brown AD</span>
                             </div>
                             <div className="ab-search-result">
                                 <div className="ab-search-result__source">

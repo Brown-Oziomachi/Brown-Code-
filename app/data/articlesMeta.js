@@ -1,5 +1,6 @@
 export const articlesMeta = {
     "how-users-help-ai-companies-make-billions": {
+        category: "ai",
         metaTitle: "How Users Help AI Companies Make Billions | Brown Code",
         metaDescription: "Free users power AI company revenue through data, feedback, and behavior—without ever realizing their true value to billion-dollar AI platforms.",
         keywords: [
@@ -13,6 +14,7 @@ export const articlesMeta = {
         ],
     },
     "moving-from-social-media-to-digital-asset": {
+        category: "business",
         metaTitle: "Move From Social Media to Owning Your Platform",
         metaDescription: "Relying on Instagram or WhatsApp to run your business is risky. Discover why owning your website is the ultimate power move for lasting growth.",
         keywords: [
@@ -22,10 +24,11 @@ export const articlesMeta = {
             "website vs social media business",
             "digital asset ownership Nigeria",
             "build your own platform",
-            "Sir Brown AD",
+            "Sir Brown AD", 
         ],
     },
     "why-nigerians-trust-whatsapp-over-banks": {
+        category: "security",
         metaTitle: "Why Nigerians Trust WhatsApp More Than Their Banks | Brown Code",
         metaDescription: "WhatsApp is Nigeria's primary trust infrastructure. This is why fraudsters exploit it — and what the cultural architecture of that trust actually looks like.",
         keywords: [
@@ -39,6 +42,7 @@ export const articlesMeta = {
         ],
     },
     "church-referral-network-financial-fraud-nigeria": {
+        category: "security",
         metaTitle: "How Financial Fraud Hides Inside Nigerian Religious Communities",
         metaDescription: "Nigerian churches are built on deep trust. Fraudsters have systematically identified that trust as infrastructure and built entire schemes inside it.",
         keywords: [
@@ -52,6 +56,7 @@ export const articlesMeta = {
         ],
     },
     "ponzi-ecosystem-nigeria-investment-fraud-survival": {
+        category: "security",
         metaTitle: "The Ponzi Ecosystem: How Nigeria's Fraud Schemes Survive Exposure",
         metaDescription: "MMM collapsed. Loom collapsed. Racksterli collapsed. Yet the same Nigerians joined the next scheme. This is the story of an ecosystem that was never dismantled.",
         keywords: [
@@ -65,6 +70,7 @@ export const articlesMeta = {
         ],
     },
     "how-social-media-accounts-are-hacked-zero-day": {
+        category: "security",
         metaTitle: "The Zero-Day Vulnerability in Your Pocket: How Social Accounts are Actually Intercepted/hacked",
         metaDescription: "Session hijacking, token theft, and platform exploits are how hackers take your Meta, TikTok, and Instagram—not by guessing your password.",
         keywords: [
@@ -78,6 +84,7 @@ export const articlesMeta = {
         ],
     },
     "algorithmic-warfare-social-media-infrastructure": {
+        category: "ai",
         metaTitle: "Algorithmic Warfare: Social Media Conflict Explained",
         metaDescription: "Social media conflict is no longer random arguments. It is a coordinated, code-driven battle to weaponize algorithms and capture human attention.",
         keywords: [
@@ -91,6 +98,7 @@ export const articlesMeta = {
         ],
     },
     "digital-fortresses-online-banking-security-infrastructure": {
+        category: "security",
         metaTitle: "Digital Fortresses: Stop Hackers From Emptying Your Bank",
         metaDescription: "Bank hacking has evolved past passwords. Learn the multi-layered offensive techniques criminals use and how to build a bulletproof financial defense.",
         keywords: [
@@ -104,6 +112,7 @@ export const articlesMeta = {
         ],
     },
     "digital-reclamation-social-media-hijack-recovery-matrix": {
+        category: "security",
         metaTitle: "Hacked? Recover WhatsApp, Facebook & Instagram Now",
         metaDescription: "Woke up locked out of your accounts? Here is the exact step-by-step checklist to kick hackers out and take back your social media today.",
         keywords: [
@@ -117,6 +126,7 @@ export const articlesMeta = {
         ],
     },
     "account-lockdown-recover-hacked-social-media": {
+        category: "security",
         metaTitle: "Account Lockdown: Recover Hacked Social Media Accounts",
         metaDescription: "Find your accounts locked or emails changed? Here is the tech-level recovery script to take back your WhatsApp, Facebook, and Instagram instantly.",
         keywords: [
@@ -130,6 +140,7 @@ export const articlesMeta = {
         ],
     },
     "atm-card-security-loss-containment": {
+        category: "security",
         metaTitle: "ATM Card Security: Stop Criminals Draining Your Account",
         metaDescription: "Scammers can copy your card data and drain your funds in minutes. Learn how your ATM card works and what to do immediately if you lose it.",
         keywords: [
@@ -143,6 +154,7 @@ export const articlesMeta = {
         ],
     },
     "cognitive-offloading-ai-rewiring-human-mind": {
+        category: "ai",
         metaTitle: "Cognitive Offloading: How AI Is Rewiring Your Mind",
         metaDescription: "Outsourcing thinking to AI is degrading the neural frameworks humans need for deep thought. Here is what cognitive offloading is doing to your brain.",
         keywords: [
@@ -156,6 +168,7 @@ export const articlesMeta = {
         ],
     },
     "centralizing-business-operations-with-custom-websites": {
+        category: "webdev",
         metaTitle: "How a Custom Website Centralizes Business Operations",
         metaDescription: "A website is more than a marketing tool. It can serve as the operational brain of your entire company and automate your internal workflows completely.",
         keywords: [
@@ -169,6 +182,7 @@ export const articlesMeta = {
         ],
     },
     "invisible-trap-scammers-steal-bank-details": {
+        category: "security",
         metaTitle: "How Scammers Steal Your Bank Details Without Your Phone",
         metaDescription: "Modern fraudsters can drain your account without touching your device. Learn the techniques they use and how to protect your money today.",
         keywords: [
@@ -182,6 +196,7 @@ export const articlesMeta = {
         ],
     },
     "signs-your-bank-account-is-being-watched": {
+        category: "security",
         metaTitle: "5 Signs Fraudsters Are Already Watching Your Account",
         metaDescription: "Fraudsters observe, test, and prepare before striking. These are the early warning signs most people miss until it is already too late.",
         keywords: [
@@ -195,6 +210,7 @@ export const articlesMeta = {
         ],
     },
     "dark-science-brain-tricked-sending-money": {
+        category: "security",
         metaTitle: "The Dark Science Behind Financial Fraud Psychology",
         metaDescription: "Financial fraud is about neuroscience, not stupidity. Scammers exploit specific brain functions that affect every human regardless of intelligence.",
         keywords: [
@@ -208,6 +224,7 @@ export const articlesMeta = {
         ],
     },
     "fingerprint-not-as-safe-as-bank-told-you": {
+        category: "security",
         metaTitle: "Why Your Fingerprint Is Not as Safe as Banks Claim",
         metaDescription: "Biometric security has exploitable weaknesses fraudsters are already using. Here is what banks do not tell you about fingerprints and face scans.",
         keywords: [
@@ -221,6 +238,7 @@ export const articlesMeta = {
         ],
     },
     "phone-number-hackers-empty-bank-account": {
+        category: "security",
         metaTitle: "How Hackers Use Your Phone Number to Empty Your Bank",
         metaDescription: "Your phone number is the master key to your financial life. Most people have no idea how easily criminals can take control of it and drain accounts.",
         keywords: [
@@ -234,6 +252,7 @@ export const articlesMeta = {
         ],
     },
     "social-media-fraud-map-scammers-learn-about-you": {
+        category: "security",
         metaTitle: "Social Media Is a Fraud Map for Scammers | Brown Code",
         metaDescription: "Before targeting you, fraudsters study your social media. Your profiles provide most of the intelligence needed to make their attack convincing.",
         keywords: [
@@ -247,6 +266,7 @@ export const articlesMeta = {
         ],
     },
     "atm-hidden-dangers-bank-customers-never-notice": {
+        category: "security",
         metaTitle: "ATM Hidden Dangers Most Bank Customers Never Notice",
         metaDescription: "ATMs are physically targeted by criminals using devices designed to be invisible. Here is what to check before inserting your card every time.",
         keywords: [
@@ -260,6 +280,7 @@ export const articlesMeta = {
         ],
     },
     "how-ai-is-being-used-to-steal-money": {
+        category: "ai",
         metaTitle: "How AI Is Being Used to Steal Money From People",
         metaDescription: "The same technology powering chatbots is being weaponized by criminals to run fraud at a scale previously impossible. Here is how it works.",
         keywords: [
@@ -273,6 +294,7 @@ export const articlesMeta = {
         ],
     },
     "psychology-of-urgency-why-smart-people-fall-for-scams": {
+        category: "security",
         metaTitle: "Why Smart People Fall for Obvious Scams | Brown Code",
         metaDescription: "Intelligence does not protect you from fraud. Understanding the psychological triggers that bypass rational thinking is the only real protection.",
         keywords: [
@@ -286,6 +308,7 @@ export const articlesMeta = {
         ],
     },
     "sim-card-master-key-silent-crime": {
+        category: "security",
         metaTitle: "Your SIM Card Is a Master Key: The Silent Crime",
         metaDescription: "SIM swap fraud has devastated thousands of bank accounts. Most victims had no idea it was possible until it happened to them. Here is how to stop it.",
         keywords: [
@@ -299,6 +322,7 @@ export const articlesMeta = {
         ],
     },
     "how-scammers-gather-your-personal-information": {
+        category: "security",
         metaTitle: "How Scammers Know Everything About You Before They Call",
         metaDescription: "Before a scammer calls, they already know your name, bank, employer, and family. You told them everything yourself. Here is exactly how they do it.",
         keywords: [
@@ -312,6 +336,7 @@ export const articlesMeta = {
         ],
     },
     "nigerian-bank-fraud-case-studies": {
+        category: "security",
         metaTitle: "Real Nigerian Bank Fraud Cases That Could Be Prevented",
         metaDescription: "Documented cases of real Nigerians losing real money to digital fraud—and what each case reveals about how attacks actually unfold in practice.",
         keywords: [
@@ -325,6 +350,7 @@ export const articlesMeta = {
         ],
     },
     "before-you-log-in-banking-checklist": {
+        category: "security",
         metaTitle: "60-Second Check Before Every Online Banking Session",
         metaDescription: "Most banking fraud victims did everything they thought was right. This checklist covers the seven things they skipped—and takes under a minute.",
         keywords: [
@@ -338,6 +364,7 @@ export const articlesMeta = {
         ],
     },
     "how-nigerian-banks-fight-fraud-nibss-biometrics": {
+        category: "security",
         metaTitle: "How Nigerian Banks Fight Fraud: NIBSS & Biometrics",
         metaDescription: "Behind every Nigerian banking app is invisible technology designed to detect fraud before you notice. Here is how NIBSS and biometrics actually work.",
         keywords: [
@@ -351,6 +378,7 @@ export const articlesMeta = {
         ],
     },
     "fake-bank-website-how-to-spot-it": {
+        category: "security",
         metaTitle: "How to Spot a Fake Bank Website Before It Steals All",
         metaDescription: "Modern fake banking sites are visually identical to the real ones. The differences that reveal them are subtle and almost never taught to customers.",
         keywords: [
@@ -364,6 +392,7 @@ export const articlesMeta = {
         ],
     },
     "online-banking-fraud-bvn-nin-identity-protection": {
+        category: "security",
         metaTitle: "How Online Fraud Weaponizes Your BVN and NIN",
         metaDescription: "Your BVN and NIN are master keys to your financial existence. Losing control of them can quietly destroy your entire digital financial life.",
         keywords: [
@@ -377,6 +406,7 @@ export const articlesMeta = {
         ],
     },
     "bank-account-number-fraud-prevention-social-engineering": {
+        category: "security",
         metaTitle: "How Criminals Turn Your Account Number Into a Weapon",
         metaDescription: "Your 10-digit bank account number seems harmless. To a seasoned fraudster, it is the first piece of a puzzle that leads to draining your savings.",
         keywords: [
@@ -390,6 +420,7 @@ export const articlesMeta = {
         ],
     },
     "inside-mind-of-fraudster-how-they-choose-targets": {
+        category: "security",
         metaTitle: "Inside the Mind of a Fraudster: How Targets Are Chosen",
         metaDescription: "Fraud victims are not chosen randomly. Criminals study behavioral patterns, emotional vulnerabilities, and life circumstances to select their targets.",
         keywords: [
@@ -403,6 +434,7 @@ export const articlesMeta = {
         ],
     },
     "investment-fraud-epidemic-real-vs-trap": {
+        category: "security",
         metaTitle: "Investment Fraud: Real Opportunity vs Engineered Trap",
         metaDescription: "Investment fraud has destroyed more generational wealth than almost any other financial crime. The warning signs are increasingly subtle today.",
         keywords: [
@@ -416,6 +448,7 @@ export const articlesMeta = {
         ],
     },
     "fake-pos-alert-fraud-how-to-detect": {
+        category: "security",
         metaTitle: "Fake POS Alert Scam: How to Detect It Before Losing Cash",
         metaDescription: "POS agents are losing thousands to fake transfer alerts daily. Here is exactly how the scam works and the seven checks every agent must do before releasing cash.",
         keywords: [
@@ -429,6 +462,7 @@ export const articlesMeta = {
         ],
     },
     "fake-transfer-scams-nigeria-young-businesses": {
+        category: "security",
         metaTitle: "Fake Transfer Scams Are Destroying Young Businesses in Nigeria | Brown Code",
         metaDescription: "Learn how fake bank transfer alerts work, why the money never bounces back, and the exact steps every young Nigerian entrepreneur must take to protect their business.",
         keywords: [
@@ -442,6 +476,7 @@ export const articlesMeta = {
         ],
     },
     "moniepoint-opay-fake-transfer-alert-nigeria": {
+        category: "security",
         metaTitle: "Moniepoint and OPay Fake Transfer Alerts — Protect Your Business | Brown Code",
         metaDescription: "Sir Brown AD exposes exactly how fake Moniepoint and OPay transfer alerts work in Nigeria and the six rules every business owner must follow to never be scammed again.",
         keywords: [
@@ -455,6 +490,7 @@ export const articlesMeta = {
         ],
     },
     "overpayment-scam-nigeria-business-owners": {
+        category: "security",
         metaTitle: "The Overpayment Trap — How Scammers Use Extra Money to Steal From Nigerian Businesses | Brown Code",
         metaDescription: "A customer pays too much and asks for the difference back. Days later their original payment reverses. Sir Brown AD exposes exactly how the overpayment scam works and how to protect your business.",
         keywords: [
@@ -468,6 +504,7 @@ export const articlesMeta = {
         ],
     },
     "whatsapp-business-impersonation-scam-nigeria": {
+        category: "security",
         metaTitle: "WhatsApp Business Impersonation — How Scammers Clone Your Account and Rob Your Customers | Brown Code",
         metaDescription: "Scammers are creating identical copies of Nigerian business WhatsApp accounts and stealing from your customers. Sir Brown AD explains how to detect, prevent and respond to WhatsApp impersonation.",
         keywords: [
@@ -480,7 +517,9 @@ export const articlesMeta = {
             "Sir Brown AD",
         ],
     },
+
     "fake-dispatch-rider-scam-nigeria-sellers": {
+        category: "security",
         metaTitle: "Fake Dispatch Rider Scams — How Nigerian Sellers Lose Goods Before Getting Paid | Brown Code",
         metaDescription: "A buyer sends their own rider before payment confirms. The rider and buyer are working together. Sir Brown AD breaks down the fake dispatch rider scam and the rules that protect every Nigerian seller.",
         keywords: [
@@ -494,6 +533,7 @@ export const articlesMeta = {
         ],
     },
     "pos-reversal-scam-nigeria-physical-stores": {
+        category: "security",
         metaTitle: "POS Reversal Scams — How Nigerian Store Owners Lose Money After a Successful Transaction | Brown Code",
         metaDescription: "A successful POS receipt does not guarantee payment. Sir Brown AD exposes how POS reversal fraud works in Nigeria and the documentation habits every physical store owner must build.",
         keywords: [
@@ -507,6 +547,7 @@ export const articlesMeta = {
         ],
     },
     "invoice-fraud-nigeria-freelancers-agencies": {
+        category: "security",
         metaTitle: "Invoice Fraud — How Nigerian Freelancers Lose Payment After Completing Their Work | Brown Code",
         metaDescription: "Someone intercepts your invoice and changes the account details. Your client pays — just not to you. Sir Brown AD exposes invoice fraud and the steps every Nigerian freelancer must take to protect their payments.",
         keywords: [
@@ -520,6 +561,7 @@ export const articlesMeta = {
         ],
     },
     "fake-brand-partnership-scam-nigeria-influencers": {
+        category: "security",
         metaTitle: "Fake Brand Partnership Scams — How Nigerian Content Creators Are Defrauded | Brown Code",
         metaDescription: "A brand offers a paid deal, sends a fake transfer, and asks you to post before payment confirms. Sir Brown AD breaks down fake brand partnership scams and how every Nigerian creator can verify deals safely.",
         keywords: [
@@ -533,6 +575,7 @@ export const articlesMeta = {
         ],
     },
     "cac-business-registration-scam-nigeria": {
+        category: "security",
         metaTitle: "CAC and Business Registration Scams — How Nigerian Entrepreneurs Lose Money Registering Their Business | Brown Code",
         metaDescription: "Fake CAC agents are collecting money and documents from Nigerian entrepreneurs and disappearing. Sir Brown AD exposes how registration scams work and the only safe way to register your business in Nigeria.",
         keywords: [
@@ -545,7 +588,164 @@ export const articlesMeta = {
             "Sir Brown AD",
         ],
     },
+    "paypal-vs-paystack-vs-flutterwave-nigeria": {
+        category: "business",
+        metaTitle: "PayPal vs Paystack vs Flutterwave for Nigerian Businesses | Brown Code",
+        metaDescription: "An honest comparison of PayPal, Paystack, and Flutterwave for Nigerian businesses, based on real integration experience — not marketing copy.",
+        keywords: [
+            "Paystack vs Flutterwave",
+            "PayPal vs Paystack Nigeria",
+            "best payment processor Nigeria",
+            "Nigerian business payment gateway comparison",
+            "Flutterwave Nigeria review",
+            "Sir Brown AD",
+        ],
+    },
+    "website-not-showing-google-sitemap-mistake": {
+        category: "webdev",
+        metaTitle: "Why Your Website Isn't Showing on Google — The Sitemap Mistake | Brown Code",
+        metaDescription: "A real sitemap bug that kept 63 articles invisible to Google. Sir Brown AD explains the mistake, the fix, and how to check your own site right now.",
+        keywords: [
+            "website not showing on Google",
+            "sitemap not working Next.js",
+            "next-sitemap config error",
+            "Google Search Console sitemap submission",
+            "why isn't my site indexed",
+            "Sir Brown AD",
+        ],
+    },
+    "how-to-know-business-idea-worth-starting": {
+        category: "business",
+        metaTitle: "How to Know If Your Business Idea Is Worth Starting | Brown Code",
+        metaDescription: "Most new businesses fail because of weak demand, not bad execution. Sir Brown AD breaks down how to validate a business idea before spending money.",
+        keywords: [
+            "validate business idea Nigeria",
+            "is my business idea good",
+            "how to test business idea before starting",
+            "business idea validation",
+            "starting a business Nigeria",
+            "Sir Brown AD",
+        ],
+    },
+    "real-cost-starting-business-nigeria": {
+        category: "business",
+        metaTitle: "The Real Cost of Starting a Business in Nigeria | Brown Code",
+        metaDescription: "Beyond stock and rent — the hidden costs that catch new Nigerian business owners off guard, and how to build a realistic starting budget.",
+        keywords: [
+            "cost of starting business Nigeria",
+            "new business budget Nigeria",
+            "hidden business startup costs",
+            "small business runway",
+            "starting a business with low capital",
+            "Sir Brown AD",
+        ],
+    },
+    "cac-registration-vs-operating-informally": {
+        category: "business",
+        metaTitle: "CAC Registration vs Operating Informally — What New Owners Need to Know | Brown Code",
+        metaDescription: "Should you register your business right away or wait? Sir Brown AD breaks down what CAC registration actually unlocks and when it's genuinely needed.",
+        keywords: [
+            "CAC registration Nigeria",
+            "when to register a business Nigeria",
+            "business name vs limited liability company Nigeria",
+            "should I register my business",
+            "Corporate Affairs Commission registration",
+            "Sir Brown AD",
+        ],
+    },
+    "how-new-businesses-run-out-of-money": {
+        category: "business",
+        metaTitle: "How New Businesses Run Out of Money Without Realizing It | Brown Code",
+        metaDescription: "Profit and cash flow are not the same thing. Sir Brown AD explains why profitable new businesses still run out of money, and how to protect against it.",
+        keywords: [
+            "cash flow vs profit",
+            "why businesses run out of money",
+            "small business cash flow problems",
+            "new business financial mistakes",
+            "managing business cash flow Nigeria",
+            "Sir Brown AD",
+        ],
+    },
+    "pricing-product-no-competitors-compare": {
+        category: "business",
+        metaTitle: "How to Price Your Product With No Competitors to Compare To | Brown Code",
+        metaDescription: "A practical pricing framework for new business owners with no direct competitor to reference — from Sir Brown AD.",
+        keywords: [
+            "how to price a product",
+            "pricing strategy new business",
+            "how to set prices with no competitors",
+            "underpricing mistakes new business",
+            "value based pricing",
+            "Sir Brown AD",
+        ],
+    },
+    "should-you-take-loan-start-business": {
+        category: "business",
+        metaTitle: "Should You Take a Loan to Start Your Business? | Brown Code",
+        metaDescription: "An honest framework for deciding whether to borrow money to start or grow your business, from Sir Brown AD.",
+        keywords: [
+            "should I take a loan for my business",
+            "business loan new business Nigeria",
+            "borrowing money to start a business",
+            "small business debt advice",
+            "is a business loan a good idea",
+            "Sir Brown AD",
+        ],
+    },
+    "first-10-customers-zero-marketing-budget": {
+        category: "marketing",
+        metaTitle: "How to Get Your First 10 Customers With Zero Marketing Budget | Brown Code",
+        metaDescription: "Practical, direct strategies for landing your first paying customers without spending money on advertising, from Sir Brown AD.",
+        keywords: [
+            "get first customers no budget",
+            "how to find first customers",
+            "customer acquisition new business",
+            "free marketing strategies new business",
+            "get first 10 customers",
+            "Sir Brown AD",
+        ],
+    },
+    "why-nobody-buying-from-you-yet": {
+        category: "marketing",
+        metaTitle: "Why Nobody Is Buying From You Yet | Brown Code",
+        metaDescription: "Your product might be good and still have zero sales. Sir Brown AD breaks down the real reasons new businesses struggle to convert interest into sales.",
+        keywords: [
+            "why no one is buying my product",
+            "no sales new business",
+            "why is my business not selling",
+            "low sales good product",
+            "customer trust new business",
+            "Sir Brown AD",
+        ],
+    },
+    "how-customers-decide-trust-new-business": {
+        category: "business",
+        metaTitle: "How Customers Decide Whether to Trust a New Business | Brown Code",
+        metaDescription: "Trust is built through specific, scannable signals — not time alone. Sir Brown AD breaks down what new businesses can do to build customer trust deliberately.",
+        keywords: [
+            "how to build trust new business",
+            "why customers don't trust new businesses",
+            "building credibility as a startup",
+            "customer trust signals",
+            "how to look legitimate as a new business",
+            "Sir Brown AD",
+        ],
+    },
+    "why-people-choose-small-business-over-big-brand": {
+        category: "business",
+        metaTitle: "What Makes People Choose a Small Business Over a Big Brand | Brown Code",
+        metaDescription: "Small businesses can't compete with big brands on price or scale — but they have real advantages most never use deliberately. Sir Brown AD explains.",
+        keywords: [
+            "why choose small business over big brand",
+            "small business competitive advantage",
+            "how small businesses compete with big companies",
+            "customer loyalty small business",
+            "small business vs corporation",
+            "Sir Brown AD",
+        ],
+    },
     "social-media-ad-account-hacking-nigeria": {
+        category: "security",
         metaTitle: "Social Media Ad Account Hacking — How Nigerian Business Owners Lose Thousands in Unauthorized Ad Spend | Brown Code",
         metaDescription: "Hackers access your Facebook ad account and run campaigns using your payment method. Sir Brown AD explains exactly how ad account hacking works and how to lock down your account completely.",
         keywords: [
@@ -559,6 +759,7 @@ export const articlesMeta = {
         ],
     },
     "chargeback-fraud-nigeria-online-businesses": {
+        category: "security",
         metaTitle: "Chargeback Fraud — How Customers Steal From Nigerian Businesses After Paying | Brown Code",
         metaDescription: "A customer pays, collects their goods or service, then tells their bank it never happened. Sir Brown AD breaks down chargeback fraud and the documentation habits that protect Nigerian entrepreneurs.",
         keywords: [
@@ -572,6 +773,7 @@ export const articlesMeta = {
         ],
     },
     "fake-escrow-scam-nigeria-sellers": {
+        category: "security",
         metaTitle: "Fake Escrow Scams — How Nigerian Sellers Are Tricked Into Delivering Before Getting Paid | Brown Code",
         metaDescription: "The buyer recommends an escrow service for your protection. The platform is fake. Sir Brown AD exposes how fake escrow scams target high-value Nigerian sellers and the rules that keep you safe.",
         keywords: [
@@ -585,6 +787,7 @@ export const articlesMeta = {
         ],
     },
     "how-to-recover-after-bank-fraud": {
+        category: "security",
         metaTitle: "How to Recover After Bank Fraud: Steps Most Victims Miss",
         metaDescription: "Being defrauded is devastating. The actions you take in the first hours after discovering fraud dramatically affect how much you can recover.",
         keywords: [
@@ -598,6 +801,7 @@ export const articlesMeta = {
         ],
     },
     "dead-internet-theory-algorithmic-reality": {
+        category: "ai",
         metaTitle: "The Ghost in the Network: Surviving the Dead Internet",
         metaDescription: "Nearly half of all global web traffic is no longer human. Behind clean user interfaces lies an aggressively engineered system simulating reality.",
         keywords: [
@@ -611,6 +815,7 @@ export const articlesMeta = {
         ],
     },
     "character-currency-how-manner-dictates-business-growth": {
+        category: "growth",
         metaTitle: "How Character and Integrity Drive Business Growth",
         metaDescription: "Most business advice focuses on funnels and features. The truest engine of sustainable growth is an invisible asset: your character and manner.",
         keywords: [
@@ -624,6 +829,7 @@ export const articlesMeta = {
         ],
     },
     "mastering-local-seo-for-startups": {
+        category: "marketing",
         metaTitle: "Mastering Local SEO: Get Found by Customers Near You",
         metaDescription: "If your business does not appear when local clients search Google, you are losing money to competitors. Here is how to dominate local search results.",
         keywords: [
@@ -637,6 +843,7 @@ export const articlesMeta = {
         ],
     },
     "why-relationships-fail-the-anatomy-of-drift": {
+        category: "growth",
         metaTitle: "Why Intimate Relationships Quietly Collapse | Brown Code",
         metaDescription: "Most relationships do not end in explosions. They collapse under accumulated silence, unaddressed resentments, and the slow process of emotional drift.",
         keywords: [
@@ -650,6 +857,7 @@ export const articlesMeta = {
         ],
     },
     "moving-from-solopreneur-to-system-driven-firm": {
+        category: "business",
         metaTitle: "When to Move From Solopreneur to System-Driven Firm",
         metaDescription: "Hustling harder can only take your business so far. Learn how to transition from manual operator to an automated, system-driven organization.",
         keywords: [
@@ -663,6 +871,7 @@ export const articlesMeta = {
         ],
     },
     "data-driven-scaling-b2b-kpis": {
+        category: "business",
         metaTitle: "Data-Driven Scaling: B2B KPIs Beyond Revenue | Brown Code",
         metaDescription: "Relying purely on top-line revenue masks deep vulnerabilities. Discover the real metrics that dictate sustainable B2B scale and long-term growth.",
         keywords: [
@@ -676,6 +885,7 @@ export const articlesMeta = {
         ],
     },
     "optimizing-conversion-funnels-enterprise-leads": {
+        category: "marketing",
         metaTitle: "Optimize Your Conversion Funnel for Enterprise Leads",
         metaDescription: "High web traffic is useless if visitors leave without contact info. Here is how to engineer a corporate website that converts browsers into buyers.",
         keywords: [
@@ -689,6 +899,7 @@ export const articlesMeta = {
         ],
     },
     "hidden-cost-of-technical-debt-business-growth": {
+        category: "webdev",
         metaTitle: "The Hidden Cost of Technical Debt on Business Growth",
         metaDescription: "Patchwork software and outdated digital tools act as an invisible tax on operations. Learn how upgrading your stack unlocks rapid and sustainable scaling.",
         keywords: [
@@ -702,6 +913,7 @@ export const articlesMeta = {
         ],
     },
     "b2b-inbound-lead-generation-engines": {
+        category: "marketing",
         metaTitle: "B2B Lead Generation: Build Inbound Engines for Contracts",
         metaDescription: "Cold calling is dying. Discover how to build an authoritative inbound digital footprint that makes corporate decision-makers seek you out directly.",
         keywords: [
@@ -715,6 +927,7 @@ export const articlesMeta = {
         ],
     },
     "maximizing-customer-lifetime-value-ltv": {
+        category: "marketing",
         metaTitle: "Maximizing Customer Lifetime Value Through Retargeting",
         metaDescription: "The cheapest sale you will ever make is to an existing client. Discover how automated cross-selling unlocks hidden revenue from your current base.",
         keywords: [
@@ -728,6 +941,7 @@ export const articlesMeta = {
         ],
     },
     "corporate-rebranding-premium-pricing": {
+        category: "marketing",
         metaTitle: "Corporate Rebranding: Justify Premium Pricing Online",
         metaDescription: "If your website looks outdated, buyers assume your services are too. Learn how premium design unlocks higher profit margins and attracts better clients.",
         keywords: [
@@ -741,6 +955,7 @@ export const articlesMeta = {
         ],
     },
     "building-frictionless-ux-slashes-churn": {
+        category: "webdev",
         metaTitle: "Build Frictionless UX to Slash Customer Churn Rates",
         metaDescription: "Confusing software or clunky portals drive customers away. Discover how intuitive user experiences protect your monthly recurring revenue long-term.",
         keywords: [
@@ -754,6 +969,7 @@ export const articlesMeta = {
         ],
     },
     "scaling-ecommerce-infrastructure-high-traffic": {
+        category: "webdev",
         metaTitle: "Scaling E-Commerce Infrastructure for High Traffic",
         metaDescription: "A server crash during a peak sales window ruins your brand. Here is how to build a stable, high-performance digital storefront that never goes down.",
         keywords: [
@@ -767,6 +983,7 @@ export const articlesMeta = {
         ],
     },
     "custom-crm-integrations-sales-efficiency": {
+        category: "webdev",
         metaTitle: "Custom CRM Integrations That Empower Sales Teams",
         metaDescription: "Stop wasting time on manual data entry. Learn how connecting a custom CRM to your website empowers your sales team to close deals significantly faster.",
         keywords: [
@@ -780,6 +997,7 @@ export const articlesMeta = {
         ],
     },
     "cybersecurity-for-enterprises-protecting-data": {
+        category: "security",
         metaTitle: "Enterprise Cybersecurity: Protect Your Digital Assets",
         metaDescription: "Data breaches ruin corporate reputations and result in heavy legal penalties. Discover how to build an incredibly secure web ecosystem for your business.",
         keywords: [
@@ -793,6 +1011,7 @@ export const articlesMeta = {
         ],
     },
     "roi-custom-software-vs-saas": {
+        category: "webdev",
         metaTitle: "Custom Software vs SaaS: When to Build vs Rent",
         metaDescription: "When does renting generic software start costing more than building proprietary systems? Learn how to calculate the tipping point for your business.",
         keywords: [
@@ -806,6 +1025,7 @@ export const articlesMeta = {
         ],
     },
     "migrating-to-the-cloud-enterprise-infrastructure": {
+        category: "webdev",
         metaTitle: "Migrating to the Cloud: Future-Proof Your Infrastructure",
         metaDescription: "Relying on physical local servers leaves your business vulnerable and limits growth. Discover the power of secure cloud migration for enterprises.",
         keywords: [
@@ -819,6 +1039,7 @@ export const articlesMeta = {
         ],
     },
     "predictive-analytics-forecasting-market-demand": {
+        category: "webdev",
         metaTitle: "Predictive Analytics: Forecast Market Demand Accurately",
         metaDescription: "Stop guessing what your customers will want next. Learn how implementing data analytics tools lets you predict trends and secure market share early.",
         keywords: [
@@ -832,6 +1053,7 @@ export const articlesMeta = {
         ],
     },
     "corporate-web-accessibility-ada-compliance": {
+        category: "webdev",
         metaTitle: "Corporate Web Accessibility and ADA Compliance Guide",
         metaDescription: "An inaccessible website locks out a large percentage of the population and exposes you to legal action. Learn how to optimize for digital inclusion.",
         keywords: [
@@ -845,6 +1067,7 @@ export const articlesMeta = {
         ],
     },
     "power-of-ecommerce-global-sales": {
+        category: "business",
         metaTitle: "The Power of E-Commerce: Selling to the World 24/7",
         metaDescription: "Break down physical borders. Learn how turning your website into an online store opens up around-the-clock revenue streams and global customer reach.",
         keywords: [
@@ -858,6 +1081,7 @@ export const articlesMeta = {
         ],
     },
     "building-trust-online-cro": {
+        category: "marketing",
         metaTitle: "Building Trust Online: Conversion Rate Optimization",
         metaDescription: "Getting visitors to your website is only half the battle. Here is how to turn casual browsers into paying customers using proven CRO techniques.",
         keywords: [
@@ -871,6 +1095,7 @@ export const articlesMeta = {
         ],
     },
     "why-website-speed-matters": {
+        category: "webdev",
         metaTitle: "Why Website Speed Can Make or Break Your Business",
         metaDescription: "A slow website is a silent revenue killer. Learn how a single second of delay loses valuable clients and what you can do to fix it immediately.",
         keywords: [
@@ -884,6 +1109,7 @@ export const articlesMeta = {
         ],
     },
     "why-b2b-firms-need-a-website-for-credibility": {
+        category: "webdev",
         metaTitle: "Why B2B Decision Makers Reject Firms Without Websites",
         metaDescription: "In modern corporate procurement, a social media page is not enough. Discover why a premium website is the ultimate trust signal for winning big contracts.",
         keywords: [
@@ -897,6 +1123,7 @@ export const articlesMeta = {
         ],
     },
     "how-websites-create-automated-inbound-sales": {
+        category: "webdev",
         metaTitle: "How a Website Transforms Your Firm Into Inbound Sales",
         metaDescription: "Relying purely on cold calling or word-of-mouth is unstable. Learn how a website builds an automated sales pipeline that works around the clock.",
         keywords: [
@@ -910,6 +1137,7 @@ export const articlesMeta = {
         ],
     },
     "data-sovereignty-and-website-ownership-for-business": {
+        category: "webdev",
         metaTitle: "Data Sovereignty: Why Platform Dependency Is a Risk",
         metaDescription: "Building your business entirely on social media networks is an operational hazard. Discover why owning your data is vital for true business security.",
         keywords: [
@@ -923,6 +1151,7 @@ export const articlesMeta = {
         ],
     },
     "website-tools-to-get-more-clients": {
+        category: "webdev",
         metaTitle: "What Your Website Can Do to Bring You More Clients",
         metaDescription: "Practical, client-focused features you can add to your website to attract, qualify, and convert more leads into paying customers consistently.",
         keywords: [
@@ -936,6 +1165,7 @@ export const articlesMeta = {
         ],
     },
     "scaling-globally-with-enterprise-web-infrastructure": {
+        category: "webdev",
         metaTitle: "Break Geographical Barriers With Enterprise Web Infra",
         metaDescription: "Physical offices limit your client base to your local area. Discover how enterprise web development unlocks genuine borderless corporate growth.",
         keywords: [
@@ -949,6 +1179,7 @@ export const articlesMeta = {
         ],
     },
     "running-business-on-social-media-without-website": {
+        category: "business",
         metaTitle: "Hidden Vulnerabilities of Running Business on Social Media",
         metaDescription: "Relying on Instagram, WhatsApp, or TikTok to run your company creates massive long-term operational risks most entrepreneurs never see coming.",
         keywords: [
@@ -962,6 +1193,7 @@ export const articlesMeta = {
         ],
     },
     "dm-bottleneck-manual-order-processing-risks": {
+        category: "business",
         metaTitle: "The DM Bottleneck: Why Manual Orders Kill Your Margins",
         metaDescription: "If your sales process requires clients to send a DM for prices, you are losing massive revenue to operational friction every single day.",
         keywords: [
@@ -975,6 +1207,7 @@ export const articlesMeta = {
         ],
     },
     "social-media-makes-your-business-invisible-on-google": {
+        category: "marketing",
         metaTitle: "Why Social Media Makes Your Business Invisible on Google",
         metaDescription: "Social media content is locked behind walled gardens. Discover why lacking a website means missing out on ready-to-buy high-intent search traffic.",
         keywords: [
@@ -988,6 +1221,7 @@ export const articlesMeta = {
         ],
     },
     "why-you-need-a-portfolio-digital-age": {
+        category: "webdev",
         metaTitle: "Monetizing Your Identity: Own Your Digital Real Estate",
         metaDescription: "Relying on platform algorithms to tell your story is a massive career bottleneck. An independent portfolio is your ultimate proof of work online.",
         keywords: [
@@ -1001,6 +1235,7 @@ export const articlesMeta = {
         ],
     },
     "portfolio-as-production-code-infrastructure": {
+        category: "webdev",
         metaTitle: "Your Portfolio Is Production Code: Build It That Way",
         metaDescription: "In a world of automated hiring screens, your personal site is the definitive record of your engineering capability. It must be flawless to compete.",
         keywords: [
@@ -1014,6 +1249,7 @@ export const articlesMeta = {
         ],
     },
     "how-lacking-a-website-lowers-brand-value": {
+        category: "webdev",
         metaTitle: "How Lacking a Website Caps Your Pricing Power",
         metaDescription: "Premium clients expect premium digital infrastructure. Learn how relying purely on social feeds forces your business into low-margin price wars.",
         keywords: [
@@ -1027,6 +1263,7 @@ export const articlesMeta = {
         ],
     },
     "smart-automation-business-autopilot": {
+        category: "webdev",
         metaTitle: "Smart Automation: How to Run Your Business on Autopilot",
         metaDescription: "Stop drowning in repetitive admin tasks. Discover how integrating web automation saves time, reduces errors, and scales your operations efficiently.",
         keywords: [
@@ -1040,6 +1277,7 @@ export const articlesMeta = {
         ],
     },
     "cybersecurity-essentials-online-business": {
+        category: "security",
         metaTitle: "Cybersecurity Essentials for Every Online Business Owner",
         metaDescription: "Protect your customers and reputation. Explore the non-negotiable security steps every online business must take to survive the modern threat landscape.",
         keywords: [
@@ -1053,6 +1291,7 @@ export const articlesMeta = {
         ],
     },
     "content-marketing-winning-with-value": {
+        category: "marketing",
         metaTitle: "Content Marketing: Win Customers With Value, Not Ads",
         metaDescription: "Paid ads are getting more expensive daily. Learn how blogging and content marketing build organic, lifelong customer loyalty without ad spend.",
         keywords: [
@@ -1066,6 +1305,7 @@ export const articlesMeta = {
         ],
     },
     "data-driven-decisions-web-analytics": {
+        category: "webdev",
         metaTitle: "Data-Driven Decisions: Use Analytics to Scale Business",
         metaDescription: "Stop guessing what your customers want. Learn how website analytics reveal exactly how to grow your sales revenue through informed decision-making.",
         keywords: [
@@ -1079,6 +1319,7 @@ export const articlesMeta = {
         ],
     },
     "fraud-proof-financial-life-complete-framework": {
+        category: "security",
         metaTitle: "Build a Fraud-Proof Financial Life: Complete Framework",
         metaDescription: "No single security measure keeps you safe. Layering multiple protections across your financial life creates a defense that is extraordinarily hard to break.",
         keywords: [
@@ -1092,6 +1333,7 @@ export const articlesMeta = {
         ],
     },
     "ai-code-companions-technical-debt": {
+        category: "ai",
         metaTitle: "AI Code Companions and the Hidden Technical Debt Cost",
         metaDescription: "Relying too heavily on AI generation tools creates unmaintainable software. Here is how engineering teams can use AI without destroying code quality.",
         keywords: [
@@ -1105,6 +1347,7 @@ export const articlesMeta = {
         ],
     },
     "navigating-global-cross-border-payments": {
+        category: "business",
         metaTitle: "Navigating Global Cross-Border Payments for Business",
         metaDescription: "Understanding FX friction, regulatory hurdles, and technical architecture required to scale a digital business and accept payments internationally.",
         keywords: [
@@ -1118,6 +1361,7 @@ export const articlesMeta = {
         ],
     },
     "cyber-security-hygiene-bootstrapped-startups": {
+        category: "security",
         metaTitle: "Critical Cyber Hygiene for Bootstrapped Startups",
         metaDescription: "Small companies are increasingly targeted by hackers. Here are the zero-cost security protocols every founder should implement starting today.",
         keywords: [
@@ -1131,6 +1375,7 @@ export const articlesMeta = {
         ],
     },
     "cost-of-neglect-website-maintenance": {
+        category: "webdev",
         metaTitle: "Neglecting Website Maintenance: A Silent Business Killer",
         metaDescription: "Most businesses launch a website and abandon it. That neglect compounds into security breaches, lost rankings, and a brand reputation that quietly collapses over time.",
         keywords: [
@@ -1144,6 +1389,7 @@ export const articlesMeta = {
         ],
     },
     "the-mvp-fallacy-product-strategy": {
+        category: "business",
         metaTitle: "The MVP Fallacy: Why Building Fast Can Cost Everything",
         metaDescription: "The traditional MVP framework fails modern startups. Here is why building fast destroys momentum and how to build a Minimum Lovable Product instead.",
         keywords: [
@@ -1157,6 +1403,7 @@ export const articlesMeta = {
         ],
     },
     "founders-dilemma-pivot-vs-persevere": {
+        category: "business",
         metaTitle: "The Founder's Dilemma: When to Pivot vs Persevere",
         metaDescription: "Navigating the thin line between stubbornness and grit—recognizing the data-driven signs that it is time to change your business model entirely.",
         keywords: [
@@ -1170,6 +1417,7 @@ export const articlesMeta = {
         ],
     },
     "hidden-costs-premature-automation-business": {
+        category: "webdev",
         metaTitle: "Hidden Costs of Premature Automation in Small Business",
         metaDescription: "Automating too early ruins customer experiences and introduces hidden tech costs. Learn how to scale operations smoothly without losing the human touch.",
         keywords: [
@@ -1183,6 +1431,7 @@ export const articlesMeta = {
         ],
     },
     "why-you-need-a-website": {
+        category: "webdev",
         metaTitle: "Why You Need a Website in 2026 | Brown Code Nigeria",
         metaDescription: "In 2026, having a website is no longer optional. It builds credibility, attracts clients, and gives your business a professional presence around the clock.",
         keywords: [
@@ -1196,6 +1445,7 @@ export const articlesMeta = {
         ],
     },
     "importance-of-a-personal-portfolio": {
+        category: "webdev",
         metaTitle: "Building a Portfolio That Gets You Hired | Brown Code",
         metaDescription: "Your portfolio tells your professional story—make it compelling enough to land your dream opportunities and stand out in a competitive market.",
         keywords: [
@@ -1209,6 +1459,7 @@ export const articlesMeta = {
         ],
     },
     "why-branding-matters-online": {
+        category: "marketing",
         metaTitle: "The Psychology of Personal Branding Online | Brown Code",
         metaDescription: "Consistent branding creates trust, recognition, and memorable impressions that convert opportunities into real clients and lasting professional relationships.",
         keywords: [
@@ -1222,6 +1473,7 @@ export const articlesMeta = {
         ],
     },
     "future-proofing-your-career-online": {
+        category: "growth",
         metaTitle: "Future-Proofing Your Career in the Digital Age",
         metaDescription: "An online presence is your insurance policy for career longevity. Here is how to stay competitive, adaptable, and in control of your professional future.",
         keywords: [
@@ -1235,6 +1487,7 @@ export const articlesMeta = {
         ],
     },
     "how-to-build-your-first-website": {
+        category: "webdev",
         metaTitle: "Your First Website: A Complete Beginner's Guide",
         metaDescription: "Step-by-step roadmap to launching a professional website even with zero coding experience. Define your goal, choose your platform, and go live fast.",
         keywords: [
@@ -1248,6 +1501,7 @@ export const articlesMeta = {
         ],
     },
     "seo-fundamentals-getting-found": {
+        category: "marketing",
         metaTitle: "SEO Fundamentals: Getting Found Online | Brown Code",
         metaDescription: "Master the basics of SEO to ensure your website appears when the right people are already searching for exactly what you offer. Start ranking today.",
         keywords: [
@@ -1261,6 +1515,7 @@ export const articlesMeta = {
         ],
     },
     "content-marketing-personal-brands": {
+        category: "marketing",
         metaTitle: "Content Marketing for Personal Brands | Brown Code",
         metaDescription: "How consistent, valuable content establishes you as an authority, attracts ideal clients, and builds lasting influence in your professional field.",
         keywords: [
@@ -1274,6 +1529,7 @@ export const articlesMeta = {
         ],
     },
     "networking-digital-era": {
+        category: "growth",
         metaTitle: "Networking in the Digital Era: Build Real Connections",
         metaDescription: "Build meaningful professional relationships online that lead to real opportunities—without the handshakes, business cards, or local event dependency.",
         keywords: [
@@ -1287,6 +1543,7 @@ export const articlesMeta = {
         ],
     },
     "why-business-owners-need-websites": {
+        category: "webdev",
         metaTitle: "Why Every Business Owner Needs a Website in 2026",
         metaDescription: "Discover how a professional website transforms business growth and learn how real entrepreneurs across Nigeria have succeeded online with the right site.",
         keywords: [
@@ -1300,6 +1557,7 @@ export const articlesMeta = {
         ],
     },
     "custom-coding-vs-templates": {
+        category: "webdev",
         metaTitle: "Custom Coding vs Templates: Why Custom Wins Always",
         metaDescription: "Discover the advantages of custom-coded websites over templates and how they elevate your brand, improve performance, and unlock better long-term SEO.",
         keywords: [
@@ -1313,6 +1571,7 @@ export const articlesMeta = {
         ],
     },
     "how-brown-code-builds-converting-websites": {
+        category: "webdev",
         metaTitle: "How Brown Code Builds Websites That Actually Convert",
         metaDescription: "A clear process, measurable results, and websites designed to turn visitors into paying customers. Here is exactly how Sir Brown AD builds for clients.",
         keywords: [
@@ -1326,6 +1585,7 @@ export const articlesMeta = {
         ],
     },
     "affordable-website-packages-brown-code": {
+        category: "webdev",
         metaTitle: "Affordable Website Packages for Small Businesses",
         metaDescription: "Practical, budget-friendly website packages that deliver professional results without hidden fees. Get online fast with a site that works for your goals.",
         keywords: [
@@ -1339,6 +1599,7 @@ export const articlesMeta = {
         ],
     },
     "importance-of-portfolio": {
+        category: "webdev",
         metaTitle: "Why a Portfolio Builds Client Trust | Brown Code",
         metaDescription: "A well-crafted portfolio showcases your skills and previous work, establishing the trust potential clients need before they decide to hire you.",
         keywords: [
@@ -1352,6 +1613,7 @@ export const articlesMeta = {
         ],
     },
     "use-social-media-as-business-weapon": {
+        category: "marketing",
         metaTitle: "Use Social Media as a Business Weapon | Brown Code",
         metaDescription: "Most businesses fight the algorithm. Smart ones learn to work with it. Here are the strategies platforms will not tell you about growing your brand.",
         keywords: [
@@ -1365,6 +1627,7 @@ export const articlesMeta = {
         ],
     },
     "hidden-success-habits-high-performing-companies": {
+        category: "business",
         metaTitle: "Hidden Habits of High-Performing Companies | Brown Code",
         metaDescription: "Behind every thriving company are operational disciplines that rarely make headlines. These are the real secrets separating market leaders from the rest.",
         keywords: [
@@ -1378,6 +1641,7 @@ export const articlesMeta = {
         ],
     },
     "personal-development-principles-that-work": {
+        category: "growth",
         metaTitle: "Personal Development Principles That Actually Work",
         metaDescription: "Most personal development advice is surface level. These are the deeper psychological shifts that genuinely transform how you think, work, and grow.",
         keywords: [
@@ -1391,6 +1655,7 @@ export const articlesMeta = {
         ],
     },
     "corporate-secrets-to-enterprise-financial-growth": {
+        category: "business",
         metaTitle: "Corporate Secrets to Enterprise Financial Growth",
         metaDescription: "True corporate scaling is about building infrastructure that stops revenue leaks. Here is how to build a modern approach to sustainable financial expansion at scale.",
         keywords: [

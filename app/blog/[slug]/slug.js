@@ -14,9 +14,13 @@ import Footer from "@/components/footer";
 import CommentsSection from "@/components/CommentsSection";
 import {
   collection, addDoc, query, where, orderBy,
-  onSnapshot, serverTimestamp
+  onSnapshot, serverTimestamp,
+  doc, getDoc, setDoc, updateDoc, increment
 } from "firebase/firestore";
+import { Heart } from "lucide-react"; // add Heart to your existing lucide-react import line instead
 import { db1 } from "@/config/firebase.config1";
+import TableOfContents from "@/components/TableOfContents";
+import { CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 const getReadingTime = (content) =>
@@ -63,9 +67,62 @@ export default function ArticleClient({ params }) {
   const router = useRouter();
   const { slug } = use(params);
   const article = articles.find((a) => a.slug === slug);
-
   const [comments, setComments] = useState([]);
+const [likeCount, setLikeCount] = useState(0);
+const [hasLiked, setHasLiked] = useState(false);
+const [likeLoading, setLikeLoading] = useState(false);
 
+useEffect(() => {
+  if (!article) return;
+
+  // Local "did this browser already like it" check
+  const likedSlugs = JSON.parse(localStorage.getItem("likedArticles") || "[]");
+  setHasLiked(likedSlugs.includes(article.slug));
+
+  // Live count from Firestore
+  const likeRef = doc(db1, "likes", article.slug);
+  const unsub = onSnapshot(likeRef, (snap) => {
+    setLikeCount(snap.exists() ? snap.data().count || 0 : 0);
+  }, (e) => console.error(e));
+
+  return () => unsub();
+}, [article]);
+
+  const handleLike = async () => {
+    if (!article || likeLoading) return;
+    setLikeLoading(true);
+
+    const likeRef = doc(db1, "likes", article.slug);
+    const likedSlugs = JSON.parse(localStorage.getItem("likedArticles") || "[]");
+
+    try {
+      const snap = await getDoc(likeRef);
+
+      if (hasLiked) {
+        // Unlike — doc must already exist
+        await updateDoc(likeRef, { count: increment(-1) });
+        const updated = likedSlugs.filter((s) => s !== article.slug);
+        localStorage.setItem("likedArticles", JSON.stringify(updated));
+        setHasLiked(false);
+      } else if (!snap.exists()) {
+        // First-ever like on this article
+        await setDoc(likeRef, { count: 1 });
+        localStorage.setItem("likedArticles", JSON.stringify([...likedSlugs, article.slug]));
+        setHasLiked(true);
+      } else {
+        // Like, doc already exists
+        await updateDoc(likeRef, { count: increment(1) });
+        localStorage.setItem("likedArticles", JSON.stringify([...likedSlugs, article.slug]));
+        setHasLiked(true);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLikeLoading(false);
+    }
+  };
+
+  
   useEffect(() => {
     if (!article) return;
     const q = query(
@@ -743,6 +800,92 @@ export default function ArticleClient({ params }) {
                     background: var(--accent-dim);
                     border-radius: var(--radius);
                   }
+                    .ap-toc-box ul,
+              .ap-toc-box ol {
+                  list-style: none;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 10px;
+              }
+
+              .ap-toc-box li {
+                  line-height: 1.4;
+              }
+
+              .ap-toc-box a {
+                  display: block;
+                  font-size: 12px;
+                  line-height: 1.5;
+                  color: var(--text-2);
+                  text-decoration: none;
+                  border-left: 2px solid transparent;
+                  padding-left: 10px;
+                  margin-left: -1px;
+                  transition: color 0.15s, border-color 0.15s;
+                  cursor: pointer;
+              }
+
+              .ap-toc-box a:hover {
+                  color: var(--accent);
+                  border-left-color: rgba(232, 255, 71, 0.4);
+              }
+
+              .ap-toc-box a.active,
+              .ap-toc-box a[aria-current="true"] {
+                  color: var(--accent);
+                  border-left-color: var(--accent);
+              }
+                .ap-article-body {
+                position: relative; 
+              }
+
+              .ap-toc-mobile {
+                display: block;
+                position: sticky;
+                top: 56px; 
+                z-index: 20;
+                background: var(--bg);
+                padding-bottom: 10px;
+                margin-bottom: 6px;
+              }
+
+              @media (min-width: 961px) {
+                .ap-toc-mobile {
+                  display: none;
+                }
+              }
+
+              .ap-like-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-3);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.ap-like-btn:hover {
+    color: var(--accent);
+    border-color: rgba(232,255,71,0.3);
+    background: var(--accent-dim);
+}
+
+.ap-like-btn--active {
+    color: var(--accent);
+    border-color: rgba(232,255,71,0.4);
+    background: var(--accent-dim);
+}
+
+.ap-like-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
             `}</style>
 
       <div className="ap-page">
@@ -760,7 +903,7 @@ export default function ArticleClient({ params }) {
         {/* ── Hero ── */}
         <header className="ap-hero">
           <div className="ap-hero__eyebrow">
-            <span className="ap-tag">Engineering</span>
+            <span className="ap-tag">{CATEGORY_LABELS[getCategoryKey(article)]}</span>
             <span className="ap-hero__id">{article.slug.slice(0, 8)}</span>
           </div>
           <h1 className="ap-hero__title">{article.title}</h1>
@@ -775,6 +918,15 @@ export default function ArticleClient({ params }) {
               <Clock size={13} />
               {getReadingTime(article.content)} min read
             </div>
+            <button
+              className={`ap-like-btn ${hasLiked ? "ap-like-btn--active" : ""}`}
+              onClick={handleLike}
+              disabled={likeLoading}
+              aria-pressed={hasLiked}
+            >
+              <Heart size={14} fill={hasLiked ? "currentColor" : "none"} />
+              {likeCount}
+            </button>
           </div>
         </header>
 
@@ -788,9 +940,11 @@ export default function ArticleClient({ params }) {
               onError={(e) => (e.target.style.display = "none")}
             />
           </div>
-          <div className="ap-sidebar__box lg:hidden">
-            <span className="ap-sidebar__label">About this article</span>
-            <p className="ap-sidebar__text">{article.preview}</p>
+          <div className="lg:hidden">
+            <div className="ap-sidebar__box">
+              <span className="ap-sidebar__label">About this article</span>
+              <p className="ap-sidebar__text">{article.preview}</p>
+            </div>
           </div>
         </div>
 
@@ -800,7 +954,10 @@ export default function ArticleClient({ params }) {
           <ShareSidebar onShare={handleShare} />
 
           {/* Article + comments + author */}
-          <div className="ap-article">
+          <div className="ap-article-body">
+          <div className="ap-toc-mobile">
+            <TableOfContents content={article.content} />
+          </div>
             {article.content.split("\n\n").map((para, i) => {
               const trimmed = para.trim();
 
@@ -860,11 +1017,18 @@ export default function ArticleClient({ params }) {
               }
 
               // Section Headings
+              // Section Headings
               if (trimmed.startsWith("###")) {
+                const headingText = trimmed.replace(/^###/, "").trim();
+                const headingId = headingText
+                  .toLowerCase()
+                  .trim()
+                  .replace(/[^\w\s-]/g, "")
+                  .replace(/\s+/g, "-");
                 return (
-                  <h2 key={i} className="ap-article__section-heading">
+                  <h2 key={i} id={headingId} className="ap-article__section-heading">
                     <CornerDownRight size={15} />
-                    {renderInlineElements(trimmed.replace(/^###/, "").trim())}
+                    {renderInlineElements(headingText)}
                   </h2>
                 );
               }
@@ -938,7 +1102,6 @@ export default function ArticleClient({ params }) {
             </div>
 
             {/* This sits right below your article content */}
-            {/* This sits right below your article content */}
             <footer className="mt-12 pt-6 border-t border-neutral-200 dark:border-neutral-800 italic">
               {article.isSponsored ? (
                 // Sponsored Article Footer Box
@@ -984,11 +1147,11 @@ export default function ArticleClient({ params }) {
         <span className="text-sm">
           This article was originally written and published by{" "}
 
-        <a  href={shareUrl(article.slug)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-neutral-800 underline dark:text-neutral-200 hover:underline"
-        >
+            <a href={shareUrl(article.slug)}  
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-neutral-800 underline dark:text-neutral-200 hover:underline"
+            >
           <span className="ap-nav__brand">
             brown<em>.</em>dev
           </span>
@@ -1055,6 +1218,10 @@ export default function ArticleClient({ params }) {
 
           {/* Right sidebar */}
           <div className="ap-sidebar">
+            <div className="ap-sidebar__box ap-toc-box max-lg:hidden">
+              <span className="ap-sidebar__label">On this page</span>
+              <TableOfContents content={article.content} />
+            </div>
             <div className="ap-sidebar__box max-lg:hidden">
               <span className="ap-sidebar__label">About this article</span>
               <p className="ap-sidebar__text">{article.preview}</p>

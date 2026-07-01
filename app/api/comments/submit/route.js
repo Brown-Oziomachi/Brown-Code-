@@ -1,8 +1,10 @@
-import { adminDb } from "@/lib/firebaseAdminApp";
+import { getAdminDb } from "@/lib/firebaseAdmin";
 import { FieldValue } from "firebase-admin/firestore";
 
 export async function POST(req) {
     try {
+        const adminDb = getAdminDb();
+
         const { articleSlug, email, authorName, text } = await req.json();
 
         if (!articleSlug || !email || !authorName || !text) {
@@ -11,10 +13,10 @@ export async function POST(req) {
 
         const normalizedEmail = email.trim().toLowerCase();
 
-        const existing = await adminDb
+        const existing = await getAdminDb()
             .collection("comments")
             .where("articleSlug", "==", articleSlug)
-            .get();
+            .get(); 
 
         for (const docSnap of existing.docs) {
             const privateDoc = await adminDb

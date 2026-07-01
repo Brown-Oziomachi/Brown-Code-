@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { articles } from "@/app/data/article";
 import { Clock, ArrowUpRight } from "lucide-react";
+import { CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
 
 const TECHNICAL_SLUGS = [
     "moving-from-social-media-to-digital-asset",
@@ -242,53 +243,53 @@ export default function RelatedArticles({ currentSlug }) {
 
                 <div className="ra-grid">
                     {displayArticles.map((article) => (
-                        <a
-                            key={article.slug}
-                            href={`/blog/${article.slug}`}
-                            className="ra-card"
-                        >
-                            <div className="ra-card__img-wrap">
-                                {article.image ? (
-                                    <img
-                                        src={article.image}
-                                        alt={article.title}
-                                        className="ra-card__img"
-                                        onError={(e) => (e.target.style.display = "none")}
-                                        title={article.content.split(" ").slice(0, 250).join(" ") + "..."}
-                                    />
-                                ) : (
-                                    <div className="ra-card__img-placeholder" />
-                                )}
+
+                 <a  key = { article.slug }
+                    href = {`/blog/${article.slug}`}
+                    className="ra-card"
+        >
+                    <div className="ra-card__img-wrap">
+                        {article.image ? (
+                            <img
+                                src={article.image}
+                                alt={article.title}
+                                className="ra-card__img"
+                                onError={(e) => (e.target.style.display = "none")}
+                                title={article.content.split(" ").slice(0, 250).join(" ") + "..."}
+                            />
+                        ) : (
+                            <div className="ra-card__img-placeholder" />
+                        )}
+                    </div>
+                    <div className="ra-card__body">
+                        <span className="ra-card__tag">
+                            {CATEGORY_LABELS[getCategoryKey(article)]}
+                        </span>
+                        <h3 className="ra-card__title">{article.title}</h3>
+                        <div className="bl-meta bl-meta--sm">
+                            <div className="flex items-center gap-2">
+                                <img
+                                    src={article.isSponsored ? "/coder1.png" : "/coder1.png"}
+                                    className="h-5 w-5 rounded-full object-cover flex-shrink-0"
+                                    alt={article.postedBy || "Author"}
+                                />
+                                <span className="bl-meta__author">{article.postedBy}</span>
+                                <span className="bl-meta__dot" />
+                                <span>{getReadingTime(article.content)} min read</span>
                             </div>
-                            <div className="ra-card__body">
-                                <span className="ra-card__tag">
-                                    {TECHNICAL_SLUGS.includes(article.slug) ? "Engineering" : "Insights"}
-                                </span>
-                                <h3 className="ra-card__title">{article.title}</h3>
-                                <div className="bl-meta bl-meta--sm">
-                                    <div className="flex items-center gap-2">
-                                        <img
-                                            src={article.isSponsored ? "/coder1.png" : "/coder1.png"}
-                                            className="h-5 w-5 rounded-full object-cover flex-shrink-0"
-                                            alt={article.postedBy || "Author"}
-                                        />
-                                        <span className="bl-meta__author">{article.postedBy}</span>
-                                        <span className="bl-meta__dot" />
-                                        <span>{getReadingTime(article.content)} min read</span>
-                                    </div>
-                                </div>
-                                <div className="ra-card__meta">
-                                    <div className="ra-card__reading">
-                                        <Clock size={11} />
-                                        {getReadingTime(article.content)} min
-                                    </div>
-                                    <ArrowUpRight size={14} className="ra-card__arrow" />
-                                </div>
+                        </div>
+                        <div className="ra-card__meta">
+                            <div className="ra-card__reading">
+                                <Clock size={11} />
+                                {getReadingTime(article.content)} min
                             </div>
-                        </a>
-                    ))}
-                </div>
-            </section>
+                            <ArrowUpRight size={14} className="ra-card__arrow" />
+                        </div>
+                    </div>
+                </a>
+    ))}
+            </div>
+        </section >
         </>
     );
 }
