@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import AdvertiseClient from "./advertise";
 
 export const metadata = {
-  title: "Advertise With Us | Brown Code",
+  title: "Advertise With Us | Sir Brown AD",
   description: "Reach Nigeria's top web developers, tech founders, and digital-savvy businesses. Partner with Brown Code to place your brand in front of the right audience.",
   keywords: [
     "advertise with Brown Code",
@@ -13,10 +13,10 @@ export const metadata = {
     "Brown Code advertising",
   ],
   openGraph: {
-    title: "Advertise With Us | Brown Code",
-    description: "Reach Nigeria's top web developers, tech founders, and digital-savvy businesses. Partner with Brown Code to place your brand in front of the right audience.",
-    url: "https://browncode.name.ng/advertise",
-    siteName: "Brown Code",
+    title: "Advertise With Us | Sir Brown AD",
+    description: "Reach Nigeria's top web developers, tech founders, and digital-savvy businesses. Partner with Sir Brown AD to place your brand in front of the right audience.",
+    url: "https://sirbrowndev.name.ng/advertise",
+    siteName: "Sir Brown AD",
     type: "website",
   },
 };
