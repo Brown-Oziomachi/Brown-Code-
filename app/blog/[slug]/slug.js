@@ -173,23 +173,6 @@ useEffect(() => {
         <meta name="author" content={article.postedBy} />
       </Head>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            headline: article.title,
-            description: article.preview,
-            image: article.image,
-            author: { "@type": "Person", name: article.postedBy },
-            publisher: { "@type": "Organization", name: "BrownCode" },
-            datePublished: article.datePublished || "2025-10-04",
-            mainEntityOfPage: { "@type": "WebPage", "@id": shareUrl(article.slug) },
-          }),
-        }}
-      />
-
       <style>{`
                 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
