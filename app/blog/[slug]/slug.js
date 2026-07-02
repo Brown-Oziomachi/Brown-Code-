@@ -23,11 +23,21 @@ import TableOfContents from "@/components/TableOfContents";
 import { CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
+// ─── helpers ─────────────────────────────────────────────────────────────────
 const getReadingTime = (content) =>
   Math.max(1, Math.ceil(content.split(" ").length / 200));
 
 const shareUrl = (slug) =>
   `https://browncode.name.ng/blog/${slug}`;
+
+const formatDate = (dateString) => {
+  if (!dateString) return null;
+  return new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 
 // ─── 404 ─────────────────────────────────────────────────────────────────────
 const NotFound = ({ onBack }) => (
@@ -914,6 +924,17 @@ useEffect(() => {
               </div>
               <span className="ap-hero__author-name">{article.postedBy}</span>
             </div>
+
+            {formatDate(article.datePublished) && (
+              <span className="ap-hero__date" style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "11px",
+                color: "var(--text-3)"
+              }}>
+                {formatDate(article.datePublished)}
+              </span>
+            )}
+
             <div className="ap-hero__reading">
               <Clock size={13} />
               {getReadingTime(article.content)} min read
@@ -1233,6 +1254,12 @@ useEffect(() => {
                   <span style={{ color: "var(--text-3)", fontFamily: "var(--font-mono)", fontSize: "10px" }}>Author</span>
                   <span style={{ color: "var(--text-2)", fontSize: "12px" }}>{article.postedBy}</span>
                 </div>
+                {formatDate(article.datePublished) && (
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px" }}>
+                    <span style={{ color: "var(--text-3)", fontFamily: "var(--font-mono)", fontSize: "10px" }}>Published</span>
+                    <span style={{ color: "var(--text-2)", fontSize: "12px" }}>{formatDate(article.datePublished)}</span>
+                  </div>
+                )}
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "12px" }}>
                   <span style={{ color: "var(--text-3)", fontFamily: "var(--font-mono)", fontSize: "10px" }}>Read time</span>
                   <span style={{ color: "var(--text-2)", fontSize: "12px" }}>{getReadingTime(article.content)} min</span>

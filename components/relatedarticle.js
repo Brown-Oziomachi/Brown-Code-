@@ -26,6 +26,16 @@ const TECHNICAL_SLUGS = [
 const getReadingTime = (content) =>
     Math.max(1, Math.ceil((content?.split(" ").length || 0) / 200));
 
+
+const formatDate = (dateString) => {
+    if (!dateString) return null;
+    return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+};
+
 export default function RelatedArticles({ currentSlug }) {
     const [displayArticles, setDisplayArticles] = useState([]);
 
@@ -273,15 +283,22 @@ export default function RelatedArticles({ currentSlug }) {
                                     className="h-5 w-5 rounded-full object-cover flex-shrink-0"
                                     alt={article.postedBy || "Author"}
                                 />
-                                <span className="bl-meta__author">{article.postedBy}</span>
+                                        <span className="bl-meta__author">{article.postedBy}</span>
+                                           {formatDate(article.datePublished) && (
+                                    <span className="ap-hero__date" style={{
+                                        fontFamily: "var(--font-mono)",
+                                        fontSize: "11px",
+                                        color: "var(--text-3)"
+                                    }}>
+                                        {formatDate(article.datePublished)}
+                                    </span>
+                                    )}
                                 <span className="bl-meta__dot" />
-                                <span>{getReadingTime(article.content)} min read</span>
                             </div>
                         </div>
                         <div className="ra-card__meta">
                             <div className="ra-card__reading">
-                                <Clock size={11} />
-                                {getReadingTime(article.content)} min
+                                <span>{getReadingTime(article.content)} min read</span>
                             </div>
                             <ArrowUpRight size={14} className="ra-card__arrow" />
                         </div>

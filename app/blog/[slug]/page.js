@@ -34,7 +34,6 @@ export async function generateMetadata({ params }) {
     ? article.image
     : `https://browncode.name.ng${article.image}`;
 
-  // Use curated keywords from articlesMeta; fall back to derived keywords only if absent
   const articleKeywords = meta.keywords?.length
     ? meta.keywords
     : [
@@ -70,14 +69,52 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function ArticlePage({ params }) {
+export default async function ArticlePage({ params }) {
+  const { slug } = await params;
+  const article = articles.find((a) => a.slug === slug);
+
+  const canonicalUrl = `https://browncode.name.ng/blog/${slug}`;
+  const imageUrl = article?.image?.startsWith("http")
+    ? article.image
+    : `https://browncode.name.ng${article?.image || "/logo.png"}`;
+
+  const jsonLd = article
+    ? {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: article.title,
+      datePublished: article.datePublished,
+      dateModified: article.dateModified || article.datePublished,
+      author: { "@type": "Person", name: article.postedBy || "Sir Brown AD" },
+      publisher: {
+        "@type": "Organization",
+        name: "Sir Brown AD",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://browncode.name.ng/logo.png",
+        },
+      },
+      image: imageUrl,
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": canonicalUrl,
+      },
+    }
+    : null;
+
   return (
-    <Suspense
-      fallback={
-        <div style={{ background: "#0a0a0b", minHeight: "100vh" }} />
-      }
-    >
-      <ArticleClient params={params} />
-    </Suspense>
+    <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+      <Suspense
+        fallback={<div style={{ background: "#0a0a0b", minHeight: "100vh" }} />}
+      >
+        <ArticleClient params={params} />
+      </Suspense>
+    </>
   );
 }

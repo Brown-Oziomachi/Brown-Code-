@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { articles } from "../data/article";
+import { sortedArticles as articles } from "../data/article";
 import { ArrowLeft, ArrowUpRight, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import Footer from "@/components/footer";
@@ -10,6 +10,15 @@ import { CATEGORIES, CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategorie
 // ─── helpers ────────────────────────────────────────────────────────────────
 const getReadingTime = (content) =>
     Math.max(1, Math.ceil(content.split(" ").length / 200));
+
+const formatDate = (dateString) => {
+    if (!dateString) return null;
+    return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+};
 
 // ─── sub-components ─────────────────────────────────────────────────────────
 
@@ -38,9 +47,10 @@ const FeaturedHero = ({ article }) => (
             <h2 className="bl-hero-card__title">{article.title}</h2>
             <p className="bl-hero-card__preview">{article.preview}</p>
             <div className="bl-meta">
+                <span className="bl-meta__author">{article.postedBy}</span>
                 <span>{getReadingTime(article.content)} min read</span>
                 <span className="bl-meta__dot" />
-                <span className="bl-meta__author">{article.postedBy}</span>
+                {formatDate(article.datePublished) && ` ${formatDate(article.datePublished)}`}
             </div>
         </div>
         <span className="bl-hero-card__arrow-wrap">
@@ -72,6 +82,7 @@ const SideFeaturedItem = ({ article, index }) => (
             <h3 className="bl-side-item__title">{article.title}</h3>
             <span className="bl-side-item__meta">
                 {getReadingTime(article.content)} min read
+                {formatDate(article.datePublished) && ` ${formatDate(article.datePublished)}`}
             </span>
         </div>
     </a>
@@ -85,6 +96,8 @@ const PopularItem = ({ article, index }) => (
             <h4 className="bl-popular-item__title">{article.title}</h4>
             <span className="bl-popular-item__meta">
                 {CATEGORY_LABELS[getCategoryKey(article)]} · {getReadingTime(article.content)} min
+                {formatDate(article.datePublished) && ` · ${formatDate(article.datePublished)}`}
+
             </span>
         </div>
     </a>
@@ -119,6 +132,12 @@ const ArticleCard = ({ article, index }) => (
                 <span className="bl-meta__author">{article.postedBy}</span>
                 <span className="bl-meta__dot" />
                 <span>{getReadingTime(article.content)} min read</span>
+                {formatDate(article.datePublished) && (
+                    <>
+                        <span className="bl-meta__dot" />
+                        <span>{formatDate(article.datePublished)}</span>
+                    </>
+                )}
             </div>
         </div>
     </a >
@@ -314,8 +333,12 @@ export default function BlogListClient() {
                 /* ── Popular this month ── */
                 .bl-popular-section { margin-bottom: 64px; }
                 .bl-popular-title { font-family: var(--font-serif); font-size: clamp(24px, 3vw, 32px); font-weight: 400; color: var(--text-1); margin-bottom: 22px; }
-                .bl-popular-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
-                .bl-popular-item {
+                    .bl-popular-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    column-gap: 40px;
+                    }               
+                    .bl-popular-item {
                     display: flex; gap: 14px; align-items: flex-start; text-decoration: none;
                     padding: 16px 0; border-bottom: 1px solid var(--border);
                     transition: opacity 0.15s;
@@ -377,7 +400,7 @@ export default function BlogListClient() {
                     <a href="/" className="bl-nav__brand">brown<em>.</em>dev</a>
                     <a href="/portfolio" className="bl-nav__back">
                         <ArrowLeft size={13} />
-                        Portfolio
+                        Portfolio   
                     </a>
                 </nav>
 
@@ -385,10 +408,10 @@ export default function BlogListClient() {
                     <header className="bl-masthead">
                         <div>
                             <p className="bl-masthead__eyebrow">Writing</p>
-                            <h1 className="bl-masthead__title">Engineering<br />Insights</h1>
+                            <h1 className="bl-masthead__title">The<br />Stack</h1>
                         </div>
                         <p className="bl-masthead__desc">
-                            Deep dives into systems architecture, digital infrastructure, and design patterns worth thinking about.
+                            Notes on building tech, platforms, and businesses across Africa — from the code up.
                         </p>
                     </header>
 

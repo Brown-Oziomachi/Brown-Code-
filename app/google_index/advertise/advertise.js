@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowUpRight, Search, FileText, Clock, RefreshCw, CheckCircle } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Search, FileText, Clock, RefreshCw, CheckCircle, Quote } from "lucide-react";
 import Footer from "@/components/footer";
 
 const adPackages = [
@@ -9,9 +8,9 @@ const adPackages = [
         id: "one-month",
         name: "1 Month",
         price: "₦25,000",
-        amount: "25000",
         period: "/ month",
         tag: "Short campaign",
+        flutterwaveLink: "https://flutterwave.com/pay/lgngcngvwpx3",
         features: [
             "1 sponsored article written for your brand",
             "Published and indexed on Google, Bing & Yandex",
@@ -24,10 +23,10 @@ const adPackages = [
         id: "three-months",
         name: "3 Months",
         price: "₦60,000",
-        amount: "60000",
         period: "/ 3 months",
         tag: "Most popular",
         accent: true,
+        flutterwaveLink: "https://flutterwave.com/pay/usahqiavxxqd",
         features: [
             "1 sponsored article written for your brand",
             "Published and indexed on Google, Bing & Yandex",
@@ -41,9 +40,9 @@ const adPackages = [
         id: "six-months",
         name: "6 Months",
         price: "₦100,000",
-        amount: "100000",
         period: "/ 6 months",
         tag: "Maximum exposure",
+        flutterwaveLink: "https://flutterwave.com/pay/xiiglqmjknsa",
         features: [
             "1 sponsored article written for your brand",
             "Published and indexed on Google, Bing & Yandex",
@@ -109,303 +108,32 @@ const benefits = [
     },
 ];
 
+// ⚠️ PLACEHOLDER TESTIMONIALS — replace every entry below with a real client
+// name, business, and quote before this section goes live. Do not publish
+// fabricated reviews attributed to real-sounding people.
+const testimonials = [
+    {
+        quote: "[Replace with a real client quote about their experience and results.]",
+        name: "[Client Name]",
+        role: "[Business / Role]",
+    },
+    {
+        quote: "[Replace with a real client quote about their experience and results.]",
+        name: "[Client Name]",
+        role: "[Business / Role]",
+    },
+    {
+        quote: "[Replace with a real client quote about their experience and results.]",
+        name: "[Client Name]",
+        role: "[Business / Role]",
+    },
+];
+
 const WHATSAPP = "2348142995114";
-
-// ─── SDK loader — runs once, lifts state up to parent ────────────────────────
-
-function usePayPalSDK() {
-    const [sdkState, setSdkState] = useState("loading"); // loading | ready | error
-
-    useEffect(() => {
-        const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-
-        if (!clientId) {
-            console.error("❌ NEXT_PUBLIC_PAYPAL_CLIENT_ID is not set in .env.local");
-            setSdkState("error");
-            return;
-        }
-
-        // Already on window (HMR / strict-mode double render)
-        if (window.paypal) {
-            setSdkState("ready");
-            return;
-        }
-
-        // Script tag exists but hasn't fired onload yet — poll for it
-        if (document.getElementById("paypal-sdk")) {
-            const poll = setInterval(() => {
-                if (window.paypal) {
-                    clearInterval(poll);
-                    setSdkState("ready");
-                }
-            }, 150);
-            return () => clearInterval(poll);
-        }
-
-        // Fresh inject
-        const script = document.createElement("script");
-        script.id = "paypal-sdk";
-        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD&intent=capture`;
-        script.async = true;
-        script.onload = () => setSdkState("ready");
-        script.onerror = () => {
-            console.error("❌ PayPal SDK failed to load — check your Client ID.");
-            setSdkState("error");
-        };
-        document.body.appendChild(script);
-    }, []);
-
-    return sdkState;
-}
-
-// ─── Per-package PayPal button ────────────────────────────────────────────────
-
-function PackagePayPalButton({ pkg, sdkState }) {
-    const containerRef = useRef(null);
-    const rendered = useRef(false);
-    const [payStatus, setPayStatus] = useState("idle");
-    const [invoiceData, setInvoiceData] = useState(null);
-    const [showInvoice, setShowInvoice] = useState(false);
-
-    useEffect(() => {
-        if (sdkState !== "ready") return;
-        if (!containerRef.current || rendered.current) return;
-        rendered.current = true;
-
-        window.paypal.Buttons({
-            style: {
-                layout: "horizontal",
-                color: "gold",
-                shape: "rect",
-                label: "pay",
-                height: 40,
-                tagline: false,
-            },
-            createOrder: async () => {
-                const res = await fetch("/api/paypal/create-order", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        packageId: pkg.id,
-                        packageName: pkg.name,
-                        amount: pkg.amount,
-                        description: `Sir Brown AD — Sponsored Article (${pkg.name})`,
-                    }),
-                });
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || "Order error");
-                return data.orderID;
-            },
-            onApprove: async (data) => {
-                const res = await fetch("/api/paypal/capture-order", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ orderID: data.orderID }),
-                });
-                const capture = await res.json();
-                if (!res.ok) throw new Error(capture.error || "Capture error");
-                setInvoiceData({
-                    transactionID: capture.transactionID,
-                    payerEmail: capture.payerEmail,
-                    amount: capture.amount,
-                    packageName: pkg.name,
-                    packageId: pkg.id,
-                    ngnPrice: pkg.price,
-                    date: new Date().toLocaleDateString("en-GB", {
-                        day: "numeric", month: "long", year: "numeric"
-                    }),
-                    invoiceNo: `BC-${Date.now().toString().slice(-8)}`,
-                });
-                setPayStatus("success");
-                setShowInvoice(true);
-            },
-            onCancel: () => setPayStatus("idle"),
-            onError: (err) => {
-                console.error(err);
-                setPayStatus("error");
-            },
-        }).render(containerRef.current);
-    }, [sdkState, pkg]);
-
-    if (sdkState === "error") return <div className="ad-pay-unavailable">Online payment unavailable</div>;
-    if (sdkState === "loading") return (
-        <div className="ad-pay-loading">
-            <span className="ad-pay-spinner" />Loading payment…
-        </div>
-    );
-
-    return (
-        <>
-            {/* PayPal button or success badge */}
-            {payStatus === "success" ? (
-                <button
-                    onClick={() => setShowInvoice(true)}
-                    className="ad-pay-success"
-                    style={{ cursor: "pointer", border: "1px solid rgba(74,222,128,0.2)", background: "rgba(74,222,128,0.07)", width: "100%" }}
-                >
-                    <CheckCircle size={13} />
-                    <span>Paid ✓ — View Invoice</span>
-                </button>
-            ) : (
-                <div>
-                    <div className="ad-pay-label">Pay online</div>
-                    <div ref={containerRef} style={{ minHeight: 44, width: "100%" }} />
-                    {payStatus === "error" && <p className="ad-pay-error">Payment failed. Please try again.</p>}
-                </div>
-            )}
-
-            {/* Invoice Modal */}
-            {showInvoice && invoiceData && (
-                <div className="inv-overlay" onClick={() => setShowInvoice(false)}>
-                    <div className="inv-modal" onClick={(e) => e.stopPropagation()}>
-                        <div className="inv-print-area" id="invoice-print">
-                            {/* Header */}
-                            <div className="inv-header">
-                                <div>
-                                    <div className="inv-brand">Brown<span>.</span>Code</div>
-                                    <div className="inv-brand-sub">browncode.name.ng</div>
-                                </div>
-                                <div className="inv-meta">
-                                    <div className="inv-badge">RECEIPT</div>
-                                    <div className="inv-no">#{invoiceData.invoiceNo}</div>
-                                    <div className="inv-date">{invoiceData.date}</div>
-                                </div>
-                            </div>
-
-                            <div className="inv-divider" />
-
-                            {/* Billed to */}
-                            <div className="inv-section">
-                                <div className="inv-label">Billed to</div>
-                                <div className="inv-value">{invoiceData.payerEmail || "—"}</div>
-                            </div>
-
-                            <div className="inv-divider" />
-
-                            {/* Line item */}
-                            <div className="inv-table">
-                                <div className="inv-table-head">
-                                    <span>Description</span>
-                                    <span>Amount</span>
-                                </div>
-                                <div className="inv-table-row">
-                                    <div>
-                                        <div className="inv-item-title">Sir Brown AD — Sponsored Article</div>
-                                        <div className="inv-item-sub">{invoiceData.packageName} package · 1 article indexed on Google, Bing & Yandex</div>
-                                    </div>
-                                    <div className="inv-item-price">
-                                        <div>{invoiceData.ngnPrice}</div>
-                                        <div className="inv-item-usd">${invoiceData.amount?.value} USD</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="inv-divider" />
-
-                            {/* Total */}
-                            <div className="inv-total-row">
-                                <span className="inv-total-label">Total Paid</span>
-                                <span className="inv-total-value">{invoiceData.ngnPrice}</span>
-                            </div>
-
-                            <div className="inv-divider" />
-
-                            {/* TX */}
-                            <div className="inv-section">
-                                <div className="inv-label">Transaction ID</div>
-                                <div className="inv-tx">{invoiceData.transactionID}</div>
-                            </div>
-
-                            <div className="inv-section">
-                                <div className="inv-label">Payment Method</div>
-                                <div className="inv-value">PayPal</div>
-                            </div>
-
-                            <div className="inv-divider" />
-
-                            {/* Footer note */}
-                            <div className="inv-note">
-                                Thank you for your purchase. We'll be in touch within 24 hours to get your article started. Keep this receipt as proof of payment.
-                            </div>
-
-                            <div className="inv-footer-brand">Sir Brown AD · browncemmanuel@gmail.com · wa.me/2348142995114</div>
-                        </div>
-
-                        {/* Actions — hidden on print */}
-                        <div className="inv-actions no-print">
-                            <button className="inv-btn-print" onClick={() => window.print()}>
-                                Download / Save as PDF
-                            </button>
-                            <button className="inv-btn-close" onClick={() => setShowInvoice(false)}>
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Invoice + print styles */}
-            <style>{`
-                .inv-overlay {
-                    position: fixed; inset: 0; z-index: 9999;
-                    background: rgba(0,0,0,0.85);
-                    display: flex; align-items: center; justify-content: center;
-                    padding: 16px;
-                }
-                .inv-modal {
-                    background: #fff; color: #111;
-                    border-radius: 8px; width: 100%; max-width: 520px;
-                    overflow: hidden;
-                    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
-                }
-                .inv-print-area { padding: 32px; }
-                .inv-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-                .inv-brand { font-size: 22px; font-weight: 700; color: #0a0a0b; letter-spacing: -0.02em; }
-                .inv-brand span { color: #b8963e; }
-                .inv-brand-sub { font-size: 11px; color: #888; margin-top: 2px; }
-                .inv-meta { text-align: right; }
-                .inv-badge { display: inline-block; background: #0a0a0b; color: #e8ff47; font-size: 9px; font-weight: 700; letter-spacing: 0.12em; padding: 3px 8px; border-radius: 3px; margin-bottom: 6px; }
-                .inv-no { font-size: 12px; font-weight: 600; color: #333; }
-                .inv-date { font-size: 11px; color: #888; margin-top: 2px; }
-                .inv-divider { height: 1px; background: #eee; margin: 16px 0; }
-                .inv-section { margin-bottom: 12px; }
-                .inv-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #999; margin-bottom: 4px; }
-                .inv-value { font-size: 13px; color: #222; }
-                .inv-tx { font-size: 11px; font-family: monospace; color: #444; word-break: break-all; }
-                .inv-table { margin: 4px 0; }
-                .inv-table-head { display: flex; justify-content: space-between; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #999; margin-bottom: 10px; }
-                .inv-table-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-                .inv-item-title { font-size: 13px; font-weight: 600; color: #111; }
-                .inv-item-sub { font-size: 11px; color: #777; margin-top: 3px; line-height: 1.5; }
-                .inv-item-price { text-align: right; font-size: 14px; font-weight: 700; color: #111; flex-shrink: 0; }
-                .inv-item-usd { font-size: 11px; font-weight: 400; color: #888; margin-top: 2px; }
-                .inv-total-row { display: flex; justify-content: space-between; align-items: center; }
-                .inv-total-label { font-size: 13px; font-weight: 600; color: #333; }
-                .inv-total-value { font-size: 20px; font-weight: 700; color: #0a0a0b; }
-                .inv-note { font-size: 11px; color: #777; line-height: 1.7; margin-bottom: 12px; }
-                .inv-footer-brand { font-size: 10px; color: #bbb; text-align: center; }
-                .inv-actions { display: flex; gap: 10px; padding: 16px 32px; border-top: 1px solid #eee; background: #fafafa; }
-                .inv-btn-print { flex: 1; background: #0a0a0b; color: #e8ff47; border: none; border-radius: 6px; padding: 12px; font-size: 12px; font-weight: 600; cursor: pointer; letter-spacing: 0.04em; }
-                .inv-btn-print:hover { opacity: 0.88; }
-                .inv-btn-close { background: transparent; border: 1px solid #ddd; border-radius: 6px; padding: 12px 16px; font-size: 12px; color: #666; cursor: pointer; }
-                .inv-btn-close:hover { background: #f5f5f5; }
-
-                @media print {
-                    body * { visibility: hidden !important; }
-                    .inv-print-area, .inv-print-area * { visibility: visible !important; }
-                    .inv-print-area { position: fixed; inset: 0; padding: 32px; background: #fff; }
-                    .no-print { display: none !important; }
-                }
-            `}</style>
-        </>
-    );
-}
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AdvertiseClient() {
-    const sdkState = usePayPalSDK();
-
     return (
         <>
             <style>{`
@@ -423,6 +151,8 @@ export default function AdvertiseClient() {
                     --accent-dim:  rgba(232,255,71,0.08);
                     --wa:          #25d366;
                     --wa-dim:      rgba(37,211,102,0.08);
+                    --fw:          #f5a623;
+                    --fw-dim:      rgba(245,166,35,0.08);
                     --green:       #4ade80;
                     --yellow:      #facc15;
                     --radius:      6px;
@@ -501,6 +231,17 @@ export default function AdvertiseClient() {
                 .ad-benefit__title { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-1); font-weight: 600; }
                 .ad-benefit__desc { font-size: 12px; color: var(--text-2); line-height: 1.65; }
 
+                /* ── Testimonials ── */
+                .ad-testimonials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 56px; }
+                @media (max-width: 860px) { .ad-testimonials { grid-template-columns: 1fr; } }
+                .ad-testimonial { background: var(--surface); padding: 28px 24px; display: flex; flex-direction: column; gap: 16px; transition: background 0.15s; }
+                .ad-testimonial:hover { background: #141417; }
+                .ad-testimonial__quote-icon { color: var(--accent); opacity: 0.5; }
+                .ad-testimonial__quote { font-size: 13px; color: var(--text-2); line-height: 1.7; font-style: italic; flex: 1; }
+                .ad-testimonial__divider { height: 1px; background: var(--border); }
+                .ad-testimonial__name { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--text-1); font-weight: 600; }
+                .ad-testimonial__role { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
                 .ad-packages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 56px; }
                 @media (max-width: 860px) { .ad-packages { grid-template-columns: 1fr; } }
                 .ad-package { background: var(--surface); padding: 28px 24px; display: flex; flex-direction: column; gap: 20px; transition: background 0.15s; }
@@ -523,16 +264,11 @@ export default function AdvertiseClient() {
                 .ad-package__cta--accent:hover { opacity: 0.88; background: var(--accent); }
                 .ad-package__cta--wa { border-color: rgba(37,211,102,0.4); color: var(--wa); background: var(--wa-dim); }
                 .ad-package__cta--wa:hover { background: rgba(37,211,102,0.15); border-color: var(--wa); color: var(--wa); }
+                .ad-package__cta--fw { border-color: rgba(245,166,35,0.4); color: var(--fw); background: var(--fw-dim); font-weight: 600; }
+                .ad-package__cta--fw:hover { background: rgba(245,166,35,0.15); border-color: var(--fw); color: var(--fw); }
 
-                /* ── PayPal slot ── */
                 .ad-pay-divider { height: 1px; background: var(--border); margin: 4px 0 10px; }
                 .ad-pay-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; }
-                .ad-pay-success { display: flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 11px; color: var(--green); background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.2); border-radius: var(--radius); padding: 10px 14px; }
-                .ad-pay-error { font-family: var(--font-mono); font-size: 10px; color: #ff6b6b; margin-top: 6px; letter-spacing: 0.03em; }
-                .ad-pay-unavailable { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); letter-spacing: 0.06em; padding: 12px 0; text-align: center; border: 1px dashed var(--border); border-radius: var(--radius); }
-                .ad-pay-loading { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 10px; color: var(--text-3); letter-spacing: 0.06em; padding: 12px 0; }
-                .ad-pay-spinner { width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
-                @keyframes spin { to { transform: rotate(360deg); } }
 
                 /* ── Contact CTA ── */
                 .ad-contact { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 56px; }
@@ -633,6 +369,21 @@ export default function AdvertiseClient() {
                         ))}
                     </div>
 
+                    {/* <p className="ad-section-label">What advertisers say</p>
+                    <div className="ad-testimonials">
+                        {testimonials.map((t, i) => (
+                            <div key={i} className="ad-testimonial">
+                                <Quote size={18} className="ad-testimonial__quote-icon" />
+                                <p className="ad-testimonial__quote">"{t.quote}"</p>
+                                <div className="ad-testimonial__divider" />
+                                <div>
+                                    <div className="ad-testimonial__name">{t.name}</div>
+                                    <div className="ad-testimonial__role">{t.role}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div> */}
+
                     <p className="ad-section-label">Pricing</p>
                     <div className="ad-packages">
                         {adPackages.map((pkg) => (
@@ -655,14 +406,14 @@ export default function AdvertiseClient() {
                                     ))}
                                 </div>
                                 <div className="ad-package__actions">
-                                    <a
-                                        href={`mailto:browncemmanuel@gmail.com?subject=Sponsored Article Inquiry — ${pkg.name} Package`}
+                                    
+                                     <a   href={`mailto:browncemmanuel@gmail.com?subject=Sponsored Article Inquiry — ${pkg.name} Package`}
                                         className={`ad-package__cta${pkg.accent ? " ad-package__cta--accent" : ""}`}
                                     >
                                         Email us <ArrowUpRight size={12} />
                                     </a>
-                                    <a
-                                        href={`https://wa.me/${WHATSAPP}?text=Hi%2C%20I%27m%20interested%20in%20the%20${encodeURIComponent(pkg.name)}%20sponsored%20article%20package.`}
+                                    
+                                   <a     href={`https://wa.me/${WHATSAPP}?text=Hi%2C%20I%27m%20interested%20in%20the%20${encodeURIComponent(pkg.name)}%20sponsored%20article%20package.`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="ad-package__cta ad-package__cta--wa"
@@ -670,12 +421,20 @@ export default function AdvertiseClient() {
                                         WhatsApp <ArrowUpRight size={12} />
                                     </a>
                                     <div className="ad-pay-divider" />
-                                    {/* sdkState passed down — button only renders when ready */}
-                                    <PackagePayPalButton pkg={pkg} sdkState={sdkState} />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                                    <div className="ad-pay-label">Pay online</div>
+                                    
+                                      <a  href = { pkg.flutterwaveLink }
+                                        target = "_blank"
+                                        rel = "noopener noreferrer"
+                                        className = "ad-package__cta ad-package__cta--fw"
+                            >
+                            Pay with Flutterwave <ArrowUpRight size={12} />
+                    </a>
+            </div>
+        </div >
+                        ))
+}
+                    </div >
 
                     <div className="ad-contact">
                         <div>
@@ -700,10 +459,10 @@ export default function AdvertiseClient() {
                             <a href="/blog" className="ad-footer-btn"><ArrowLeft size={13} /> Back to blog</a>
                         </div>
                     </footer>
-                </main>
-            </div>
+                </main >
+            </div >
 
-            <Footer />
+    <Footer />
         </>
     );
 }

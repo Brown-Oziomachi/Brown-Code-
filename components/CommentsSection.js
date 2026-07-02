@@ -539,7 +539,6 @@ export default function CommentsSection({ articleSlug }) {
                     max-height: 80vh;
                     background: var(--surface);
                     border: 1px solid var(--border);
-                    border-radius: var(--radius);
                     overflow: hidden;
                     box-shadow: 0 32px 64px rgba(0,0,0,0.6);
                     display: flex;

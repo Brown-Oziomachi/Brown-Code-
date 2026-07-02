@@ -26,7 +26,9 @@ const config = {
   additionalPaths: async () => {
     return articles.map((article) => ({
       loc: `/blog/${article.slug}`,
-      lastmod: new Date().toISOString(),
+      lastmod: new Date(
+        article.dateModified || article.datePublished || Date.now()
+      ).toISOString(),
       changefreq: "monthly",
       priority: 0.9,
     }));

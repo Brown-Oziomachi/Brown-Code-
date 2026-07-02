@@ -11,6 +11,15 @@ import Footer from "@/components/footer";
 const getReadingTime = (content) =>
     Math.max(1, Math.ceil(content.split(" ").length / 200));
 
+const formatDate = (dateString) => {
+    if (!dateString) return null;
+    return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+};
+
 const ArticleCard = ({ article, index }) => (
 
    <a href = {`/blog/${article.slug}`}
@@ -39,6 +48,8 @@ style = {{ animationDelay: `${index * 40}ms` }}
                 <span className="bl-meta__author">{article.postedBy}</span>
                 <span className="bl-meta__dot" />
                 <span>{getReadingTime(article.content)} min read</span>
+                <span className="bl-meta__dot" />
+                <span>{formatDate(article.datePublished)}</span>
             </div>
         </div>
     </a >

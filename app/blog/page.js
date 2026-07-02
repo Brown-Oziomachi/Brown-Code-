@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import BlogListClient from "./blog";
+import { articles } from "@/app/data/article";
 
 export const metadata = {
   title: "Blog — Business, Fraud Awareness & Tech | Sir Brown AD",
@@ -25,7 +26,7 @@ export const metadata = {
     canonical: "https://browncode.name.ng/blog",
   },
   openGraph: {
-    title: "Blog — Business, Fraud Awareness & Tech | Sir Brown AD",
+    title: "Blog — Business, Fraud Awareness & Tech | Brown Code",
     description:
       "Articles on Nigerian business scams, fake transfer alerts, cybersecurity, web development, and digital growth by Sir Brown AD.",
     url: "https://browncode.name.ng/blog",
@@ -43,9 +44,41 @@ export const metadata = {
 };
 
 export default function BlogListPage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Sir Brown AD Blog",
+    url: "https://browncode.name.ng/blog",
+    publisher: {
+      "@type": "Organization",
+      name: "Sir Brown AD",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://browncode.name.ng/logo.png",
+      },
+    },
+    blogPost: articles.slice(0, 20).map((article) => ({
+      "@type": "BlogPosting",
+      headline: article.title,
+      url: `https://browncode.name.ng/blog/${article.slug}`,
+      datePublished: article.datePublished,
+      dateModified: article.datePublished,
+      author: {
+        "@type": "Person",
+        name: article.postedBy || "Sir Brown AD",
+      },
+    })),
+  };
+
   return (
-    <Suspense fallback={<div style={{ background: "#0a0a0b", minHeight: "100vh" }} />}>
-      <BlogListClient />
-    </Suspense>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Suspense fallback={<div style={{ background: "#0a0a0b", minHeight: "100vh" }} />}>
+        <BlogListClient />
+      </Suspense>
+    </>
   );
 }

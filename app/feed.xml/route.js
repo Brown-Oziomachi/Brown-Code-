@@ -25,6 +25,9 @@ export async function GET() {
                 article.datePublished || Date.now()
             ).toUTCString();
             const category = CATEGORY_LABELS[getCategoryKey(article)];
+            const imageUrl = article.image?.startsWith("http")
+                ? article.image
+                : `${SITE_URL}${article.image || ""}`;
 
             return `
     <item>
@@ -36,7 +39,7 @@ export async function GET() {
       ${category ? `<category>${escapeXml(category)}</category>` : ""}
       <description>${escapeXml(article.preview || "")}</description>
       ${article.image
-                    ? `<enclosure url="${escapeXml(article.image)}" type="image/jpeg" />`
+                    ? `<media:content url="${escapeXml(imageUrl)}" medium="image" />`
                     : ""
                 }
     </item>`;
@@ -44,7 +47,7 @@ export async function GET() {
         .join("");
 
     const rss = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>Sir Brown AD — Blog</title>
     <link>${SITE_URL}</link>
