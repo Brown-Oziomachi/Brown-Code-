@@ -14,6 +14,7 @@ export default function Footer() {
     const nav = [
         { label: "Portfolio", href: "/portfolio" },
         { label: "Blog", href: "/blog" },
+        { label: "Tech News", href: "/tech-news" },
         { label: "FAQ", href: "/faq" },
         { label: "Privacy", href: "/privacy" },
         { label: "Terms", href: "/terms" },
