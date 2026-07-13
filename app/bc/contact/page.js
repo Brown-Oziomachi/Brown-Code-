@@ -329,13 +329,13 @@ export default function ContactForm() {
                                 this site first before engaging.
                                 <div className="ct-alert__channels">
                                     <a
-                                        href="https://browncode.name.ng/bc/contact"
+                                        href="https://cal.com/sir-brown"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="ct-alert__channel ct-alert__channel--accent"
                                     >
                                         <Network size={11} />
-                                        Contact Me
+                                        Meet With Me
                                     </a>
                                     <a
                                         href="https://wa.me/2348142995114"

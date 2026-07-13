@@ -1191,9 +1191,14 @@ useEffect(() => {
                 <p className="ap-author-card__bio">
                   Full-stack developer building performant, scalable digital products. Specialized in React architecture, custom web engines, and secure data infrastructure.
                 </p>
+                <div className="flex gap-4">
+                <a href="https://cal.com/sir-brown" className="ap-author-card__link" style={{ display: "inline-flex" }}>
+                  Meet With Me <ArrowRight size={12} />
+                </a><br/> <br/>
                 <Link href="/bc/about" className="ap-author-card__link">
                   Full profile <ArrowRight size={12} />
-                </Link>
+                </Link> 
+                </div>
               </div>
               <div className="ap-author-card__socials">
               <span className="ft-col-label" style={{ textAlign: "right", display: "block", marginBottom: "12px" }}>
