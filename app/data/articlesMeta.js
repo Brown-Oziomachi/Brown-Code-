@@ -55,6 +55,21 @@ export const articlesMeta = {
             "Sir Brown AD",
         ],
     },
+    "political-scam-nigeria-fraud-and-the-way-forward": {
+        category: "politics",
+        metaTitle: "The Political Scam: How Fraud Has Robbed Nigeria | Brown Code",
+        metaDescription: "What a political scam actually is, how it has cost Nigeria billions and decades of development, and what could change if Nigerians united to stop it.",
+        keywords: [
+            "political fraud Nigeria",
+            "corruption in Nigeria",
+            "how political scams work",
+            "Nigerian politics and fraud",
+            "stopping corruption in Nigeria",
+            "budget padding Nigeria",
+            "Sir Brown AD",
+        ],
+    },
+
     "resume-cover-letter-playbook": {
         category: "career",
         metaTitle: "The Resume and Cover Letter Playbook | Brown Code",

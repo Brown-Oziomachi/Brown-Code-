@@ -4,14 +4,30 @@ import Link from "next/link";
 import {
     ArrowLeft, ArrowRight, Terminal, Cpu, Database,
     Layers, GitBranch, Binary, Briefcase, Download,
-    Github, Linkedin, Mail, User,
-    MessageCircle
+    Github, Mail
 } from "lucide-react";
+import { articles } from "@/app/data/article";
+import { CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
+
+const getReadingTime = (content) =>
+    Math.max(1, Math.ceil(content.split(" ").length / 200));
+
+const formatDate = (dateString) => {
+    if (!dateString) return null;
+    return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+    });
+};
 
 export default function AboutMePage() {
     const [activeTab, setActiveTab] = useState("story");
 
     const skills = [
+        { name: "Vue 3 Composition API & State Architecture", level: 85, tag: "Production Ready" },
+        { name: "Nuxt 3 SSR & Fullstack Routing", level: 80, tag: "Production Ready" },
+        { name: "Vite Asset Pipeline & Build Optimization", level: 75, tag: "Advanced" },
         { name: "React Architecture & Next.js SSR", level: 70, tag: "Production Ready" },
         { name: "Node.js Core & Vercel Serverless", level: 50, tag: "Stable Backend" },
         { name: "JavaScript Engine Paradigms (ES6+)", level: 45, tag: "Intermediate Core" },
@@ -52,6 +68,11 @@ export default function AboutMePage() {
         { icon: <GitBranch size={13} />, text: "Control Flow & App Logic" },
         { icon: <Database size={13} />, text: "Data Modeling & State" },
     ];
+
+    const latestArticles = articles
+        .slice()
+        .sort((a, b) => (b.datePublished || "").localeCompare(a.datePublished || ""))
+        .slice(0, 4);
 
     return (
         <>
@@ -97,68 +118,49 @@ export default function AboutMePage() {
         }
         .ab-nav__back:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
 
-        /* Hero */
-        .ab-hero { max-width: 1120px; margin: 0 auto; padding: 52px 24px 0; display: grid; grid-template-columns: 280px 1fr; gap: 48px; align-items: start; }
-        @media (max-width: 780px) { .ab-hero { grid-template-columns: 1fr; gap: 32px; } }
+        /* ── Facebook-style profile header ── */
+        .ab-fb { max-width: 1120px; margin: 32px auto 0; padding: 0 24px; }
 
-        /* Profile card */
-        .ab-profile {
-          background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+        .ab-fb__cover {
+          position: relative; width: 100%; aspect-ratio: 16 / 5.2;
+          border-radius: var(--radius); overflow: hidden;
+          border: 1px solid var(--border); background: var(--surface);
+        }
+        .ab-fb__cover-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .ab-fb__cover-fade {
+          position: absolute; inset: 0;
+          background: linear-gradient(180deg, rgba(10,10,11,0) 45%, rgba(10,10,11,0.65) 100%);
+        }
+
+        .ab-fb__header {
+          display: flex; align-items: flex-end; gap: 20px;
+          margin-top: -52px; padding: 0 4px; position: relative; z-index: 2;
+          flex-wrap: wrap;
+        }
+        .ab-fb__avatar-wrap {
+          position: relative; width: 108px; height: 108px; flex-shrink: 0;
+          border-radius: 50%; border: 4px solid var(--bg); background: var(--bg);
           overflow: hidden;
         }
-        .ab-profile__img-wrap { position: relative; aspect-ratio: 1; background: var(--bg); }
-        .ab-profile__img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; filter: grayscale(20%); display: block; }
-        .ab-profile__img-overlay {
-          position: absolute; inset: 0;
-          background: linear-gradient(to top, #0a0a0b 0%, transparent 50%);
+        .ab-fb__avatar { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%); display: block; }
+        .ab-fb__avatar-status {
+          position: absolute; bottom: 4px; right: 4px; width: 16px; height: 16px;
+          border-radius: 50%; background: #4ade80; border: 2px solid var(--bg);
         }
-        .ab-profile__img-badge {
-          position: absolute; bottom: 12px; left: 12px; right: 12px;
-          background: rgba(17,17,19,0.95); border: 1px solid var(--border);
-          border-radius: var(--radius); padding: 10px 12px;
-        }
-        .ab-profile__img-name { font-family: var(--serif); font-size: 15px; color: var(--text-1); }
-        .ab-profile__img-role { font-family: var(--mono); font-size: 9px; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
 
-        .ab-profile__meta { padding: 16px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border); }
-        .ab-profile__meta-row { display: flex; justify-content: space-between; align-items: center; }
-        .ab-profile__meta-key { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
-        .ab-profile__meta-val { font-family: var(--mono); font-size: 10px; color: var(--text-2); }
-        .ab-profile__meta-val--accent { color: var(--accent); }
-        .ab-profile__status {
-          display: inline-flex; align-items: center; gap: 6px;
-          font-family: var(--mono); font-size: 9px; color: #4ade80;
-          background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2);
-          padding: 3px 8px; border-radius: 3px;
-        }
-        .ab-profile__status-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ade80; animation: ab-ping 1.4s ease-out infinite; }
-        @keyframes ab-ping { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.4); } 100% { box-shadow: 0 0 0 6px rgba(74,222,128,0); } }
+        .ab-fb__identity { flex: 1; min-width: 220px; padding-bottom: 10px 30px; margin-top: 0px;}
+        .ab-fb__name { font-family: var(--serif); font-size: 26px; color: var(--text-1); line-height: 1.2; }
+        .ab-fb__role { font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.05em; margin-top: 4px; }
+        .ab-fb__stats { display: flex; gap: 18px; margin-top: 12px; }
+        .ab-fb__stat-num { font-family: var(--serif); font-size: 16px; color: var(--accent); line-height: 1; }
+        .ab-fb__stat-label { font-family: var(--mono); font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); margin-top: 3px; }
 
-        /* Stats */
-        .ab-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow: hidden; }
-        .ab-stat { background: var(--surface); padding: 12px 8px; text-align: center; }
-        .ab-stat__num { font-family: var(--serif); font-size: 20px; color: var(--text-1); }
-        .ab-stat__label { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-top: 2px; }
+        .ab-fb__actions { display: flex; gap: 8px; flex-wrap: wrap; padding-bottom: 10px; }
 
-        /* Right column */
-        .ab-intro { padding-top: 8px; }
-        .ab-intro__eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-        .ab-intro__dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: ab-ping2 2s ease-out infinite; }
-        @keyframes ab-ping2 { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .ab-intro__eyebrow-text { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
-
-        .ab-intro__title { font-family: var(--serif); font-size: clamp(30px, 4vw, 48px); color: var(--text-1); line-height: 1.1; margin-bottom: 8px; }
-        .ab-intro__subtitle { font-family: var(--mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.06em; margin-bottom: 28px; }
-
-        .ab-intro__body { border-left: 2px solid var(--border); padding-left: 20px; display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
-        .ab-intro__p { font-size: 15px; line-height: 1.75; color: var(--text-2); font-weight: 300; }
-        .ab-intro__p strong { color: var(--text-1); font-weight: 500; }
-
-        .ab-intro__actions { display: flex; gap: 10px; flex-wrap: wrap; }
         .ab-btn {
           display: inline-flex; align-items: center; gap: 6px;
           font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
-          padding: 10px 18px; border-radius: var(--radius);
+          padding: 10px 16px; border-radius: var(--radius);
           border: 1px solid var(--border); background: var(--surface);
           color: var(--text-2); cursor: pointer; text-decoration: none;
           transition: color 0.15s, border-color 0.15s, background 0.15s;
@@ -166,6 +168,84 @@ export default function AboutMePage() {
         .ab-btn:hover { color: var(--text-1); border-color: var(--border-hi); }
         .ab-btn--accent { background: var(--accent-dim); border-color: rgba(232,255,71,0.3); color: var(--accent); }
         .ab-btn--accent:hover { background: rgba(232,255,71,0.14); border-color: rgba(232,255,71,0.5); color: var(--accent); }
+
+        /* Bio block under the FB header */
+        .ab-bio {
+          max-width: 1120px; margin: 28px auto 0; padding: 0 24px;
+          display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+        }
+        @media (max-width: 780px) { .ab-bio { grid-template-columns: 1fr; } }
+        .ab-bio__card {
+          background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+          padding: 20px; border-left: 2px solid var(--border-hi);
+        }
+        .ab-bio__label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
+        .ab-bio__text { font-size: 13.5px; line-height: 1.7; color: var(--text-2); font-weight: 300; }
+        .ab-bio__text strong { color: var(--text-1); font-weight: 500; }
+
+        @media (max-width: 780px) {
+          .ab-fb__cover { aspect-ratio: 4 / 3; }
+          .ab-fb__header { margin-top: -40px; }
+          .ab-fb__avatar-wrap { width: 84px; height: 84px; }
+        }
+
+        /* ── Blog preview section ── */
+        .ab-blog { max-width: 1120px; margin: 56px auto 0; padding: 0 24px; }
+        .ab-blog__head {
+          display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+          margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+        }
+        .ab-blog__eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
+        .ab-blog__title { font-family: var(--serif); font-size: clamp(22px, 3vw, 30px); color: var(--text-1); }
+        .ab-blog__count { font-family: var(--mono); font-size: 11px; color: var(--text-3); white-space: nowrap; }
+
+        .ab-blog__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        @media (max-width: 900px) { .ab-blog__grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 560px) { .ab-blog__grid { grid-template-columns: 1fr; } }
+
+        .ab-blog-card {
+          position: relative; display: flex; flex-direction: column;
+          background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+          overflow: hidden; text-decoration: none;
+          transition: border-color 0.2s, transform 0.2s;
+        }
+        .ab-blog-card:hover { border-color: var(--border-hi); transform: translateY(-3px); }
+
+        .ab-blog-card__media { position: relative; height: 128px; background: var(--bg); overflow: hidden; }
+        .ab-blog-card__img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; filter: grayscale(30%); transition: opacity 0.3s, transform 0.4s; display: block; }
+        .ab-blog-card:hover .ab-blog-card__img { opacity: 0.8; transform: scale(1.05); }
+        .ab-blog-card__media-placeholder { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(255,255,255,0.02) 6px, rgba(255,255,255,0.02) 12px); }
+        .ab-blog-card__media-fade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,10,11,0) 40%, var(--surface) 100%); }
+        .ab-blog-card__num {
+          position: absolute; top: 6px; right: 10px; font-family: var(--serif); font-size: 30px;
+          color: rgba(244,244,245,0.14); line-height: 1; z-index: 1; user-select: none;
+        }
+        .ab-blog-card__tag {
+          position: absolute; top: 10px; left: 10px; z-index: 1;
+          font-family: var(--mono); font-size: 8.5px; letter-spacing: 0.06em; text-transform: uppercase;
+          padding: 3px 7px; border-radius: 3px; background: rgba(10,10,11,0.75); backdrop-filter: blur(4px);
+          color: var(--accent); border: 1px solid rgba(232,255,71,0.3);
+        }
+
+        .ab-blog-card__body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .ab-blog-card__title { font-family: var(--serif); font-size: 15px; line-height: 1.3; color: var(--text-1); transition: color 0.15s; }
+        .ab-blog-card:hover .ab-blog-card__title { color: #fff; }
+        .ab-blog-card__preview {
+          font-size: 11.5px; color: var(--text-3); line-height: 1.55;
+          display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .ab-blog-card__meta {
+          margin-top: auto; padding-top: 8px; border-top: 1px solid var(--border);
+          font-family: var(--mono); font-size: 9px; color: var(--text-3);
+          display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+        }
+        .ab-blog-card__meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border-hi); flex-shrink: 0; }
+        .ab-blog-card__bar { position: absolute; left: 0; bottom: 0; height: 2px; width: 0%; background: var(--accent); transition: width 0.25s ease; }
+        .ab-blog-card:hover .ab-blog-card__bar { width: 100%; }
+
+        .ab-blog__empty { padding: 40px 0; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--text-3); }
+
+        .ab-blog__cta { display: flex; justify-content: center; margin-top: 24px; }
 
         /* Tabs */
         .ab-tabs { max-width: 1120px; margin: 48px auto 0; padding: 0 24px 80px; }
@@ -256,79 +336,33 @@ export default function AboutMePage() {
       `}</style>
 
             <div className="ab-page">
-
                 {/* Nav */}
                 <nav className="ab-nav">
                     <a href="/" className="ab-nav__brand">brown<em>.</em>dev</a>
                     <a href="/portfolio" className="ab-nav__back"><ArrowLeft size={13} /> Portfolio</a>
                 </nav>
 
-                {/* Hero */}
-                <div className="ab-hero">
-
-                    {/* Profile card */}
-                    <div>
-                        <div className="ab-profile">
-                            <div className="ab-profile__img-wrap">
-                                <img src="/coder1.png" alt="Brown AD" className="ab-profile__img" />
-                                <div className="ab-profile__img-overlay" />
-                                <div className="ab-profile__img-badge">
-                                    <div className="ab-profile__img-name">Sir Brown AD</div>
-                                    <div className="ab-profile__img-role">Full Stack Developer</div>
-                                </div>
-                            </div>
-                            <div className="ab-profile__meta">
-                                <div className="ab-profile__meta-row">
-                                    <span className="ab-profile__meta-key">Location</span>
-                                    <span className="ab-profile__meta-val">Nigeria · Remote</span>
-                                </div>
-                                <div className="ab-profile__meta-row">
-                                    <span className="ab-profile__meta-key">Stack</span>
-                                    <span className="ab-profile__meta-val ab-profile__meta-val--accent">JS · Node · React</span>
-                                </div>
-                                <div className="ab-profile__meta-row">
-                                    <span className="ab-profile__meta-key">Status</span>
-                                    <span className="ab-profile__status">
-                                        <span className="ab-profile__status-dot" /> Available
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="ab-stats">
-                            {exps.map((e) => (
-                                <div key={e.label} className="ab-stat">
-                                    <div className="ab-stat__num">{e.num}</div>
-                                    <div className="ab-stat__label">{e.label}</div>
-                                </div>
-                            ))}
-                        </div>
+                {/* Facebook-style cover + profile header */}
+                <div className="ab-fb">
+                    <div className="ab-fb__cover">
+                        <img src="/banner.png" alt="Sir Brown AD cover" className="ab-fb__cover-img" />
+                        <div className="ab-fb__cover-fade" />
                     </div>
 
-                    {/* Intro */}
-                    <div className="ab-intro">
-                        <div className="ab-intro__eyebrow">
-                            <span className="ab-intro__dot" />
-                            <span className="ab-intro__eyebrow-text">Dev Manifest · Objective Data</span>
-                        </div>
-                        <h1 className="ab-intro__title">Software<br />Developer</h1>
-                        <p className="ab-intro__subtitle">ID: BC_CORE_v2.0.6</p>
-
-                        <div className="ab-intro__body">
-                            <p className="ab-intro__p">
-                                Specializing in predictable structural web applications within the high-velocity JavaScript stack.
-                                Core expertise centers around component encapsulation with <strong>React & Next.js</strong> alongside
-                                reliable background task structures fueled by Node.js integration channels.
-                            </p>
-                            <p className="ab-intro__p">
-                                My methodology rejects messy script solutions. Instead: explicit component workflows, clean data
-                                layer constraints, and clear data indexing patterns via custom modern schema infrastructures.
-                            </p>
+                    <div className="ab-fb__header">
+                        <div className="ab-fb__avatar-wrap">
+                            <img src="/coder1.png" alt="Sir Brown AD" className="ab-fb__avatar" />
+                            <span className="ab-fb__avatar-status" />
                         </div>
 
-                        <div className="ab-intro__actions">
-                             <Link href="/bc_dev" className="ab-btn" style={{ display: "inline-flex" }}>
+                        <div className="ab-fb__identity">
+                           
+                                <h1 className="ab-fb__name">Sir Brown AD</h1>
+                                <p className="ab-fb__role">Full Stack Developer · Nigeria · Remote</p>
+                        </div>
+
+                        <div className="ab-fb__actions">
+                            <Link href="/bc_dev" className="ab-btn">
                                 Full profile <ArrowRight size={12} />
                             </Link>
                             <a href="/bc/contact" className="ab-btn ab-btn--accent">
@@ -337,13 +371,82 @@ export default function AboutMePage() {
                             <a href="/cv" className="ab-btn">
                                 <Download size={12} /> Resume
                             </a>
-                          
-                             <a href="https://cal.com/sir-brown" className="ab-btn" style={{ display: "inline-flex" }}>
+                            <a href="https://cal.com/sir-brown" className="ab-btn">
                                 Meet With Me <ArrowRight size={12} />
                             </a>
-
-                            
                         </div>
+                    </div>
+                </div>
+
+                {/* Bio */}
+                <div className="ab-bio">
+                    <div className="ab-bio__card">
+                        <div className="ab-bio__label">Dev Manifest · Objective Data</div>
+                        <p className="ab-bio__text">
+                            Specializing in predictable structural web applications within the high-velocity JavaScript stack.
+                            Core expertise centers around component encapsulation with <strong>Vue.js, Nuxt.js, React.js & Next.js</strong> alongside
+                            reliable background task structures fueled by Node.js integration channels.
+                        </p>
+                    </div>
+                    <div className="ab-bio__card">
+                        <div className="ab-bio__label">Methodology</div>
+                        <p className="ab-bio__text">
+                            My methodology rejects messy script solutions. Instead: explicit component workflows, clean data
+                            layer constraints, and clear data indexing patterns via custom modern schema infrastructures.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Blog preview */}
+                <div className="ab-blog">
+                    <div className="ab-blog__head">
+                        <div>
+                            <div className="ab-blog__eyebrow">From the blog</div>
+                            <h2 className="ab-blog__title">Latest Writing</h2>
+                        </div>
+                        <span className="ab-blog__count">{latestArticles.length} recent post{latestArticles.length !== 1 ? "s" : ""}</span>
+                    </div>
+
+                    {latestArticles.length === 0 ? (
+                        <div className="ab-blog__empty">NO_ARTICLES_PUBLISHED_YET</div>
+                    ) : (
+                        <div className="ab-blog__grid">
+                            {latestArticles.map((article, i) => (
+                                <a key={article.slug} href={`/blog/${article.slug}`} className="ab-blog-card">
+                                    <div className="ab-blog-card__media">
+                                        {article.image ? (
+                                            <img
+                                                src={article.image}
+                                                alt={article.title}
+                                                className="ab-blog-card__img"
+                                                onError={(e) => (e.target.style.display = "none")}
+                                            />
+                                        ) : (
+                                            <div className="ab-blog-card__media-placeholder" />
+                                        )}
+                                        <div className="ab-blog-card__media-fade" />
+                                        <span className="ab-blog-card__num">{String(i + 1).padStart(2, "0")}</span>
+                                        <span className="ab-blog-card__tag">{CATEGORY_LABELS[getCategoryKey(article)]}</span>
+                                    </div>
+                                    <div className="ab-blog-card__body">
+                                        <h3 className="ab-blog-card__title">{article.title}</h3>
+                                        <p className="ab-blog-card__preview">{article.preview}</p>
+                                        <div className="ab-blog-card__meta">
+                                            <span>{getReadingTime(article.content)} min read</span>
+                                            <span className="ab-blog-card__meta-dot" />
+                                            <span>{formatDate(article.datePublished)}</span>
+                                        </div>
+                                    </div>
+                                    <span className="ab-blog-card__bar" />
+                                </a>
+                            ))}
+                        </div>
+                    )}
+
+                    <div className="ab-blog__cta">
+                        <Link href="/blog" className="ab-btn ab-btn--accent">
+                            View all articles <ArrowRight size={12} />
+                        </Link>
                     </div>
                 </div>
 
@@ -362,7 +465,6 @@ export default function AboutMePage() {
                     </div>
 
                     <div className="ab-tabs__panel">
-
                         {/* Story */}
                         {activeTab === "story" && (
                             <div>
@@ -471,10 +573,8 @@ export default function AboutMePage() {
                                 </div>
                             </div>
                         )}
-
                     </div>
                 </div>
-
             </div>
         </>
     );

@@ -76,10 +76,11 @@ export default function PortfolioClients() {
     ];
 
     const skills = [
-        { name: "React & Next.js SSR", level: 70, tag: "Production Ready" },
-        { name: "Node.js & Vercel Serverless", level: 50, tag: "Stable Backend" },
-        { name: "JavaScript ES6+ Runtime", level: 45, tag: "Intermediate Core" },
-        { name: "Database Architecture", level: 70, tag: "Scalable" },
+            { name: "Vue 3, Nuxt 3 & Vite Architecture", level: 85, tag: "Primary Stack" },
+            { name: "JavaScript ES6+ & Composition API", level: 80, tag: "Core Engineering" },
+            { name: "React Architecture & Next.js SSR", level: 70, tag: "Production Ready" },
+            { name: "Database Architecture", level: 70, tag: "Scalable Data" },
+            { name: "Node.js & Vercel Serverless", level: 60, tag: "Stable Backend" }
     ];
 
     const values = [

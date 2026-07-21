@@ -78,9 +78,9 @@ const engines = [
     },
     {
         name: "Yandex",
-        status: "Processing",
-        statusType: "pending",
-        desc: "Sitemap submitted and in processing queue",
+        status: "Indexed",
+        statusType: "live",
+        desc: "90+ pages crawled and ranking in Yandex search results",
         detail: "Verified · Sitemap accepted · 1–2 week processing window",
     },
 ];
@@ -108,9 +108,6 @@ const benefits = [
     },
 ];
 
-// ⚠️ PLACEHOLDER TESTIMONIALS — replace every entry below with a real client
-// name, business, and quote before this section goes live. Do not publish
-// fabricated reviews attributed to real-sounding people.
 const testimonials = [
     {
         quote: "[Replace with a real client quote about their experience and results.]",

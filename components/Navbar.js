@@ -6,7 +6,6 @@ import {
     Menu, X, ChevronDown, Terminal, Cpu, Network,
     Globe, Layers, Server, Newspaper, TrendingUp, ExternalLink,
 } from "lucide-react";
-import { SysMonitorNavDeskLink } from "@/app/status/page";
 
 export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSection, scrollToSection }) {
     const [isJobOpen, setIsJobOpen] = useState(false);
@@ -355,7 +354,6 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
                             </button>
                         </div>
 
-                        <SysMonitorNavDeskLink />
                     </div>
 
                     {/* Mobile controls */}
