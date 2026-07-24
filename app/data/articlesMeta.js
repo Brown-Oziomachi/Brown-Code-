@@ -27,6 +27,20 @@ export const articlesMeta = {
             "Sir Brown AD", 
         ],
     },
+    "stop-waiting-destiny-helper-nigerian-youth-mindset": {
+        category: "growth",
+        metaTitle: "Stop Waiting for a Destiny Helper — Nobody Is Coming to Save You",
+        metaDescription: "A comfortable excuse to sit still, to avoid the discomfort of learning a skill, to avoid the boredom of practicing something badly before you get good at it.",
+        keywords: [
+            "stop waiting for a destiny helper",
+            "nobody is coming to save you",
+            "destiny helper mindset Nigeria",
+            "Nigerian youth career advice",
+            "self reliance for Nigerian youth",
+            "career growth without connections Nigeria",
+            "Sir Brown AD",
+        ]
+    },
     "complete-guide-to-job-interviews": {
         category: "career",
         metaTitle: "The Complete Guide to Job Interviews | Brown Code",
