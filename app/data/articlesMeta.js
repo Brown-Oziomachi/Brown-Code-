@@ -27,6 +27,19 @@ export const articlesMeta = {
             "Sir Brown AD", 
         ],
     },
+    "true-cost-of-fraud-nigeria-economy-and-people": {
+        category: "finance",
+        metaTitle: "The True Cost of Fraud in Nigeria's Economy",
+        metaDescription: "Discover how widespread financial scams and fraud are quietly draining Nigeria's economy, damaging business trust, and impacting everyday citizens.",
+        keywords: [
+            "true cost of fraud Nigeria",
+            "economic impact of fraud Nigeria",
+            "financial scams Nigeria economy",
+            "cost of financial fraud",
+            "fraud and Nigerian business trust",
+            "Sir Brown AD",
+        ],
+    },
     "stop-waiting-destiny-helper-nigerian-youth-mindset": {
         category: "growth",
         metaTitle: "Stop Waiting for a Destiny Helper — Nobody Is Coming to Save You",
