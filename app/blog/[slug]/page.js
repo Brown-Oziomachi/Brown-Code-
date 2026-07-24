@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 import { articles } from "@/app/data/article";
 import ArticleClient from "./slug";
 import { articlesMeta } from "@/app/data/articlesMeta";
@@ -73,47 +74,55 @@ export default async function ArticlePage({ params }) {
   const { slug } = await params;
   const article = articles.find((a) => a.slug === slug);
 
-  const canonicalUrl = `https://browncode.name.ng/blog/${slug}`;
-  const imageUrl = article?.image?.startsWith("http")
-    ? article.image
-    : `https://browncode.name.ng${article?.image || "/logo.png"}`;
+  // Resolve the 404 case here on the server instead of passing an empty
+  // article down to the client and letting it call notFound() after mount.
+  if (!article) {
+    notFound();
+  }
 
-  const jsonLd = article
-    ? {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      headline: article.title,
-      datePublished: article.datePublished,
-      dateModified: article.dateModified || article.datePublished,
-      author: { "@type": "Person", name: article.postedBy || "Sir Brown AD" },
-      publisher: {
-        "@type": "Organization",
-        name: "Sir Brown AD",
-        logo: {
-          "@type": "ImageObject",
-          url: "https://browncode.name.ng/logo.png",
-        },
+  const canonicalUrl = `https://browncode.name.ng/blog/${slug}`;
+  const imageUrl = article.image?.startsWith("http")
+    ? article.image
+    : `https://browncode.name.ng${article.image || "/logo.png"}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: article.title,
+    datePublished: article.datePublished,
+    dateModified: article.dateModified || article.datePublished,
+    author: { "@type": "Person", name: article.postedBy || "Sir Brown AD" },
+    publisher: {
+      "@type": "Organization",
+      name: "Sir Brown AD",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://browncode.name.ng/logo.png",
       },
-      image: imageUrl,
-      mainEntityOfPage: {
-        "@type": "WebPage",
-        "@id": canonicalUrl,
-      },
-    }
-    : null;
+    },
+    image: imageUrl,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": canonicalUrl,
+    },
+  };
 
   return (
     <>
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Suspense
         fallback={<div style={{ background: "#0a0a0b", minHeight: "100vh" }} />}
       >
-        <ArticleClient params={params} />
+        {/*
+          Only the ONE resolved article object is passed down — not the
+          whole `articles` array. This is the key change: ArticleClient no
+          longer imports `articles` itself, so every other article's full
+          content never gets bundled into this page's client JS.
+        */}
+        <ArticleClient article={article} />
       </Suspense>
     </>
   );

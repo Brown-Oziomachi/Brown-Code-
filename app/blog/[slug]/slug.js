@@ -1,28 +1,26 @@
 "use client";
 
 import Head from "next/head";
-import { articles } from "@/app/data/article";
 import {
   ArrowLeft, ArrowRight, Clock, CornerDownRight,
   Twitter, Linkedin, Facebook, Instagram, Github, Mail
 } from "lucide-react";
-import { notFound, useRouter } from "next/navigation";
-import { useState, use, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import RelatedArticles from "@/components/relatedarticle";
 import Footer from "@/components/footer";
 import CommentsSection from "@/components/CommentsSection";
 import {
-  collection, addDoc, query, where, orderBy,
-  onSnapshot, serverTimestamp,
+  collection, query, where, orderBy,
+  onSnapshot,
   doc, getDoc, setDoc, updateDoc, increment
 } from "firebase/firestore";
-import { Heart } from "lucide-react"; // add Heart to your existing lucide-react import line instead
+import { Heart } from "lucide-react";
 import { db1 } from "@/config/firebase.config1";
 import TableOfContents from "@/components/TableOfContents";
 import { CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
 
-// ─── helpers ─────────────────────────────────────────────────────────────────
 // ─── helpers ─────────────────────────────────────────────────────────────────
 const getReadingTime = (content) =>
   Math.max(1, Math.ceil(content.split(" ").length / 200));
@@ -73,30 +71,32 @@ const ShareSidebar = ({ onShare }) => (
 );
 
 // ─── page ─────────────────────────────────────────────────────────────────────
-export default function ArticleClient({ params }) {
+// `article` now arrives as a prop, already resolved server-side by
+// app/blog/[slug]/page.js. This component no longer imports the full
+// `articles` array or does its own slug lookup — that import was the thing
+// bundling every OTHER article's content into this page's client JS too.
+export default function ArticleClient({ article }) {
   const router = useRouter();
-  const { slug } = use(params);
-  const article = articles.find((a) => a.slug === slug);
   const [comments, setComments] = useState([]);
-const [likeCount, setLikeCount] = useState(0);
-const [hasLiked, setHasLiked] = useState(false);
-const [likeLoading, setLikeLoading] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [hasLiked, setHasLiked] = useState(false);
+  const [likeLoading, setLikeLoading] = useState(false);
 
-useEffect(() => {
-  if (!article) return;
+  useEffect(() => {
+    if (!article) return;
 
-  // Local "did this browser already like it" check
-  const likedSlugs = JSON.parse(localStorage.getItem("likedArticles") || "[]");
-  setHasLiked(likedSlugs.includes(article.slug));
+    // Local "did this browser already like it" check
+    const likedSlugs = JSON.parse(localStorage.getItem("likedArticles") || "[]");
+    setHasLiked(likedSlugs.includes(article.slug));
 
-  // Live count from Firestore
-  const likeRef = doc(db1, "likes", article.slug);
-  const unsub = onSnapshot(likeRef, (snap) => {
-    setLikeCount(snap.exists() ? snap.data().count || 0 : 0);
-  }, (e) => console.error(e));
+    // Live count from Firestore
+    const likeRef = doc(db1, "likes", article.slug);
+    const unsub = onSnapshot(likeRef, (snap) => {
+      setLikeCount(snap.exists() ? snap.data().count || 0 : 0);
+    }, (e) => console.error(e));
 
-  return () => unsub();
-}, [article]);
+    return () => unsub();
+  }, [article]);
 
   const handleLike = async () => {
     if (!article || likeLoading) return;
@@ -132,7 +132,7 @@ useEffect(() => {
     }
   };
 
-  
+
   useEffect(() => {
     if (!article) return;
     const q = query(
@@ -158,8 +158,10 @@ useEffect(() => {
     window.open(urls[platform], "_blank", "width=600,height=500");
   };
 
+  // Server-side page.js already calls notFound() if the article doesn't
+  // exist, so this is just a defensive fallback rather than the primary path.
   if (!article) {
-    notFound(); // This halts rendering and automatically shows your custom 404 UI
+    return <NotFound onBack={() => router.push("/blog")} />;
   }
 
   return (
@@ -191,8 +193,6 @@ useEffect(() => {
                     --font-sans:   'Inter', system-ui, sans-serif;
                     --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
                 }
-
-                @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
                 .ap-page {
                     font-family: var(--font-sans);

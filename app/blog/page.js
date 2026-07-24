@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import BlogListClient from "./blog";
-import { articles } from "@/app/data/article";
+import { articles as allArticles } from "@/app/data/article";
 
 export const metadata = {
   title: "Blog — Business, Fraud Awareness & Tech | Sir Brown AD",
@@ -43,7 +43,21 @@ export const metadata = {
   },
 };
 
+
+const getReadingTime = (content) =>
+  Math.max(1, Math.ceil((content || "").split(" ").length / 200));
+
 export default function BlogListPage() {
+
+  const sortedArticles = [...allArticles].sort(
+    (a, b) => (b.datePublished || "").localeCompare(a.datePublished || "")
+  );
+
+  const articlesForClient = sortedArticles.map(({ content, ...rest }) => ({
+    ...rest,
+    readingTime: getReadingTime(content),
+  }));
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Blog",
@@ -57,7 +71,7 @@ export default function BlogListPage() {
         url: "https://browncode.name.ng/logo.png",
       },
     },
-    blogPost: articles.slice(0, 20).map((article) => ({
+    blogPost: sortedArticles.slice(0, 20).map((article) => ({
       "@type": "BlogPosting",
       headline: article.title,
       url: `https://browncode.name.ng/blog/${article.slug}`,
@@ -77,7 +91,7 @@ export default function BlogListPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Suspense fallback={<div style={{ background: "#0a0a0b", minHeight: "100vh" }} />}>
-        <BlogListClient />
+        <BlogListClient articles={articlesForClient} />
       </Suspense>
     </>
   );

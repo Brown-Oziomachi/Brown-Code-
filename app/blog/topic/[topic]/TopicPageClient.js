@@ -1,15 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { notFound } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { articles } from "@/app/data/article";
-import { CATEGORIES, CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
-import { ArrowLeft, ArrowUpRight, ChevronDown } from "lucide-react";
+import { CATEGORIES } from "@/lib/blogCategories";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import Footer from "@/components/footer";
-
-const getReadingTime = (content) =>
-    Math.max(1, Math.ceil(content.split(" ").length / 200));
 
 const formatDate = (dateString) => {
     if (!dateString) return null;
@@ -21,10 +16,10 @@ const formatDate = (dateString) => {
 };
 
 const ArticleCard = ({ article, index }) => (
-
-   <a href = {`/blog/${article.slug}`}
-className = "bl-card"
-style = {{ animationDelay: `${index * 40}ms` }}
+    <a
+        href={`/blog/${article.slug}`}
+        className="bl-card"
+        style={{ animationDelay: `${index * 40}ms` }}
     >
         <div className="bl-card__img-wrap">
             {article.image ? (
@@ -39,25 +34,27 @@ style = {{ animationDelay: `${index * 40}ms` }}
             )}
         </div>
         <div className="bl-card__body">
-            <span className="bl-tag bl-tag--sm">
-                {CATEGORY_LABELS[getCategoryKey(article)]}
-            </span>
+            <span className="bl-tag bl-tag--sm">{article.categoryLabel}</span>
             <h3 className="bl-card__title">{article.title}</h3>
             <p className="bl-card__preview">{article.preview}</p>
             <div className="bl-meta bl-meta--sm">
                 <span className="bl-meta__author">{article.postedBy}</span>
                 <span className="bl-meta__dot" />
-                <span>{getReadingTime(article.content)} min read</span>
+                <span>{article.readingTime} min read</span>
                 <span className="bl-meta__dot" />
                 <span>{formatDate(article.datePublished)}</span>
             </div>
         </div>
-    </a >
+    </a>
 );
 
-export default function TopicPageClient({ topic }) {
+// `topic`, `label`, and the already-filtered, already-lightened `articles`
+// list all arrive as props from the server component (page.js) now. This
+// component no longer imports the full articles array or does the
+// getCategoryKey filtering itself — that was shipping every article's full
+// content into every topic page's bundle.
+export default function TopicPageClient({ topic, label, articles: topicArticles }) {
     const router = useRouter();
-    const label = CATEGORY_LABELS[topic];
 
     const [isSticky, setIsSticky] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -81,14 +78,6 @@ export default function TopicPageClient({ topic }) {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    if (!label) {
-        notFound();
-    }
-
-    const topicArticles = articles
-        .filter((a) => getCategoryKey(a) === topic)
-        .sort((a, b) => (b.datePublished || "").localeCompare(a.datePublished || ""));
-
     return (
         <>
             <style>{`
@@ -109,8 +98,6 @@ export default function TopicPageClient({ topic }) {
                     --font-sans:   'Inter', system-ui, sans-serif;
                     --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
                 }
-
-                @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
                 .bl-page { font-family: var(--font-sans); background: var(--bg); color: var(--text-1); min-height: 100vh; }
 
@@ -319,48 +306,48 @@ export default function TopicPageClient({ topic }) {
                         {isOpen && (
                             <div className="bl-cat-nav__dropdown">
                                 {CATEGORIES.map((cat) => (
-
-                                  <a  key = { cat.key }
-                                        href = {`/blog/topic/${cat.key}`}
-                                className={`bl-cat-nav__item ${cat.key === topic ? "bl-cat-nav__item--active" : ""}`}
-                                onClick={() => setIsOpen(false)}
+                                    <a
+                                        key={cat.key}
+                                        href={`/blog/topic/${cat.key}`}
+                                        className={`bl-cat-nav__item ${cat.key === topic ? "bl-cat-nav__item--active" : ""}`}
+                                        onClick={() => setIsOpen(false)}
                                     >
-                                {cat.label}
-                            </a>
-                        ))}
-                    </div>
+                                        {cat.label}
+                                    </a>
+                                ))}
+                            </div>
                         )}
+                    </div>
+
+                    {topicArticles.length === 0 ? (
+                        <div className="bl-empty">
+                            <span className="bl-empty__code">NO_ARTICLES</span>
+                            <p className="bl-empty__msg">Nothing published in {label} yet.</p>
+                        </div>
+                    ) : (
+                        <div className="bl-grid">
+                            {topicArticles.map((a, i) => (
+                                <ArticleCard key={a.slug} article={a} index={i} />
+                            ))}
+                        </div>
+                    )}
+
+                    <footer className="bl-footer">
+                        <span className="bl-footer__info">brown.dev — writing & insights</span>
+                        <div className="bl-footer__actions">
+                            <button className="bl-btn bl-btn--accent" onClick={() => router.push("/bc/contact")}>
+                                Get in touch
+                            </button>
+                            <button className="bl-btn" onClick={() => router.push("/blog")}>
+                                <ArrowLeft size={13} />
+                                All articles
+                            </button>
+                        </div>
+                    </footer>
+                </main>
             </div>
 
-            {topicArticles.length === 0 ? (
-                <div className="bl-empty">
-                    <span className="bl-empty__code">NO_ARTICLES</span>
-                    <p className="bl-empty__msg">Nothing published in {label} yet.</p>
-                </div>
-            ) : (
-                <div className="bl-grid">
-                    {topicArticles.map((a, i) => (
-                        <ArticleCard key={a.slug} article={a} index={i} />
-                    ))}
-                </div>
-            )}
-
-            <footer className="bl-footer">
-                <span className="bl-footer__info">brown.dev — writing & insights</span>
-                <div className="bl-footer__actions">
-                    <button className="bl-btn bl-btn--accent" onClick={() => router.push("/bc/contact")}>
-                        Get in touch
-                    </button>
-                    <button className="bl-btn" onClick={() => router.push("/blog")}>
-                        <ArrowLeft size={13} />
-                        All articles
-                    </button>
-                </div>
-            </footer>
-        </main >
-            </div >
-
-        <Footer />
+            <Footer />
         </>
     );
 }

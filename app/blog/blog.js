@@ -1,15 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { sortedArticles as articles } from "../data/article";
 import { ArrowLeft, ArrowUpRight, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import Footer from "@/components/footer";
 import { CATEGORIES, CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
-const getReadingTime = (content) =>
-    Math.max(1, Math.ceil(content.split(" ").length / 200));
+// readingTime now arrives precomputed from the server (see app/blog/page.js),
+// so we no longer need to split article.content on the client — that field
+// isn't even sent down anymore.
 
 const formatDate = (dateString) => {
     if (!dateString) return null;
@@ -48,7 +48,7 @@ const FeaturedHero = ({ article }) => (
             <p className="bl-hero-card__preview">{article.preview}</p>
             <div className="bl-meta">
                 <span className="bl-meta__author">{article.postedBy}</span>
-                <span>{getReadingTime(article.content)} min read</span>
+                <span>{article.readingTime} min read</span>
                 <span className="bl-meta__dot" />
                 {formatDate(article.datePublished) && ` ${formatDate(article.datePublished)}`}
             </div>
@@ -81,7 +81,7 @@ const SideFeaturedItem = ({ article, index }) => (
             </span>
             <h3 className="bl-side-item__title">{article.title}</h3>
             <span className="bl-side-item__meta">
-                {getReadingTime(article.content)} min read
+                {article.readingTime} min read
                 {formatDate(article.datePublished) && ` ${formatDate(article.datePublished)}`}
             </span>
         </div>
@@ -95,7 +95,7 @@ const PopularItem = ({ article, index }) => (
         <div className="bl-popular-item__body">
             <h4 className="bl-popular-item__title">{article.title}</h4>
             <span className="bl-popular-item__meta">
-                {CATEGORY_LABELS[getCategoryKey(article)]} · {getReadingTime(article.content)} min
+                {CATEGORY_LABELS[getCategoryKey(article)]} · {article.readingTime} min
                 {formatDate(article.datePublished) && ` · ${formatDate(article.datePublished)}`}
 
             </span>
@@ -131,7 +131,7 @@ const ArticleCard = ({ article, index }) => (
             <div className="bl-meta bl-meta--sm">
                 <span className="bl-meta__author">{article.postedBy}</span>
                 <span className="bl-meta__dot" />
-                <span>{getReadingTime(article.content)} min read</span>
+                <span>{article.readingTime} min read</span>
                 {formatDate(article.datePublished) && (
                     <>
                         <span className="bl-meta__dot" />
@@ -143,8 +143,7 @@ const ArticleCard = ({ article, index }) => (
     </a >
 );
 
-// ─── page ────────────────────────────────────────────────────────────────────
-export default function BlogListClient() {
+export default function BlogListClient({ articles }) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredArticles, setFilteredArticles] = useState(articles);
@@ -154,18 +153,18 @@ export default function BlogListClient() {
             let result = articles;
             if (searchTerm.trim()) {
                 const q = searchTerm.toLowerCase();
+            
                 result = result.filter(
                     (a) =>
                         a.title.toLowerCase().includes(q) ||
                         a.preview?.toLowerCase().includes(q) ||
-                        a.content.toLowerCase().includes(q) ||
                         a.postedBy.toLowerCase().includes(q)
                 );
             }
             setFilteredArticles(result);
         }, 250);
         return () => clearTimeout(id);
-    }, [searchTerm]);
+    }, [searchTerm, articles]);
 
     const heroArticle = filteredArticles[0];
     const sideArticles = filteredArticles.slice(1, 4);
@@ -200,8 +199,6 @@ export default function BlogListClient() {
                     --font-sans:   'Inter', system-ui, sans-serif;
                     --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
                 }
-
-                @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
                 .bl-page { font-family: var(--font-sans); background: var(--bg); color: var(--text-1); min-height: 100vh; }
 
@@ -418,7 +415,7 @@ export default function BlogListClient() {
                     <div className="bl-toolbar">
                         <nav className="bl-cat-nav">
                             {CATEGORIES.map((cat) => (
-                                <a key={cat.key} href={`#${cat.key}`} className="bl-cat-nav__link">
+                                <a key={cat.key} href={`/blog/topic/${cat.key}`} className="bl-cat-nav__link">
                                     {cat.label}
                                 </a>
                             ))}
