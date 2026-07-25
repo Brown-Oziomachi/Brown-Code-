@@ -122,7 +122,7 @@ export default function TableOfContents({ content }) {
                     transition: color 0.15s;
                     padding: 0;
                 }
-                .toc-item:hover { color: var(--text-1); }
+                .toc-item:hover { color: var(--accent); }
                 .toc-item--active {
                     font-weight: 500;
                 }

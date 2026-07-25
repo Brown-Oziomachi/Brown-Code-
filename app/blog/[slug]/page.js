@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { articles } from "@/app/data/article";
 import ArticleClient from "./slug";
 import { articlesMeta } from "@/app/data/articlesMeta";
+import { getCategoryKey } from "@/lib/blogCategories";
 
 export async function generateStaticParams() {
   return articles.map((article) => ({
@@ -74,10 +75,32 @@ export default async function ArticlePage({ params }) {
   const { slug } = await params;
   const article = articles.find((a) => a.slug === slug);
 
-  // Resolve the 404 case here on the server instead of passing an empty
-  // article down to the client and letting it call notFound() after mount.
   if (!article) {
     notFound();
+  }
+
+  // Related articles for the inline "Also Read" box. Same category first,
+  // newest-first. If the category doesn't have enough other entries, top up
+  // with the most recent articles overall so the box is never sparse.
+  // Only slug + title are sent down — no need for full article objects here.
+  const currentCategory = getCategoryKey(article);
+  const sameCategory = articles
+    .filter((a) => a.slug !== article.slug && getCategoryKey(a) === currentCategory)
+    .sort((a, b) => (b.datePublished || "").localeCompare(a.datePublished || ""));
+
+  const relatedArticles = sameCategory.slice(0, 3).map((a) => ({
+    slug: a.slug,
+    title: a.title,
+  }));
+
+  if (relatedArticles.length < 3) {
+    const usedSlugs = new Set([article.slug, ...relatedArticles.map((r) => r.slug)]);
+    const fallback = articles
+      .filter((a) => !usedSlugs.has(a.slug))
+      .sort((a, b) => (b.datePublished || "").localeCompare(a.datePublished || ""))
+      .slice(0, 3 - relatedArticles.length)
+      .map((a) => ({ slug: a.slug, title: a.title }));
+    relatedArticles.push(...fallback);
   }
 
   const canonicalUrl = `https://browncode.name.ng/blog/${slug}`;
@@ -116,13 +139,7 @@ export default async function ArticlePage({ params }) {
       <Suspense
         fallback={<div style={{ background: "#0a0a0b", minHeight: "100vh" }} />}
       >
-        {/*
-          Only the ONE resolved article object is passed down — not the
-          whole `articles` array. This is the key change: ArticleClient no
-          longer imports `articles` itself, so every other article's full
-          content never gets bundled into this page's client JS.
-        */}
-        <ArticleClient article={article} />
+        <ArticleClient article={article} relatedArticles={relatedArticles} />
       </Suspense>
     </>
   );

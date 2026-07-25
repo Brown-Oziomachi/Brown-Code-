@@ -19,6 +19,8 @@ import {
 import { Heart } from "lucide-react";
 import { db1 } from "@/config/firebase.config1";
 import TableOfContents from "@/components/TableOfContents";
+import AlsoRead from "@/components/AlsoRead";
+import NewsletterCapture from "@/components/NewsletterCapture";
 import { CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
@@ -75,7 +77,7 @@ const ShareSidebar = ({ onShare }) => (
 // app/blog/[slug]/page.js. This component no longer imports the full
 // `articles` array or does its own slug lookup — that import was the thing
 // bundling every OTHER article's content into this page's client JS too.
-export default function ArticleClient({ article }) {
+export default function ArticleClient({ article, relatedArticles = [] }) {
   const router = useRouter();
   const [comments, setComments] = useState([]);
   const [likeCount, setLikeCount] = useState(0);
@@ -959,11 +961,11 @@ export default function ArticleClient({ article }) {
 
           {/* Article + comments + author */}
           <div className="ap-article-body">
-          <div className="ap-toc-mobile">
-            <TableOfContents content={article.content} />
-          </div>
-            {article.content.split("\n\n").map((para, i) => {
-              const trimmed = para.trim();
+            <div className="ap-toc-mobile">
+              <TableOfContents content={article.content} />
+            </div>
+            {(() => {
+              const paragraphs = article.content.split("\n\n");
 
               // Helper function to turn markdown links [text](url) into actual clickable <a> tags
               const renderInlineElements = (text) => {
@@ -1000,92 +1002,114 @@ export default function ArticleClient({ article }) {
                 return parts.length > 0 ? parts : text;
               };
 
-              // NEW: Check for Markdown Images: ![Alt Text](URL)
-              if (trimmed.startsWith("![") && trimmed.endsWith(")")) {
-                const match = trimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
-                if (match) {
-                  const altText = match[1];
-                  const imageUrl = match[2];
+              const elements = paragraphs.map((para, i) => {
+                const trimmed = para.trim();
+
+                // Check for Markdown Images: ![Alt Text](URL)
+                if (trimmed.startsWith("![") && trimmed.endsWith(")")) {
+                  const match = trimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
+                  if (match) {
+                    const altText = match[1];
+                    const imageUrl = match[2];
+                    return (
+                      <div key={i} className="ap-article__image-container" style={{ margin: '24px 0' }}>
+                        <img
+                          src={imageUrl}
+                          alt={altText}
+                          className="ap-article__body-image"
+                          style={{ width: '100%', height: 'auto', }}
+                        />
+                        {altText && <span className="ap-article__image-caption" style={{ display: 'block', fontSize: '14px', color: '#6b7280', marginTop: '8px', textAlign: 'center' }}>{altText}</span>}
+                      </div>
+                    );
+                  }
+                }
+
+                // Section Headings
+                if (trimmed.startsWith("###")) {
+                  const headingText = trimmed.replace(/^###/, "").trim();
+                  const headingId = headingText
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^\w\s-]/g, "")
+                    .replace(/\s+/g, "-");
                   return (
-                    <div key={i} className="ap-article__image-container" style={{ margin: '24px 0' }}>
-                      <img
-                        src={imageUrl}
-                        alt={altText}
-                        className="ap-article__body-image"
-                        style={{ width: '100%', height: 'auto',}}
-                      />
-                      {altText && <span className="ap-article__image-caption" style={{ display: 'block', fontSize: '14px', color: '#6b7280', marginTop: '8px', textAlign: 'center' }}>{altText}</span>}
+                    <h2 key={i} id={headingId} className="ap-article__section-heading">
+                      <CornerDownRight size={15} />
+                      {renderInlineElements(headingText)}
+                    </h2>
+                  );
+                }
+
+                // Numbered list item
+                if (/^\d+\.\s/.test(trimmed)) {
+                  return (
+                    <div key={i} className="ap-article__list-item">
+                      <span className="ap-article__list-number">
+                        {trimmed.match(/^(\d+)\./)[1]}
+                      </span>
+                      <p className="ap-article__list-text">
+                        {renderInlineElements(trimmed.replace(/^\d+\.\s/, ""))}
+                      </p>
                     </div>
                   );
                 }
-              }
 
-              // Section Headings
-              // Section Headings
-              if (trimmed.startsWith("###")) {
-                const headingText = trimmed.replace(/^###/, "").trim();
-                const headingId = headingText
-                  .toLowerCase()
-                  .trim()
-                  .replace(/[^\w\s-]/g, "")
-                  .replace(/\s+/g, "-");
+                // Bullet item
+                if (trimmed.startsWith("- ")) {
+                  return (
+                    <div key={i} className="ap-article__bullet-item">
+                      <span className="ap-article__bullet-dot" />
+                      <p className="ap-article__bullet-text">
+                        {renderInlineElements(trimmed.replace(/^-\s/, ""))}
+                      </p>
+                    </div>
+                  );
+                }
+
+                // Blockquote
+                if (trimmed.startsWith(">")) {
+                  return (
+                    <blockquote key={i} className="ap-article__quote">
+                      {renderInlineElements(trimmed.replace(/^>\s?/, ""))}
+                    </blockquote>
+                  );
+                }
+
+                // Short bold-style callout
+                if (trimmed === trimmed.toUpperCase() && trimmed.length > 3 && trimmed.length < 80) {
+                  return (
+                    <p key={i} className="ap-article__callout">{renderInlineElements(trimmed)}</p>
+                  );
+                }
+
+                // Default Paragraph
                 return (
-                  <h2 key={i} id={headingId} className="ap-article__section-heading">
-                    <CornerDownRight size={15} />
-                    {renderInlineElements(headingText)}
-                  </h2>
+                  <p key={i} className="ap-article__paragraph">
+                    {renderInlineElements(trimmed)}
+                  </p>
                 );
+              });
+
+              // Insert the "Also Read" box roughly a third of the way
+              // through the article, clamped so short articles don't
+              // try to insert past the end.
+              if (relatedArticles.length > 0) {
+                const insertAt = Math.min(
+                  Math.max(3, Math.floor(elements.length / 3)),
+                  elements.length
+                );
+                elements.splice(insertAt, 0, <AlsoRead key="also-read" items={relatedArticles} />);
               }
 
-              // Numbered list item
-              if (/^\d+\.\s/.test(trimmed)) {
-                return (
-                  <div key={i} className="ap-article__list-item">
-                    <span className="ap-article__list-number">
-                      {trimmed.match(/^(\d+)\./)[1]}
-                    </span>
-                    <p className="ap-article__list-text">
-                      {renderInlineElements(trimmed.replace(/^\d+\.\s/, ""))}
-                    </p>
-                  </div>
-                );
-              }
+              return elements;
+            })()}
 
-              // Bullet item
-              if (trimmed.startsWith("- ")) {
-                return (
-                  <div key={i} className="ap-article__bullet-item">
-                    <span className="ap-article__bullet-dot" />
-                    <p className="ap-article__bullet-text">
-                      {renderInlineElements(trimmed.replace(/^-\s/, ""))}
-                    </p>
-                  </div>
-                );
-              }
-
-              // Blockquote
-              if (trimmed.startsWith(">")) {
-                return (
-                  <blockquote key={i} className="ap-article__quote">
-                    {renderInlineElements(trimmed.replace(/^>\s?/, ""))}
-                  </blockquote>
-                );
-              }
-
-              // Short bold-style callout
-              if (trimmed === trimmed.toUpperCase() && trimmed.length > 3 && trimmed.length < 80) {
-                return (
-                  <p key={i} className="ap-article__callout">{renderInlineElements(trimmed)}</p>
-                );
-              }
-
-              // Default Paragraph
-              return (
-                <p key={i} className="ap-article__paragraph">
-                  {renderInlineElements(trimmed)}
-                </p>
-              );
-            })}
+            <NewsletterCapture
+              categoryKey={getCategoryKey(article)}
+              categoryLabel={CATEGORY_LABELS[getCategoryKey(article)]}
+              articleSlug={article.slug}
+            />
 
             {/* Mobile share */}
             <div className="ap-share-mobile">
@@ -1114,70 +1138,70 @@ export default function ArticleClient({ article }) {
                     <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
                       This article was sponsored and contributed by{" "}
 
-                    <a  href={article.companyLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-neutral-900 dark:text-neutral-100 underline font-semibold hover:underline decoration-neutral-400"
-          >
-                      {article.companyName}
-                    </a>
-                    . Published via{" "}
+                      <a href={article.companyLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-neutral-900 dark:text-neutral-100 underline font-semibold hover:underline decoration-neutral-400"
+                      >
+                        {article.companyName}
+                      </a>
+                      . Published via{" "}
 
-                <a    href="https://browncode.name.ng/blog"
+                      <a href="https://browncode.name.ng/blog"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-neutral-950 dark:text-neutral-50 underline font-medium hover:underline"
+                      >
+                        <span className="ap-nav__brand">
+                          brown<em>.</em>dev
+                        </span>
+                      </a>.
+                    </p>
+                  </div>
+
+
+                  <a href="/google_index/advertise"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-neutral-950 dark:text-neutral-50 underline font-medium hover:underline"
-          >
-                    <span className="ap-nav__brand">
-                      brown<em>.</em>dev
-                    </span>
-                  </a>.
-                </p>
-      </div>
+                    className="inline-flex items-center justify-center shrink-0 gap-2 px-4 py-2 text-sm font-medium text-neutral-900 bg-white border border-neutral-300 shadow-sm hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700 transition-all duration-200 group"
+                  >
+                    <span>Advertise with us</span>
+                    <ArrowRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-transform group-hover:translate-x-0.5" />
+                  </a>
+                </div>
+              ) : (
+                // Standard Publication Footer
+                <div className="text-center">
+                  <span className="text-sm">
+                    This article was originally written and published by{" "}
 
+                    <a href={shareUrl(article.slug)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-neutral-800 underline dark:text-neutral-200 hover:underline"
+                    >
+                      <span className="ap-nav__brand">
+                        brown<em>.</em>dev
+                      </span>
+                    </a>
+                  </span>
+                  <span className="text-xs">
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400 italic">
 
-        <a  href="/google_index/advertise"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center justify-center shrink-0 gap-2 px-4 py-2 text-sm font-medium text-neutral-900 bg-white border border-neutral-300 shadow-sm hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700 transition-all duration-200 group"
-      >
-          <span>Advertise with us</span>
-          <ArrowRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-transform group-hover:translate-x-0.5" />
-        </a>
-      </div>
-      ) : (
-      // Standard Publication Footer
-      <div className="text-center">
-        <span className="text-sm">
-          This article was originally written and published by{" "}
-
-            <a href={shareUrl(article.slug)}  
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-neutral-800 underline dark:text-neutral-200 hover:underline"
-            >
-          <span className="ap-nav__brand">
-            brown<em>.</em>dev
-          </span>
-        </a>
-      </span>
-      <span className="text-xs">
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 italic">
-
-         <a href="/google_index/advertise"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center justify-center shrink-0 gap-2 px-4 py-2 text-sm font-medium text-neutral-900 bg-white border border-neutral-300 shadow-sm hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700 transition-all duration-200 group"
-          >
-          <span className="text-xs">Advertise with us</span>
-          <ArrowRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-transform group-hover:translate-x-0.5" />
-        </a>
-      </p>
-    </span >
-    </div >
-  )
-}
-</footer >
+                      <a href="/google_index/advertise"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center shrink-0 gap-2 px-4 py-2 text-sm font-medium text-neutral-900 bg-white border border-neutral-300 shadow-sm hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700 transition-all duration-200 group"
+                      >
+                        <span className="text-xs">Advertise with us</span>
+                        <ArrowRight className="w-4 h-4 text-neutral-500 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-transform group-hover:translate-x-0.5" />
+                      </a>
+                    </p>
+                  </span >
+                </div >
+              )
+              }
+            </footer >
 
             {/* Author card */}
             <div className="ap-author-card">
@@ -1192,18 +1216,18 @@ export default function ArticleClient({ article }) {
                   Full-stack developer building performant, scalable digital products. Specialized in React architecture, custom web engines, and secure data infrastructure.
                 </p>
                 <div className="flex gap-4">
-                <a href="https://cal.com/sir-brown" className="ap-author-card__link" style={{ display: "inline-flex" }}>
-                  Meet With Me <ArrowRight size={12} />
-                </a><br/> <br/>
-                <Link href="/bc/about" className="ap-author-card__link">
-                  Full profile <ArrowRight size={12} />
-                </Link> 
+                  <a href="https://cal.com/sir-brown" className="ap-author-card__link" style={{ display: "inline-flex" }}>
+                    Meet With Me <ArrowRight size={12} />
+                  </a><br /> <br />
+                  <Link href="/bc/about" className="ap-author-card__link">
+                    Full profile <ArrowRight size={12} />
+                  </Link>
                 </div>
               </div>
               <div className="ap-author-card__socials">
-              <span className="ft-col-label" style={{ textAlign: "right", display: "block", marginBottom: "12px" }}>
-                Connect
-              </span>
+                <span className="ft-col-label" style={{ textAlign: "right", display: "block", marginBottom: "12px" }}>
+                  Connect
+                </span>
                 <a href="https://www.linkedin.com/in/brownoziomachi72a5a3229" target="_blank" rel="noopener noreferrer" className="ap-social-btn" title="LinkedIn">
                   <Linkedin size={15} />
                 </a>
