@@ -40,6 +40,19 @@ export const articlesMeta = {
             "Sir Brown AD",
         ],
     },
+    "origin-of-fraud-in-nigeria-history-and-platforms": {
+        category: "finance",
+        metaTitle: "The Origin of Fraud in Nigeria: A Full History | Sir Brown AD",
+        metaDescription: "Trace Nigerian fraud from the 1920s Spanish Prisoner con and 1980s letter scams to today's WhatsApp, dating app, and crypto fraud — and learn to spot it.",
+        keywords: [
+            "origin of fraud in Nigeria",
+            "history of 419 scam Nigeria",
+            "Yahoo Boys history Nigeria",
+            "Nigerian prince scam history",
+            "how 419 scam started",
+            "Sir Brown AD",
+        ],
+    },
     "stop-waiting-destiny-helper-nigerian-youth-mindset": {
         category: "growth",
         metaTitle: "Stop Waiting for a Destiny Helper — Nobody Is Coming to Save You",
