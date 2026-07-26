@@ -1,15 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowUpRight, Search, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Search, X, Mail } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import Footer from "@/components/footer";
 import { CATEGORIES, CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
 
+const ITEMS_PER_PAGE = 9;
+
 // ─── helpers ────────────────────────────────────────────────────────────────
-// readingTime now arrives precomputed from the server (see app/blog/page.js),
-// so we no longer need to split article.content on the client — that field
-// isn't even sent down anymore.
 
 const formatDate = (dateString) => {
     if (!dateString) return null;
@@ -22,7 +21,6 @@ const formatDate = (dateString) => {
 
 // ─── sub-components ─────────────────────────────────────────────────────────
 
-/** Big hero card — top "Editor picks" slot */
 const FeaturedHero = ({ article }) => (
     <a href={`/blog/${article.slug}`} className="bl-hero-card">
         <div className="bl-hero-card__img-wrap">
@@ -59,7 +57,6 @@ const FeaturedHero = ({ article }) => (
     </a>
 );
 
-/** Numbered sidebar row next to the hero — "01 / 02 / 03" list */
 const SideFeaturedItem = ({ article, index }) => (
     <a href={`/blog/${article.slug}`} className="bl-side-item">
         <span className="bl-side-item__num">{String(index).padStart(2, "0")}</span>
@@ -88,7 +85,6 @@ const SideFeaturedItem = ({ article, index }) => (
     </a>
 );
 
-/** "Popular this month" numbered grid item — no thumbnail */
 const PopularItem = ({ article, index }) => (
     <a href={`/blog/${article.slug}`} className="bl-popular-item">
         <span className="bl-popular-item__num">{String(index).padStart(2, "0")}</span>
@@ -97,18 +93,16 @@ const PopularItem = ({ article, index }) => (
             <span className="bl-popular-item__meta">
                 {CATEGORY_LABELS[getCategoryKey(article)]} · {article.readingTime} min
                 {formatDate(article.datePublished) && ` · ${formatDate(article.datePublished)}`}
-
             </span>
         </div>
     </a>
 );
 
-/** Standard card used inside category sections */
 const ArticleCard = ({ article, index }) => (
 
-    <a href={`/blog/${article.slug}`}
-        className="bl-card"
-        style={{ animationDelay: `${index * 40}ms` }}
+  <a  href = {`/blog/${article.slug}`}
+className = "bl-card"
+style = {{ animationDelay: `${index * 40}ms` }}
     >
         <div className="bl-card__img-wrap">
             {article.image ? (
@@ -143,17 +137,83 @@ const ArticleCard = ({ article, index }) => (
     </a >
 );
 
+/** Numbered pagination — matches: [1] 2 3 4 5 6 Next → */
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+    if (totalPages <= 1) return null;
+
+    const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+    return (
+        <nav className="bl-pagination" aria-label="Article pages">
+            {pages.map((page) => (
+                <button
+                    key={page}
+                    className={`bl-page-btn ${page === currentPage ? "bl-page-btn--active" : ""}`}
+                    onClick={() => onPageChange(page)}
+                    aria-current={page === currentPage ? "page" : undefined}
+                >
+                    {page}
+                </button>
+            ))}
+            {currentPage < totalPages && (
+                <button
+                    className="bl-page-btn bl-page-btn--next"
+                    onClick={() => onPageChange(currentPage + 1)}
+                >
+                    Next <ArrowRight size={13} />
+                </button>
+            )}
+        </nav>
+    );
+};
+
+/** Desktop-only sticky sidebar — About + Contact */
+const Sidebar = () => {
+    const router = useRouter();
+    return (
+        <aside className="bl-sidebar">
+            <div className="bl-sidebar__card">
+                <p className="bl-sidebar__eyebrow">About</p>
+                <h3 className="bl-sidebar__title">Sir Brown AD</h3>
+                <p className="bl-sidebar__text">
+                    Full-stack developer building web platforms and writing about
+                    fraud awareness, fintech security, and software engineering.
+                </p>
+                <a href="/bc/about" className="bl-btn" style={{ width: "100%", justifyContent: "center" }}>
+                    About me
+                </a>
+            </div>
+            <div className="bl-sidebar__card">
+                <p className="bl-sidebar__eyebrow">Get in touch</p>
+                <h3 className="bl-sidebar__title">Have a project?</h3>
+                <p className="bl-sidebar__text">
+                    Open to freelance work, collaborations, and questions about
+                    anything I&apos;ve written here.
+                </p>
+                <button
+                    className="bl-btn bl-btn--accent"
+                    style={{ width: "100%", justifyContent: "center" }}
+                    onClick={() => router.push("/bc/contact")}
+                >
+                    <Mail size={13} />
+                    Contact me
+                </button>
+            </div>
+        </aside>
+    );
+};
+
 export default function BlogListClient({ articles }) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredArticles, setFilteredArticles] = useState(articles);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         const id = setTimeout(() => {
             let result = articles;
             if (searchTerm.trim()) {
                 const q = searchTerm.toLowerCase();
-            
                 result = result.filter(
                     (a) =>
                         a.title.toLowerCase().includes(q) ||
@@ -162,6 +222,7 @@ export default function BlogListClient({ articles }) {
                 );
             }
             setFilteredArticles(result);
+            setCurrentPage(1);
         }, 250);
         return () => clearTimeout(id);
     }, [searchTerm, articles]);
@@ -174,10 +235,16 @@ export default function BlogListClient({ articles }) {
     );
     const remainingArticles = filteredArticles.filter((a) => !restSlugs.has(a.slug));
 
-    const groupedArticles = CATEGORIES.reduce((acc, cat) => {
-        acc[cat.key] = remainingArticles.filter((a) => getCategoryKey(a) === cat.key);
-        return acc;
-    }, {});
+    const totalPages = Math.max(1, Math.ceil(remainingArticles.length / ITEMS_PER_PAGE));
+    const paginatedArticles = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return remainingArticles.slice(start, start + ITEMS_PER_PAGE);
+    }, [remainingArticles, currentPage]);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        document.getElementById("bl-all-articles")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
 
     return (
         <>
@@ -265,8 +332,6 @@ export default function BlogListClient({ articles }) {
                     color: var(--accent); display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
                 }
                 .bl-section-label::before { content: '—'; }
-                .bl-section-label__link { color: inherit; text-decoration: none; }
-                .bl-section-label__link:hover { text-decoration: underline; }
 
                 /* ── Tags / meta ── */
                 .bl-tag {
@@ -330,26 +395,22 @@ export default function BlogListClient({ articles }) {
                 /* ── Popular this month ── */
                 .bl-popular-section { margin-bottom: 64px; }
                 .bl-popular-title { font-family: var(--font-serif); font-size: clamp(24px, 3vw, 32px); font-weight: 400; color: var(--text-1); margin-bottom: 22px; }
-                    .bl-popular-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    column-gap: 40px;
-                    }               
-                    .bl-popular-item {
-                    display: flex; gap: 14px; align-items: flex-start; text-decoration: none;
-                    padding: 16px 0; border-bottom: 1px solid var(--border);
-                    transition: opacity 0.15s;
-                }
+                .bl-popular-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
+                .bl-popular-item { display: flex; gap: 14px; align-items: flex-start; text-decoration: none; padding: 16px 0; border-bottom: 1px solid var(--border); transition: opacity 0.15s; }
                 .bl-popular-item:hover { opacity: 0.8; }
                 .bl-popular-item__num { font-family: var(--font-mono); font-size: 22px; font-weight: 600; color: var(--accent); opacity: 0.4; flex-shrink: 0; line-height: 1; }
                 .bl-popular-item__title { font-family: var(--font-sans); font-weight: 600; font-size: 14px; line-height: 1.4; color: var(--text-1); margin-bottom: 4px; }
                 .bl-popular-item__meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
                 @media (max-width: 700px) { .bl-popular-grid { grid-template-columns: 1fr; } }
 
-                /* ── Category sections ── */
-                .bl-cat-section { margin-bottom: 48px; scroll-margin-top: 80px; }
+                /* ── All articles + sidebar layout ── */
+                .bl-content-row { display: grid; grid-template-columns: 1fr 280px; gap: 40px; align-items: start; }
+                @media (max-width: 900px) { .bl-content-row { grid-template-columns: 1fr; } }
+
+                .bl-all-title { font-family: var(--font-serif); font-size: clamp(24px, 3vw, 32px); font-weight: 400; color: var(--text-1); margin-bottom: 22px; }
 
                 .bl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+                @media (max-width: 1100px) and (min-width: 901px) { .bl-grid { grid-template-columns: 1fr 1fr; } }
                 @media (max-width: 900px) { .bl-grid { grid-template-columns: 1fr 1fr; } }
                 @media (max-width: 600px) { .bl-grid { grid-template-columns: 1fr; } }
 
@@ -366,6 +427,29 @@ export default function BlogListClient({ articles }) {
                 .bl-card__title { font-family: var(--font-serif); font-size: 17px; font-weight: 400; line-height: 1.3; color: var(--text-1); transition: color 0.15s; }
                 .bl-card:hover .bl-card__title { color: #fff; }
                 .bl-card__preview { font-size: 12px; color: var(--text-2); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+                /* ── Pagination ── */
+                .bl-pagination { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 28px; }
+                .bl-page-btn {
+                    min-width: 36px; height: 36px; padding: 0 10px;
+                    border-radius: 999px; border: 1px solid var(--border);
+                    background: var(--surface); color: var(--text-2);
+                    font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+                    cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+                    transition: color 0.15s, border-color 0.15s, background 0.15s;
+                }
+                .bl-page-btn:hover { color: var(--text-1); border-color: var(--border-hi); }
+                .bl-page-btn--active { background: var(--accent); border-color: var(--accent); color: #0a0a0b; font-weight: 700; }
+                .bl-page-btn--active:hover { color: #0a0a0b; }
+                .bl-page-btn--next { width: auto; padding: 0 16px; border-radius: 999px; }
+
+                /* ── Sidebar (desktop only) ── */
+                .bl-sidebar { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 80px; }
+                .bl-sidebar__card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+                .bl-sidebar__eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+                .bl-sidebar__title { font-family: var(--font-serif); font-size: 19px; font-weight: 400; color: var(--text-1); }
+                .bl-sidebar__text { font-size: 12.5px; color: var(--text-2); line-height: 1.6; margin-bottom: 6px; }
+                @media (max-width: 900px) { .bl-sidebar { display: none; } }
 
                 /* ── Empty state ── */
                 .bl-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 80px 0; text-align: center; }
@@ -397,7 +481,7 @@ export default function BlogListClient({ articles }) {
                     <a href="/" className="bl-nav__brand">brown<em>.</em>dev</a>
                     <a href="/portfolio" className="bl-nav__back">
                         <ArrowLeft size={13} />
-                        Portfolio   
+                        Portfolio
                     </a>
                 </nav>
 
@@ -483,24 +567,25 @@ export default function BlogListClient({ articles }) {
                                 </section>
                             )}
 
-                            {CATEGORIES.map((cat) => {
-                                const arts = groupedArticles[cat.key];
-                                if (!arts || arts.length === 0) return null;
-                                return (
-                                    <section key={cat.key} id={cat.key} className="bl-cat-section">
-                                        <p className="bl-section-label">
-                                            <a href={`/blog/topic/${cat.key}`} className="bl-section-label__link">
-                                                {cat.label}
-                                            </a>
-                                        </p>
-                                        <div className="bl-grid" style={{ marginTop: 14 }}>
-                                            {arts.map((a, i) => (
+                            {remainingArticles.length > 0 && (
+                                <section id="bl-all-articles" className="bl-content-row">
+                                    <div>
+                                        <p className="bl-section-label">Browse</p>
+                                        <h2 className="bl-all-title">All articles</h2>
+                                        <div className="bl-grid">
+                                            {paginatedArticles.map((a, i) => (
                                                 <ArticleCard key={a.slug} article={a} index={i} />
                                             ))}
                                         </div>
-                                    </section>
-                                );
-                            })}
+                                        <Pagination
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            onPageChange={handlePageChange}
+                                        />
+                                    </div>
+                                    <Sidebar />
+                                </section>
+                            )}
                         </>
                     )}
 

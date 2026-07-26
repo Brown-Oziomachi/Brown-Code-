@@ -56,7 +56,7 @@ const adPackages = [
 ];
 
 const stats = [
-    { label: "Google Indexed", value: "80+", desc: "Pages live on Google" },
+    { label: "Google Indexed", value: "115+", desc: "Blog live on Google" },
     { label: "Search Engines", value: "3", desc: "Google · Bing · Yandex" },
     { label: "Campaign Options", value: "3", desc: "1, 3, or 6 months" },
 ];
@@ -66,21 +66,21 @@ const engines = [
         name: "Google",
         status: "Indexed",
         statusType: "live",
-        desc: "80+ pages crawled and ranking in search results",
+        desc: "115+ pages crawled and ranking in search results",
         detail: "Sitemap submitted · generateMetadata active · Search Console verified",
     },
     {
         name: "Bing",
         status: "Indexing",
         statusType: "live",
-        desc: "80 URLs discovered via IndexNow",
+        desc: "100 URLs discovered via IndexNow",
         detail: "IndexNow active · Webmaster Tools verified · Crawling in progress",
     },
     {
         name: "Yandex",
         status: "Indexed",
         statusType: "live",
-        desc: "90+ pages crawled and ranking in Yandex search results",
+        desc: "100+ pages crawled and ranking in Yandex search results",
         detail: "Verified · Sitemap accepted · 1–2 week processing window",
     },
 ];
@@ -89,7 +89,7 @@ const benefits = [
     {
         icon: <Search size={16} />,
         title: "Multi-Engine Indexed",
-        desc: "Your article is published on a domain with 80+ indexed pages across Google, Bing, and Yandex — giving it an immediate trust signal with all major search engines.",
+        desc: "Your article is published on a domain with 115+ indexed pages across Google, Bing, and Yandex — giving it an immediate trust signal with all major search engines.",
     },
     {
         icon: <FileText size={16} />,
