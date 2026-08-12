@@ -131,6 +131,9 @@ export default function PrivacyPolicy() {
                 }
                 .pp-list strong { font-family: var(--font-mono); font-size: 11px; color: var(--accent); }
 
+                .pp-link { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+                .pp-link:hover { opacity: 0.85; }
+
                 .pp-footer-row {
                     display: flex; align-items: center; justify-content: space-between;
                     flex-wrap: wrap; gap: 12px;
@@ -220,6 +223,22 @@ export default function PrivacyPolicy() {
 
                         <div className="pp-section">
                             <p className="pp-section__num">[05]</p>
+                            <h2 className="pp-section__title">Advertising &amp; cookies</h2>
+                            <div className="pp-section__body">
+                                <p>
+                                    This site displays advertising served by Google AdSense. Google and its advertising partners use cookies — including the DoubleClick cookie — to serve ads based on your prior visits to this and other websites. Google's use of advertising cookies enables it and its partners to serve ads to you based on your visit to this site and/or other sites on the Internet.
+                                </p>
+                                <p>
+                                    You can opt out of personalised advertising by visiting <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" className="pp-link">Google Ads Settings</a>. Alternatively, you can opt out of a third-party vendor's use of cookies for personalised advertising by visiting <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" className="pp-link">www.aboutads.info</a>.
+                                </p>
+                                <p>
+                                    This site does not run any other third-party ad networks alongside Google AdSense.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="pp-section">
+                            <p className="pp-section__num">[06]</p>
                             <h2 className="pp-section__title">Your rights</h2>
                             <div className="pp-section__body">
                                 <p>

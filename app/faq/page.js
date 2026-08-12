@@ -6,8 +6,8 @@ import Footer from "@/components/footer";
 
 const faqs = [
     {
-        question: "Who is Brown Oziomachi?",
-        answer: "Brown Oziomachi is a professional Full-Stack Software Developer based in Nigeria. Operating through browncode.name.ng, he specialises in writing clean code to build fast, modern, and highly responsive web applications and websites for businesses and brands.",
+        question: "Who is Sir Brown AD?",
+        answer: "Brown Oziomachi AD known as (Sir Brown AD) is a professional Full-Stack Software Developer and a blogger based in Nigeria. Operating through browncode.name.ng, he specialises in writing clean code to build fast, modern, and highly responsive web applications and websites for businesses and brands.",
     },
     {
         question: "What is the purpose of browncode.name.ng?",

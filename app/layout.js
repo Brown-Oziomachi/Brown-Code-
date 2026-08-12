@@ -63,7 +63,6 @@ export const metadata = {
     yandex: "5edb60b150103ef4",
     other: {
       "impact-site-verification": "e9768684-9c09-4886-b2db-ec34003c5283",
-      monetag: "f078e1ec3e8e3ad7a3b1fde84ea75d8e",
       "google-adsense-account": "ca-pub-8408243121163767",
     },
   },

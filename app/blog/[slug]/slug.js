@@ -1140,7 +1140,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
 
                       <a href={article.companyLink}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="noopener noreferrer sponsored"
                         className="text-neutral-900 dark:text-neutral-100 underline font-semibold hover:underline decoration-neutral-400"
                       >
                         {article.companyName}
@@ -1160,9 +1160,9 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
                   </div>
 
 
-                  <a href="/google_index/advertise"
+                  <a href="/advertise"
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener noreferrer sponsored"
                     className="inline-flex items-center justify-center shrink-0 gap-2 px-4 py-2 text-sm font-medium text-neutral-900 bg-white border border-neutral-300 shadow-sm hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700 transition-all duration-200 group"
                   >
                     <span>Advertise with us</span>
@@ -1188,9 +1188,9 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
                   <span className="text-xs">
                     <p className="text-sm text-neutral-500 dark:text-neutral-400 italic">
 
-                      <a href="/google_index/advertise"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <a href="/advertise"
+                          target="_blank"
+                          rel="noopener noreferrer sponsored"
                         className="inline-flex items-center justify-center shrink-0 gap-2 px-4 py-2 text-sm font-medium text-neutral-900 bg-white border border-neutral-300 shadow-sm hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-700 transition-all duration-200 group"
                       >
                         <span className="text-xs">Advertise with us</span>
