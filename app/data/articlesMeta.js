@@ -632,7 +632,27 @@ export const articlesMeta = {
             "Sir Brown AD",
         ],
     },
-    
+    "moniepoint-fake-alert-app-how-to-verify-transfers-nigeria": {
+        category: "security",
+        metaTitle: "Moniepoint Fake Alert Scam: How to Verify a Real Transfer | Brown Code",
+        metaDescription: "Sir Brown AD explains how the Moniepoint fake alert scam works, why Moniepoint has also faced fake impersonation campaigns, and how to verify a real transfer before you act.",
+        keywords: [
+            "moniepoint fake alert",
+            "moniepoint fake transfer",
+            "moniepoint fake payment alert",
+            "how to verify moniepoint transfer",
+            "moniepoint scam Nigeria",
+            "is moniepoint alert real",
+            "moniepoint fraud protection",
+            "fake alert app Nigeria",
+            "moniepoint account security",
+            "moniepoint scandal fake",
+            "moniepoint impersonation scam",
+            "how to avoid fake alert scam",
+            "moniepoint OTP scam warning",
+            "Sir Brown AD",
+        ],
+    },
     "overpayment-scam-nigeria-business-owners": {
         category: "security",
         metaTitle: "The Overpayment Trap — How Scammers Use Extra Money to Steal From Nigerian Businesses | Brown Code",
