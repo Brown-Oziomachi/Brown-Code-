@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ArrowLeft, Scale } from "lucide-react";
 
 export const metadata = {
-    title: "Terms of Service | Brown Code",
-    description: "Review the operational terms, IP scopes, and milestone guidelines of Brown Code.",
+    title: "Terms of Service | Sir Brown AD",
+    description: "Review the operational terms, IP scopes, and milestone guidelines of Sir Brown AD.",
     alternates: { canonical: "https://browncode.name.ng/terms" },
 };
 
@@ -167,7 +167,7 @@ export default function TermsOfService() {
                             <p className="tos-section__num">[01]</p>
                             <h2 className="tos-section__title">Agreement framework</h2>
                             <div className="tos-section__body">
-                                <p>By accessing the digital portals or initiating development contracts with <strong style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--text-1)" }}>Brown Code</strong>, you agree to be bound by this operational codebase. Read these statements before finalising your staging pipeline deposits.</p>
+                                <p>By accessing the digital portals or initiating development contracts with <strong style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--text-1)" }}>Sir Brown AD</strong>, you agree to be bound by this operational codebase. Read these statements before finalising your staging pipeline deposits.</p>
                             </div>
                         </div>
 
@@ -195,7 +195,7 @@ export default function TermsOfService() {
                             <p className="tos-section__num">[04]</p>
                             <h2 className="tos-section__title">Intellectual property</h2>
                             <div className="tos-section__body">
-                                <p>Until final payment is cleared, all mockups, private GitHub branches, and custom systems remain the intellectual property of Brown Code. Upon receipt of full final payment, complete production ownership, licence permissions, and deployment access keys are transferred to the client.</p>
+                                <p>Until final payment is cleared, all mockups, private GitHub branches, and custom systems remain the intellectual property of Sir Brown AD. Upon receipt of full final payment, complete production ownership, licence permissions, and deployment access keys are transferred to the client.</p>
                             </div>
                         </div>
 
@@ -220,7 +220,7 @@ export default function TermsOfService() {
                     <footer className="tos-footer-row">
                         <div className="tos-footer__info">
                             <Scale size={12} style={{ color: "#4ade80" }} />
-                            © {currentYear} Brown Code — legal active
+                            © {currentYear} Sir Brown AD — legal active
                         </div>
                         <Link href="/" className="tos-btn">
                             <ArrowLeft size={13} /> Return home

@@ -275,8 +275,8 @@ export default function CheapWebDeveloperNigeria() {
                     </div>
                 </section>
 
-                <Footer />
             </main>
+                <Footer />
         </div>
     );
 }

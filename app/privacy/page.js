@@ -2,8 +2,8 @@ import Link from "next/link";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 
 export const metadata = {
-    title: "Privacy Policy | Brown Code",
-    description: "Learn how Brown Code handles data, information privacy, and client records securely.",
+    title: "Privacy Policy | Sir Brown AD",
+    description: "Learn how Sir Brown AD handles data, information privacy, and client records securely.",
     alternates: { canonical: "https://browncode.name.ng/privacy" },
 };
 
@@ -180,7 +180,7 @@ export default function PrivacyPolicy() {
                             <h2 className="pp-section__title">Operational overview</h2>
                             <div className="pp-section__body">
                                 <p>
-                                    At <strong style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--text-1)" }}>Brown Code</strong> (browncode.name.ng), I respect data integrity. This document charts how client files, system metrics, and support variables are gathered, analysed, and stored.
+                                    At <strong style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--text-1)" }}>Sir Brown AD</strong> (browncode.name.ng), I respect data integrity. This document charts how client files, system metrics, and support variables are gathered, analysed, and stored.
                                 </p>
                             </div>
                         </div>
@@ -252,7 +252,7 @@ export default function PrivacyPolicy() {
                     <footer className="pp-footer-row">
                         <div className="pp-footer__info">
                             <ShieldCheck size={12} style={{ color: "#4ade80" }} />
-                            © {currentYear} Brown Code — privacy verified
+                            © {currentYear} Sir Brown AD — privacy verified
                         </div>
                         <Link href="/" className="pp-btn">
                             <ArrowLeft size={13} /> Return home
