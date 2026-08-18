@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { MessageSquare, Send, X, Mail, CheckCircle, Loader2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { MessageSquare, Send, X, Mail, CheckCircle, Loader2, MessageCircle } from "lucide-react";
 import {
     collection, addDoc, query, where, orderBy,
     onSnapshot, serverTimestamp, updateDoc, doc, setDoc
@@ -20,39 +20,49 @@ const formatDate = (ts) => {
     });
 };
 
-function CommentItem({ comment, isOwner, handleMarkReplied }) {
+const AVATAR_COLORS = [
+    "#e8ff47", "#4ade80", "#60a5fa", "#f472b6", "#fb923c", "#a78bfa", "#2dd4bf",
+];
+const avatarColorFor = (name) => {
+    let hash = 0;
+    for (let i = 0; i < (name?.length || 0); i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+};
+
+function DrawerCommentItem({ comment, isOwner, handleMarkReplied }) {
     const initials = comment.authorName?.slice(0, 2).toUpperCase() || "?";
+    const color = avatarColorFor(comment.authorName || "?");
 
     return (
-        <div className="cs-comment">
-            <div className="cs-comment__head">
-                <div className="cs-comment__author">
-                    <div className="cs-comment__avatar">{initials}</div>
-                    <span className="cs-comment__name">{comment.authorName}</span>
-                </div>
-                <span className="cs-comment__date">{formatDate(comment.createdAt)}</span>
+        <div className="cs-drow">
+            <div className="cs-drow__avatar" style={{ background: `${color}22`, borderColor: `${color}55`, color }}>
+                {initials}
             </div>
-            <p className="cs-comment__text">{comment.text}</p>
-            <div className="cs-comment__footer">
-                {comment.brownReplied ? (
-                    <span className="cs-comment__replied">
-                        <Mail size={9} />
-                        Replied
-                    </span>
-                ) : (
-                    !isOwner && (
-                        <span className="cs-comment__pending">Awaiting reply</span>
-                    )
-                )}
-                {isOwner && (
-                    <button
-                        onClick={() => handleMarkReplied(comment.id)}
-                        className="cs-comment__reply-link"
-                    >
-                        <Mail size={10} />
-                        {comment.brownReplied ? "Reply again" : "Reply via email"}
-                    </button>
-                )}
+            <div className="cs-drow__main">
+                <div className="cs-drow__head">
+                    <span className="cs-drow__name">{comment.authorName}</span>
+                    <span className="cs-drow__date">{formatDate(comment.createdAt)}</span>
+                </div>
+                <p className="cs-drow__text">{comment.text}</p>
+                <div className="cs-drow__footer">
+                    {comment.brownReplied ? (
+                        <span className="cs-drow__replied">
+                            <Mail size={9} />
+                            Replied
+                        </span>
+                    ) : (
+                        !isOwner && <span className="cs-drow__pending">Awaiting reply</span>
+                    )}
+                    {isOwner && (
+                        <button
+                            onClick={() => handleMarkReplied(comment.id)}
+                            className="cs-drow__reply-link"
+                        >
+                            <Mail size={10} />
+                            {comment.brownReplied ? "Reply again" : "Reply via email"}
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );
@@ -63,9 +73,13 @@ export default function CommentsSection({ articleSlug }) {
     const [name, setName] = useState("");
     const [commentText, setCommentText] = useState("");
     const [isOwner, setIsOwner] = useState(false);
-    const [showForm, setShowForm] = useState(false);
     const [justPosted, setJustPosted] = useState(false);
-    const [showAllModal, setShowAllModal] = useState(false);
+
+    // Bottom sheet drawer
+    const [showDrawer, setShowDrawer] = useState(false);
+    const [drawerIn, setDrawerIn] = useState(false);
+    const [composerOpen, setComposerOpen] = useState(false);
+    const composerInputRef = useRef(null);
 
     // Email modal
     const [showEmailModal, setShowEmailModal] = useState(false);
@@ -93,6 +107,29 @@ export default function CommentsSection({ articleSlug }) {
         }, console.error);
         return () => unsub();
     }, [articleSlug]);
+
+    // ── Drawer open/close (slide up from bottom) ──
+    const openDrawer = () => {
+        setShowDrawer(true);
+        document.documentElement.style.overflow = "hidden";
+        requestAnimationFrame(() => requestAnimationFrame(() => setDrawerIn(true)));
+    };
+
+    const closeDrawer = () => {
+        setDrawerIn(false);
+        setComposerOpen(false);
+        document.documentElement.style.overflow = "";
+        setTimeout(() => setShowDrawer(false), 320);
+    };
+
+    useEffect(() => {
+        return () => { document.documentElement.style.overflow = ""; };
+    }, []);
+
+    const openComposer = () => {
+        setComposerOpen(true);
+        setTimeout(() => composerInputRef.current?.focus(), 50);
+    };
 
     const handleInitialSubmit = (e) => {
         e.preventDefault();
@@ -130,7 +167,7 @@ export default function CommentsSection({ articleSlug }) {
             }
 
             setName(""); setCommentText(""); setPendingComment(null);
-            setEmail(""); setShowEmailModal(false); setShowForm(false);
+            setEmail(""); setShowEmailModal(false); setComposerOpen(false);
             setJustPosted(true);
             setTimeout(() => setJustPosted(false), 5000);
         } catch (err) {
@@ -155,7 +192,6 @@ export default function CommentsSection({ articleSlug }) {
 
             const { email: authorEmail } = await res.json();
 
-            // Open mail client with the fetched email — never stored in browser
             if (authorEmail) {
                 const subject = encodeURIComponent("Re: Your comment on Brown's blog");
                 const body = encodeURIComponent(
@@ -194,546 +230,186 @@ export default function CommentsSection({ articleSlug }) {
                     justify-content: space-between;
                     margin-bottom: 28px;
                 }
-
-                .cs-header__left {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                }
-
+                .cs-header__left { display: flex; align-items: center; gap: 10px; }
                 .cs-header__icon { color: var(--accent); }
-
-                .cs-header__title {
-                    font-family: var(--font-serif);
-                    font-size: 20px;
-                    color: var(--text-1);
-                    font-weight: 400;
-                }
-
-                .cs-header__count {
-                    font-family: var(--font-mono);
-                    font-size: 11px;
-                    color: var(--text-3);
-                }
+                .cs-header__title { font-family: var(--font-serif); font-size: 20px; color: var(--text-1); font-weight: 400; }
+                .cs-header__count { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
 
                 /* ── Success banner ── */
                 .cs-success {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
+                    display: flex; align-items: center; gap: 10px;
                     padding: 12px 16px;
                     background: rgba(74,222,128,0.06);
                     border: 1px solid rgba(74,222,128,0.2);
                     border-radius: var(--radius);
-                    font-size: 13px;
-                    color: #4ade80;
-                    margin-bottom: 20px;
+                    font-size: 13px; color: #4ade80; margin-bottom: 20px;
                 }
 
                 /* ── Toggle trigger ── */
                 .cs-trigger {
-                    width: 100%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 8px;
-                    padding: 12px;
-                    border: 1px dashed var(--border);
-                    border-radius: var(--radius);
-                    background: transparent;
-                    color: var(--text-3);
-                    font-family: var(--font-mono);
-                    font-size: 11px;
-                    letter-spacing: 0.06em;
-                    cursor: pointer;
-                    transition: color 0.15s, border-color 0.15s, background 0.15s;
+                    width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+                    padding: 12px; border: 1px dashed var(--border); border-radius: var(--radius);
+                    background: transparent; color: var(--text-3);
+                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+                    cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s;
                     margin-bottom: 24px;
                 }
-
-                .cs-trigger:hover {
-                    color: var(--accent);
-                    border-color: rgba(232,255,71,0.3);
-                    background: var(--accent-dim);
-                }
-
-                /* ── Form ── */
-                .cs-form {
-                    background: var(--surface);
-                    border: 1px solid var(--border);
-                    padding: 20px;
-                    margin-bottom: 28px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 16px;
-                }
-
-                .cs-form__top {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                }
-
-                .cs-form__label-group {
-                    font-family: var(--font-mono);
-                    font-size: 10px;
-                    letter-spacing: 0.1em;
-                    text-transform: uppercase;
-                    color: var(--text-3);
-                }
-
-                .cs-form__close {
-                    background: none;
-                    border: none;
-                    color: var(--text-3);
-                    cursor: pointer;
-                    padding: 4px;
-                    transition: color 0.15s;
-                    display: flex;
-                }
-
-                .cs-form__close:hover { color: var(--text-1); }
+                .cs-trigger:hover { color: var(--accent); border-color: rgba(232,255,71,0.3); background: var(--accent-dim); }
 
                 .cs-field label {
-                    display: block;
-                    font-family: var(--font-mono);
-                    font-size: 10px;
-                    letter-spacing: 0.08em;
-                    text-transform: uppercase;
-                    color: var(--text-3);
-                    margin-bottom: 6px;
+                    display: block; font-family: var(--font-mono); font-size: 10px;
+                    letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px;
                 }
-
-                .cs-field input,
-                .cs-field textarea {
-                    width: 100%;
-                    background: var(--bg);
-                    border: 1px solid var(--border);
-                    border-radius: var(--radius);
-                    padding: 10px 12px;
-                    font-family: var(--font-sans);
-                    font-size: 13px;
-                    color: var(--text-1);
-                    outline: none;
-                    transition: border-color 0.15s;
+                .cs-field input, .cs-field textarea {
+                    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+                    padding: 10px 12px; font-family: var(--font-sans); font-size: 13px; color: var(--text-1);
+                    outline: none; transition: border-color 0.15s;
                 }
-
-                .cs-field input::placeholder,
-                .cs-field textarea::placeholder { color: var(--text-3); }
-
-                .cs-field input:focus,
-                .cs-field textarea:focus { border-color: var(--border-hi); }
-
+                .cs-field input::placeholder, .cs-field textarea::placeholder { color: var(--text-3); }
+                .cs-field input:focus, .cs-field textarea:focus { border-color: var(--border-hi); }
                 .cs-field textarea { resize: none; }
-
-                .cs-form__actions {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                }
 
                 /* ── Shared button ── */
                 .cs-btn {
-                    font-family: var(--font-mono);
-                    font-size: 11px;
-                    letter-spacing: 0.06em;
-                    padding: 8px 16px;
-                    border-radius: var(--radius);
-                    border: 1px solid var(--border);
-                    background: transparent;
-                    color: var(--text-2);
-                    cursor: pointer;
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 6px;
+                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+                    padding: 8px 16px; border-radius: var(--radius); border: 1px solid var(--border);
+                    background: transparent; color: var(--text-2); cursor: pointer;
+                    display: inline-flex; align-items: center; gap: 6px;
                     transition: color 0.15s, border-color 0.15s, background 0.15s;
                 }
+                .cs-btn:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
+                .cs-btn--accent { background: var(--accent-dim); border-color: rgba(232,255,71,0.3); color: var(--accent); }
+                .cs-btn--accent:hover { background: rgba(232,255,71,0.15); border-color: rgba(232,255,71,0.5); }
+                .cs-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-                .cs-btn:hover {
-                    color: var(--text-1);
-                    border-color: var(--border-hi);
-                    background: var(--surface);
-                }
+                /* ── Comment list (page preview) ── */
+                .cs-list { display: flex; flex-direction: column; border: 1px solid var(--border); overflow: hidden; }
+                .cs-empty { padding: 40px 24px; text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.06em; }
 
-                .cs-btn--accent {
-                    background: var(--accent-dim);
-                    border-color: rgba(232,255,71,0.3);
-                    color: var(--accent);
-                }
-
-                .cs-btn--accent:hover {
-                    background: rgba(232,255,71,0.15);
-                    border-color: rgba(232,255,71,0.5);
-                }
-
-                .cs-btn:disabled {
-                    opacity: 0.4;
-                    cursor: not-allowed;
-                }
-
-                /* ── Comment list ── */
-                .cs-list {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0;
-                    border: 1px solid var(--border);
-                    overflow: hidden;
-                }
-
-                .cs-empty {
-                    padding: 40px 24px;
-                    text-align: center;
-                    font-family: var(--font-mono);
-                    font-size: 11px;
-                    color: var(--text-3);
-                    letter-spacing: 0.06em;
-                }
-
-                /* ── Single comment ── */
-                .cs-comment {
-                    padding: 18px 20px;
-                    background: var(--surface);
-                    border-bottom: 1px solid var(--border);
-                    transition: background 0.15s;
-                }
-
+                .cs-comment { padding: 18px 20px; background: var(--surface); border-bottom: 1px solid var(--border); transition: background 0.15s; }
                 .cs-comment:last-child { border-bottom: none; }
                 .cs-comment:hover { background: #141417; }
-
-                .cs-comment__head {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    margin-bottom: 8px;
-                }
-
-                .cs-comment__author {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                }
-
-                .cs-comment__avatar {
-                    width: 28px;
-                    height: 28px;
-                    border-radius: 50%;
-                    background: var(--accent-dim);
-                    border: 1px solid rgba(232,255,71,0.2);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-family: var(--font-mono);
-                    font-size: 10px;
-                    color: var(--accent);
-                    flex-shrink: 0;
-                }
-
-                .cs-comment__name {
-                    font-family: var(--font-mono);
-                    font-size: 12px;
-                    color: var(--text-1);
-                    font-weight: 500;
-                }
-
-                .cs-comment__date {
-                    font-family: var(--font-mono);
-                    font-size: 10px;
-                    color: var(--text-3);
-                }
-
-                .cs-comment__text {
-                    font-size: 14px;
-                    color: var(--text-2);
-                    line-height: 1.65;
-                    font-weight: 300;
-                    white-space: pre-wrap;
-                }
-
-                .cs-comment__footer {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    margin-top: 12px;
-                    padding-top: 10px;
-                    border-top: 1px solid var(--border);
-                }
-
-                .cs-comment__replied {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 5px;
-                    font-family: var(--font-mono);
-                    font-size: 10px;
-                    color: #4ade80;
-                    background: rgba(74,222,128,0.06);
-                    border: 1px solid rgba(74,222,128,0.2);
-                    padding: 2px 8px;
-                    border-radius: 99px;
-                }
-
-                .cs-comment__pending {
-                    font-family: var(--font-mono);
-                    font-size: 10px;
-                    color: var(--text-3);
-                }
-
-                .cs-comment__reply-link {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 5px;
-                    font-family: var(--font-mono);
-                    font-size: 10px;
-                    color: var(--text-3);
-                    text-decoration: none;
-                    transition: color 0.15s;
-                    margin-left: auto;
-                }
-
+                .cs-comment__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+                .cs-comment__author { display: flex; align-items: center; gap: 8px; }
+                .cs-comment__avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-dim); border: 1px solid rgba(232,255,71,0.2); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 10px; color: var(--accent); flex-shrink: 0; }
+                .cs-comment__name { font-family: var(--font-mono); font-size: 12px; color: var(--text-1); font-weight: 500; }
+                .cs-comment__date { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); }
+                .cs-comment__text { font-size: 14px; color: var(--text-2); line-height: 1.65; font-weight: 300; white-space: pre-wrap; }
+                .cs-comment__footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+                .cs-comment__replied { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 10px; color: #4ade80; background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.2); padding: 2px 8px; border-radius: 99px; }
+                .cs-comment__pending { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); }
+                .cs-comment__reply-link { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 10px; color: var(--text-3); text-decoration: none; transition: color 0.15s; margin-left: auto; background: none; border: none; cursor: pointer; }
                 .cs-comment__reply-link:hover { color: var(--accent); }
 
-                /* ── View all button ── */
                 .cs-view-all {
-                    width: 100%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 8px;
-                    padding: 12px;
-                    border: 1px solid var(--border);
-                    border-top: none;
-                    background: var(--surface);
-                    color: var(--text-3);
-                    font-family: var(--font-mono);
-                    font-size: 11px;
-                    letter-spacing: 0.06em;
-                    cursor: pointer;
-                    transition: color 0.15s, background 0.15s;
+                    width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+                    padding: 12px; border: 1px solid var(--border); border-top: none;
+                    background: var(--surface); color: var(--text-3);
+                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+                    cursor: pointer; transition: color 0.15s, background 0.15s;
                 }
+                .cs-view-all:hover { color: var(--accent); background: var(--accent-dim); }
 
-                .cs-view-all:hover {
-                    color: var(--accent);
-                    background: var(--accent-dim);
+                /* ════════════════════════════════════
+                   BOTTOM SHEET DRAWER
+                ════════════════════════════════════ */
+                .cs-drawer-backdrop {
+                    position: fixed; inset: 0; z-index: 9990;
+                    background: rgba(0,0,0,0);
+                    transition: background 0.32s ease;
                 }
+                .cs-drawer-backdrop--in { background: rgba(0,0,0,0.6); }
 
-                /* ── All comments modal ── */
-                .cs-all-modal-backdrop {
+                .cs-drawer {
                     position: fixed;
-                    inset: 0;
-                    z-index: 9998;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 24px;
-                }
-
-                .cs-all-modal-bg {
-                    position: absolute;
-                    inset: 0;
-                    background: rgba(0,0,0,0.75);
-                    backdrop-filter: blur(8px);
-                }
-
-                .cs-all-modal {
-                    position: relative;
-                    width: 100%;
-                    max-width: 600px;
-                    max-height: 80vh;
-                    background: var(--surface);
-                    border: 1px solid var(--border);
-                    overflow: hidden;
-                    box-shadow: 0 32px 64px rgba(0,0,0,0.6);
-                    display: flex;
-                    flex-direction: column;
-                }
-
-                .cs-all-modal__accent-bar {
-                    height: 2px;
-                    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-                    flex-shrink: 0;
-                }
-
-                .cs-all-modal__head {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    padding: 20px 24px;
-                    border-bottom: 1px solid var(--border);
-                    flex-shrink: 0;
-                }
-
-                .cs-all-modal__title {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                }
-
-                .cs-all-modal__title-text {
-                    font-family: var(--font-serif);
-                    font-size: 18px;
-                    color: var(--text-1);
-                    font-weight: 400;
-                }
-
-                .cs-all-modal__count {
-                    font-family: var(--font-mono);
-                    font-size: 10px;
-                    color: var(--text-3);
-                }
-
-                .cs-all-modal__close {
-                    background: none;
-                    border: none;
-                    color: var(--text-3);
-                    cursor: pointer;
-                    padding: 4px;
-                    transition: color 0.15s;
-                    display: flex;
-                }
-
-                .cs-all-modal__close:hover { color: var(--text-1); }
-
-                .cs-all-modal__body {
-                    overflow-y: auto;
-                    flex: 1;
-                }
-
-                .cs-all-modal__body .cs-list {
-                    border: none;
-                }
-                
-                /* ── Email modal ── */
-                .cs-modal-backdrop {
-                    position: fixed;
-                    inset: 0;
-                    z-index: 9999;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    padding: 24px;
-                }
-
-                .cs-modal-bg {
-                    position: absolute;
-                    inset: 0;
-                    background: rgba(0,0,0,0.75);
-                    backdrop-filter: blur(8px);
-                }
-
-                .cs-modal {
-                    position: relative;
-                    width: 100%;
-                    max-width: 440px;
-                    background: var(--surface);
-                    border: 1px solid var(--border);
-                    border-radius: var(--radius);
-                    overflow: hidden;
-                    box-shadow: 0 32px 64px rgba(0,0,0,0.6);
-                }
-
-                .cs-modal__accent-bar {
-                    height: 2px;
-                    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-                }
-
-                .cs-modal__body {
-                    padding: 24px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 20px;
-                }
-
-                .cs-modal__head {
-                    display: flex;
-                    align-items: flex-start;
-                    justify-content: space-between;
-                    gap: 12px;
-                }
-
-                .cs-modal__eyebrow {
-                    font-family: var(--font-mono);
-                    font-size: 10px;
-                    letter-spacing: 0.1em;
-                    text-transform: uppercase;
-                    color: var(--accent);
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                    margin-bottom: 6px;
-                }
-
-                .cs-modal__title {
-                    font-family: var(--font-serif);
-                    font-size: 20px;
-                    color: var(--text-1);
-                    font-weight: 400;
-                }
-
-                .cs-modal__sub {
-                    font-size: 12px;
-                    color: var(--text-3);
-                    line-height: 1.6;
-                    margin-top: 4px;
-                }
-
-                .cs-modal__close {
-                    background: none;
-                    border: none;
-                    color: var(--text-3);
-                    cursor: pointer;
-                    padding: 4px;
-                    transition: color 0.15s;
-                    display: flex;
-                    flex-shrink: 0;
-                }
-
-                .cs-modal__close:hover { color: var(--text-1); }
-
-                .cs-modal__preview {
+                    left: 0; right: 0; bottom: 0;
+                    z-index: 9991;
+                    height: 88vh;
+                    max-width: 640px;
+                    margin: 0 auto;
                     background: var(--bg);
-                    border: 1px solid var(--border);
-                    border-radius: var(--radius);
-                    padding: 12px 14px;
+                    border-top: 1px solid var(--border);
+                    border-left: 1px solid var(--border);
+                    border-right: 1px solid var(--border);
+                    border-radius: 16px 16px 0 0;
+                    display: flex; flex-direction: column;
+                    transform: translateY(100%);
+                    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+                    box-shadow: 0 -20px 60px rgba(0,0,0,0.5);
                 }
+                .cs-drawer--in { transform: translateY(0); }
 
-                .cs-modal__preview-label {
-                    font-family: var(--font-mono);
-                    font-size: 9px;
-                    letter-spacing: 0.1em;
-                    text-transform: uppercase;
-                    color: var(--text-3);
-                    display: block;
-                    margin-bottom: 6px;
+                .cs-drawer__handle-row {
+                    display: flex; justify-content: center; padding: 10px 0 4px; flex-shrink: 0;
                 }
+                .cs-drawer__handle { width: 40px; height: 4px; border-radius: 99px; background: var(--border-hi); }
 
-                .cs-modal__preview-author {
-                    font-family: var(--font-mono);
-                    font-size: 11px;
-                    color: var(--accent);
-                    margin-bottom: 4px;
+                .cs-drawer__head {
+                    display: flex; align-items: center; justify-content: space-between;
+                    padding: 8px 20px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0;
                 }
+                .cs-drawer__title { display: flex; align-items: center; gap: 8px; font-family: var(--font-serif); font-size: 17px; color: var(--text-1); }
+                .cs-drawer__sort { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+                .cs-drawer__close { background: none; border: none; color: var(--text-3); cursor: pointer; padding: 4px; display: flex; transition: color 0.15s; }
+                .cs-drawer__close:hover { color: var(--text-1); }
 
-                .cs-modal__preview-text {
-                    font-size: 12px;
-                    color: var(--text-2);
-                    line-height: 1.55;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
+                .cs-drawer__body { flex: 1; overflow-y: auto; padding: 4px 0 12px; }
+
+                .cs-drow { display: flex; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+                .cs-drow__avatar {
+                    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+                    border: 1px solid; display: flex; align-items: center; justify-content: center;
+                    font-family: var(--font-mono); font-size: 12px; font-weight: 600;
                 }
+                .cs-drow__main { flex: 1; min-width: 0; }
+                .cs-drow__head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+                .cs-drow__name { font-family: var(--font-sans); font-weight: 600; font-size: 13.5px; color: var(--text-1); }
+                .cs-drow__date { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); margin-left: auto; }
+                .cs-drow__text { font-size: 13.5px; color: var(--text-2); line-height: 1.55; white-space: pre-wrap; }
+                .cs-drow__footer { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+                .cs-drow__replied { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 10px; color: #4ade80; background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.2); padding: 2px 8px; border-radius: 99px; }
+                .cs-drow__pending { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); }
+                .cs-drow__reply-link { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 10px; color: var(--text-3); background: none; border: none; cursor: pointer; transition: color 0.15s; }
+                .cs-drow__reply-link:hover { color: var(--accent); }
 
-                .cs-modal__error {
-                    font-family: var(--font-mono);
-                    font-size: 11px;
-                    color: #f87171;
-                    margin-top: 6px;
+                .cs-drawer__empty { padding: 60px 24px; text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.06em; }
+
+                /* Sticky composer at bottom of drawer */
+                .cs-composer {
+                    flex-shrink: 0;
+                    border-top: 1px solid var(--border);
+                    background: var(--surface);
+                    padding: 12px 16px;
+                    padding-bottom: max(12px, env(safe-area-inset-bottom));
                 }
-
-                .cs-modal__actions {
-                    display: flex;
-                    gap: 10px;
+                .cs-composer__bar {
+                    display: flex; align-items: center; gap: 10px;
                 }
+                .cs-composer__avatar {
+                    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+                    background: var(--accent-dim); border: 1px solid rgba(232,255,71,0.25);
+                    display: flex; align-items: center; justify-content: center; color: var(--accent);
+                }
+                .cs-composer__trigger {
+                    flex: 1; text-align: left;
+                    background: var(--bg); border: 1px solid var(--border); border-radius: 99px;
+                    padding: 10px 16px; font-family: var(--font-sans); font-size: 13px; color: var(--text-3);
+                    cursor: pointer; transition: border-color 0.15s;
+                }
+                .cs-composer__trigger:hover { border-color: var(--border-hi); }
 
-                .cs-modal__actions .cs-btn--accent { flex: 1; justify-content: center; }
+                .cs-composer__form {
+                    display: flex; flex-direction: column; gap: 12px; padding-top: 4px;
+                }
+                .cs-composer__form-top { display: flex; align-items: center; justify-content: space-between; }
+                .cs-composer__label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+                .cs-composer__form-close { background: none; border: none; color: var(--text-3); cursor: pointer; padding: 2px; display: flex; }
+                .cs-composer__form-close:hover { color: var(--text-1); }
+                .cs-composer__actions { display: flex; gap: 10px; }
+
+                @media (max-width: 700px) {
+                    .cs-drawer { height: 92vh; border-radius: 14px 14px 0 0; }
+                }
             `}</style>
 
             <section className="cs-section">
@@ -754,140 +430,182 @@ export default function CommentsSection({ articleSlug }) {
                     </div>
                 )}
 
-                {/* Toggle */}
-                {!showForm && !justPosted && (
-                    <button className="cs-trigger" onClick={() => setShowForm(true)}>
+                {/* Trigger */}
+                {!justPosted && (
+                    <button className="cs-trigger" onClick={openDrawer}>
                         <MessageSquare size={13} />
                         Leave a comment
                     </button>
                 )}
 
-                {/* Form */}
-                {showForm && (
-                    <form className="cs-form" onSubmit={handleInitialSubmit}>
-                        <div className="cs-form__top">
-                            <span className="cs-form__label-group">New comment</span>
-                            <button type="button" className="cs-form__close" onClick={() => setShowForm(false)}>
-                                <X size={14} />
-                            </button>
-                        </div>
-                        <div className="cs-field">
-                            <label>Name</label>
-                            <input
-                                type="text"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                placeholder="Your name"
-                                required
-                            />
-                        </div>
-                        <div className="cs-field">
-                            <label>Comment</label>
-                            <textarea
-                                rows={4}
-                                value={commentText}
-                                onChange={(e) => setCommentText(e.target.value)}
-                                placeholder="Share your thoughts…"
-                                required
-                            />
-                        </div>
-                        <div className="cs-form__actions">
-                            <button type="submit" className="cs-btn cs-btn--accent">
-                                Post comment
-                                <Send size={12} />
-                            </button>
-                            <button type="button" className="cs-btn" onClick={() => setShowForm(false)}>
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-                )}
-
-                {/* Comments list — preview only */}
+                {/* Preview list */}
                 <div className="cs-list">
                     {comments.length === 0 ? (
                         <div className="cs-empty">No comments yet — be the first.</div>
                     ) : (
                         visibleComments.map((comment) => (
-                            <CommentItem
-                                key={comment.id}
-                                comment={comment}
-                                isOwner={isOwner}
-                                handleMarkReplied={handleMarkReplied}
-                            />
+                            <div key={comment.id} className="cs-comment">
+                                <div className="cs-comment__head">
+                                    <div className="cs-comment__author">
+                                        <div className="cs-comment__avatar">
+                                            {comment.authorName?.slice(0, 2).toUpperCase() || "?"}
+                                        </div>
+                                        <span className="cs-comment__name">{comment.authorName}</span>
+                                    </div>
+                                    <span className="cs-comment__date">{formatDate(comment.createdAt)}</span>
+                                </div>
+                                <p className="cs-comment__text">{comment.text}</p>
+                                <div className="cs-comment__footer">
+                                    {comment.brownReplied ? (
+                                        <span className="cs-comment__replied"><Mail size={9} /> Replied</span>
+                                    ) : (
+                                        !isOwner && <span className="cs-comment__pending">Awaiting reply</span>
+                                    )}
+                                    {isOwner && (
+                                        <button onClick={() => handleMarkReplied(comment.id)} className="cs-comment__reply-link">
+                                            <Mail size={10} />
+                                            {comment.brownReplied ? "Reply again" : "Reply via email"}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
                         ))
                     )}
                 </div>
 
-                {/* View all button */}
                 {hasMore && (
-                    <button className="cs-view-all" onClick={() => setShowAllModal(true)}>
+                    <button className="cs-view-all" onClick={openDrawer}>
                         <MessageSquare size={12} />
                         View all {comments.length} comments
                     </button>
                 )}
             </section>
 
-            {/* All comments modal */}
-            {showAllModal && (
-                <div className="cs-all-modal-backdrop">
-                    <div className="cs-all-modal-bg" onClick={() => setShowAllModal(false)} />
-                    <div className="cs-all-modal">
-                        <div className="cs-all-modal__accent-bar" />
-                        <div className="cs-all-modal__head">
-                            <div className="cs-all-modal__title">
-                                <MessageSquare size={15} style={{ color: "var(--accent)" }} />
-                                <span className="cs-all-modal__title-text">All Comments</span>
-                                <span className="cs-all-modal__count">{comments.length} total</span>
+            {/* ── Bottom sheet drawer ── */}
+            {showDrawer && (
+                <>
+                    <div
+                        className={`cs-drawer-backdrop ${drawerIn ? "cs-drawer-backdrop--in" : ""}`}
+                        onClick={closeDrawer}
+                    />
+                    <div className={`cs-drawer ${drawerIn ? "cs-drawer--in" : ""}`}>
+                        <div className="cs-drawer__handle-row">
+                            <span className="cs-drawer__handle" />
+                        </div>
+
+                        <div className="cs-drawer__head">
+                            <div className="cs-drawer__title">
+                                <MessageCircle size={16} style={{ color: "var(--accent)" }} />
+                                {comments.length} comment{comments.length !== 1 ? "s" : ""}
                             </div>
-                            <button className="cs-all-modal__close" onClick={() => setShowAllModal(false)}>
-                                <X size={15} />
+                            <button className="cs-drawer__close" onClick={closeDrawer}>
+                                <X size={18} />
                             </button>
                         </div>
-                        <div className="cs-all-modal__body">
-                            <div className="cs-list">
-                                {comments.map((comment) => (
-                                    <CommentItem
+
+                        <div className="cs-drawer__body">
+                            {comments.length === 0 ? (
+                                <div className="cs-drawer__empty">No comments yet — be the first.</div>
+                            ) : (
+                                comments.map((comment) => (
+                                    <DrawerCommentItem
                                         key={comment.id}
                                         comment={comment}
                                         isOwner={isOwner}
                                         handleMarkReplied={handleMarkReplied}
                                     />
-                                ))}
-                            </div>
+                                ))
+                            )}
+                        </div>
+
+                        {/* Sticky composer */}
+                        <div className="cs-composer">
+                            {!composerOpen ? (
+                                <div className="cs-composer__bar">
+                                    <div className="cs-composer__avatar">
+                                        <MessageSquare size={14} />
+                                    </div>
+                                    <button className="cs-composer__trigger" onClick={openComposer}>
+                                        Add a comment…
+                                    </button>
+                                </div>
+                            ) : (
+                                <form className="cs-composer__form" onSubmit={handleInitialSubmit}>
+                                    <div className="cs-composer__form-top">
+                                        <span className="cs-composer__label">New comment</span>
+                                        <button
+                                            type="button"
+                                            className="cs-composer__form-close"
+                                            onClick={() => setComposerOpen(false)}
+                                        >
+                                            <X size={14} />
+                                        </button>
+                                    </div>
+                                    <div className="cs-field">
+                                        <label>Name</label>
+                                        <input
+                                            ref={composerInputRef}
+                                            type="text"
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            placeholder="Your name"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="cs-field">
+                                        <label>Comment</label>
+                                        <textarea
+                                            rows={3}
+                                            value={commentText}
+                                            onChange={(e) => setCommentText(e.target.value)}
+                                            placeholder="Share your thoughts…"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="cs-composer__actions">
+                                        <button type="submit" className="cs-btn cs-btn--accent">
+                                            Post comment
+                                            <Send size={12} />
+                                        </button>
+                                        <button type="button" className="cs-btn" onClick={() => setComposerOpen(false)}>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
                         </div>
                     </div>
-                </div>
+                </>
             )}
 
-            {/* Email verification modal */}
+            {/* Email verification modal — sits above the drawer */}
             {showEmailModal && (
-                <div className="cs-modal-backdrop">
-                    <div className="cs-modal-bg" onClick={handleModalClose} />
-                    <div className="cs-modal">
-                        <div className="cs-modal__accent-bar" />
-                        <div className="cs-modal__body">
-                            <div className="cs-modal__head">
+                <div className="cs-modal-backdrop" style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+                    <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }} onClick={handleModalClose} />
+                    <div style={{ position: "relative", width: "100%", maxWidth: 440, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden", boxShadow: "0 32px 64px rgba(0,0,0,0.6)" }}>
+                        <div style={{ height: 2, background: "linear-gradient(90deg, transparent, var(--accent), transparent)" }} />
+                        <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 20 }}>
+                            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
                                 <div>
-                                    <div className="cs-modal__eyebrow">
+                                    <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--accent)", display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
                                         <Mail size={12} />
                                         Verify email
                                     </div>
-                                    <h4 className="cs-modal__title">Confirm your address</h4>
-                                    <p className="cs-modal__sub">
+                                    <h4 style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--text-1)", fontWeight: 400 }}>Confirm your address</h4>
+                                    <p style={{ fontSize: 12, color: "var(--text-3)", lineHeight: 1.6, marginTop: 4 }}>
                                         Used to prevent duplicate submissions — not displayed publicly.
                                     </p>
                                 </div>
-                                <button className="cs-modal__close" onClick={handleModalClose}>
+                                <button style={{ background: "none", border: "none", color: "var(--text-3)", cursor: "pointer", padding: 4, display: "flex", flexShrink: 0 }} onClick={handleModalClose}>
                                     <X size={15} />
                                 </button>
                             </div>
 
                             {pendingComment && (
-                                <div className="cs-modal__preview">
-                                    <span className="cs-modal__preview-label">Your comment</span>
-                                    <p className="cs-modal__preview-author">{pendingComment.name}</p>
-                                    <p className="cs-modal__preview-text">{pendingComment.text}</p>
+                                <div style={{ background: "var(--bg)", border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: "12px 14px" }}>
+                                    <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-3)", display: "block", marginBottom: 6 }}>Your comment</span>
+                                    <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--accent)", marginBottom: 4 }}>{pendingComment.name}</p>
+                                    <p style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{pendingComment.text}</p>
                                 </div>
                             )}
 
@@ -902,25 +620,15 @@ export default function CommentsSection({ articleSlug }) {
                                     onKeyDown={(e) => e.key === "Enter" && handleEmailConfirm()}
                                 />
                                 {emailError && (
-                                    <p className="cs-modal__error">{emailError}</p>
+                                    <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#f87171", marginTop: 6 }}>{emailError}</p>
                                 )}
                             </div>
 
-                            <div className="cs-modal__actions">
-                                <button
-                                    className="cs-btn cs-btn--accent"
-                                    onClick={handleEmailConfirm}
-                                    disabled={emailSubmitting}
-                                >
-                                    {emailSubmitting ? (
-                                        <><Loader2 size={12} className="animate-spin" /> Posting…</>
-                                    ) : (
-                                        <><Send size={12} /> Post comment</>
-                                    )}
+                            <div style={{ display: "flex", gap: 10 }}>
+                                <button className="cs-btn cs-btn--accent" style={{ flex: 1, justifyContent: "center" }} onClick={handleEmailConfirm} disabled={emailSubmitting}>
+                                    {emailSubmitting ? (<><Loader2 size={12} className="animate-spin" /> Posting…</>) : (<><Send size={12} /> Post comment</>)}
                                 </button>
-                                <button className="cs-btn" onClick={handleModalClose}>
-                                    Cancel
-                                </button>
+                                <button className="cs-btn" onClick={handleModalClose}>Cancel</button>
                             </div>
                         </div>
                     </div>
