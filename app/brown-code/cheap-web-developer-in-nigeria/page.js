@@ -260,17 +260,17 @@ export default function CheapWebDeveloperNigeria() {
                     </p>
 
                     <div className="mt-6 text-xs font-mono text-[rgba(248,248,255,.4)] space-y-1">
-                        <p>Direct FCT Routing Node: <strong className="text-[#a3e635]">+234-701-372-5529</strong></p>
+                        <p>Direct FCT Route: <strong className="text-[#a3e635]">+234-701-372-5529</strong></p>
                     </div>
 
                     <div className="mt-8">
                         <Link
-                            href="https://wa.me/qr/RX4M5D4PGB7CO1"
+                            href="https://wa.me/2348142995114"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-block bg-[#65a30d] hover:bg-[#a3e635] text-[#0b0b0f] px-8 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 transform hover:-translate-y-0.5 shadow-md shadow-[#65a30d]/10"
                         >
-                            Initiate Value Build
+                            Start a project
                         </Link>
                     </div>
                 </section>

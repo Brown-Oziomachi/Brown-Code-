@@ -206,7 +206,7 @@ export default function WebDeveloperNigeria() {
 
                     <div className="mt-8">
                         <Link
-                            href="https://wa.me/qr/RX4M5D4PGB7CO1"
+                            href="https://wa.me/2348142995114"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-block bg-[#65a30d] hover:bg-[#a3e635] text-[#0b0b0f] px-8 py-3 rounded-xl text-sm font-bold tracking-wide transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg shadow-[#65a30d]/20"
