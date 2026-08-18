@@ -1,6 +1,5 @@
 import InteractionTracker from "@/components/InteractionTracker";
 import "./globals.css";
-import Script from "next/script";
 
 export const metadata = {
   metadataBase: new URL("https://browncode.name.ng"),
@@ -29,6 +28,18 @@ export const metadata = {
     canonical: "https://browncode.name.ng",
     types: {
       "application/rss+xml": "https://browncode.name.ng/feed.xml",
+    },
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
     },
   },
 
@@ -75,10 +86,6 @@ export default function RootLayout({ children }) {
         <InteractionTracker />
         <div className="gradient" />
         {children}
-        <Script
-          src="https://www.careerjet.com.ng/partners/js_banner.html?format=banner_02_468x60&affid=395e979b37f19b4b31613006e51978ee"
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   );

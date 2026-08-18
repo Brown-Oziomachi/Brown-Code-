@@ -1,4 +1,4 @@
-import SitemapClient from "./sitemap-html/SitemapClient";
+import PortfolioClients from "./portfolio/page";
 
 export const metadata = {
   alternates: {
@@ -35,5 +35,5 @@ export const metadata = {
 
 
 export default function Home() {
-  return <SitemapClient />;
+  return <PortfolioClients />;
 }

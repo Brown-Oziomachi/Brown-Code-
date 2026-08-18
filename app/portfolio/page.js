@@ -11,6 +11,7 @@ import FirebaseChat from "@/components/FirebaseChat";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/footer";
 import FloatingClient from "../floatingchat/chat";
+import { latestArticles } from "../data/latestArticles";
 
 export default function PortfolioClients() {
     const [activeSection, setActiveSection] = useState("home");
@@ -483,26 +484,45 @@ export default function PortfolioClients() {
         }
 
         /* ════════════════════════════════════
-           JOBS CTA BAND
-        ════════════════════════════════════ */
-        .pf-jobs {
-          padding: 72px 24px;
-          border-bottom: 1px solid var(--border);
-        }
-        .pf-jobs__inner {
-          max-width: 1120px; margin: 0 auto;
-          background: var(--surface); border: 1px solid var(--border);
-          border-radius: var(--radius); padding: 40px 36px;
-          display: flex; align-items: center; justify-content: space-between;
-          gap: 28px; border-left: 3px solid var(--accent);
-          position: relative; overflow: hidden;
-        }
-        @media (max-width: 680px) { .pf-jobs__inner { flex-direction: column; align-items: flex-start; } }
-        .pf-jobs__title {
-          font-family: var(--serif); font-size: 26px; color: var(--text-1);
-          margin-bottom: 6px;
-        }
-        .pf-jobs__sub { font-size: 13px; color: var(--text-3); line-height: 1.65; max-width: 440px; font-weight: 300; }
+   JOBS CTA BAND
+════════════════════════════════════ */
+.pf-jobs {
+  padding: 72px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.pf-jobs__inner {
+  max-width: 1120px; margin: 0 auto;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 40px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 28px; border-left: 3px solid var(--accent);
+  position: relative; overflow: hidden;
+}
+@media (max-width: 680px) { .pf-jobs__inner { flex-direction: column; align-items: flex-start; } }
+
+.pf-jobs__content { flex: 1; min-width: 0; }
+
+.pf-jobs__title {
+  font-family: var(--serif); font-size: 26px; color: var(--text-1);
+  margin-bottom: 6px;
+}
+.pf-jobs__sub { font-size: 13px; color: var(--text-3); line-height: 1.65; max-width: 440px; font-weight: 300; }
+
+.pf-jobs__img {
+  flex-shrink: 0;
+  width: 220px; height: 160px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--bg, #0a0a0b);
+  border: 1px solid var(--border);
+}
+.pf-jobs__img img {
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0.85; filter: grayscale(15%);
+}
+@media (max-width: 680px) {
+  .pf-jobs__img { width: 100%; height: 200px; }
+}
 
         /* ════════════════════════════════════
            CONTACT STRIP
@@ -565,6 +585,94 @@ export default function PortfolioClients() {
           margin-bottom: 8px;
         }
         .pf-popup__body { font-size: 13px; color: var(--text-2); line-height: 1.65; margin-bottom: 20px; font-weight: 300; }
+       .pf-blog {
+    background: #0a0a0b;
+    padding: 80px 24px;
+}
+
+.pf-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #e8ff47; margin-bottom: 28px;
+}
+.pf-eyebrow__dot { width: 6px; height: 6px; border-radius: 50%; background: #e8ff47; }
+
+.pf-blog__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: #1e1e22;
+    border: 1px solid #1e1e22;
+    border-radius: 6px;
+    overflow: hidden;
+}
+@media (max-width: 700px) {
+    .pf-blog__grid { grid-template-columns: 1fr; }
+}
+
+.pf-article {
+    display: flex; flex-direction: column;
+    background: #111113;
+    text-decoration: none;
+    position: relative;
+    transition: background 0.15s;
+}
+.pf-article:hover { background: #141417; }
+.pf-article::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+    background: #e8ff47; transform: scaleY(0); transform-origin: bottom;
+    transition: transform 0.2s ease; z-index: 5;
+}
+.pf-article:hover::before { transform: scaleY(1); }
+
+.pf-article__img { position: relative; height: 220px; background: #0a0a0b; overflow: hidden; flex-shrink: 0; }
+.pf-article__img img {
+    width: 100%; height: 100%; object-fit: cover;
+    opacity: 0.55; filter: grayscale(25%);
+    transition: opacity 0.3s, transform 0.4s;
+}
+.pf-article:hover .pf-article__img img { opacity: 0.8; transform: scale(1.04); }
+.pf-article__img-placeholder {
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(255,255,255,0.015) 8px, rgba(255,255,255,0.015) 16px);
+}
+.pf-article__tag {
+    position: absolute; top: 14px; left: 14px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 3px;
+    background: #0a0a0b; color: #e8ff47; border: 1px solid rgba(232,255,71,0.2);
+}
+
+.pf-article__body { padding: 22px 24px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.pf-article__title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 20px; font-weight: 400; line-height: 1.3;
+    color: #f4f4f5; transition: color 0.15s;
+}
+.pf-article:hover .pf-article__title { color: #fff; }
+.pf-article__desc {
+    font-size: 13px; color: #a1a1aa; line-height: 1.6;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.pf-article__meta {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 11px; color: #52525b; margin-top: 4px;
+}
+.pf-article__author { color: #a1a1aa; }
+.pf-article__dot { width: 3px; height: 3px; border-radius: 50%; background: #2e2e34; flex-shrink: 0; }
+
+.pf-article__footer { padding: 0 24px 22px; }
+.pf-article__link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 11px; letter-spacing: 0.06em; color: #e8ff47;
+}
+
+.pf-blog__more { display: flex; justify-content: center; margin-top: 40px; }
+}
       `}</style>
 
             <div className="pf-page">
@@ -643,7 +751,7 @@ export default function PortfolioClients() {
                             <div className="pf-hero__copy">
                                 <div className="pf-eyebrow">
                                     <span className="pf-eyebrow__dot" />
-                                    BC_CORE_v2.0.6 · Portfolio
+                                    Portfolio
                                 </div>
                                 <h1 className="pf-hero__title">
                                     Building<br />high-velocity<br /><em>web systems.</em>
@@ -803,11 +911,60 @@ export default function PortfolioClients() {
                     </div>
                 </section>
 
+                 {/* ── BLOG PREVIEW ── */}
+                <section id="blog">
+                    <div className="pf-blog">
+                        <div style={{ maxWidth: 1120, margin: "0 auto" }}>
+                            <div className="pf-eyebrow">
+                                <span className="pf-eyebrow__dot" />
+                                Latest from the blog
+                            </div>
+                            <div className="pf-blog__grid">
+                                {latestArticles.map((a) => (
+                                    <Link key={a.slug} href={`/blog/${a.slug}`} className="pf-article">
+                                        <div className="pf-article__img">
+                                            {a.image ? (
+                                                <img
+                                                    src={a.image}
+                                                    alt={a.title}
+                                                    onError={(e) => (e.target.style.display = "none")}
+                                                />
+                                            ) : (
+                                                <div className="pf-article__img-placeholder" />
+                                            )}
+                                            <span className="pf-article__tag">{a.category}</span>
+                                        </div>
+                                        <div className="pf-article__body">
+                                            <div className="pf-article__title">{a.title}</div>
+                                            <p className="pf-article__desc">{a.preview}</p>
+                                            <div className="pf-article__meta">
+                                                {a.postedBy && <span className="pf-article__author">{a.postedBy}</span>}
+                                                {a.postedBy && <span className="pf-article__dot" />}
+                                                <span>{a.readingTime} min read</span>
+                                            </div>
+                                        </div>
+                                        <div className="pf-article__footer">
+                                            <span className="pf-article__link">
+                                                Read <ArrowUpRight size={11} />
+                                            </span>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                            <div className="pf-blog__more">
+                                <Link href="/blog" className="pf-btn" style={{ display: "inline-flex" }}>
+                                    All articles <ArrowRight size={12} />
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+               
                 {/* ── JOBS CTA ── */}
                 <section id="jobs">
                     <div className="pf-jobs">
                         <div className="pf-jobs__inner">
-                            <div>
+                            <div className="pf-jobs__content">
                                 <div className="pf-eyebrow" style={{ marginBottom: 10 }}>
                                     <span className="pf-eyebrow__dot" />
                                     Remote opportunities
@@ -817,10 +974,17 @@ export default function PortfolioClients() {
                                     Parameters configured for distributed micro-tasks, long-term full-stack infrastructure,
                                     and secure remote platform execution.
                                 </p>
+                                <Link href="/jobs" className="pf-btn pf-btn--accent" style={{ marginTop: 20 }}>
+                                    View opportunities <ArrowRight size={13} />
+                                </Link>
                             </div>
-                            <Link href="/jobs" className="pf-btn pf-btn--accent" style={{ flexShrink: 0 }}>
-                                View opportunities <ArrowRight size={13} />
-                            </Link>
+                            <div className="pf-jobs__img">
+                                <img
+                                    src="/remote-work.jpg"
+                                    alt="Remote work illustration"
+                                    onError={(e) => (e.target.style.display = "none")}
+                                />
+                            </div>
                         </div>
                     </div>
                 </section>

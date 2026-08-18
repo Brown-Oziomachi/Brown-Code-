@@ -11,8 +11,8 @@
 
 /* CSS variables that point to the font-family names */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background:  #171717;
+  --foreground:  #ededed;
   --font-geist-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
   --font-geist-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
 }
