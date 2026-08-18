@@ -286,7 +286,7 @@ export default function CommentsSection({ articleSlug }) {
                 .cs-list { display: flex; flex-direction: column; border: 1px solid var(--border); overflow: hidden; }
                 .cs-empty { padding: 40px 24px; text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.06em; }
 
-                .cs-comment { padding: 18px 20px; background: var(--surface); border-bottom: 1px solid var(--border); transition: background 0.15s; }
+                .cs-comment { padding: 18px 20px; background: var(--background); border-bottom: 1px solid var(--border); transition: background 0.15s; }
                 .cs-comment:last-child { border-bottom: none; }
                 .cs-comment:hover { background: #141417; }
                 .cs-comment__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }

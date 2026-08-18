@@ -63,10 +63,10 @@ const COST_TABLE = [
 const SKILLS = ["Next.js & React.js", "Tailwind CSS", "Firebase Engine", "Node.js Architecture", "Vercel Cloud Hosting"];
 
 const PROJECTS = [
-    { name: "IJ Stitches Fashion Website", meta: "Modern design & fashion portfolio ecosystem", icon: "🧵", image: "/images/projects/ij-stitches.jpg" },
-    { name: "The Cyclopedia", meta: "News portal, high-speed blog, and integrated media showcase", icon: "📰", image: "/images/projects/cyclopedia.jpg" },
-    { name: "Browncode Portfolio", meta: "Core professional stack demonstration platform", icon: "👤", link: "https://browncode.name.ng", image: "/images/projects/browncode.jpg" },
-    { name: "E-commerce Store / Yotapoint", meta: "Fully operational transactional retail infrastructure", icon: "🛍", image: "/images/projects/yotapoint.jpg" }
+    { name: "IJ Stitches Fashion Website", meta: "Modern design & fashion portfolio ecosystem", icon: "🧵", image: "/ijs.jpg" },
+    { name: "The Cyclopedia", meta: "News portal, high-speed blog, and integrated media showcase", icon: "📰", image: "/the.jpg" },
+    { name: "Browncode Portfolio", meta: "Core professional stack demonstration platform", icon: "👤", link: "https://browncode.name.ng", image: "/logoo.png" },
+    { name: "E-commerce Store / Yotapoint", meta: "Fully operational transactional retail infrastructure", icon: "🛍", image: "/yota.jpg" }
 ];
 
 const FAQS = [
@@ -105,7 +105,7 @@ export default function CheapWebDeveloperNigeria() {
                             </p>
                             <div className="mt-8 flex flex-wrap gap-3">
                                 <Link
-                                    href="https://wa.me/qr/RX4M5D4PGB7CO1"
+                                    href="https://wa.me/2348142995114"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-block bg-[#65a30d] hover:bg-[#a3e635] text-[#0b0b0f] px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 transform hover:-translate-y-0.5 shadow-md shadow-[#65a30d]/20"
@@ -128,7 +128,7 @@ export default function CheapWebDeveloperNigeria() {
                         <div className="absolute -inset-4 bg-gradient-to-br from-[#7c3aed]/20 via-transparent to-[#a3e635]/10 blur-2xl rounded-3xl pointer-events-none" />
                         <div className="relative rounded-2xl overflow-hidden border border-[rgba(248,248,255,.08)] shadow-2xl">
                             <ImageWithFallback
-                                src="/images/hero-developer.jpg"
+                                src="/v.webp"
                                 alt="Web developer building a website in Abuja, Nigeria"
                                 className="w-full h-[320px] sm:h-[380px] object-cover grayscale-[15%] contrast-110"
                             />
@@ -137,8 +137,8 @@ export default function CheapWebDeveloperNigeria() {
                                 <span className="font-mono text-[10px] uppercase tracking-wider bg-[#0b0b0f]/80 backdrop-blur border border-[rgba(248,248,255,.1)] text-[#a3e635] px-3 py-1.5 rounded-full">
                                     Live in Abuja, FCT
                                 </span>
-                                <span className="font-mono text-[10px] uppercase tracking-wider bg-[#0b0b0f]/80 backdrop-blur border border-[rgba(248,248,255,.1)] text-[#f8f8ff] px-3 py-1.5 rounded-full">
-                                    Next.js
+                                <span className="font-mono text-[10px] uppercase tracking-wider bg-[#0b0b0f]/80 backdrop-blur border border-[rgba(248,248,255,.1)] text-[#a3e635] px-3 py-1.5 rounded-full">
+                                    {currentYear}
                                 </span>
                             </div>
                         </div>

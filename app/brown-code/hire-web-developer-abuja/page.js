@@ -162,7 +162,7 @@ export default function HireWebDeveloperAbuja() {
                                     rel="noopener noreferrer"
                                     className="inline-block bg-[#65a30d] hover:bg-[#a3e635] text-[#0b0b0f] px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 transform hover:-translate-y-0.5 shadow-md shadow-[#65a30d]/20"
                                 >
-                                    Get a quote
+                                    Start a project
                                 </Link>
 
 
