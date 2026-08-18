@@ -1,5 +1,6 @@
 import Footer from "@/components/footer";
 import Link from "next/link";
+import ImageWithFallback from "@/components/ImageWithFallback";
 
 // 1. VALUE-OPTIMIZED METADATA CONFIGURATION
 export const metadata = {
@@ -62,10 +63,10 @@ const COST_TABLE = [
 const SKILLS = ["Next.js & React.js", "Tailwind CSS", "Firebase Engine", "Node.js Architecture", "Vercel Cloud Hosting"];
 
 const PROJECTS = [
-    { name: "IJ Stitches Fashion Website", meta: "Modern design & fashion portfolio ecosystem", icon: "🧵" },
-    { name: "The Cyclopedia", meta: "News portal, high-speed blog, and integrated media showcase", icon: "📰" },
-    { name: "Browncode Portfolio", meta: "Core professional stack demonstration platform", icon: "👤", link: "https://browncode.name.ng" },
-    { name: "E-commerce Store / Yotapoint", meta: "Fully operational transactional retail infrastructure", icon: "🛍" }
+    { name: "IJ Stitches Fashion Website", meta: "Modern design & fashion portfolio ecosystem", icon: "🧵", image: "/images/projects/ij-stitches.jpg" },
+    { name: "The Cyclopedia", meta: "News portal, high-speed blog, and integrated media showcase", icon: "📰", image: "/images/projects/cyclopedia.jpg" },
+    { name: "Browncode Portfolio", meta: "Core professional stack demonstration platform", icon: "👤", link: "https://browncode.name.ng", image: "/images/projects/browncode.jpg" },
+    { name: "E-commerce Store / Yotapoint", meta: "Fully operational transactional retail infrastructure", icon: "🛍", image: "/images/projects/yotapoint.jpg" }
 ];
 
 const FAQS = [
@@ -88,18 +89,60 @@ export default function CheapWebDeveloperNigeria() {
 
             <main className="max-w-5xl mx-auto px-4 py-16 sm:px-6 lg:py-24">
 
-                {/* Value Proposition Hero Banner */}
-                <header className="border-b border-[rgba(248,248,255,.07)] pb-12 mb-16">
-                    <div className="inline-flex items-center gap-2 bg-[#7c3aed]/10 border border-[#7c3aed]/20 rounded-full px-3 py-1 mb-4 text-xs font-mono text-[#a855f7]">
-                        <span className="w-2 h-2 rounded-full bg-[#a3e635] animate-pulse"></span> Maximize Capital Efficiency
+                {/* Value Proposition Hero Banner — now split with a visual */}
+                <header className="border-b border-[rgba(248,248,255,.07)] pb-16 mb-16">
+                    <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-10 items-center">
+                        <div>
+                            <div className="inline-flex items-center gap-2 bg-[#7c3aed]/10 border border-[#7c3aed]/20 rounded-full px-3 py-1 mb-4 text-xs font-mono text-[#a855f7]">
+                                <span className="w-2 h-2 rounded-full bg-[#a3e635] animate-pulse"></span> Maximize Capital Efficiency
+                            </div>
+                            <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+                                Cheap Web Developer in Nigeria <br />
+                                <span className="text-[rgba(248,248,255,.4)]">— Budget-Friendly, Professional Engineering.</span>
+                            </h1>
+                            <p className="text-base sm:text-lg text-[rgba(248,248,255,.4)] mt-6 leading-relaxed">
+                                If you are searching for a <strong className="text-[#f8f8ff] font-medium">cheap web developer in Nigeria</strong> who delivers enterprise-grade performance without the agency markup, you are in the right node. At <strong className="text-[#f8f8ff] font-medium">Browncode</strong>, I strip out the overhead to construct fast, secure, mobile-optimized sites at flat rates that fit your operational budget.
+                            </p>
+                            <div className="mt-8 flex flex-wrap gap-3">
+                                <Link
+                                    href="https://wa.me/qr/RX4M5D4PGB7CO1"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-block bg-[#65a30d] hover:bg-[#a3e635] text-[#0b0b0f] px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 transform hover:-translate-y-0.5 shadow-md shadow-[#65a30d]/20"
+                                >
+                                    Start a project
+                                </Link>
+
+                                <Link
+                                    href="#packages"
+                                    className="inline-flex items-center gap-2 border border-[rgba(248,248,255,.15)] hover:border-[rgba(248,248,255,.35)] text-[#f8f8ff] px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-colors"
+                                >
+                                    View pricing
+                                </Link>
+                            </div>
+                        </div>
                     </div>
-                    <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight max-w-4xl">
-                        Cheap Web Developer in Nigeria <br />
-                        <span className="text-[rgba(248,248,255,.4)]">— Budget-Friendly, Professional Engineering.</span>
-                    </h1>
-                    <p className="text-base sm:text-lg text-[rgba(248,248,255,.4)] mt-6 max-w-3xl leading-relaxed">
-                        If you are searching for a <strong className="text-[#f8f8ff] font-medium">cheap web developer in Nigeria</strong> who delivers enterprise-grade performance without the agency markup, you are in the right node. At <strong className="text-[#f8f8ff] font-medium">Browncode</strong>, I strip out the overhead to construct fast, secure, mobile-optimized sites at flat rates that fit your operational budget.
-                    </p>
+
+                    {/* Hero image */}
+                    <div className="relative">
+                        <div className="absolute -inset-4 bg-gradient-to-br from-[#7c3aed]/20 via-transparent to-[#a3e635]/10 blur-2xl rounded-3xl pointer-events-none" />
+                        <div className="relative rounded-2xl overflow-hidden border border-[rgba(248,248,255,.08)] shadow-2xl">
+                            <ImageWithFallback
+                                src="/images/hero-developer.jpg"
+                                alt="Web developer building a website in Abuja, Nigeria"
+                                className="w-full h-[320px] sm:h-[380px] object-cover grayscale-[15%] contrast-110"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0f] via-transparent to-transparent" />
+                            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                                <span className="font-mono text-[10px] uppercase tracking-wider bg-[#0b0b0f]/80 backdrop-blur border border-[rgba(248,248,255,.1)] text-[#a3e635] px-3 py-1.5 rounded-full">
+                                    Live in Abuja, FCT
+                                </span>
+                                <span className="font-mono text-[10px] uppercase tracking-wider bg-[#0b0b0f]/80 backdrop-blur border border-[rgba(248,248,255,.1)] text-[#f8f8ff] px-3 py-1.5 rounded-full">
+                                    Next.js
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </header>
 
                 {/* Grid-Based Value Matrix Block (DARK #11111a) */}
@@ -116,7 +159,7 @@ export default function CheapWebDeveloperNigeria() {
                 </section>
 
                 {/* Tabular Budget Specification Sheet (DARK2 #18182a layout matrix) */}
-                <section className="bg-[#18182a] border border-[rgba(248,248,255,.07)] rounded-2xl p-6 sm:p-8 mb-20 shadow-2xl">
+                <section id="packages" className="bg-[#18182a] border border-[rgba(248,248,255,.07)] rounded-2xl p-6 sm:p-8 mb-20 shadow-2xl">
                     <h2 className="text-xl font-extrabold tracking-tight text-[#f8f8ff] mb-2">Affordable Website Packages</h2>
                     <p className="text-xs text-[rgba(248,248,255,.4)] mb-6">Fully transparent pricing matrices designed to scale with your project parameters.</p>
 
@@ -157,14 +200,23 @@ export default function CheapWebDeveloperNigeria() {
                     </div>
                 </section>
 
-                {/* Portfolio Showcase Section Grid */}
+                {/* Portfolio Showcase Section Grid — now with project imagery */}
                 <section className="mb-20">
                     <h2 className="text-xl font-extrabold tracking-tight text-[#f8f8ff] mb-6">Production Logs — Verified Platform Deliveries</h2>
                     <div className="grid sm:grid-cols-2 gap-4">
                         {PROJECTS.map((project, idx) => (
-                            <div key={idx} className="bg-[#11111a] border border-[rgba(248,248,255,.07)] p-4 rounded-xl flex items-start gap-4">
-                                <span className="text-xl p-2 bg-[#0b0b0f] rounded-lg border border-[rgba(248,248,255,.07)] shrink-0">{project.icon}</span>
-                                <div className="space-y-1">
+                            <div key={idx} className="group bg-[#11111a] border border-[rgba(248,248,255,.07)] rounded-xl overflow-hidden hover:border-[rgba(248,248,255,.18)] transition-colors">
+                                <div className="relative h-40 bg-[#0b0b0f] overflow-hidden">
+                                    <ImageWithFallback
+                                        src={project.image}
+                                        alt={project.name}
+                                        className="w-full h-full object-cover opacity-70 grayscale-[20%] group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+                                    />
+                                    <span className="absolute top-3 left-3 text-lg p-1.5 bg-[#0b0b0f]/85 backdrop-blur rounded-lg border border-[rgba(248,248,255,.1)]">
+                                        {project.icon}
+                                    </span>
+                                </div>
+                                <div className="p-4 space-y-1">
                                     {project.link ? (
                                         <Link href={project.link} className="text-xs font-bold text-[#a855f7] underline hover:text-[#7c3aed] block transition-colors">
                                             {project.name}
