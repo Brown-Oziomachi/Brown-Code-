@@ -67,6 +67,15 @@ function normalizeImageSrc(value) {
 }
 
 export default function ServiceDetail({ service }) {
+  // Falls back to the first few provide titles if provideHighlights isn't
+  // set yet, so older service entries still render something beside the image.
+  const highlights =
+    service.provideHighlights?.length > 0
+      ? service.provideHighlights
+      : service.provide
+          ?.slice(0, 3)
+          .map((item) => (typeof item === "object" ? item.title : item)) ?? [];
+
   return (
     <>
      <nav className="sticky top-0 z-40 bg-[#0b0b0f]/85 backdrop-blur border-b border-[rgba(248,248,255,.07)]">
@@ -154,41 +163,58 @@ export default function ServiceDetail({ service }) {
         </div>
       </section>
 
-      {/* Second body image — full-width photo break, only renders once
-          service.secondImage is set. Same object-fit fix as the hero image. */}
+      {/* Second image — two-column photo + text break. The photo sits on
+          one side and a short heading/paragraph on the other, instead of
+          a bare full-width image with nothing beside it. */}
       {service.secondImage &&
         (() => {
           const secondSrc = normalizeImageSrc(service.secondImage);
           if (!secondSrc) return null;
           return (
-            <div className="service-detail__body-image">
-              <Image
-                src={secondSrc}
-                alt={`${service.title} in practice`}
-                fill={true}
-                sizes="100vw"
-                style={{ objectFit: "cover", objectPosition: "center" }}
-              />
-            </div>
+            <section className="service-detail__section service-detail__second-block">
+              <div className="service-detail__second-image">
+                <Image
+                  src={secondSrc}
+                  alt={`${service.title} in practice`}
+                  fill={true}
+                  sizes="(max-width: 900px) 100vw, 50vw"
+                  style={{ objectFit: "cover", objectPosition: "center" }}
+                />
+              </div>
+              <div className="service-detail__second-text">
+                {service.secondImageHeading && (
+                  <h3 className="service-detail__second-heading">
+                    {service.secondImageHeading}
+                  </h3>
+                )}
+                {service.secondImageText && (
+                  <p className="service-detail__second-body">
+                    {service.secondImageText}
+                  </p>
+                )}
+              </div>
+            </section>
           );
         })()}
 
-      {/* What I provide — optional image sits beside the checklist on
-          desktop (pass service.provideImage). Stacks on mobile. */}
+      {/* What I provide — intro paragraph, then (if provideImage is set) the
+          photo sits beside a short quick-scan highlight list, with the full
+          Microsoft-docs-style card grid rendered full-width underneath.
+          service.provide items can be plain strings (title only) or
+          { title, description } objects for richer cards. */}
       <section className="service-detail__section">
         <h2 className="service-detail__section-heading">What I provide</h2>
-        <div
-          className={
-            service.provideImage
-              ? "service-detail__provide-layout service-detail__provide-layout--with-image"
-              : "service-detail__provide-layout"
-          }
-        >
-          {service.provideImage &&
-            (() => {
-              const provideSrc = normalizeImageSrc(service.provideImage);
-              if (!provideSrc) return null;
-              return (
+        <p className="service-detail__section-body service-detail__provide-intro">
+          {service.provideIntro ||
+            "Everything below is included as part of the engagement — not sold back to you as add-ons."}
+        </p>
+
+        {service.provideImage &&
+          (() => {
+            const provideSrc = normalizeImageSrc(service.provideImage);
+            if (!provideSrc) return null;
+            return (
+              <div className="service-detail__provide-highlight-layout">
                 <div className="service-detail__provide-image-wrap">
                   <div className="service-detail__provide-image">
                     <Image
@@ -198,16 +224,62 @@ export default function ServiceDetail({ service }) {
                       sizes="(max-width: 900px) 100vw, 40vw"
                       style={{ objectFit: "cover", objectPosition: "center" }}
                     />
+                    {service.provideImageCaption && (
+                      <div className="service-detail__provide-image-overlay">
+                        <span className="service-detail__provide-image-caption">
+                          {service.provideImageCaption}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
-              );
-            })()}
 
-          <ul className="service-detail__checklist">
-            {service.provide.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
+                {highlights.length > 0 && (
+                  <ul className="service-detail__provide-highlights">
+                    {highlights.map((h) => (
+                      <li key={h}>
+                        <span
+                          className="service-detail__provide-highlight-icon"
+                          aria-hidden="true"
+                        >
+                          ✓
+                        </span>
+                        {h}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })()}
+
+        <div className="service-detail__provide-grid">
+          {service.provide.map((item, i) => {
+            const isRich = typeof item === "object" && item !== null;
+            const title = isRich ? item.title : item;
+            const description = isRich ? item.description : null;
+
+            return (
+              <div className="service-detail__provide-card" key={title + i}>
+                <span
+                  className="service-detail__provide-icon"
+                  aria-hidden="true"
+                >
+                  ✓
+                </span>
+                <div className="service-detail__provide-card-body">
+                  <h3 className="service-detail__provide-card-title">
+                    {title}
+                  </h3>
+                  {description && (
+                    <p className="service-detail__provide-card-desc">
+                      {description}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 

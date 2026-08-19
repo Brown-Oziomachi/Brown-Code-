@@ -115,20 +115,50 @@
     }
 }
 
-/* Second body image — full-bleed, no padding/radius, spans the full width
-   of the page (unlike the hero image, which stays padded and rounded). */
-.service-detail__body-image {
+/* Second image — two-column photo + text break */
+
+.service-detail__second-block {
+    display: grid;
+    grid-template-columns: minmax(280px, 48%) 1fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+}
+
+@media (max-width: 800px) {
+    .service-detail__second-block {
+        grid-template-columns: 1fr;
+    }
+}
+
+.service-detail__second-image {
     position: relative;
     width: 100%;
-    aspect-ratio: 15 / 5;
+    aspect-ratio: 4 / 3;
+    border-radius: 6px;
     overflow: hidden;
-    padding: 20px;
+    border: 1px solid var(--sd-border);
+    background: var(--sd-surface);
 }
 
 @media (max-width: 700px) {
-    .service-detail__body-image {
-        aspect-ratio: 4 / 3.2;
+    .service-detail__second-image {
+        aspect-ratio: 16 / 10;
     }
+}
+
+.service-detail__second-heading {
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(1.3rem, 2.6vw, 1.75rem);
+    margin: 0 0 0.9rem;
+}
+
+.service-detail__second-body {
+    font-family: "Inter", sans-serif;
+    font-size: 1.02rem;
+    line-height: 1.7;
+    color: var(--sd-muted);
+    margin: 0;
+    max-width: 46ch;
 }
 
 .service-detail__section {
@@ -189,21 +219,25 @@
     margin: 0;
 }
 
-/* What I provide — optional image beside the checklist on desktop */
+/* What I provide */
 
-.service-detail__provide-layout {
-    display: block;
+.service-detail__provide-intro {
+    margin-bottom: 2rem;
+    font-size: 0.98rem;
 }
 
-.service-detail__provide-layout--with-image {
+/* Image + quick-scan highlights, side by side. Sits above the full grid. */
+
+.service-detail__provide-highlight-layout {
     display: grid;
-    grid-template-columns: minmax(240px, 38%) 1fr;
+    grid-template-columns: minmax(240px, 42%) 1fr;
     gap: clamp(1.5rem, 4vw, 3rem);
     align-items: center;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
 }
 
 @media (max-width: 900px) {
-    .service-detail__provide-layout--with-image {
+    .service-detail__provide-highlight-layout {
         grid-template-columns: 1fr;
     }
 }
@@ -228,41 +262,130 @@
     }
 }
 
-/* Checklist */
+.service-detail__provide-image-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 1.25rem;
+    background: linear-gradient(180deg,
+            rgba(10, 10, 11, 0) 55%,
+            rgba(10, 10, 11, 0.85) 100%);
+}
 
-.service-detail__checklist {
+.service-detail__provide-image-caption {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sd-text);
+    background: color-mix(in srgb, var(--sd-bg) 55%, transparent);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    padding: 0.45rem 0.9rem;
+    backdrop-filter: blur(4px);
+}
+
+.service-detail__provide-highlights {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.service-detail__provide-layout--with-image .service-detail__checklist {
-    grid-template-columns: 1fr;
+.service-detail__provide-highlights li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: "Inter", sans-serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--sd-text);
+}
+
+.service-detail__provide-highlight-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--sd-accent) 18%, transparent);
+    color: var(--sd-accent);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9rem;
+}
+
+/* Provide grid — Microsoft Learn / docs-style: bordered cards with an
+   icon badge, a title, and an optional one-line description per item.
+   Always full-width, regardless of whether provideImage is set. */
+
+.service-detail__provide-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
 }
 
 @media (max-width: 700px) {
-    .service-detail__checklist {
+    .service-detail__provide-grid {
         grid-template-columns: 1fr;
     }
 }
 
-.service-detail__checklist li {
-    font-family: "Inter", sans-serif;
-    font-size: 0.95rem;
-    color: var(--sd-text);
-    padding-left: 1.5rem;
-    position: relative;
+.service-detail__provide-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+    padding: 1.15rem 1.25rem;
+    border: 1px solid var(--sd-border);
+    border-radius: 8px;
+    background: var(--sd-surface);
+    transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
 }
 
-.service-detail__checklist li::before {
-    content: "✓";
-    position: absolute;
-    left: 0;
+.service-detail__provide-card:hover {
+    border-color: var(--sd-accent);
+    transform: translateY(-2px);
+    background: color-mix(in srgb, var(--sd-surface) 92%, var(--sd-accent) 8%);
+}
+
+.service-detail__provide-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--sd-accent) 18%, transparent);
     color: var(--sd-accent);
     font-family: "JetBrains Mono", monospace;
+    font-size: 0.8rem;
+    margin-top: 0.15rem;
+}
+
+.service-detail__provide-card-body {
+    min-width: 0;
+}
+
+.service-detail__provide-card-title {
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: var(--sd-text);
+    margin: 0 0 0.35rem;
+    line-height: 1.4;
+}
+
+.service-detail__provide-card-desc {
+    font-family: "Inter", sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--sd-muted);
+    margin: 0;
 }
 
 /* Stack */
