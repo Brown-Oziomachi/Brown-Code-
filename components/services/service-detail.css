@@ -1,0 +1,452 @@
+/* components/services/service-detail.css */
+
+.service-detail {
+    --sd-bg: var(--bg, #0a0a0b);
+    --sd-surface: var(--surface, #131315);
+    --sd-accent: var(--accent, #e8ff47);
+    --sd-text: var(--text, #f3f3f0);
+    --sd-muted: var(--muted, #9a9a94);
+    --sd-border: var(--border, rgba(255, 255, 255, 0.08));
+    background: var(--sd-bg);
+    color: var(--sd-text);
+}
+
+.service-detail__hero {
+    padding: clamp(4rem, 10vw, 7rem) clamp(1.25rem, 6vw, 5rem) clamp(2.5rem, 6vw, 4rem);
+    max-width: 900px;
+}
+
+.service-detail__number {
+    display: block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    color: var(--sd-accent);
+    margin-bottom: 1.5rem;
+}
+
+.service-detail__eyebrow {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sd-muted);
+    margin-bottom: 1rem;
+}
+
+.service-detail__headline {
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    margin: 0 0 1.25rem;
+}
+
+.service-detail__sub {
+    font-family: "Inter", sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.65;
+    color: var(--sd-muted);
+    max-width: 60ch;
+    margin: 0 0 2.25rem;
+}
+
+.service-detail__hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.service-detail__cta {
+    font-family: "Inter", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.85rem 1.5rem;
+    border-radius: 4px;
+    display: inline-block;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.service-detail__cta--primary {
+    background: var(--sd-accent);
+    color: #0a0a0b;
+}
+
+.service-detail__cta--ghost {
+    border: 1px solid var(--sd-border);
+    color: var(--sd-text);
+}
+
+.service-detail__cta:hover {
+    transform: translateY(-2px);
+}
+
+.service-detail__hero-image-wrap {
+    padding: 0 clamp(1.25rem, 6vw, 5rem);
+    margin: 0 0 clamp(2rem, 5vw, 3.5rem);
+}
+
+.service-detail__hero-image {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    aspect-ratio: 16 / 9;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--sd-border);
+    background: var(--sd-surface);
+}
+
+.service-detail__hero-image img {
+    object-fit: cover;
+    object-position: center;
+}
+
+@media (max-width: 700px) {
+    .service-detail__hero-image-wrap {
+        padding: 0 1rem;
+        margin-bottom: 1.75rem;
+    }
+
+    .service-detail__hero-image {
+        aspect-ratio: 4 / 3.2;
+        border-radius: 4px;
+    }
+}
+
+/* Second body image — full-bleed, no padding/radius, spans the full width
+   of the page (unlike the hero image, which stays padded and rounded). */
+.service-detail__body-image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 15 / 5;
+    overflow: hidden;
+    padding: 20px;
+}
+
+@media (max-width: 700px) {
+    .service-detail__body-image {
+        aspect-ratio: 4 / 3.2;
+    }
+}
+
+.service-detail__section {
+    padding: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 6vw, 5rem);
+    max-width: 1000px;
+    border-top: 1px solid var(--sd-border);
+}
+
+.service-detail__section-heading {
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin: 0 0 1.25rem;
+}
+
+.service-detail__section-body {
+    font-family: "Inter", sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--sd-muted);
+    max-width: 68ch;
+    margin: 0;
+}
+
+/* Benefits */
+
+.service-detail__benefits {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+@media (max-width: 700px) {
+    .service-detail__benefits {
+        grid-template-columns: 1fr;
+    }
+}
+
+.service-detail__benefit {
+    padding: 1.5rem;
+    border: 1px solid var(--sd-border);
+    border-radius: 4px;
+    background: var(--sd-surface);
+}
+
+.service-detail__benefit-title {
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
+    color: var(--sd-accent);
+}
+
+.service-detail__benefit-body {
+    font-family: "Inter", sans-serif;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--sd-muted);
+    margin: 0;
+}
+
+/* What I provide — optional image beside the checklist on desktop */
+
+.service-detail__provide-layout {
+    display: block;
+}
+
+.service-detail__provide-layout--with-image {
+    display: grid;
+    grid-template-columns: minmax(240px, 38%) 1fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+}
+
+@media (max-width: 900px) {
+    .service-detail__provide-layout--with-image {
+        grid-template-columns: 1fr;
+    }
+}
+
+.service-detail__provide-image-wrap {
+    width: 100%;
+}
+
+.service-detail__provide-image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--sd-border);
+    background: var(--sd-surface);
+}
+
+@media (max-width: 900px) {
+    .service-detail__provide-image {
+        aspect-ratio: 16 / 9;
+    }
+}
+
+/* Checklist */
+
+.service-detail__checklist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem 2rem;
+}
+
+.service-detail__provide-layout--with-image .service-detail__checklist {
+    grid-template-columns: 1fr;
+}
+
+@media (max-width: 700px) {
+    .service-detail__checklist {
+        grid-template-columns: 1fr;
+    }
+}
+
+.service-detail__checklist li {
+    font-family: "Inter", sans-serif;
+    font-size: 0.95rem;
+    color: var(--sd-text);
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.service-detail__checklist li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--sd-accent);
+    font-family: "JetBrains Mono", monospace;
+}
+
+/* Stack */
+
+.service-detail__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+.service-detail__stack-item {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8rem;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid var(--sd-border);
+    border-radius: 999px;
+    color: var(--sd-muted);
+}
+
+/* Process section — rendered on top of a background image */
+
+.service-detail__process-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.service-detail__process-section--image {
+    padding-top: clamp(3.5rem, 8vw, 6rem);
+    padding-bottom: clamp(3.5rem, 8vw, 6rem);
+}
+
+.service-detail__process-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.service-detail__process-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+            rgba(10, 10, 11, 0.88) 0%,
+            rgba(10, 10, 11, 0.82) 100%);
+}
+
+.service-detail__process-content {
+    position: relative;
+    z-index: 1;
+}
+
+.service-detail__process-section--image .service-detail__section-heading,
+.service-detail__process-section--image .service-detail__process-title {
+    color: var(--sd-text);
+}
+
+.service-detail__process-section--image .service-detail__process-body {
+    color: rgba(243, 243, 240, 0.75);
+}
+
+.service-detail__process {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.75rem;
+}
+
+.service-detail__process-num {
+    display: block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.8rem;
+    color: var(--sd-accent);
+    margin-bottom: 0.5rem;
+}
+
+.service-detail__process-title {
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0 0 0.4rem;
+}
+
+.service-detail__process-body {
+    font-family: "Inter", sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--sd-muted);
+    margin: 0;
+}
+
+/* Testimonial */
+
+.service-detail__testimonial {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.service-detail__testimonial-quote {
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(1.3rem, 3vw, 1.75rem);
+    line-height: 1.5;
+    color: var(--sd-text);
+    margin: 0 0 1.25rem;
+}
+
+.service-detail__testimonial-author {
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    color: var(--sd-muted);
+    margin: 0;
+}
+
+.service-detail__testimonial-role {
+    color: var(--sd-muted);
+}
+
+/* FAQ */
+
+.service-detail__faq {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 68ch;
+}
+
+.service-detail__faq-item {
+    border: 1px solid var(--sd-border);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    background: var(--sd-surface);
+}
+
+.service-detail__faq-question {
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 0.98rem;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.service-detail__faq-question::-webkit-details-marker {
+    display: none;
+}
+
+.service-detail__faq-question::after {
+    content: "+";
+    font-family: "JetBrains Mono", monospace;
+    color: var(--sd-accent);
+    font-size: 1.1rem;
+    transition: transform 0.2s ease;
+}
+
+.service-detail__faq-item[open] .service-detail__faq-question::after {
+    transform: rotate(45deg);
+}
+
+.service-detail__faq-answer {
+    font-family: "Inter", sans-serif;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--sd-muted);
+    margin: 0.75rem 0 0;
+}
+
+/* Closing CTA */
+
+.service-detail__closing {
+    padding: clamp(3rem, 8vw, 5rem) clamp(1.25rem, 6vw, 5rem);
+    border-top: 1px solid var(--sd-border);
+    text-align: center;
+}
+
+.service-detail__closing-heading {
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    margin: 0 0 1rem;
+}
+
+.service-detail__closing-sub {
+    font-family: "Inter", sans-serif;
+    font-size: 1.05rem;
+    color: var(--sd-muted);
+    max-width: 50ch;
+    margin: 0 auto 2rem;
+}

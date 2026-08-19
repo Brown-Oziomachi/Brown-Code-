@@ -1,6 +1,8 @@
 import Footer from "@/components/footer";
 import Link from "next/link";
 import ImageWithFallback from "@/components/ImageWithFallback";
+import ServicesSection from "@/components/services/ServicesSection";
+import "@/components/services/services.css";
 
 // 1. METADATA — written for link-preview sharing (WhatsApp/social)
 export const metadata = {
@@ -162,7 +164,7 @@ const FAQS = [
 </style>
 export default function GetAWebsitePage() {
     return (
-        <div className="min-h-screen bg-[#0e0e17] text-[#f8f8ff] antialiased selection:bg-[#7c3aed] selection:text-[#f8f8ff]">
+        <div className="services-section min-h-screen text-[#f8f8ff] antialiased selection:bg-[#7c3aed] selection:text-[#f8f8ff]">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -260,7 +262,7 @@ export default function GetAWebsitePage() {
                     {AUDIENCES.map((a, idx) => (
                         <div
                             key={idx}
-                            className="rounded-2xl overflow-hidden flex flex-col bg-[#11111a] border border-[rgba(248,248,255,.07)] shadow-xl"
+                            className="rounded-2xl overflow-hidden flex flex-col  border border-[rgba(248,248,255,.07)] shadow-xl"
                         >
                             <div className="relative h-44 w-full">
                                 <ImageWithFallback
@@ -307,8 +309,10 @@ export default function GetAWebsitePage() {
                         </div>
                     ))}
                 </div>
-            </section>
-
+                </section>
+                
+                <ServicesSection mode="home" />
+                
             {/* Portfolio preview */}
             <section id="portfolio" className="mb-24">
                 <div className="text-center max-w-xl mx-auto mb-10">
