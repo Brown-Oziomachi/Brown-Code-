@@ -889,6 +889,15 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
           <a href="/" className="ap-nav__brand">
             brown<em>.</em>dev
           </a>
+           <Link
+              href="https://github.com/sponsors/Brown-Oziomachi/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ap-nav__back"
+          >
+              <Heart size={12} strokeWidth={2.5} fill="currentColor" />
+              Sponsor
+          </Link>
           <a href="/blog" className="ap-nav__back">
             <ArrowLeft size={13} />
             Blog
@@ -1110,6 +1119,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
               categoryLabel={CATEGORY_LABELS[getCategoryKey(article)]}
               articleSlug={article.slug}
             />
+         
 
             {/* Mobile share */}
             <div className="ap-share-mobile">

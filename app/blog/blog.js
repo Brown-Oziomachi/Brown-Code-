@@ -5,6 +5,8 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, Search, X, Mail } from "lucide-rea
 import { useEffect, useMemo, useState } from "react";
 import Footer from "@/components/footer";
 import { CATEGORIES, CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
+import Link from "next/link";
+import { Heart } from "lucide-react";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -477,8 +479,22 @@ export default function BlogListClient({ articles }) {
             `}</style>
 
             <div className="bl-page">
+
                 <nav className="bl-nav">
-                    <a href="/" className="bl-nav__brand">brown<em>.</em>dev</a>
+                    <a href="/" className="bl-nav__brand">
+                        brown<em>.</em>dev
+                    </a>
+
+                    <Link
+                        href="https://github.com/sponsors/Brown-Oziomachi/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bl-nav__back"
+                    >
+                        <Heart size={12} strokeWidth={2.5} fill="currentColor" />
+                        Sponsor
+                    </Link>
+
                     <a href="/portfolio" className="bl-nav__back">
                         <ArrowLeft size={13} />
                         Portfolio

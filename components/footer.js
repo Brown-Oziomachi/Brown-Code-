@@ -22,6 +22,7 @@ export default function Footer() {
         { label: "Terms", href: "/terms" },
         { label: "Sitemap", href: "/sitemap-html" },
         { label: "Advertise", href: "/advertise" },
+        { label: "Sponsor ", href: "https://github.com/sponsors/Brown-Oziomachi/" },
     ];
 
     const socials = [

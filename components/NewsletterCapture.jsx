@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Mail, CheckCircle2 } from "lucide-react";
 import { doc, setDoc, arrayUnion, serverTimestamp } from "firebase/firestore";
 import { db1 } from "@/config/firebase.config1";
+import Link from "next/link";
+import { Heart } from "lucide-react";
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -260,8 +262,10 @@ export default function NewsletterCapture({
             >
               {status === "submitting" ? "Subscribing…" : "Subscribe"}
             </button>
+       
           </form>
           {status === "error" && <p className="nc-error">{errorMsg}</p>}
+
         </div>
       )}
     </>

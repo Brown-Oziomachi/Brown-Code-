@@ -89,13 +89,13 @@ export default function ServiceDetail({ service }) {
                         <Link href="/faq" className="hover:text-[#f8f8ff] transition-colors">FAQ</Link>
                         <Link href="/terms" className="hover:text-[#f8f8ff] transition-colors">Terms</Link>
                     </div>
-                    <Link
-                        href="https://wa.me/2348142995114"                        
+                   <Link
+                        href="https://github.com/sponsors/Brown-Oziomachi/" 
                         target="_blank"
                         rel="noopener noreferrer"
                         className="bg-[#65a30d] hover:bg-[#a3e635] text-[#0b0b0f] px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors"
                     >
-                        WhatsApp
+                        Sponsor
                     </Link>
                 </div>
             </nav>

@@ -457,8 +457,8 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
                             )}
                         </div>
                         <div className="nb-drawer__footer">
-                            <Link href="/bc/contact" className="nb-drawer__cta" onClick={() => setIsMenuOpen(false)}>
-                                Get in touch
+                            <Link href="https://github.com/sponsors/Brown-Oziomachi/" className="nb-drawer__cta" onClick={() => setIsMenuOpen(false)} target="_blank">
+                               SPONSOR SIR BROWN AD
                             </Link>
                         </div>
                     </div>

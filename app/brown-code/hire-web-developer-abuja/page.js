@@ -169,29 +169,29 @@ export default function GetAWebsitePage() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
             />
-
             {/* Sticky nav */}
-            <nav className="sticky top-0 z-40 bg-[#0b0b0f]/85 backdrop-blur border-b border-[rgba(248,248,255,.07)]">
+           <nav className="sticky top-0 z-40 bg-[#0b0b0f]/85 backdrop-blur border-b border-[rgba(248,248,255,.07)]">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
                     <Link href="/" className="ft-wordmark">
                         brown<em>.</em>dev
                     </Link>
                     <div className="hidden md:flex items-center gap-6 text-xs font-mono uppercase tracking-wider text-[rgba(248,248,255,.5)]">
-                        <a href="#prices" className="hover:text-[#f8f8ff] transition-colors">Pricing</a>
-                        <a href="#portfolio" className="hover:text-[#f8f8ff] transition-colors">Portfolio</a>
-                        <a href="#faq" className="hover:text-[#f8f8ff] transition-colors">FAQ</a>
+                        <Link href="/brown-code/hire-web-developer-abuja" className="hover:text-[#f8f8ff] transition-colors">Pricing</Link>
+                        <Link href="/portfolio" className="hover:text-[#f8f8ff] transition-colors">Portfolio</Link>
+                        <Link href="/faq" className="hover:text-[#f8f8ff] transition-colors">FAQ</Link>
                         <Link href="/terms" className="hover:text-[#f8f8ff] transition-colors">Terms</Link>
                     </div>
-                    <Link
-                        href={`${WA_BASE}?text=Hi%2C%20I%20was%20sent%20this%20page%20and%20I%27d%20like%20to%20talk%20about%20a%20website`}
+                   <Link
+                        href="https://github.com/sponsors/Brown-Oziomachi/" 
                         target="_blank"
                         rel="noopener noreferrer"
                         className="bg-[#65a30d] hover:bg-[#a3e635] text-[#0b0b0f] px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors"
                     >
-                        WhatsApp
+                        Sponsor
                     </Link>
                 </div>
             </nav>
+
 
             {/* Floating WhatsApp button */}
             <Link

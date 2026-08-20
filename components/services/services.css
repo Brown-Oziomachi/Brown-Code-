@@ -45,6 +45,38 @@
     margin: 0;
 }
 
+/* ---------- Stats strip ---------- */
+
+.services-section__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(1.5rem, 5vw, 3.5rem);
+    padding: 1.5rem 0;
+    margin: 0 0 clamp(2.5rem, 5vw, 4rem);
+    border-top: 1px solid var(--sv-border);
+    border-bottom: 1px solid var(--sv-border);
+}
+
+.services-section__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.services-section__stat-num {
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    color: var(--sv-accent);
+    line-height: 1;
+}
+
+.services-section__stat-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--sv-muted);
+}
+
 .services-section__label {
     font-family: "JetBrains Mono", monospace;
     font-size: 0.7rem;
@@ -81,6 +113,56 @@
     }
 }
 
+/* ---------- Callout banner ---------- */
+
+.services-section__banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: clamp(1.75rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2.5rem);
+    margin: clamp(2.5rem, 5vw, 3.5rem) 0 0;
+    border: 1px solid var(--sv-border);
+    border-radius: 10px;
+    background: var(--sv-surface);
+}
+
+.services-section__banner-heading {
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+    margin: 0 0 0.4rem;
+    color: var(--sv-text);
+}
+
+.services-section__banner-sub {
+    font-family: "Inter", sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--sv-muted);
+    margin: 0;
+    max-width: 46ch;
+}
+
+.services-section__banner-cta {
+    flex-shrink: 0;
+    font-family: "Inter", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    background: var(--sv-accent);
+    color: #0a0a0b;
+    transition: transform 0.2s ease;
+}
+
+.services-section__banner-cta:hover {
+    transform: translateY(-2px);
+}
+
 .services-section__footer {
     margin-top: 2.5rem;
     display: flex;
@@ -100,7 +182,52 @@
     border-color: var(--sv-accent);
 }
 
+/* ---------- Closing line ---------- */
+
+.services-section__closing {
+    margin: clamp(3rem, 6vw, 4.5rem) auto 0;
+    padding-top: clamp(2rem, 5vw, 3rem);
+    max-width: 56ch;
+    text-align: center;
+    border-top: 1px solid var(--sv-border);
+    font-family: "DM Serif Display", serif;
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    line-height: 1.5;
+    color: var(--sv-muted);
+}
+
 /* ---------- Card ---------- */
+
+/* Wraps each card + its meta row so the grid gap applies between whole
+   units, not just between the bare <Link> cards. */
+.service-card-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.service-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0 0.1rem;
+}
+
+.service-card__meta-tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+    color: var(--sv-muted);
+    padding: 0.3rem 0.65rem;
+    border: 1px solid var(--sv-border);
+    border-radius: 999px;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.service-card-wrap:hover .service-card__meta-tag {
+    border-color: var(--sv-accent);
+    color: var(--sv-text);
+}
 
 .service-card {
     position: relative;
@@ -262,6 +389,22 @@
 
     .services-section__intro {
         margin-bottom: 2rem;
+    }
+
+    .services-section__stats {
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .services-section__banner {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 2rem;
+    }
+
+    .services-section__banner-cta {
+        width: 100%;
+        text-align: center;
     }
 
     .services-section__grid {
