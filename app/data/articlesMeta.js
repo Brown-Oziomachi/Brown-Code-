@@ -653,12 +653,12 @@ export const articlesMeta = {
             "Sir Brown AD",
         ],
     },
-    // "kuda-fake-alert-fake-customer-care-scam-nigeria": {
-    //     category: "security",
-    //     metaTitle: "Kuda Fake Alert & Fake Customer Care Scams Explained | Brown Code",
-    //     metaDescription: "Sir Brown AD explains how Kuda fake alert scams and fake customer-care impersonation accounts work, and how to verify what's real.",
-    //     keywords: ["kuda fake alert", "kuda fake transfer", "kuda scam Nigeria", "kuda fake customer care", "kuda impersonation scam", "is kuda alert real", "kuda phishing scam", "how to verify kuda transfer", "fake alert app Nigeria", "Sir Brown AD"],
-    // },
+    "kuda-fake-alert-fake-customer-care-scam-nigeria": {
+        category: "security",
+        metaTitle: "Kuda Fake Alert & Fake Customer Care Scams Explained | Brown Code",
+        metaDescription: "Sir Brown AD explains how Kuda fake alert scams and fake customer-care impersonation accounts work, and how to verify what's real.",
+        keywords: ["kuda fake alert", "kuda fake transfer", "kuda scam Nigeria", "kuda fake customer care", "kuda impersonation scam", "is kuda alert real", "kuda phishing scam", "how to verify kuda transfer", "fake alert app Nigeria", "Sir Brown AD"],
+    },
     // "sim-swap-fraud-nigeria-how-it-works": {
     //     category: "security",
     //     metaTitle: "SIM Swap Fraud in Nigeria: How It Works | Brown Code",

@@ -2,21 +2,40 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import {
     Menu, X, ChevronDown, Terminal, Cpu, Network,
     Globe, Layers, Server, Newspaper, TrendingUp, ExternalLink,
+    Sparkles, ArrowUpRight,
 } from "lucide-react";
+import { featuredServices } from "@/app/data/services";
 
-export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSection, scrollToSection }) {
+export default function Navbar() {
+    const pathname = usePathname();
+    const router = useRouter();
+
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isJobOpen, setIsJobOpen] = useState(false);
     const [isJobOpenMobile, setIsJobOpenMobile] = useState(false);
     const [isNewsOpen, setIsNewsOpen] = useState(false);
     const [isNewsOpenMobile, setIsNewsOpenMobile] = useState(false);
+    const [isServicesOpen, setIsServicesOpen] = useState(false);
+    const [isServicesOpenMobile, setIsServicesOpenMobile] = useState(false);
+
     const newsRef = useRef(null);
     const jobRef = useRef(null);
+    const servicesRef = useRef(null);
     const navRef = useRef(null);
 
-    const navItems = ["home", "about", "projects", "testimonials", "contact", "blog", "tech-news"];
+    // Sections that live on the homepage and are reached by scrolling
+    const anchorItems = ["home", "about", "projects", "testimonials", "contact"];
+    // Standalone routed pages
+    const linkItems = ["blog", "tech-news"];
+    const navItems = [...anchorItems, ...linkItems];
+
+    const isLinkItem = (item) => linkItems.includes(item);
+    const fmtItem = (item) => item.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
 
     const jobOptions = [
         { id: "UTL-01", title: "JobCopilot", description: "Automated engine to batch-submit application data packets across job boards.", icon: <Network size={14} />, href: "https://jobcopilot.com/?linkId=lp_494205&sourceId=brown-oziomachi&tenantId=jobcopilot", external: true, tag: "Auto Apply" },
@@ -32,15 +51,39 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
         { id: "NEWS-03", title: "Labor Automation Deficit", description: "Stats on high-density anxiety profiles concerning AI resource replacement.", icon: <Globe size={14} />, href: "https://browncode.name.ng/news/nearly-two-thirds-of-young-adults-fear-ai-will-take-their-jobs--73sOIQLizN4Vs3O65pa2", tag: "Research" },
     ];
 
-    const isLinkItem = (item) => ["blog", "tech-news"].includes(item);
-    const fmtItem = (item) => item.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
+    // Built from your real services data — top 6 featured, plus a "view all" card
+    const serviceOptions = featuredServices.map((s) => ({
+        id: `SVC-${s.number}`,
+        title: s.title,
+        description: s.tagline,
+        icon: <Sparkles size={14} />,
+        href: `/services/${s.slug}`,
+        tag: s.number,
+    }));
 
-    // Click-outside handlers
+    // ── Scroll listener (self-contained, no parent needed) ──
+    useEffect(() => {
+        const onScroll = () => setIsScrolled(window.scrollY > 20);
+        onScroll();
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
+    // ── If we land on "/" with a hash, scroll to that section ──
+    useEffect(() => {
+        if (pathname === "/" && window.location.hash) {
+            const id = window.location.hash.slice(1);
+            const el = document.getElementById(id);
+            if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 80);
+        }
+    }, [pathname]);
+
+    // ── Click-outside handlers ──
     useEffect(() => {
         const h = (e) => { if (navRef.current && !navRef.current.contains(e.target)) setIsMenuOpen(false); };
         if (isMenuOpen) document.addEventListener("mousedown", h);
         return () => document.removeEventListener("mousedown", h);
-    }, [isMenuOpen, setIsMenuOpen]);
+    }, [isMenuOpen]);
 
     useEffect(() => {
         const h = (e) => { if (jobRef.current && !jobRef.current.contains(e.target)) setIsJobOpen(false); };
@@ -53,6 +96,24 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
         if (isNewsOpen) document.addEventListener("mousedown", h);
         return () => document.removeEventListener("mousedown", h);
     }, [isNewsOpen]);
+
+    useEffect(() => {
+        const h = (e) => { if (servicesRef.current && !servicesRef.current.contains(e.target)) setIsServicesOpen(false); };
+        if (isServicesOpen) document.addEventListener("mousedown", h);
+        return () => document.removeEventListener("mousedown", h);
+    }, [isServicesOpen]);
+
+    // ── Handles both "scroll on home" and "navigate then scroll" ──
+    const goToSection = (id) => {
+        if (id === "home" && pathname === "/") {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        } else if (pathname === "/") {
+            document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+        } else {
+            router.push(`/#${id}`);
+        }
+        setIsMenuOpen(false);
+    };
 
     const UtilCard = ({ item, onClick }) => {
         const inner = (
@@ -89,20 +150,53 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
         }
         .nb-inner {
           max-width: 1120px; margin: 0 auto; padding: 0 24px;
-          height: 60px; display: flex; align-items: center; justify-content: space-between;
+          height: 64px; display: flex; align-items: center; justify-content: space-between;
         }
 
-        /* Brand */
+        /* ── Brand / logo ── */
         .nb-brand {
-          font-family: var(--mono); font-size: 13px; font-weight: 500;
-          letter-spacing: 0.08em; color: var(--text-1); text-decoration: none;
-          flex-shrink: 0;
+          display: inline-flex; align-items: center; gap: 10px;
+          text-decoration: none; flex-shrink: 0;
         }
-        .nb-brand em { font-style: normal; color: var(--accent); }
+        .nb-brand__mark {
+          width: 30px; height: 30px; flex-shrink: 0;
+          display: flex; align-items: center; justify-content: center;
+          border: 1px solid var(--border-hi);
+          border-radius: 7px;
+          font-family: var(--serif);
+          font-size: 15px;
+          color: var(--accent);
+          background: linear-gradient(155deg, var(--surface), var(--bg));
+          transition: border-color 0.2s, transform 0.2s;
+        }
+        .nb-brand:hover .nb-brand__mark {
+          border-color: var(--accent);
+          transform: rotate(-4deg);
+        }
+        .nb-brand__word {
+          font-family: var(--serif);
+          font-size: 17px;
+          letter-spacing: -0.01em;
+          color: var(--text-1);
+          line-height: 1;
+        }
+        .nb-brand__word em {
+          font-style: normal;
+          color: var(--accent);
+        }
+        .nb-brand__suffix {
+          font-family: var(--mono);
+          font-size: 9px;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--text-3);
+          margin-top: 2px;
+        }
+        .nb-brand__stack { display: flex; flex-direction: column; gap: 0; }
 
         /* Desktop links */
         .nb-links { display: flex; align-items: center; gap: 2px; }
-        @media (max-width: 768px) { .nb-links { display: none; } }
+        @media (max-width: 900px) { .nb-links { display: none; } }
 
         .nb-link {
           font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
@@ -134,7 +228,7 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
         .nb-hamburger {
           display: none; align-items: center; gap: 6px;
         }
-        @media (max-width: 768px) { .nb-hamburger { display: flex; } }
+        @media (max-width: 900px) { .nb-hamburger { display: flex; } }
 
         .nb-ham-btn {
           display: inline-flex; align-items: center; gap: 4px;
@@ -152,7 +246,7 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
 
         /* ── Mega dropdown ── */
         .nb-mega {
-          position: fixed; inset-x: 0; top: 60px;
+          position: fixed; inset-x: 0; top: 64px;
           background: rgba(17,17,19,0.98); backdrop-filter: blur(16px);
           border-bottom: 1px solid var(--border); z-index: 49;
           font-family: var(--mono);
@@ -178,14 +272,24 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
           transition: color 0.15s, border-color 0.15s;
         }
         .nb-mega__close:hover { color: var(--text-1); border-color: var(--border-hi); }
-        .nb-mega__grid {
-          display: grid; gap: 12px;
-        }
+        .nb-mega__grid { display: grid; gap: 12px; }
+        .nb-mega__grid--6 { grid-template-columns: repeat(3,1fr); }
         .nb-mega__grid--5 { grid-template-columns: repeat(5,1fr); }
         .nb-mega__grid--3 { grid-template-columns: repeat(3,1fr); }
         @media (max-width: 900px) {
+          .nb-mega__grid--6 { grid-template-columns: 1fr 1fr; }
           .nb-mega__grid--5 { grid-template-columns: repeat(3,1fr); }
           .nb-mega__grid--3 { grid-template-columns: 1fr 1fr; }
+        }
+        .nb-mega__footer {
+          margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border);
+          display: flex; justify-content: flex-end;
+        }
+        .nb-mega__viewall {
+          display: inline-flex; align-items: center; gap: 6px;
+          font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+          text-transform: uppercase; color: var(--accent);
+          text-decoration: none;
         }
 
         /* Util card */
@@ -196,25 +300,16 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
           transition: border-color 0.15s;
           cursor: pointer;
         }
-        .nb-util-card:hover { border-color: rgba(232,255,71,0.3); }
+        .nb-util-card:hover { border-color: var(--accent-bdr); }
         .nb-util-card__top {
           display: flex; justify-content: space-between; align-items: center;
           padding-bottom: 8px; border-bottom: 1px solid var(--border);
         }
-        .nb-util-card__id {
-          font-size: 8px; letter-spacing: 0.1em; color: var(--text-3);
-        }
-        .nb-util-card__tag {
-          font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase;
-          color: var(--accent);
-        }
-        .nb-util-card__icon {
-          color: var(--text-3); margin-top: 4px;
-        }
+        .nb-util-card__id { font-size: 8px; letter-spacing: 0.1em; color: var(--text-3); }
+        .nb-util-card__tag { font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+        .nb-util-card__icon { color: var(--text-3); margin-top: 4px; }
         .nb-util-card:hover .nb-util-card__icon { color: var(--accent); }
-        .nb-util-card__title {
-          font-size: 11px; font-weight: 600; color: var(--text-1);
-        }
+        .nb-util-card__title { font-size: 11px; font-weight: 600; color: var(--text-1); }
         .nb-util-card:hover .nb-util-card__title { color: var(--accent); }
         .nb-util-card__desc {
           font-size: 10px; color: var(--text-3); line-height: 1.6;
@@ -228,7 +323,7 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
           transition: color 0.15s, border-color 0.15s;
         }
         .nb-util-card:hover .nb-util-card__cta {
-          color: var(--accent); border-color: rgba(232,255,71,0.3);
+          color: var(--accent); border-color: var(--accent-bdr);
         }
 
         /* Mobile drawer */
@@ -267,19 +362,17 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
           font-family: var(--mono);
         }
         .nb-drawer__link:hover { background: var(--bg); color: var(--text-1); }
-        .nb-drawer__footer {
-          padding: 16px; border-top: 1px solid var(--border);
-        }
+        .nb-drawer__footer { padding: 16px; border-top: 1px solid var(--border); }
         .nb-drawer__cta {
           display: block; width: 100%; text-align: center;
           font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
           text-transform: uppercase; padding: 10px;
-          background: var(--accent-dim, rgba(232,255,71,0.08));
-          border: 1px solid rgba(232,255,71,0.25);
+          background: var(--accent-dim);
+          border: 1px solid var(--accent-bdr);
           border-radius: var(--radius); color: var(--accent);
           text-decoration: none; transition: background 0.15s;
         }
-        .nb-drawer__cta:hover { background: rgba(232,255,71,0.14); }
+        .nb-drawer__cta:hover { background: var(--accent-dim); }
 
         /* Mobile mega panels */
         .nb-mob-panel {
@@ -287,7 +380,7 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
           background: var(--surface); border-top: 1px solid var(--border);
           overflow-y: auto; z-index: 50;
           font-family: var(--mono);
-          max-height: calc(100vh - 60px);
+          max-height: calc(100vh - 64px);
         }
         .nb-mob-panel__inner { padding: 20px 16px; }
         .nb-mob-panel__title {
@@ -306,8 +399,14 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
             <nav className={`nb-root${isScrolled ? " nb-root--scrolled" : ""}`}>
                 <div className="nb-inner">
 
-                    {/* Brand */}
-                    <Link href="/" className="nb-brand">brown<em>.</em>dev</Link>
+                    {/* Brand / logo */}
+                    <Link href="/" className="nb-brand">
+                        <span className="nb-brand__mark">B</span>
+                        <span className="nb-brand__stack">
+                            <span className="nb-brand__word">rown<em>.</em>dev</span>
+                            <span className="nb-brand__suffix">Full-Stack Studio</span>
+                        </span>
+                    </Link>
 
                     {/* Desktop links */}
                     <div className="nb-links">
@@ -316,26 +415,37 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
                                 <Link
                                     key={item}
                                     href={`/${item}`}
-                                    className={`nb-link${activeSection === item ? " nb-link--active" : ""}`}
+                                    className={`nb-link${pathname === `/${item}` ? " nb-link--active" : ""}`}
                                 >
                                     {fmtItem(item)}
                                 </Link>
                             ) : (
                                 <button
                                     key={item}
-                                    className={`nb-link${activeSection === item ? " nb-link--active" : ""}`}
-                                    onClick={() => scrollToSection(item)}
+                                    className="nb-link"
+                                    onClick={() => goToSection(item)}
                                 >
                                     {item}
                                 </button>
                             )
                         )}
 
+                        {/* Services dropdown */}
+                        <div ref={servicesRef} style={{ position: "relative" }}>
+                            <button
+                                className={`nb-dropdown-btn${isServicesOpen ? " nb-dropdown-btn--open" : ""}${pathname.startsWith("/services") ? " nb-link--active" : ""}`}
+                                onClick={() => { setIsServicesOpen(!isServicesOpen); setIsJobOpen(false); setIsNewsOpen(false); }}
+                            >
+                                Services
+                                <ChevronDown size={10} style={{ transition: "transform 0.2s", transform: isServicesOpen ? "rotate(180deg)" : "none" }} />
+                            </button>
+                        </div>
+
                         {/* Utilities dropdown */}
                         <div ref={jobRef} style={{ position: "relative" }}>
                             <button
                                 className={`nb-dropdown-btn${isJobOpen ? " nb-dropdown-btn--open" : ""}`}
-                                onClick={() => { setIsJobOpen(!isJobOpen); setIsNewsOpen(false); }}
+                                onClick={() => { setIsJobOpen(!isJobOpen); setIsNewsOpen(false); setIsServicesOpen(false); }}
                             >
                                 Utilities
                                 <ChevronDown size={10} style={{ transition: "transform 0.2s", transform: isJobOpen ? "rotate(180deg)" : "none" }} />
@@ -346,7 +456,7 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
                         <div ref={newsRef} style={{ position: "relative" }}>
                             <button
                                 className={`nb-dropdown-btn${isNewsOpen ? " nb-dropdown-btn--open" : ""}`}
-                                onClick={() => { setIsNewsOpen(!isNewsOpen); setIsJobOpen(false); }}
+                                onClick={() => { setIsNewsOpen(!isNewsOpen); setIsJobOpen(false); setIsServicesOpen(false); }}
                             >
                                 <Newspaper size={11} style={{ color: "var(--text-3)" }} />
                                 News
@@ -360,19 +470,13 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
                     <div className="nb-hamburger">
                         <button
                             className="nb-ham-btn"
-                            onClick={() => { setIsJobOpenMobile(!isJobOpenMobile); setIsNewsOpenMobile(false); setIsMenuOpen(false); }}
+                            onClick={() => { setIsServicesOpenMobile(!isServicesOpenMobile); setIsJobOpenMobile(false); setIsNewsOpenMobile(false); setIsMenuOpen(false); }}
                         >
-                            UTIL <ChevronDown size={9} />
-                        </button>
-                        <button
-                            className="nb-ham-btn"
-                            onClick={() => { setIsNewsOpenMobile(!isNewsOpenMobile); setIsJobOpenMobile(false); setIsMenuOpen(false); }}
-                        >
-                            <Newspaper size={10} /> <ChevronDown size={9} />
+                            Services <ChevronDown size={9} />
                         </button>
                         <button
                             className="nb-ham-icon"
-                            onClick={() => { setIsMenuOpen(!isMenuOpen); setIsJobOpenMobile(false); setIsNewsOpenMobile(false); }}
+                            onClick={() => { setIsMenuOpen(!isMenuOpen); setIsJobOpenMobile(false); setIsNewsOpenMobile(false); setIsServicesOpenMobile(false); }}
                         >
                             {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
                         </button>
@@ -381,27 +485,32 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
                 </div>
             </nav>
 
-            {/* ── Desktop mega: Utilities ── */}
-            {isJobOpen && (
-                <div ref={jobRef} className="nb-mega" style={{ display: "none" }} /* overridden below */ >
+            {/* ── Desktop mega: Services ── */}
+            {isServicesOpen && (
+                <div ref={servicesRef} className="nb-mega">
                     <div className="nb-mega__inner">
                         <div className="nb-mega__header">
                             <div>
-                                <div className="nb-mega__title"><Terminal size={11} /> Utilities</div>
-                                <div className="nb-mega__sub">Tools and automation resources for developers.</div>
+                                <div className="nb-mega__title"><Sparkles size={11} /> Services</div>
+                                <div className="nb-mega__sub">What I build, end to end.</div>
                             </div>
-                            <button className="nb-mega__close" onClick={() => setIsJobOpen(false)}>Close</button>
+                            <button className="nb-mega__close" onClick={() => setIsServicesOpen(false)}>Close</button>
                         </div>
-                        <div className={`nb-mega__grid nb-mega__grid--5`}>
-                            {jobOptions.map((j) => <UtilCard key={j.id} item={j} onClick={() => setIsJobOpen(false)} />)}
+                        <div className="nb-mega__grid nb-mega__grid--6">
+                            {serviceOptions.map((s) => <UtilCard key={s.id} item={s} onClick={() => setIsServicesOpen(false)} />)}
+                        </div>
+                        <div className="nb-mega__footer">
+                            <Link href="/services" className="nb-mega__viewall" onClick={() => setIsServicesOpen(false)}>
+                                View all services <ArrowUpRight size={12} />
+                            </Link>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Fix: desktop mega needs to be visible on md+ */}
+            {/* ── Desktop mega: Utilities ── */}
             {isJobOpen && (
-                <div ref={jobRef} className="nb-mega" style={{ display: "block" }}>
+                <div ref={jobRef} className="nb-mega">
                     <div className="nb-mega__inner">
                         <div className="nb-mega__header">
                             <div>
@@ -417,6 +526,7 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
                 </div>
             )}
 
+            {/* ── Desktop mega: News ── */}
             {isNewsOpen && (
                 <div ref={newsRef} className="nb-mega">
                     <div className="nb-mega__inner">
@@ -450,11 +560,14 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
                                         {fmtItem(item)}
                                     </Link>
                                 ) : (
-                                    <button key={item} className="nb-drawer__link" onClick={() => { scrollToSection(item); setIsMenuOpen(false); }}>
+                                    <button key={item} className="nb-drawer__link" onClick={() => goToSection(item)}>
                                         {item}
                                     </button>
                                 )
                             )}
+                            <Link href="/services" className="nb-drawer__link" onClick={() => setIsMenuOpen(false)}>
+                                Services
+                            </Link>
                         </div>
                         <div className="nb-drawer__footer">
                             <Link href="https://github.com/sponsors/Brown-Oziomachi/" className="nb-drawer__cta" onClick={() => setIsMenuOpen(false)} target="_blank">
@@ -465,35 +578,20 @@ export default function Navbar({ isScrolled, isMenuOpen, setIsMenuOpen, activeSe
                 </>
             )}
 
-            {/* ── Mobile panel: Utilities ── */}
-            {isJobOpenMobile && (
+            {/* ── Mobile panel: Services ── */}
+            {isServicesOpenMobile && (
                 <>
-                    <div className="nb-overlay" style={{ top: 60 }} onClick={() => setIsJobOpenMobile(false)} />
-                    <div className="nb-mob-panel" style={{ top: 60 }}>
+                    <div className="nb-overlay" style={{ top: 64 }} onClick={() => setIsServicesOpenMobile(false)} />
+                    <div className="nb-mob-panel" style={{ top: 64 }}>
                         <div className="nb-mob-panel__inner">
-                            <div className="nb-mob-panel__title">Utilities</div>
+                            <div className="nb-mob-panel__title">Services</div>
                             <div className="nb-mob-panel__grid">
-                                {jobOptions.map((j) => <UtilCard key={j.id} item={j} onClick={() => setIsJobOpenMobile(false)} />)}
+                                {serviceOptions.map((s) => <UtilCard key={s.id} item={s} onClick={() => setIsServicesOpenMobile(false)} />)}
                             </div>
                         </div>
                     </div>
                 </>
-            )}
-
-            {/* ── Mobile panel: News ── */}
-            {isNewsOpenMobile && (
-                <>
-                    <div className="nb-overlay" style={{ top: 60 }} onClick={() => setIsNewsOpenMobile(false)} />
-                    <div className="nb-mob-panel" style={{ top: 60 }}>
-                        <div className="nb-mob-panel__inner">
-                            <div className="nb-mob-panel__title">Tech news</div>
-                            <div className="nb-mob-panel__grid">
-                                {newsOptions.map((n) => <UtilCard key={n.id} item={n} onClick={() => setIsNewsOpenMobile(false)} />)}
-                            </div>
-                        </div>
-                    </div>
-                </>
-            )}
+            )}          
         </>
     );
 }

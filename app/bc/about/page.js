@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { articles } from "@/app/data/article";
 import { CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
+import Navbar from "@/components/Navbar";
 
 const getReadingTime = (content) =>
     Math.max(1, Math.ceil(content.split(" ").length / 200));
@@ -98,6 +99,13 @@ export default function AboutMePage() {
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
         .ab-page { background: var(--bg); color: var(--text-1); font-family: var(--sans); min-height: 100vh; }
+
+        .ab-topbar {
+          position: sticky;
+          top: 20;
+          z-index: 1000;
+          width: 100%;
+        }
 
         /* Nav */
         .ab-nav {
@@ -333,248 +341,247 @@ export default function AboutMePage() {
         .ab-cta__title { font-size: 14px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
         .ab-cta__sub { font-size: 12px; color: var(--text-3); line-height: 1.6; max-width: 400px; }
         .ab-cta__actions { display: flex; gap: 8px; flex-shrink: 0; }
-      `}</style>
-
+    `}</style>
             <div className="ab-page">
                 {/* Nav */}
-                <nav className="ab-nav">
-                    <a href="/" className="ab-nav__brand">brown<em>.</em>dev</a>
-                    <a href="/portfolio" className="ab-nav__back"><ArrowLeft size={13} /> Portfolio</a>
-                </nav>
-
-                {/* Facebook-style cover + profile header */}
-                <div className="ab-fb">
-                    <div className="ab-fb__cover">
-                        <img src="/banner.png" alt="Sir Brown AD cover" className="ab-fb__cover-img" />
-                        <div className="ab-fb__cover-fade" />
-                    </div>
-
-                    <div className="ab-fb__header">
-                        <div className="ab-fb__avatar-wrap">
-                            <img src="/coder1.png" alt="Sir Brown AD" className="ab-fb__avatar" />
-                            <span className="ab-fb__avatar-status" />
+                <div className="ab-topbar">
+                    <Navbar />
+                </div>
+                <main>
+                    {/* Facebook-style cover + profile header */}
+                    <div className="ab-fb">
+                        <div className="ab-fb__cover">
+                            <img src="/banner.png" alt="Sir Brown AD cover" className="ab-fb__cover-img" />
+                            <div className="ab-fb__cover-fade" />
                         </div>
 
-                        <div className="ab-fb__identity">
-                           
+                        <div className="ab-fb__header">
+                            <div className="ab-fb__avatar-wrap">
+                                <img src="/sirb.png" alt="Sir Brown AD" className="ab-fb__avatar" />
+                                <span className="ab-fb__avatar-status" />
+                            </div>
+
+                            <div className="ab-fb__identity">
+
                                 <h1 className="ab-fb__name">Sir Brown AD</h1>
                                 <p className="ab-fb__role">Full Stack Developer · Nigeria · Remote</p>
-                        </div>
+                            </div>
 
-                        <div className="ab-fb__actions">
-                            <Link href="/bc_dev" className="ab-btn">
-                                Full profile <ArrowRight size={12} />
-                            </Link>
-                            <a href="/bc/contact" className="ab-btn ab-btn--accent">
-                                Initialize Contact <ArrowRight size={12} />
-                            </a>
-                            <a href="/cv" className="ab-btn">
-                                <Download size={12} /> Resume
-                            </a>
-                            <a href="https://cal.com/sir-brown" className="ab-btn">
-                                Meet With Me <ArrowRight size={12} />
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Bio */}
-                <div className="ab-bio">
-                    <div className="ab-bio__card">
-                        <div className="ab-bio__label">Dev Manifest · Objective Data</div>
-                        <p className="ab-bio__text">
-                            Specializing in predictable structural web applications within the high-velocity JavaScript stack.
-                            Core expertise centers around component encapsulation with <strong>Vue.js, Nuxt.js, React.js & Next.js</strong> alongside
-                            reliable background task structures fueled by Node.js integration channels.
-                        </p>
-                    </div>
-                    <div className="ab-bio__card">
-                        <div className="ab-bio__label">Methodology</div>
-                        <p className="ab-bio__text">
-                            My methodology rejects messy script solutions. Instead: explicit component workflows, clean data
-                            layer constraints, and clear data indexing patterns via custom modern schema infrastructures.
-                        </p>
-                    </div>
-                </div>
-
-                {/* Blog preview */}
-                <div className="ab-blog">
-                    <div className="ab-blog__head">
-                        <div>
-                            <div className="ab-blog__eyebrow">From the blog</div>
-                            <h2 className="ab-blog__title">Latest Writing</h2>
-                        </div>
-                        <span className="ab-blog__count">{latestArticles.length} recent post{latestArticles.length !== 1 ? "s" : ""}</span>
-                    </div>
-
-                    {latestArticles.length === 0 ? (
-                        <div className="ab-blog__empty">NO_ARTICLES_PUBLISHED_YET</div>
-                    ) : (
-                        <div className="ab-blog__grid">
-                            {latestArticles.map((article, i) => (
-                                <a key={article.slug} href={`/blog/${article.slug}`} className="ab-blog-card">
-                                    <div className="ab-blog-card__media">
-                                        {article.image ? (
-                                            <img
-                                                src={article.image}
-                                                alt={article.title}
-                                                className="ab-blog-card__img"
-                                                onError={(e) => (e.target.style.display = "none")}
-                                            />
-                                        ) : (
-                                            <div className="ab-blog-card__media-placeholder" />
-                                        )}
-                                        <div className="ab-blog-card__media-fade" />
-                                        <span className="ab-blog-card__num">{String(i + 1).padStart(2, "0")}</span>
-                                        <span className="ab-blog-card__tag">{CATEGORY_LABELS[getCategoryKey(article)]}</span>
-                                    </div>
-                                    <div className="ab-blog-card__body">
-                                        <h3 className="ab-blog-card__title">{article.title}</h3>
-                                        <p className="ab-blog-card__preview">{article.preview}</p>
-                                        <div className="ab-blog-card__meta">
-                                            <span>{getReadingTime(article.content)} min read</span>
-                                            <span className="ab-blog-card__meta-dot" />
-                                            <span>{formatDate(article.datePublished)}</span>
-                                        </div>
-                                    </div>
-                                    <span className="ab-blog-card__bar" />
+                            <div className="ab-fb__actions">
+                                <Link href="/bc_dev" className="ab-btn">
+                                    Full profile <ArrowRight size={12} />
+                                </Link>
+                                <a href="/bc/contact" className="ab-btn ab-btn--accent">
+                                    Initialize Contact <ArrowRight size={12} />
                                 </a>
-                            ))}
+                                <a href="/cv" className="ab-btn">
+                                    <Download size={12} /> Resume
+                                </a>
+                                <a href="https://cal.com/sir-brown" className="ab-btn">
+                                    Meet With Me <ArrowRight size={12} />
+                                </a>
+                            </div>
                         </div>
-                    )}
-
-                    <div className="ab-blog__cta">
-                        <Link href="/blog" className="ab-btn ab-btn--accent">
-                            View all articles <ArrowRight size={12} />
-                        </Link>
-                    </div>
-                </div>
-
-                {/* Tabs */}
-                <div className="ab-tabs">
-                    <div className="ab-tabs__bar">
-                        {["story", "skills", "journey", "values"].map((t) => (
-                            <button
-                                key={t}
-                                className={`ab-tab-btn${activeTab === t ? " ab-tab-btn--active" : ""}`}
-                                onClick={() => setActiveTab(t)}
-                            >
-                                {t}
-                            </button>
-                        ))}
                     </div>
 
-                    <div className="ab-tabs__panel">
-                        {/* Story */}
-                        {activeTab === "story" && (
-                            <div>
-                                <div className="ab-story-grid">
-                                    <div className="ab-story-card">
-                                        <div className="ab-story-card__label">Origin</div>
-                                        <p className="ab-story-card__text">
-                                            My journey began with local infrastructure curiosity and low-level programmatic scripts.
-                                            Determined to reverse-engineer layout payloads, that pure structural challenge turned an
-                                            experimental past-time into full stack software construction.
-                                        </p>
-                                    </div>
-                                    <div className="ab-story-card">
-                                        <div className="ab-story-card__label">Current Runtime</div>
-                                        <p className="ab-story-card__text">
-                                            I construct integrated full-spectrum websites, managing complex React routing structures
-                                            connected to relational engines. My roadmap focuses on architectural optimizations and
-                                            secure data flow controls.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div style={{ marginBottom: 12 }}>
-                                    <div className="ab-story-card__label" style={{ marginBottom: 12 }}>Core Interests</div>
-                                    <div className="ab-interests">
-                                        {interests.map((item) => (
-                                            <div key={item.text} className="ab-interest">
-                                                {item.icon} {item.text}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                    {/* Bio */}
+                    <div className="ab-bio">
+                        <div className="ab-bio__card">
+                            <div className="ab-bio__label">Dev Manifest · Objective Data</div>
+                            <p className="ab-bio__text">
+                                Specializing in predictable structural web applications within the high-velocity JavaScript stack.
+                                Core expertise centers around component encapsulation with <strong>Vue.js, Nuxt.js, React.js & Next.js</strong> alongside
+                                reliable background task structures fueled by Node.js integration channels.
+                            </p>
+                        </div>
+                        <div className="ab-bio__card">
+                            <div className="ab-bio__label">Methodology</div>
+                            <p className="ab-bio__text">
+                                My methodology rejects messy script solutions. Instead: explicit component workflows, clean data
+                                layer constraints, and clear data indexing patterns via custom modern schema infrastructures.
+                            </p>
+                        </div>
+                    </div>
 
-                        {/* Skills */}
-                        {activeTab === "skills" && (
+                    {/* Blog preview */}
+                    <div className="ab-blog">
+                        <div className="ab-blog__head">
                             <div>
-                                <div className="ab-skill-list">
-                                    {skills.map((s) => (
-                                        <div key={s.name} className="ab-skill">
-                                            <div className="ab-skill__info">
-                                                <div className="ab-skill__name">{s.name}</div>
-                                                <div className="ab-skill__tag">{s.tag}</div>
-                                            </div>
-                                            <div className="ab-skill__bar-wrap">
-                                                <div className="ab-skill__bar" style={{ width: `${s.level}%` }} />
-                                            </div>
-                                            <div className="ab-skill__pct">{s.level}%</div>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="ab-stack-grid">
-                                    {[
-                                        { title: "Frontend Engine", body: "React, Next.js, Core Hooks, HTML5, Tailwind Architecture" },
-                                        { title: "Backend Runtime", body: "Node.js, API Pipeline Integration, Vercel Edge Functions" },
-                                        { title: "Data Persistence", body: "MongoDB, Firebase Storage Streams, Relational MySQL Layer" },
-                                    ].map((c) => (
-                                        <div key={c.title} className="ab-stack-card">
-                                            <div className="ab-stack-card__title">{c.title}</div>
-                                            <div className="ab-stack-card__body">{c.body}</div>
-                                        </div>
-                                    ))}
-                                </div>
+                                <div className="ab-blog__eyebrow">From the blog</div>
+                                <h2 className="ab-blog__title">Latest Writing</h2>
                             </div>
-                        )}
+                            <span className="ab-blog__count">{latestArticles.length} recent post{latestArticles.length !== 1 ? "s" : ""}</span>
+                        </div>
 
-                        {/* Journey */}
-                        {activeTab === "journey" && (
-                            <div className="ab-timeline">
-                                {timeline.map((item) => (
-                                    <div key={item.year} className="ab-tl-item">
-                                        <div className="ab-tl-dot" />
-                                        <div className="ab-tl-card">
-                                            <span className="ab-tl-card__year">{item.year}</span>
-                                            <div className="ab-tl-card__title">{item.title}</div>
-                                            <div className="ab-tl-card__body">{item.body}</div>
+                        {latestArticles.length === 0 ? (
+                            <div className="ab-blog__empty">NO_ARTICLES_PUBLISHED_YET</div>
+                        ) : (
+                            <div className="ab-blog__grid">
+                                {latestArticles.map((article, i) => (
+                                    <a key={article.slug} href={`/blog/${article.slug}`} className="ab-blog-card">
+                                        <div className="ab-blog-card__media">
+                                            {article.image ? (
+                                                <img
+                                                    src={article.image}
+                                                    alt={article.title}
+                                                    className="ab-blog-card__img"
+                                                    onError={(e) => (e.target.style.display = "none")}
+                                                />
+                                            ) : (
+                                                <div className="ab-blog-card__media-placeholder" />
+                                            )}
+                                            <div className="ab-blog-card__media-fade" />
+                                            <span className="ab-blog-card__num">{String(i + 1).padStart(2, "0")}</span>
+                                            <span className="ab-blog-card__tag">{CATEGORY_LABELS[getCategoryKey(article)]}</span>
                                         </div>
-                                    </div>
+                                        <div className="ab-blog-card__body">
+                                            <h3 className="ab-blog-card__title">{article.title}</h3>
+                                            <p className="ab-blog-card__preview">{article.preview}</p>
+                                            <div className="ab-blog-card__meta">
+                                                <span>{getReadingTime(article.content)} min read</span>
+                                                <span className="ab-blog-card__meta-dot" />
+                                                <span>{formatDate(article.datePublished)}</span>
+                                            </div>
+                                        </div>
+                                        <span className="ab-blog-card__bar" />
+                                    </a>
                                 ))}
                             </div>
                         )}
 
-                        {/* Values */}
-                        {activeTab === "values" && (
-                            <div>
-                                <div className="ab-values-grid">
-                                    {values.map((v) => (
-                                        <div key={v.title} className="ab-value-card">
-                                            <div className="ab-value-icon">{v.icon}</div>
-                                            <div>
-                                                <div className="ab-value-card__title">{v.title}</div>
-                                                <div className="ab-value-card__body">{v.body}</div>
+                        <div className="ab-blog__cta">
+                            <Link href="/blog" className="ab-btn ab-btn--accent">
+                                View all articles <ArrowRight size={12} />
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Tabs */}
+                    <div className="ab-tabs">
+                        <div className="ab-tabs__bar">
+                            {["story", "skills", "journey", "values"].map((t) => (
+                                <button
+                                    key={t}
+                                    className={`ab-tab-btn${activeTab === t ? " ab-tab-btn--active" : ""}`}
+                                    onClick={() => setActiveTab(t)}
+                                >
+                                    {t}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="ab-tabs__panel">
+                            {/* Story */}
+                            {activeTab === "story" && (
+                                <div>
+                                    <div className="ab-story-grid">
+                                        <div className="ab-story-card">
+                                            <div className="ab-story-card__label">Origin</div>
+                                            <p className="ab-story-card__text">
+                                                My journey began with local infrastructure curiosity and low-level programmatic scripts.
+                                                Determined to reverse-engineer layout payloads, that pure structural challenge turned an
+                                                experimental past-time into full stack software construction.
+                                            </p>
+                                        </div>
+                                        <div className="ab-story-card">
+                                            <div className="ab-story-card__label">Current Runtime</div>
+                                            <p className="ab-story-card__text">
+                                                I construct integrated full-spectrum websites, managing complex React routing structures
+                                                connected to relational engines. My roadmap focuses on architectural optimizations and
+                                                secure data flow controls.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style={{ marginBottom: 12 }}>
+                                        <div className="ab-story-card__label" style={{ marginBottom: 12 }}>Core Interests</div>
+                                        <div className="ab-interests">
+                                            {interests.map((item) => (
+                                                <div key={item.text} className="ab-interest">
+                                                    {item.icon} {item.text}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Skills */}
+                            {activeTab === "skills" && (
+                                <div>
+                                    <div className="ab-skill-list">
+                                        {skills.map((s) => (
+                                            <div key={s.name} className="ab-skill">
+                                                <div className="ab-skill__info">
+                                                    <div className="ab-skill__name">{s.name}</div>
+                                                    <div className="ab-skill__tag">{s.tag}</div>
+                                                </div>
+                                                <div className="ab-skill__bar-wrap">
+                                                    <div className="ab-skill__bar" style={{ width: `${s.level}%` }} />
+                                                </div>
+                                                <div className="ab-skill__pct">{s.level}%</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="ab-stack-grid">
+                                        {[
+                                            { title: "Frontend Engine", body: "React, Next.js, Core Hooks, HTML5, Tailwind Architecture" },
+                                            { title: "Backend Runtime", body: "Node.js, API Pipeline Integration, Vercel Edge Functions" },
+                                            { title: "Data Persistence", body: "MongoDB, Firebase Storage Streams, Relational MySQL Layer" },
+                                        ].map((c) => (
+                                            <div key={c.title} className="ab-stack-card">
+                                                <div className="ab-stack-card__title">{c.title}</div>
+                                                <div className="ab-stack-card__body">{c.body}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Journey */}
+                            {activeTab === "journey" && (
+                                <div className="ab-timeline">
+                                    {timeline.map((item) => (
+                                        <div key={item.year} className="ab-tl-item">
+                                            <div className="ab-tl-dot" />
+                                            <div className="ab-tl-card">
+                                                <span className="ab-tl-card__year">{item.year}</span>
+                                                <div className="ab-tl-card__title">{item.title}</div>
+                                                <div className="ab-tl-card__body">{item.body}</div>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-                                <div className="ab-cta">
-                                    <div>
-                                        <div className="ab-cta__title">Start a project</div>
-                                        <div className="ab-cta__sub">Sockets configured to accept remote development profiles, custom structural integrations, and full-stack optimizations.</div>
+                            )}
+
+                            {/* Values */}
+                            {activeTab === "values" && (
+                                <div>
+                                    <div className="ab-values-grid">
+                                        {values.map((v) => (
+                                            <div key={v.title} className="ab-value-card">
+                                                <div className="ab-value-icon">{v.icon}</div>
+                                                <div>
+                                                    <div className="ab-value-card__title">{v.title}</div>
+                                                    <div className="ab-value-card__body">{v.body}</div>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                    <div className="ab-cta__actions">
-                                        <a href="/bc/contact" className="ab-btn ab-btn--accent"><Mail size={12} /> Contact</a>
-                                        <a href="https://github.com/Brown-Oziomachi" target="_blank" rel="noopener noreferrer" className="ab-btn"><Github size={12} /> GitHub</a>
+                                    <div className="ab-cta">
+                                        <div>
+                                            <div className="ab-cta__title">Start a project</div>
+                                            <div className="ab-cta__sub">Sockets configured to accept remote development profiles, custom structural integrations, and full-stack optimizations.</div>
+                                        </div>
+                                        <div className="ab-cta__actions">
+                                            <a href="/bc/contact" className="ab-btn ab-btn--accent"><Mail size={12} /> Contact</a>
+                                            <a href="https://github.com/Brown-Oziomachi" target="_blank" rel="noopener noreferrer" className="ab-btn"><Github size={12} /> GitHub</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
-                </div>
+                </main >
             </div>
         </>
     );

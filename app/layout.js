@@ -1,5 +1,6 @@
 import InteractionTracker from "@/components/InteractionTracker";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
 
 export const metadata = {
   metadataBase: new URL("https://browncode.name.ng"),
@@ -84,7 +85,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="" suppressHydrationWarning>
         <InteractionTracker />
-        <div className="gradient" />
+        <Navbar />
         {children}
       </body>
     </html>

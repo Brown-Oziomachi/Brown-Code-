@@ -1216,7 +1216,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
             {/* Author card */}
             <div className="ap-author-card">
               <Link href="/bc/about" className="ap-author-card__avatar">
-                <img src="/coder1.png" alt="Brown AD" />
+                <img src="/sirb.png" alt="Brown AD" />
               </Link>
               <div className="ap-author-card__body">
                 <span className="ap-author-card__eyebrow">Author</span>

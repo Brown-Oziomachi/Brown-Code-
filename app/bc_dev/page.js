@@ -431,7 +431,7 @@ export default function AboutMePage() {
                                 <div className="ab-profile__corner ab-profile__corner--tr" />
                                 <div className="ab-profile__corner ab-profile__corner--bl" />
                                 <div className="ab-profile__corner ab-profile__corner--br" />
-                                <img src="/menbro.png" alt="Brown Oziomachi" className="ab-profile__img" />
+                                <img src="/sirb.png" alt="Brown Oziomachi" className="ab-profile__img" />
                                 <div className="ab-profile__overlay" />
                                 <div className="ab-profile__badge">
                                     <div>

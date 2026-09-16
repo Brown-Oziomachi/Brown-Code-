@@ -4,6 +4,7 @@ import {
     ArrowLeft, Mail, User, MessageSquare,
     Phone, Send, CheckCircle, Terminal, Network, ShieldAlert
 } from "lucide-react";
+import Navbar from "@/components/Navbar";
 
 export default function ContactForm() {
     const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
@@ -101,7 +102,7 @@ export default function ContactForm() {
         @media (max-width: 780px) { .ct-main { grid-template-columns: 1fr; gap: 32px; } }
 
         /* Left */
-        .ct-left__eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+        .ct-left__eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; margin-top: 44px; }
         .ct-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: ct-pulse 2s ease-out infinite; }
         @keyframes ct-pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
         .ct-left__eyebrow-text { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
@@ -222,10 +223,7 @@ export default function ContactForm() {
             <div className="ct-page">
 
                 {/* Nav */}
-                <nav className="ct-nav">
-                    <a href="/" className="ct-nav__brand">brown<em>.</em>dev</a>
-                    <a href="/portfolio" className="ct-nav__back"><ArrowLeft size={13} /> Portfolio</a>
-                </nav>
+               <Navbar />
 
                 <main className="ct-main">
 

@@ -694,7 +694,7 @@ export default function PortfolioClients() {
                             <div>
                                 <div className="pf-card">
                                     <div className="pf-card__img">
-                                        <img src="/coder1.png" alt="Sir Brown AD" />
+                                        <img src="/sirb.png" alt="Sir Brown AD" />
                                         <div className="pf-card__img-fade" />
                                         <div className="pf-card__badge">
                                             <div className="pf-card__badge-name">Sir Brown AD</div>
