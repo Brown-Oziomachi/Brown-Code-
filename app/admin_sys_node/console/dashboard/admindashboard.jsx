@@ -14,6 +14,9 @@ import {
   Database,
   UserCheck,
   ArrowLeft,
+  Download,
+  Copy,
+  Mail,
 } from "lucide-react";
 import {
   collection,
@@ -40,6 +43,9 @@ export default function AdminDashboardClient() {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [identityLogs, setIdentityLogs] = useState([]);
+  const [subscribers, setSubscribers] = useState([]);
+  const [subSearch, setSubSearch] = useState("");
+  const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef(null);
   const router = useRouter();
@@ -110,6 +116,38 @@ export default function AdminDashboardClient() {
     return () => unsub();
   }, []);
 
+  // Blog subscribers listener
+  useEffect(() => {
+    if (!admin) return;
+    const unsub = onSnapshot(
+      collection(db1, "blogSubscribers"),
+      (snap) => {
+        const list = snap.docs.map((d) => {
+          const data = d.data();
+          return {
+            id: d.id,
+            email: (data.email || "").trim().toLowerCase(),
+            categories: Array.isArray(data.categories) ? data.categories : [],
+            sourceArticles: Array.isArray(data.sourceArticles)
+              ? data.sourceArticles
+              : [],
+            lastSubscribedAt: data.lastSubscribedAt?.toDate
+              ? data.lastSubscribedAt.toDate()
+              : null,
+          };
+        });
+        list.sort(
+          (a, b) =>
+            (b.lastSubscribedAt?.getTime() || 0) -
+            (a.lastSubscribedAt?.getTime() || 0),
+        );
+        setSubscribers(list);
+      },
+      (err) => console.error("Subscribers load failed:", err),
+    );
+    return () => unsub();
+  }, [admin]);
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !selectedConversation) return;
@@ -149,6 +187,52 @@ export default function AdminDashboardClient() {
     await signOut(auth1);
     router.push("/admin_sys_node");
   };
+
+  // Subscriber export helpers
+  const uniqueEmails = () => [
+    ...new Set(subscribers.map((s) => s.email).filter(Boolean)),
+  ];
+
+  const handleDownloadCSV = () => {
+    const emails = uniqueEmails();
+    if (!emails.length) return;
+    const csv = ["email", ...emails].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `substack-subscribers-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCopyEmails = async () => {
+    try {
+      await navigator.clipboard.writeText(uniqueEmails().join("\n"));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const filteredSubscribers = subscribers.filter((s) => {
+    const term = subSearch.trim().toLowerCase();
+    if (!term) return true;
+    return (
+      s.email.includes(term) ||
+      s.categories.some((c) => String(c).toLowerCase().includes(term))
+    );
+  });
+
+  const formatDate = (d) =>
+    d
+      ? d.toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        })
+      : "-";
 
   const relativeTime = (ts) => {
     if (!ts) return "";
@@ -191,6 +275,11 @@ export default function AdminDashboardClient() {
       label: "Outbound",
       value: messages.filter((m) => m.isAdmin).length,
       icon: <Radio size={14} />,
+    },
+    {
+      label: "Subscribers",
+      value: subscribers.length,
+      icon: <Mail size={14} />,
     },
   ];
 
@@ -274,7 +363,7 @@ export default function AdminDashboardClient() {
         .ad-logout:hover { color: #f87171; border-color: rgba(248,113,113,0.3); }
 
         /* ── Stats ── */
-        .ad-stats { padding: 16px 24px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+        .ad-stats { padding: 16px 24px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; }
         @media (max-width: 640px) { .ad-stats { grid-template-columns: 1fr 1fr; } }
         .ad-stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: flex-end; justify-content: space-between; }
         .ad-stat__label { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
@@ -302,15 +391,14 @@ export default function AdminDashboardClient() {
         /* Chat grid */
         .ad-chat-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); display: flex; align-items: center; gap: 7px; }
         .ad-chat-label svg { color: var(--accent); }
-/* change this line in your <style> block */
-.ad-chat-grid { 
-    display: grid; 
-    grid-template-columns: 260px 1fr 280px;  /* ← was 280px 1fr */
-    gap: 12px; 
-    height: calc(100vh - 380px); 
-    min-height: 400px; 
-}
-            @media (max-width: 768px) { .ad-chat-grid { grid-template-columns: 1fr; height: auto; } }
+        .ad-chat-grid {
+          display: grid;
+          grid-template-columns: 260px 1fr 280px;
+          gap: 12px;
+          height: calc(100vh - 380px);
+          min-height: 400px;
+        }
+        @media (max-width: 768px) { .ad-chat-grid { grid-template-columns: 1fr; height: auto; } }
 
         /* Thread list */
         .ad-threads { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden; }
@@ -405,6 +493,49 @@ export default function AdminDashboardClient() {
         .ad-stream__empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
         .ad-stream__empty svg { color: var(--border-hi); }
         .ad-stream__empty p { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+
+        /* ── Blog subscribers ── */
+        .ad-subs { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+        .ad-subs__header {
+          padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--bg);
+          display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+        }
+        .ad-subs__title { display: flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+        .ad-subs__title svg { color: var(--accent); }
+        .ad-subs__actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .ad-subs__search {
+          background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+          padding: 5px 10px; font-family: var(--mono); font-size: 10px; color: var(--text-1);
+          outline: none; width: 180px; transition: border-color 0.15s;
+        }
+        .ad-subs__search:focus { border-color: rgba(232,255,71,0.3); }
+        .ad-subs__search::placeholder { color: var(--text-3); }
+        .ad-subs__btn {
+          display: inline-flex; align-items: center; gap: 5px;
+          font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em;
+          padding: 5px 12px; border-radius: 4px; cursor: pointer;
+          border: 1px solid var(--border); background: var(--surface); color: var(--text-2);
+          transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+        }
+        .ad-subs__btn:hover:not(:disabled) { color: var(--text-1); border-color: var(--border-hi); }
+        .ad-subs__btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .ad-subs__btn--primary { background: var(--accent); border-color: var(--accent); color: #0a0a0b; font-weight: 600; }
+        .ad-subs__btn--primary:hover:not(:disabled) { color: #0a0a0b; border-color: var(--accent); opacity: 0.88; }
+
+        .ad-subs__scroll { max-height: 360px; overflow: auto; }
+        .ad-subs__table { width: 100%; border-collapse: collapse; min-width: 560px; }
+        .ad-subs__table th {
+          position: sticky; top: 0; background: var(--bg);
+          text-align: left; padding: 9px 16px; border-bottom: 1px solid var(--border);
+          font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); font-weight: 400;
+        }
+        .ad-subs__table td { padding: 10px 16px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-2); vertical-align: top; }
+        .ad-subs__table tr:last-child td { border-bottom: none; }
+        .ad-subs__email { color: var(--text-1); font-family: var(--mono); font-size: 11px; word-break: break-all; }
+        .ad-subs__cats { display: flex; flex-wrap: wrap; gap: 4px; }
+        .ad-subs__cat { font-family: var(--mono); font-size: 9px; padding: 1px 6px; border-radius: 2px; background: var(--accent-dim); border: 1px solid rgba(232,255,71,0.2); color: var(--accent); }
+        .ad-subs__date { font-family: var(--mono); font-size: 10px; color: var(--text-3); white-space: nowrap; }
+        .ad-subs__empty { padding: 32px; text-align: center; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
       `}</style>
 
       <div className="ad-page">
@@ -610,6 +741,84 @@ export default function AdminDashboardClient() {
               )}
             </div>
           </div>
+
+          {/* Blog subscribers */}
+          <div className="ad-subs">
+            <div className="ad-subs__header">
+              <div className="ad-subs__title">
+                <Mail size={12} /> Blog subscribers · {subscribers.length}
+              </div>
+              <div className="ad-subs__actions">
+                <input
+                  type="text"
+                  className="ad-subs__search"
+                  placeholder="Search email or category…"
+                  value={subSearch}
+                  onChange={(e) => setSubSearch(e.target.value)}
+                />
+                <button
+                  className="ad-subs__btn"
+                  onClick={handleCopyEmails}
+                  disabled={!subscribers.length}
+                >
+                  <Copy size={11} /> {copied ? "Copied" : "Copy emails"}
+                </button>
+                <button
+                  className="ad-subs__btn ad-subs__btn--primary"
+                  onClick={handleDownloadCSV}
+                  disabled={!subscribers.length}
+                >
+                  <Download size={11} /> Download CSV
+                </button>
+              </div>
+            </div>
+
+            {filteredSubscribers.length === 0 ? (
+              <div className="ad-subs__empty">
+                {subscribers.length === 0 ? "No subscribers yet" : "No matches"}
+              </div>
+            ) : (
+              <div className="ad-subs__scroll">
+                <table className="ad-subs__table">
+                  <thead>
+                    <tr>
+                      <th>Email</th>
+                      <th>Categories</th>
+                      <th>Articles</th>
+                      <th>Last subscribed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredSubscribers.map((s) => (
+                      <tr key={s.id}>
+                        <td className="ad-subs__email">{s.email}</td>
+                        <td>
+                          <div className="ad-subs__cats">
+                            {s.categories.length === 0 ? (
+                              <span className="ad-subs__date">-</span>
+                            ) : (
+                              s.categories.map((c) => (
+                                <span key={c} className="ad-subs__cat">
+                                  {c}
+                                </span>
+                              ))
+                            )}
+                          </div>
+                        </td>
+                        <td className="ad-subs__date">
+                          {s.sourceArticles.length}
+                        </td>
+                        <td className="ad-subs__date">
+                          {formatDate(s.lastSubscribedAt)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
           <AdminCommentsPanel />
         </main>
       </div>

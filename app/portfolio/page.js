@@ -97,7 +97,7 @@ export default function PortfolioClients() {
     ];
 
     const stats = [
-        { num: "02+", label: "Years exp." },
+        { num: "5+", label: "Years exp." },
         { num: "05+", label: "Shipped" },
         { num: "100%", label: "Delivery" },
     ];

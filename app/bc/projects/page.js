@@ -6,6 +6,7 @@ import {
     ArrowLeft,
     ExternalLink,
     Lock,
+    Clock,
     Cpu,
     Layers,
     Binary,
@@ -13,9 +14,34 @@ import {
 } from "lucide-react";
 import Footer from "@/components/footer";
 
+// state: "live" = has a public link, "dev" = still being built, "nda" = private work
 const projects = [
     {
         id: "SYS_NODE_01",
+        title: "Fraud Radar NG",
+        description: "Nigerian fraud reporting and awareness platform. Includes a multi-step report wizard, threat registry lookup, domain safety quiz, verified agency contacts, rate limiting, suspicious-activity clustering and a protected admin console.",
+        image: null,
+        link: "https://fraudradarng.vercel.app",
+        tags: ["Nuxt 4", "Firebase", "Nitro", "Vercel"],
+        year: "2026",
+        role: "FULL_STACK_DEV",
+        status: "LIVE",
+        state: "live",
+    },
+    {
+        id: "SYS_NODE_02",
+        title: "LAN Library",
+        description: "Pan-African academic document marketplace. Sellers list books and documents and earn per sale, with wallets and withdrawals, Flutterwave payments, a bounty board, boosted listings, an admin panel and pricing in 30+ African currencies.",
+        image: null,
+        link: "https://learningaccessnetwork.com",
+        tags: ["Next.js", "Firebase", "Flutterwave", "Webhooks"],
+        year: "2025",
+        role: "FULL_STACK_DEV",
+        status: "LIVE",
+        state: "live",
+    },
+    {
+        id: "SYS_NODE_03",
         title: "Cyclopedia News Website",
         description: "Enterprise news platform featuring real-time content delivery, advanced filtering algorithms, and multimedia integration with optimised video streaming.",
         image: "/the.jpg",
@@ -24,9 +50,10 @@ const projects = [
         year: "2025",
         role: "FULL_STACK_DEV",
         status: "LIVE",
+        state: "live",
     },
     {
-        id: "SYS_NODE_02",
+        id: "SYS_NODE_04",
         title: "E-Commerce Store / Yotapoint",
         description: "Scalable e-commerce solution with secure payment integration, inventory management system, and comprehensive admin dashboard.",
         image: "/yota.jpg",
@@ -35,9 +62,10 @@ const projects = [
         year: "2025",
         role: "DEV_COLLABRATOR",
         status: "LIVE",
+        state: "live",
     },
     {
-        id: "SYS_NODE_03",
+        id: "SYS_NODE_05",
         title: "IJ Stitches Portfolio",
         description: "Performance-optimised portfolio with advanced animations, accessibility compliance, and responsive design architecture.",
         image: "/ijs.jpg",
@@ -46,20 +74,34 @@ const projects = [
         year: "2025",
         role: "FULL_STACK_DEV",
         status: "OPTIMISED",
+        state: "live",
     },
     {
-        id: "SYS_NODE_04",
-        title: "Portfolio Website",
-        description: "Modern portfolio solution with dynamic content management, SEO optimisation, and analytics integration.",
+        id: "SYS_NODE_06",
+        title: "browncode.name.ng Blog and Portfolio",
+        description: "SEO-focused publishing platform and personal portfolio with dynamic sitemaps, IndexNow pings, newsletter signups, comments, a sponsored-article model and an automated image watermarking pipeline.",
         image: "/cd.jpg",
         link: "https://browncode.name.ng",
-        tags: ["Next.js", "Pure JS Engine", "SEO"],
+        tags: ["Next.js", "Firebase", "SEO", "Node.js"],
         year: "2024",
         role: "FULL_STACK_DEV",
         status: "PRODUCTION",
+        state: "live",
     },
     {
-        id: "SYS_NODE_05",
+        id: "SYS_NODE_07",
+        title: "Sir Brown AD Studio",
+        description: "Multi-page business showcase site with Home, Services, Pricing and Contact pages, built to present my work and rates to clients.",
+        image: null,
+        link: null,
+        tags: ["Nuxt", "Vue 3", "Vercel"],
+        year: "2026",
+        role: "FULL_STACK_DEV",
+        status: "IN_DEVELOPMENT",
+        state: "dev",
+    },
+    {
+        id: "SYS_NODE_08",
         title: "Cyclopedia Editor App",
         description: "Content management system with rich text editing, collaborative features, and version control for editorial workflows.",
         image: "/ed.jpg",
@@ -68,11 +110,12 @@ const projects = [
         year: "2025",
         role: "TECHNICAL_LEAD",
         status: "NDA_LOCKED",
+        state: "nda",
     },
 ];
 
 const STATS = [
-    { label: "INDEXED_BUILDS", value: `0${projects.length}`, desc: "Active modules", icon: <Layers size={14} /> },
+    { label: "INDEXED_BUILDS", value: String(projects.length).padStart(2, "0"), desc: "Active modules", icon: <Layers size={14} /> },
     { label: "SUCCESS_RATIO", value: "100%", desc: "Deployment status", icon: <Binary size={14} /> },
     { label: "YEARS_ACTIVE", value: "02+", desc: "Years validated", icon: <Cpu size={14} /> },
     { label: "UPTIME", value: "24/7", desc: "Service continuity", icon: <Activity size={14} /> },
@@ -84,6 +127,8 @@ export default function ProjectsPage() {
     return (
         <>
             <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
                 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
                 :root {
@@ -101,8 +146,6 @@ export default function ProjectsPage() {
                     --font-sans:  'Inter', system-ui, sans-serif;
                     --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
                 }
-
-                @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
                 .pj-page {
                     font-family: var(--font-sans);
@@ -291,6 +334,7 @@ export default function ProjectsPage() {
                 .pj-btn--locked {
                     border-color: rgba(245,158,11,0.2); color: #78716c; background: transparent; cursor: not-allowed;
                 }
+                .pj-btn--locked:hover { color: #78716c; border-color: rgba(245,158,11,0.2); background: transparent; }
 
                 /* ── CTA ── */
                 .pj-cta {
@@ -365,7 +409,7 @@ export default function ProjectsPage() {
                                         <div className="pj-card__meta">
                                             <span>Role: <span>{p.role}</span></span>
                                             <span>Year: <span>{p.year}</span></span>
-                                            <span>Status: <span className={p.link ? "pj-card__meta-live" : "pj-card__meta-locked"}>[{p.status}]</span></span>
+                                            <span>Status: <span className={p.state === "live" ? "pj-card__meta-live" : "pj-card__meta-locked"}>[{p.status}]</span></span>
                                         </div>
                                         <h2 className="pj-card__title">{p.title}</h2>
                                         <p className="pj-card__desc">{p.description}</p>
@@ -374,14 +418,21 @@ export default function ProjectsPage() {
                                         <div className="pj-tags">
                                             {p.tags.map(t => <span key={t} className="pj-tag">{t}</span>)}
                                         </div>
-                                        {p.link
-                                            ? <a href={p.link} target="_blank" rel="noopener noreferrer" className="pj-btn">
+                                        {p.state === "live" && p.link && (
+                                            <a href={p.link} target="_blank" rel="noopener noreferrer" className="pj-btn">
                                                 View live <ExternalLink size={12} />
                                             </a>
-                                            : <span className="pj-btn pj-btn--locked">
+                                        )}
+                                        {p.state === "dev" && (
+                                            <span className="pj-btn pj-btn--locked">
+                                                <Clock size={12} /> Coming soon
+                                            </span>
+                                        )}
+                                        {p.state === "nda" && (
+                                            <span className="pj-btn pj-btn--locked">
                                                 <Lock size={12} /> NDA restricted
                                             </span>
-                                        }
+                                        )}
                                     </div>
                                 </div>
                             </article>
