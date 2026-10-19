@@ -117,7 +117,7 @@ const projects = [
 const STATS = [
     { label: "INDEXED_BUILDS", value: String(projects.length).padStart(2, "0"), desc: "Active modules", icon: <Layers size={14} /> },
     { label: "SUCCESS_RATIO", value: "100%", desc: "Deployment status", icon: <Binary size={14} /> },
-    { label: "YEARS_ACTIVE", value: "02+", desc: "Years validated", icon: <Cpu size={14} /> },
+    { label: "YEARS_ACTIVE", value: "05+", desc: "Years validated", icon: <Cpu size={14} /> },
     { label: "UPTIME", value: "24/7", desc: "Service continuity", icon: <Activity size={14} /> },
 ];
 

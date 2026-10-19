@@ -31,13 +31,6 @@ export default function Footer() {
         { name: "YotaPoint", url: "https://yotapoint.com" },
     ];
 
-    const clients = [
-        { name: "YotaPoint", url: "https://yotapoint.com", logo: "/yota.jpg" },
-        { name: "IJ Stitches", url: "https://ij-stitches.vercel.app/main", logo: "/ijs.jpg" },
-        { name: "TheCyclopedia News", url: "https://www.thecyclopedia.com.ng", logo: "/the.jpg" },
-        { name: "Confidential", url: "", logo: "/ed.jpg" },
-    ];
-
     const socials = [
         { name: "LinkedIn", href: "https://www.linkedin.com/in/brownoziomachi72a5a3229", icon: <Linkedin size={15} /> },
         { name: "GitHub", href: "https://github.com/Brown-Oziomachi", icon: <Github size={15} /> },
@@ -294,31 +287,6 @@ export default function Footer() {
                                     {b.name} <ArrowUpRight size={11} />
                                 </a>
                             ))}
-                        </div>
-                    </div>
-
-                    {/* Client logos */}
-                    <div className="ft-clients">
-                        <span className="ft-builds__label">Production deployments</span>
-                        <div className="ft-clients__logos">
-                            {clients.map((c) =>
-                                c.url ? (
-                                    <a
-                                        key={c.name}
-                                        href={c.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="ft-client"
-                                        title={c.name}
-                                    >
-                                        <img src={c.logo} alt={c.name} />
-                                    </a>
-                                ) : (
-                                    <span key={c.name} className="ft-client" title="Confidential">
-                                        <img src={c.logo} alt="Confidential client" />
-                                    </span>
-                                )
-                            )}
                         </div>
                     </div>
 

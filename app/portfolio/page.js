@@ -1,1055 +1,599 @@
 "use client";
-import React, { useState, useEffect, Suspense } from "react";
-import {
-    Github, Linkedin, Mail, Download, Terminal, Cpu,
-    Database, Layers, GitBranch, Binary, Code,
-    ExternalLink, ArrowRight, User, ShieldAlert, ArrowUpRight,
-} from "lucide-react";
+
+import React, { useState } from "react";
 import Link from "next/link";
+import {
+    Github, Linkedin, Mail, Download, ArrowRight, ArrowUpRight,
+    Calendar, ShieldCheck, CreditCard, Layers, Newspaper, Check, MessageCircle,
+} from "lucide-react";
 import Testimonials from "@/components/Testimonials";
 import FirebaseChat from "@/components/FirebaseChat";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/footer";
 import FloatingClient from "../floatingchat/chat";
 import { latestArticles } from "../data/latestArticles";
+import { Suspense } from "react";
+
+/* ── data ────────────────────────────────────────────── */
+
+const CHANNEL_URL = "https://whatsapp.com/channel/0029VbEGWFsC1FuAo5qoPh0q";
+const WHATSAPP_URL = "https://wa.me/2348142995114";
+const CALL_URL = "https://cal.com/sir-brown";
+const EMAIL = "browncemmanuel@gmail.com";
+
+const stats = [
+    { num: "5", label: "Platforms live" },
+    { num: "24h", label: "Reply time" },
+    { num: "1", label: "Developer, no middlemen" },
+];
+
+const trusted = ["YotaPoint", "TheCyclopedia News", "IJ Stitches", "Fraud Radar NG", "LAN Library"];
+
+const services = [
+    {
+        icon: <Layers size={18} />,
+        title: "Full stack web apps",
+        body: "Business sites, dashboards and platforms built with Next.js, Nuxt and Firebase. Fast on phones, easy to grow.",
+        points: ["Responsive and SEO ready", "Admin dashboards", "Deployed and handed over"],
+    },
+    {
+        icon: <CreditCard size={18} />,
+        title: "Payments and marketplaces",
+        body: "Checkout flows, seller accounts and payment integrations for stores and platforms that handle real money.",
+        points: ["Secure payment flows", "Seller and buyer accounts", "Order and payout logic"],
+    },
+    {
+        icon: <ShieldCheck size={18} />,
+        title: "Security-minded builds",
+        body: "I write about fraud and web security, and I build with it in mind: validation, access rules and safe data handling.",
+        points: ["Auth and access control", "Input validation", "Fraud-aware design"],
+    },
+    {
+        icon: <Newspaper size={18} />,
+        title: "Sponsored articles and ads",
+        body: "Put your product in front of readers on my blog, written clearly and published with a proper backlink.",
+        points: ["Written for your audience", "Permanent article page", "Shared on my channels"],
+    },
+];
+
+const projects = [
+    {
+        title: "Yotapoint E-Commerce",
+        kind: "E-commerce platform",
+        description: "A transactional store with secure payments and a central dashboard for managing products and orders.",
+        image: "/yota.jpg",
+        link: "https://yotapoint.com",
+        tags: ["Payments", "Dashboard", "API"],
+    },
+    {
+        title: "TheCyclopedia News",
+        kind: "News platform",
+        description: "A content platform with a fast reading experience, rich media and a publishing workflow for editors.",
+        image: "/the.jpg",
+        link: "https://www.thecyclopedia.com.ng",
+        tags: ["Next.js", "React", "CMS"],
+    },
+    {
+        title: "IJ Stitches",
+        kind: "Business website",
+        description: "A lightweight, image-first site that shows a fashion brand's work and turns visitors into customers.",
+        image: "/ijs.jpg",
+        link: "https://ij-stitches.vercel.app/main",
+        tags: ["React", "UI", "Performance"],
+    },
+];
+
+const alsoBuilt = [
+    { name: "Fraud Radar NG", note: "Fraud reporting and awareness platform", url: "https://fraudradarng.vercel.app" },
+    { name: "LAN Library", note: "Marketplace for books and documents", url: "https://learningaccessnetwork.com" },
+];
+
+const reasons = [
+    "You talk to the developer directly, with no agency layer in between",
+    "I run my own live products, so I know what it takes to keep a site working",
+    "I reply within 24 hours, usually sooner",
+    "You get a clear plan and price before any work starts",
+];
+
+const steps = [
+    { n: "01", title: "Tell me what you need", body: "Send a message or book a call. A rough idea is enough." },
+    { n: "02", title: "Get a plan and a price", body: "I reply with scope, timeline and cost, so there are no surprises." },
+    { n: "03", title: "I build, you review", body: "You see progress as it happens and give feedback along the way." },
+    { n: "04", title: "Launch and support", body: "I deploy it, hand it over and stay available after go-live." },
+];
+
+const stack = ["Next.js", "React", "Nuxt 3", "Vue 3", "JavaScript", "Node.js", "Firebase", "Vercel", "REST APIs", "Tailwind"];
+
+/* ── small pieces ────────────────────────────────────── */
+
+const WhatsAppIcon = ({ size = 16 }) => (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+    </svg>
+);
+
+function SectionHead({ kicker, title, note }) {
+    return (
+        <div className="pf-head">
+            <div>
+                <div className="pf-kicker">{kicker}</div>
+                <h2 className="pf-h2">{title}</h2>
+            </div>
+            {note && <p className="pf-head__note">{note}</p>}
+        </div>
+    );
+}
+
+/* ── page ────────────────────────────────────────────── */
 
 export default function PortfolioClients() {
-    const [activeSection, setActiveSection] = useState("home");
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
     const [isChatOpen, setIsChatOpen] = useState(false);
-    const [showPopup, setShowPopup] = useState(false);
-
-    useEffect(() => {
-        const seen = localStorage.getItem("jobsPopupSeen");
-        if (!seen) {
-            const t = setTimeout(() => {
-                setShowPopup(true);
-                localStorage.setItem("jobsPopupSeen", "true");
-            }, 10000);
-            return () => clearTimeout(t);
-        }
-    }, []);
-
-    useEffect(() => {
-        const onScroll = () => setIsScrolled(window.scrollY > 20);
-        window.addEventListener("scroll", onScroll);
-        return () => window.removeEventListener("scroll", onScroll);
-    }, []);
 
     const scrollToSection = (id) => {
         document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-        setActiveSection(id);
-        setIsMenuOpen(false);
     };
-
-    const projects = [
-        {
-            id: "PRJ — 01",
-            title: "Yotapoint E-Commerce",
-            description: "Scalable transactional client platform with integrated state machines, secure payment protocols, and a centralized operational dashboard.",
-            image: "/yota.jpg",
-            link: "https://yotapoint.com",
-            tags: ["State Logic", "API Sockets", "Schema Panel"],
-            year: "2025",
-            status: "Live",
-        },
-        {
-            id: "PRJ — 02",
-            title: "Cyclopedia News",
-            description: "Content engine delivery platform featuring real-time payload pipelines, complex rendering logic, and integrated media stream layers.",
-            image: "/the.jpg",
-            link: "https://www.thecyclopedia.com.ng",
-            tags: ["Next.js", "React", "Data Streams"],
-            year: "2025",
-            status: "Production",
-        },
-        {
-            id: "PRJ — 03",
-            title: "IJ Stitches Portfolio",
-            description: "High-performance interface framework built around lightweight asset weights, modular scaling, and optimal UX layout nodes.",
-            image: "/ijs.jpg",
-            link: "https://ij-stitches.vercel.app/main",
-            tags: ["React", "UI Hooks", "Asset Optimization"],
-            year: "2025",
-            status: "Stable",
-        },
-    ];
-
-    const skills = [
-            { name: "Vue 3, Nuxt 3 & Vite Architecture", level: 85, tag: "Primary Stack" },
-            { name: "JavaScript ES6+ & Composition API", level: 80, tag: "Core Engineering" },
-            { name: "React Architecture & Next.js SSR", level: 70, tag: "Production Ready" },
-            { name: "Database Architecture", level: 70, tag: "Scalable Data" },
-            { name: "Node.js & Vercel Serverless", level: 60, tag: "Stable Backend" }
-    ];
-
-    const values = [
-        { icon: <Binary size={16} />, title: "Algorithmic Precision", body: "Maintainable, predictable, modular structures that minimize technical debt." },
-        { icon: <Terminal size={16} />, title: "Async Architecture", body: "Optimizing network round-trips and server workloads for raw performance." },
-        { icon: <GitBranch size={16} />, title: "Robust Modularity", body: "Reusable logic isolated into components built for clean scaling." },
-        { icon: <Layers size={16} />, title: "Adaptability", body: "Tracking web patterns, security layers, and structural updates continuously." },
-    ];
-
-    const timeline = [
-        { year: "2024", title: "Full Stack Developer", body: "Architecting full functional interfaces, handling data streams, and building integrated Node.js solutions.", icon: <Code size={13} /> },
-        { year: "2022", title: "Foundation & Core Tracks", body: "Initiated programmatic core tracks. Deep data layout structures, schema validation parsing, and foundational algorithms.", icon: <Cpu size={13} /> },
-    ];
-
-    const stats = [
-        { num: "5+", label: "Years exp." },
-        { num: "05+", label: "Shipped" },
-        { num: "100%", label: "Delivery" },
-    ];
 
     return (
         <>
             <style>{`
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+                @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-        :root {
-          --bg:         #0a0a0b;
-          --surface:    #111113;
-          --surface-2:  #18181b;
-          --border:     #1e1e22;
-          --border-hi:  #2e2e34;
-          --text-1:     #f4f4f5;
-          --text-2:     #a1a1aa;
-          --text-3:     #52525b;
-          --accent:     #e8ff47;
-          --accent-dim: rgba(232,255,71,0.08);
-          --accent-bdr: rgba(232,255,71,0.25);
-          --radius:     6px;
-          --serif:      'DM Serif Display', Georgia, serif;
-          --sans:       'Inter', system-ui, sans-serif;
-          --mono:       'JetBrains Mono', 'Fira Code', monospace;
-        }
+                .pf-page {
+                    --paper: #000000; --paper-2: #121212; --card: #0d0d0d;
+                    --ink: #f4f1ea; --ink-2: #bdb8ae; --ink-3: #85807a;
+                    --rule: #242424; --rule-dark: #3a3a3a;
+                    --accent: #e8ff47; --on-accent: #0a0a0b;
+                    --serif: 'Playfair Display', Georgia, serif;
+                    --sans: 'Inter', system-ui, sans-serif;
+                    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+                    background: var(--paper); color: var(--ink); font-family: var(--sans);
+                    min-height: 100vh; overflow-x: hidden;
+                }
+                .pf-page *, .pf-page *::before, .pf-page *::after { box-sizing: border-box; }
+                .pf-page h1, .pf-page h2, .pf-page h3, .pf-page p { margin: 0; }
+                :where(.pf-page a) { color: inherit; }
+                .pf-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+                .pf-section { padding: 88px 0 0; }
 
-        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+                /* Buttons */
+                .pf-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; padding: 13px 20px; border: 1px solid var(--rule-dark); background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s; }
+                .pf-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); transform: translateY(-1px); }
+                .pf-btn--solid { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+                .pf-btn--solid:hover { background: #d4e63c; border-color: #d4e63c; color: var(--on-accent); }
+                .pf-btn--lg { padding: 16px 26px; font-size: 12px; }
 
-        .pf-page {
-          background: var(--bg);
-          color: var(--text-2);
-          font-family: var(--sans);
-          min-height: 100vh;
-          overflow-x: hidden;
-        }
+                /* Section heads */
+                .pf-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+                .pf-h2 { font-family: var(--serif); font-weight: 800; font-size: clamp(28px, 4vw, 42px); line-height: 1.1; letter-spacing: -0.01em; color: var(--ink); }
+                .pf-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 16px; margin-bottom: 30px; border-bottom: 3px double var(--rule-dark); }
+                .pf-head__note { font-size: 14px; line-height: 1.6; color: var(--ink-2); max-width: 380px; }
 
-        /* ── Section wrapper ── */
-        .pf-section {
-          max-width: 1120px;
-          margin: 0 auto;
-          padding: 0 24px;
-        }
+                /* ── Hero ── */
+                .pf-hero { padding: 132px 0 64px; border-bottom: 1px solid var(--rule-dark); }
+                .pf-hero__grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: 56px; align-items: center; }
+                @media (max-width: 900px) { .pf-hero__grid { grid-template-columns: minmax(0, 1fr); gap: 40px; } .pf-hero { padding-top: 108px; } }
+                .pf-avail { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); border: 1px solid var(--rule-dark); background: var(--card); padding: 8px 14px; margin-bottom: 26px; }
+                .pf-ping { position: relative; width: 8px; height: 8px; flex-shrink: 0; }
+                .pf-ping__ring { position: absolute; inset: 0; border-radius: 50%; background: var(--accent); opacity: 0.4; animation: pf-ping 1.6s ease-out infinite; }
+                .pf-ping__dot { position: absolute; inset: 1px; border-radius: 50%; background: var(--accent); }
+                @keyframes pf-ping { 0% { transform: scale(1); opacity: 0.4; } 100% { transform: scale(2.6); opacity: 0; } }
+                .pf-hero__title { font-family: var(--serif); font-weight: 800; font-size: clamp(38px, 6vw, 70px); line-height: 1.04; letter-spacing: -0.015em; color: var(--ink); }
+                .pf-hero__title em { font-style: italic; color: var(--accent); }
+                .pf-hero__dek { margin-top: 24px; max-width: 560px; font-size: clamp(15px, 1.6vw, 18px); line-height: 1.7; font-weight: 300; color: var(--ink-2); border-left: 3px solid var(--accent); padding-left: 18px; }
+                .pf-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+                .pf-hero__reply { margin-top: 16px; font-family: var(--mono); font-size: 11px; color: var(--ink-3); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+                .pf-hero__reply svg { color: var(--accent); }
 
-        .pf-divider { border: none; border-top: 1px solid var(--border); }
+                .pf-stats { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 44px; border-top: 1px solid var(--rule-dark); border-bottom: 3px double var(--rule-dark); }
+                .pf-stat { padding: 18px 16px 16px 0; }
+                .pf-stat + .pf-stat { padding-left: 18px; border-left: 1px solid var(--rule); }
+                .pf-stat__num { font-family: var(--serif); font-weight: 800; font-size: 34px; line-height: 1; color: var(--ink); }
+                .pf-stat__label { margin-top: 6px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
 
-        /* ── Eyebrow ── */
-        .pf-eyebrow {
-          display: inline-flex; align-items: center; gap: 8px;
-          font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
-          text-transform: uppercase; color: var(--text-3);
-          margin-bottom: 20px;
-        }
-        .pf-eyebrow__dot {
-          width: 5px; height: 5px; background: var(--accent);
-          border-radius: 50%;
-        }
+                /* Portrait */
+                .pf-portrait { position: relative; max-width: 380px; margin-left: auto; }
+                @media (max-width: 900px) { .pf-portrait { margin: 0 auto; width: 100%; } }
+                .pf-portrait__frame { aspect-ratio: 4 / 5; background: #fff; border: 1px solid var(--rule-dark); overflow: hidden; box-shadow: 8px 8px 0 var(--accent); }
+                .pf-portrait__frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+                .pf-portrait__tag { position: absolute; left: -14px; bottom: 28px; background: var(--card); border: 1px solid var(--rule-dark); border-left: 4px solid var(--accent); padding: 12px 16px; }
+                @media (max-width: 480px) { .pf-portrait__tag { left: 8px; } }
+                .pf-portrait__name { font-family: var(--serif); font-weight: 800; font-size: 18px; color: var(--ink); }
+                .pf-portrait__role { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-top: 3px; }
 
-        /* ════════════════════════════════════
-           HERO
-        ════════════════════════════════════ */
-        .pf-hero {
-          padding: 80px 24px 72px;
-          border-bottom: 1px solid var(--border);
-        }
-        .pf-hero__inner {
-          max-width: 1120px; margin: 0 auto;
-          display: grid; grid-template-columns: 300px 1fr;
-          gap: 60px; align-items: start;
-        }
-        @media (max-width: 840px) {
-          .pf-hero__inner { grid-template-columns: 1fr; gap: 36px; }
-        }
+                /* Trust strip */
+                .pf-trust { padding: 22px 0; border-bottom: 1px solid var(--rule); }
+                .pf-trust__inner { display: flex; align-items: center; gap: 14px 28px; flex-wrap: wrap; }
+                .pf-trust__label { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); flex-shrink: 0; }
+                .pf-trust__list { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+                .pf-trust__item { font-family: var(--serif); font-weight: 800; font-size: 16px; color: var(--ink-2); }
 
-        /* Profile card */
-        .pf-card {
-          background: var(--surface); border: 1px solid var(--border);
-          border-radius: var(--radius); overflow: hidden;
-        }
-        .pf-card__img { position: relative; aspect-ratio: 1; }
-        .pf-card__img img {
-          width: 100%; height: 100%; object-fit: cover;
-          display: block; opacity: 0.82; filter: grayscale(15%);
-          transition: opacity 0.3s, filter 0.3s;
-        }
-        .pf-card:hover .pf-card__img img { opacity: 1; filter: grayscale(0); }
-        .pf-card__img-fade {
-          position: absolute; inset: 0;
-          background: linear-gradient(to top, var(--bg) 0%, transparent 55%);
-        }
-        .pf-card__badge {
-          position: absolute; bottom: 12px; left: 12px; right: 12px;
-          background: rgba(17,17,19,0.96); border: 1px solid var(--border);
-          border-radius: var(--radius); padding: 10px 14px;
-        }
-        .pf-card__badge-name {
-          font-family: var(--serif); font-size: 16px; color: var(--text-1);
-        }
-        .pf-card__badge-role {
-          font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em;
-          text-transform: uppercase; color: var(--accent); margin-top: 2px;
-        }
+                /* ── Services ── */
+                .pf-services { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+                @media (max-width: 760px) { .pf-services { grid-template-columns: 1fr; } }
+                .pf-service { background: var(--card); border: 1px solid var(--rule-dark); border-top: 3px solid var(--accent); padding: 26px; display: flex; flex-direction: column; gap: 12px; transition: transform 0.2s, box-shadow 0.2s; }
+                .pf-service:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--accent); }
+                .pf-service__icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--accent); color: var(--on-accent); }
+                .pf-service__title { font-family: var(--serif); font-weight: 800; font-size: 22px; line-height: 1.2; color: var(--ink); }
+                .pf-service__body { font-size: 14px; line-height: 1.7; color: var(--ink-2); }
+                .pf-service__points { list-style: none; padding: 0; margin: 4px 0 0; display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid var(--rule); }
+                .pf-service__points li { display: flex; align-items: center; gap: 9px; font-family: var(--mono); font-size: 11px; color: var(--ink-2); }
+                .pf-service__points svg { color: var(--accent); flex-shrink: 0; }
 
-        .pf-card__meta {
-          padding: 16px; display: flex; flex-direction: column; gap: 9px;
-          border-top: 1px solid var(--border);
-        }
-        .pf-card__row { display: flex; justify-content: space-between; align-items: center; }
-        .pf-card__key {
-          font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em;
-          text-transform: uppercase; color: var(--text-3);
-        }
-        .pf-card__val { font-family: var(--mono); font-size: 10px; color: var(--text-2); }
-        .pf-card__val--accent { color: var(--accent); }
-        .pf-card__status {
-          display: inline-flex; align-items: center; gap: 5px;
-          font-family: var(--mono); font-size: 9px; color: #4ade80;
-          background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.18);
-          padding: 2px 8px; border-radius: 3px;
-        }
-        .pf-card__status-dot {
-          width: 5px; height: 5px; border-radius: 50%; background: #4ade80;
-          animation: pf-status 1.4s ease-out infinite;
-        }
-        @keyframes pf-status {
-          0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
-          100% { box-shadow: 0 0 0 6px rgba(74,222,128,0); }
-        }
+                /* ── Projects ── */
+                .pf-projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+                @media (max-width: 960px) { .pf-projects { grid-template-columns: 1fr 1fr; } }
+                @media (max-width: 600px) { .pf-projects { grid-template-columns: 1fr; } }
+                .pf-proj { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--rule-dark); text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+                .pf-proj:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--accent); }
+                .pf-proj__media { position: relative; height: 160px; background: #fff; overflow: hidden; border-bottom: 1px solid var(--rule-dark); }
+                .pf-proj__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.45s ease; }
+                .pf-proj:hover .pf-proj__media img { transform: scale(1.04); }
+                .pf-proj__chip { position: absolute; top: 12px; left: 12px; font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 4px 9px; }
+                .pf-proj__body { padding: 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+                .pf-proj__title { font-family: var(--serif); font-weight: 800; font-size: 20px; line-height: 1.2; color: var(--ink); }
+                .pf-proj:hover .pf-proj__title { color: var(--accent); }
+                .pf-proj__desc { font-size: 13px; line-height: 1.65; color: var(--ink-3); }
+                .pf-proj__foot { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+                .pf-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+                .pf-tag { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.05em; color: var(--ink-2); border: 1px solid var(--rule-dark); padding: 3px 8px; }
+                .pf-proj__visit { display: inline-flex; align-items: center; gap: 4px; font-family: var(--mono); font-size: 10.5px; color: var(--accent); flex-shrink: 0; }
 
-        /* Stats strip */
-        .pf-stats {
-          display: grid; grid-template-columns: repeat(3,1fr);
-          gap: 1px; background: var(--border);
-          border: 1px solid var(--border); border-top: none;
-          border-radius: 0 0 var(--radius) var(--radius); overflow: hidden;
-        }
-        .pf-stat { background: var(--surface); padding: 14px 8px; text-align: center; }
-        .pf-stat__num {
-          font-family: var(--serif); font-size: 22px; color: var(--text-1);
-          line-height: 1;
-        }
-        .pf-stat__label {
-          font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em;
-          text-transform: uppercase; color: var(--text-3); margin-top: 4px;
-        }
+                .pf-also { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+                @media (max-width: 600px) { .pf-also { grid-template-columns: 1fr; } }
+                .pf-also__item { display: flex; align-items: center; justify-content: space-between; gap: 14px; background: var(--paper-2); border: 1px solid var(--rule-dark); padding: 18px 20px; text-decoration: none; transition: border-color 0.15s; }
+                .pf-also__item:hover { border-color: var(--accent); }
+                .pf-also__name { font-family: var(--serif); font-weight: 800; font-size: 18px; color: var(--ink); }
+                .pf-also__note { font-size: 12.5px; color: var(--ink-3); margin-top: 3px; }
+                .pf-also__item svg { color: var(--accent); flex-shrink: 0; }
+                .pf-more { display: flex; justify-content: center; margin-top: 32px; }
 
-        /* Hero copy */
-        .pf-hero__copy { padding-top: 8px; }
-        .pf-hero__title {
-          font-family: var(--serif);
-          font-size: clamp(36px, 5.5vw, 68px);
-          color: var(--text-1); line-height: 1.05;
-          letter-spacing: -0.01em; margin-bottom: 20px;
-        }
-        .pf-hero__title em { font-style: normal; color: var(--accent); }
-        .pf-hero__desc {
-          font-size: 15px; line-height: 1.75; color: var(--text-2);
-          font-weight: 300; max-width: 520px;
-          border-left: 2px solid var(--border); padding-left: 18px;
-          margin-bottom: 32px;
-        }
-        .pf-hero__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+                /* ── Why + process ── */
+                .pf-why { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+                @media (max-width: 860px) { .pf-why { grid-template-columns: 1fr; gap: 44px; } }
+                .pf-why__lead { margin-top: 12px; font-size: 15px; line-height: 1.75; color: var(--ink-2); font-weight: 300; max-width: 480px; }
+                .pf-reasons { list-style: none; padding: 0; margin: 26px 0 0; display: flex; flex-direction: column; gap: 14px; }
+                .pf-reasons li { display: flex; gap: 14px; align-items: flex-start; font-size: 14.5px; line-height: 1.6; color: var(--ink-2); }
+                .pf-reasons__tick { width: 24px; height: 24px; background: var(--accent); color: var(--on-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+                .pf-steps { display: flex; flex-direction: column; border: 1px solid var(--rule-dark); background: var(--card); }
+                .pf-step { display: grid; grid-template-columns: 56px 1fr; gap: 6px; padding: 20px; border-bottom: 1px solid var(--rule); }
+                .pf-step:last-child { border-bottom: none; }
+                .pf-step__n { font-family: var(--serif); font-weight: 800; font-size: 26px; line-height: 1; color: var(--accent); }
+                .pf-step__title { font-family: var(--serif); font-weight: 800; font-size: 18px; color: var(--ink); margin-bottom: 4px; }
+                .pf-step__body { font-size: 13px; line-height: 1.6; color: var(--ink-3); }
 
-        .pf-btn {
-          display: inline-flex; align-items: center; gap: 7px;
-          font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em;
-          padding: 10px 20px; border-radius: var(--radius);
-          border: 1px solid var(--border); background: var(--surface);
-          color: var(--text-2); cursor: pointer; text-decoration: none;
-          transition: color 0.15s, border-color 0.15s, background 0.15s;
-          white-space: nowrap;
-        }
-        .pf-btn:hover { color: var(--text-1); border-color: var(--border-hi); }
-        .pf-btn--accent {
-          background: var(--accent); border-color: var(--accent);
-          color: #0a0a0b; font-weight: 600;
-        }
-        .pf-btn--accent:hover {
-          background: #d4eb3c; border-color: #d4eb3c; color: #0a0a0b;
-        }
+                .pf-stack { margin-top: 56px; display: flex; align-items: center; gap: 14px 22px; flex-wrap: wrap; padding: 22px 0; border-top: 1px solid var(--rule-dark); border-bottom: 1px solid var(--rule-dark); }
+                .pf-stack__label { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
+                .pf-stack__list { display: flex; flex-wrap: wrap; gap: 8px; }
+                .pf-stack__chip { font-family: var(--mono); font-size: 11px; color: var(--ink-2); background: var(--card); border: 1px solid var(--rule-dark); padding: 6px 12px; }
 
-        /* Spec table */
-        .pf-spec-table {
-          margin-top: 36px; border: 1px solid var(--border);
-          border-radius: var(--radius); overflow: hidden;
-        }
-        .pf-spec-table__header {
-          background: var(--surface-2); padding: 9px 14px;
-          font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
-          text-transform: uppercase; color: var(--text-3);
-          border-bottom: 1px solid var(--border);
-          display: flex; align-items: center; gap: 6px;
-        }
-        .pf-spec-table__header svg { color: var(--accent); }
-        .pf-spec-row {
-          display: flex; justify-content: space-between;
-          padding: 8px 14px; border-bottom: 1px solid var(--border);
-          font-family: var(--mono); font-size: 10px;
-        }
-        .pf-spec-row:last-child { border-bottom: none; }
-        .pf-spec-row__key { color: var(--text-3); }
-        .pf-spec-row__val { color: var(--text-2); text-align: right; }
-        .pf-spec-row__val--accent { color: var(--accent); }
+                /* ── Blog ── */
+                .pf-blog { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+                @media (max-width: 960px) { .pf-blog { grid-template-columns: 1fr 1fr; } }
+                @media (max-width: 600px) { .pf-blog { grid-template-columns: 1fr; } }
+                .pf-post { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--rule-dark); text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+                .pf-post:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--accent); }
+                .pf-post__media { position: relative; height: 140px; background: #fff; overflow: hidden; border-bottom: 1px solid var(--rule-dark); }
+                .pf-post__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.45s ease; }
+                .pf-post:hover .pf-post__media img { transform: scale(1.04); }
+                .pf-post__ph { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, #101010, #101010 6px, #171717 6px, #171717 12px); }
+                .pf-post__chip { position: absolute; top: 12px; left: 12px; font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 4px 9px; }
+                .pf-post__body { padding: 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+                .pf-post__title { font-family: var(--serif); font-weight: 800; font-size: 18px; line-height: 1.25; color: var(--ink); }
+                .pf-post:hover .pf-post__title { color: var(--accent); }
+                .pf-post__desc { font-size: 13px; line-height: 1.65; color: var(--ink-3); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+                .pf-post__meta { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--rule); font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); }
 
-        /* ════════════════════════════════════
-           ABOUT / DIAGNOSTIC
-        ════════════════════════════════════ */
-        .pf-about {
-          padding: 72px 24px;
-          border-bottom: 1px solid var(--border);
-        }
-        .pf-about__grid {
-          max-width: 1120px; margin: 0 auto;
-          display: grid; grid-template-columns: 1fr 380px;
-          gap: 48px; align-items: start;
-        }
-        @media (max-width: 900px) {
-          .pf-about__grid { grid-template-columns: 1fr; }
-        }
+                /* ── Contact ── */
+                .pf-contact { margin-top: 96px; padding: 56px 0 24px; border-top: 3px double var(--rule-dark); }
+                .pf-contact__card { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 48px; background: var(--card); border: 1px solid var(--rule-dark); border-top: 4px solid var(--accent); padding: 44px; }
+                @media (max-width: 860px) { .pf-contact__card { grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 28px 22px; } }
+                .pf-contact__title { font-family: var(--serif); font-weight: 800; font-size: clamp(30px, 4.4vw, 48px); line-height: 1.08; letter-spacing: -0.01em; color: var(--ink); }
+                .pf-contact__title em { font-style: italic; color: var(--accent); }
+                .pf-contact__sub { margin-top: 16px; font-size: 15px; line-height: 1.75; color: var(--ink-2); font-weight: 300; max-width: 460px; }
+                .pf-contact__promise { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+                .pf-contact__promise span { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
+                .pf-contact__promise svg { color: var(--accent); flex-shrink: 0; }
+                .pf-contact__actions { display: flex; flex-direction: column; gap: 12px; }
+                .pf-contact__actions .pf-btn { justify-content: space-between; width: 100%; }
+                .pf-contact__socials { display: flex; gap: 8px; margin-top: 6px; }
+                .pf-social { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--rule-dark); color: var(--ink-2); text-decoration: none; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+                .pf-social:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+                .pf-contact__channel { margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+                .pf-contact__channel a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 
-        .pf-about__manifesto {
-          background: var(--surface); border: 1px solid var(--border);
-          border-radius: var(--radius); padding: 28px;
-          margin-bottom: 24px;
-        }
-        .pf-about__manifesto p {
-          font-size: 14px; color: var(--text-2); line-height: 1.75;
-          font-weight: 300; margin-bottom: 14px;
-        }
-        .pf-about__manifesto p:last-of-type { margin-bottom: 20px; }
+                @media (max-width: 640px) {
+                    .pf-wrap { padding: 0 18px; }
+                    .pf-section { padding-top: 64px; }
+                    .pf-hero__actions .pf-btn { flex: 1 1 100%; }
+                    .pf-stat__num { font-size: 28px; }
+                }
 
-        /* Values */
-        .pf-values { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        @media (max-width: 560px) { .pf-values { grid-template-columns: 1fr; } }
-        .pf-value {
-          background: var(--surface); border: 1px solid var(--border);
-          border-radius: var(--radius); padding: 16px;
-          display: flex; gap: 12px; align-items: flex-start;
-          transition: border-color 0.15s;
-        }
-        .pf-value:hover { border-color: var(--border-hi); }
-        .pf-value__icon {
-          width: 32px; height: 32px; background: var(--bg);
-          border: 1px solid var(--border); border-radius: var(--radius);
-          display: flex; align-items: center; justify-content: center;
-          color: var(--accent); flex-shrink: 0;
-        }
-        .pf-value__title {
-          font-size: 12px; font-weight: 600; color: var(--text-1);
-          margin-bottom: 3px;
-        }
-        .pf-value__body { font-size: 11px; color: var(--text-3); line-height: 1.6; }
-
-        /* Right column: skills + timeline */
-        .pf-skills { margin-bottom: 24px; }
-        .pf-skill-list { display: flex; flex-direction: column; gap: 14px; }
-        .pf-skill__header {
-          display: flex; justify-content: space-between;
-          font-size: 12px; margin-bottom: 6px;
-        }
-        .pf-skill__name { color: var(--text-1); font-weight: 500; }
-        .pf-skill__pct { font-family: var(--mono); font-size: 11px; color: var(--accent); }
-        .pf-skill__track {
-          height: 2px; background: var(--border); border-radius: 1px;
-          overflow: hidden; margin-bottom: 3px;
-        }
-        .pf-skill__fill { height: 100%; background: var(--accent); border-radius: 1px; }
-        .pf-skill__tag {
-          font-family: var(--mono); font-size: 9px; text-transform: uppercase;
-          letter-spacing: 0.08em; color: var(--text-3);
-        }
-
-        /* Timeline */
-        .pf-timeline {
-          background: var(--surface); border: 1px solid var(--border);
-          border-radius: var(--radius); padding: 20px;
-        }
-        .pf-timeline__label {
-          font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em;
-          text-transform: uppercase; color: var(--text-3);
-          margin-bottom: 16px;
-        }
-        .pf-tl-list {
-          border-left: 1px solid var(--border); padding-left: 18px;
-          display: flex; flex-direction: column; gap: 20px;
-        }
-        .pf-tl-item { position: relative; }
-        .pf-tl-dot {
-          position: absolute; left: -24px; top: 5px;
-          width: 7px; height: 7px; background: var(--bg);
-          border: 2px solid var(--accent); border-radius: 50%;
-        }
-        .pf-tl-year {
-          display: inline-block; font-family: var(--mono); font-size: 9px;
-          letter-spacing: 0.1em; color: var(--accent);
-          background: var(--accent-dim); border: 1px solid var(--accent-bdr);
-          padding: 1px 7px; border-radius: 3px; margin-bottom: 5px;
-        }
-        .pf-tl-title { font-size: 12px; font-weight: 600; color: var(--text-1); margin-bottom: 4px; }
-        .pf-tl-body { font-size: 11px; color: var(--text-3); line-height: 1.6; }
-
-        /* ════════════════════════════════════
-           PROJECTS
-        ════════════════════════════════════ */
-        .pf-projects {
-          padding: 72px 24px;
-          border-bottom: 1px solid var(--border);
-        }
-        .pf-projects__grid {
-          max-width: 1120px; margin: 0 auto;
-          display: grid; grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-        }
-        @media (max-width: 860px) { .pf-projects__grid { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 560px) { .pf-projects__grid { grid-template-columns: 1fr; } }
-
-        .pf-proj {
-          background: var(--surface); border: 1px solid var(--border);
-          border-radius: var(--radius); overflow: hidden;
-          display: flex; flex-direction: column;
-          transition: border-color 0.2s, transform 0.2s;
-        }
-        .pf-proj:hover { border-color: var(--border-hi); transform: translateY(-2px); }
-
-        .pf-proj__img { position: relative; aspect-ratio: 16/9; overflow: hidden; }
-        .pf-proj__img img {
-          width: 100%; height: 100%; object-fit: cover;
-          display: block; filter: grayscale(20%); opacity: 0.8;
-          transition: filter 0.3s, opacity 0.3s, transform 0.4s;
-        }
-        .pf-proj:hover .pf-proj__img img {
-          filter: grayscale(0); opacity: 1; transform: scale(1.04);
-        }
-        .pf-proj__img-fade {
-          position: absolute; inset: 0;
-          background: linear-gradient(to top, var(--bg) 0%, transparent 60%);
-        }
-        .pf-proj__id {
-          position: absolute; top: 10px; left: 10px;
-          font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em;
-          color: var(--text-3); background: rgba(10,10,11,0.85);
-          border: 1px solid var(--border); padding: 2px 7px; border-radius: 3px;
-        }
-        .pf-proj__status {
-          position: absolute; top: 10px; right: 10px;
-          font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em;
-          color: var(--accent); background: var(--accent-dim);
-          border: 1px solid var(--accent-bdr); padding: 2px 7px; border-radius: 3px;
-        }
-
-        .pf-proj__body { padding: 18px; flex: 1; }
-        .pf-proj__year {
-          font-family: var(--mono); font-size: 9px; color: var(--text-3);
-          margin-bottom: 6px;
-        }
-        .pf-proj__title {
-          font-family: var(--serif); font-size: 18px; color: var(--text-1);
-          line-height: 1.2; margin-bottom: 8px;
-          transition: color 0.15s;
-        }
-        .pf-proj:hover .pf-proj__title { color: var(--accent); }
-        .pf-proj__desc { font-size: 12px; color: var(--text-3); line-height: 1.65; font-weight: 300; }
-
-        .pf-proj__footer {
-          padding: 14px 18px; border-top: 1px solid var(--border);
-          display: flex; align-items: center; justify-content: space-between; gap: 10px;
-        }
-        .pf-proj__tags { display: flex; flex-wrap: wrap; gap: 5px; }
-        .pf-proj__tag {
-          font-family: var(--mono); font-size: 9px; letter-spacing: 0.06em;
-          color: var(--text-3); background: var(--bg);
-          border: 1px solid var(--border); padding: 2px 7px; border-radius: 3px;
-        }
-        .pf-proj__link {
-          display: inline-flex; align-items: center; gap: 4px;
-          font-family: var(--mono); font-size: 10px; color: var(--text-3);
-          text-decoration: none; transition: color 0.15s; flex-shrink: 0;
-        }
-        .pf-proj__link:hover { color: var(--accent); }
-
-        .pf-projects__more {
-          max-width: 1120px; margin: 24px auto 0;
-          text-align: center;
-        }
-
-        /* ════════════════════════════════════
-   JOBS CTA BAND
-════════════════════════════════════ */
-.pf-jobs {
-  padding: 72px 24px;
-  border-bottom: 1px solid var(--border);
-}
-.pf-jobs__inner {
-  max-width: 1120px; margin: 0 auto;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 40px 36px;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 28px; border-left: 3px solid var(--accent);
-  position: relative; overflow: hidden;
-}
-@media (max-width: 680px) { .pf-jobs__inner { flex-direction: column; align-items: flex-start; } }
-
-.pf-jobs__content { flex: 1; min-width: 0; }
-
-.pf-jobs__title {
-  font-family: var(--serif); font-size: 26px; color: var(--text-1);
-  margin-bottom: 6px;
-}
-.pf-jobs__sub { font-size: 13px; color: var(--text-3); line-height: 1.65; max-width: 440px; font-weight: 300; }
-
-.pf-jobs__img {
-  flex-shrink: 0;
-  width: 220px; height: 160px;
-  border-radius: 6px;
-  overflow: hidden;
-  background: var(--bg, #0a0a0b);
-  border: 1px solid var(--border);
-}
-.pf-jobs__img img {
-  width: 100%; height: 100%; object-fit: cover;
-  opacity: 0.85; filter: grayscale(15%);
-}
-@media (max-width: 680px) {
-  .pf-jobs__img { width: 100%; height: 200px; }
-}
-
-        /* ════════════════════════════════════
-           CONTACT STRIP
-        ════════════════════════════════════ */
-        .pf-contact {
-          padding: 80px 24px 72px;
-        }
-        .pf-contact__inner {
-          max-width: 540px; margin: 0 auto; text-align: center;
-        }
-        .pf-contact__title {
-          font-family: var(--serif); font-size: clamp(28px, 4vw, 44px);
-          color: var(--text-1); margin-bottom: 12px; line-height: 1.1;
-        }
-        .pf-contact__sub {
-          font-size: 14px; color: var(--text-2); line-height: 1.7;
-          font-weight: 300; margin-bottom: 28px;
-        }
-        .pf-contact__socials {
-          display: flex; align-items: center; justify-content: center; gap: 10px;
-          margin-bottom: 24px;
-        }
-        .pf-social {
-          width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
-          background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-          color: var(--text-3); text-decoration: none;
-          transition: color 0.15s, border-color 0.15s, background 0.15s;
-        }
-        .pf-social:hover {
-          color: var(--accent); border-color: var(--accent-bdr); background: var(--accent-dim);
-        }
-
-        /* ════════════════════════════════════
-           POPUP
-        ════════════════════════════════════ */
-        .pf-popup-overlay {
-          position: fixed; inset: 0; z-index: 200;
-          background: rgba(10,10,11,0.85); backdrop-filter: blur(8px);
-          display: flex; align-items: center; justify-content: center; padding: 24px;
-        }
-        .pf-popup {
-          background: var(--surface); border: 1px solid var(--border);
-          border-radius: var(--radius); padding: 28px; max-width: 400px; width: 100%;
-          position: relative; border-top: 2px solid var(--accent);
-        }
-        .pf-popup__close {
-          position: absolute; top: 14px; right: 14px;
-          background: none; border: none; cursor: pointer;
-          font-family: var(--mono); font-size: 11px; color: var(--text-3);
-          transition: color 0.15s;
-        }
-        .pf-popup__close:hover { color: var(--text-1); }
-        .pf-popup__eyebrow {
-          font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
-          text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
-          display: flex; align-items: center; gap: 6px;
-        }
-        .pf-popup__title {
-          font-family: var(--serif); font-size: 22px; color: var(--text-1);
-          margin-bottom: 8px;
-        }
-        .pf-popup__body { font-size: 13px; color: var(--text-2); line-height: 1.65; margin-bottom: 20px; font-weight: 300; }
-       .pf-blog {
-    background: #0a0a0b;
-    padding: 80px 24px;
-}
-
-.pf-eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: #e8ff47; margin-bottom: 28px;
-}
-.pf-eyebrow__dot { width: 6px; height: 6px; border-radius: 50%; background: #e8ff47; }
-
-.pf-blog__grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: #1e1e22;
-    border: 1px solid #1e1e22;
-    border-radius: 6px;
-    overflow: hidden;
-}
-@media (max-width: 700px) {
-    .pf-blog__grid { grid-template-columns: 1fr; }
-}
-
-.pf-article {
-    display: flex; flex-direction: column;
-    background: #111113;
-    text-decoration: none;
-    position: relative;
-    transition: background 0.15s;
-}
-.pf-article:hover { background: #141417; }
-.pf-article::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
-    background: #e8ff47; transform: scaleY(0); transform-origin: bottom;
-    transition: transform 0.2s ease; z-index: 5;
-}
-.pf-article:hover::before { transform: scaleY(1); }
-
-.pf-article__img { position: relative; height: 220px; background: #0a0a0b; overflow: hidden; flex-shrink: 0; }
-.pf-article__img img {
-    width: 100%; height: 100%; object-fit: cover;
-    opacity: 0.55; filter: grayscale(25%);
-    transition: opacity 0.3s, transform 0.4s;
-}
-.pf-article:hover .pf-article__img img { opacity: 0.8; transform: scale(1.04); }
-.pf-article__img-placeholder {
-    width: 100%; height: 100%;
-    background: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(255,255,255,0.015) 8px, rgba(255,255,255,0.015) 16px);
-}
-.pf-article__tag {
-    position: absolute; top: 14px; left: 14px;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
-    padding: 3px 8px; border-radius: 3px;
-    background: #0a0a0b; color: #e8ff47; border: 1px solid rgba(232,255,71,0.2);
-}
-
-.pf-article__body { padding: 22px 24px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-.pf-article__title {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: 20px; font-weight: 400; line-height: 1.3;
-    color: #f4f4f5; transition: color 0.15s;
-}
-.pf-article:hover .pf-article__title { color: #fff; }
-.pf-article__desc {
-    font-size: 13px; color: #a1a1aa; line-height: 1.6;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-}
-.pf-article__meta {
-    display: flex; align-items: center; gap: 8px;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 11px; color: #52525b; margin-top: 4px;
-}
-.pf-article__author { color: #a1a1aa; }
-.pf-article__dot { width: 3px; height: 3px; border-radius: 50%; background: #2e2e34; flex-shrink: 0; }
-
-.pf-article__footer { padding: 0 24px 22px; }
-.pf-article__link {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 11px; letter-spacing: 0.06em; color: #e8ff47;
-}
-
-.pf-blog__more { display: flex; justify-content: center; margin-top: 40px; }
-}
-      `}</style>
+                .pf-page :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+                @media (prefers-reduced-motion: reduce) { .pf-page * { transition: none !important; animation: none !important; } }
+            `}</style>
 
             <div className="pf-page">
-
-                <Navbar
-                    isScrolled={isScrolled}
-                    isMenuOpen={isMenuOpen}
-                    setIsMenuOpen={setIsMenuOpen}
-                    activeSection={activeSection}
-                    scrollToSection={scrollToSection}
-                />
+                <Navbar />
 
                 {/* ── HERO ── */}
-                <section id="home">
-                    <div className="pf-hero">
-                        <div className="pf-hero__inner">
-
-                            {/* Left: profile card */}
-                            <div>
-                                <div className="pf-card">
-                                    <div className="pf-card__img">
-                                        <img src="/sirb.png" alt="Sir Brown AD" />
-                                        <div className="pf-card__img-fade" />
-                                        <div className="pf-card__badge">
-                                            <div className="pf-card__badge-name">Sir Brown AD</div>
-                                            <div className="pf-card__badge-role">Full-Stack Developer</div>
-                                        </div>
-                                    </div>
-                                    <div className="pf-card__meta">
-                                        <div className="pf-card__row">
-                                            <span className="pf-card__key">Location</span>
-                                            <span className="pf-card__val">Nigeria · Remote</span>
-                                        </div>
-                                        <div className="pf-card__row">
-                                            <span className="pf-card__key">Runtime</span>
-                                            <span className="pf-card__val pf-card__val--accent">Node · Next · ES6+</span>
-                                        </div>
-                                        <div className="pf-card__row">
-                                            <span className="pf-card__key">Status</span>
-                                            <span className="pf-card__status">
-                                                <span className="pf-card__status-dot" /> Open to work
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="pf-stats">
-                                    {stats.map((s) => (
-                                        <div key={s.label} className="pf-stat">
-                                            <div className="pf-stat__num">{s.num}</div>
-                                            <div className="pf-stat__label">{s.label}</div>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {/* Spec table */}
-                                <div className="pf-spec-table">
-                                    <div className="pf-spec-table__header">
-                                        <Terminal size={11} /> System spec
-                                    </div>
-                                    {[
-                                        ["Access", "Root / Auth granted", true],
-                                        ["Data store", "Firestore · Cloud"],
-                                        ["Protocol", "HTTPS · WSS · REST"],
-                                        ["Uptime", "02+ yrs active"],
-                                    ].map(([k, v, acc]) => (
-                                        <div key={k} className="pf-spec-row">
-                                            <span className="pf-spec-row__key">{k}</span>
-                                            <span className={`pf-spec-row__val${acc ? " pf-spec-row__val--accent" : ""}`}>{v}</span>
-                                        </div>
-                                    ))}
-                                </div>
+                <section id="home" className="pf-hero">
+                    <div className="pf-wrap pf-hero__grid">
+                        <div>
+                            <div className="pf-avail">
+                                <span className="pf-ping">
+                                    <span className="pf-ping__ring" />
+                                    <span className="pf-ping__dot" />
+                                </span>
+                                Available for new projects
                             </div>
+                            <h1 className="pf-hero__title">
+                                Web platforms people <em>trust</em> with their money.
+                            </h1>
+                            <p className="pf-hero__dek">
+                                I&apos;m Sir Brown AD, a full stack developer in Abuja. I design and build fast, secure
+                                websites, stores and platforms for businesses across Nigeria and Africa, from first sketch
+                                to launch.
+                            </p>
+                            <div className="pf-hero__actions">
+                                <Link href="/bc/contact" className="pf-btn pf-btn--solid pf-btn--lg">
+                                    Start a project <ArrowRight size={14} />
+                                </Link>
+                                <a href={CALL_URL} target="_blank" rel="noopener noreferrer" className="pf-btn pf-btn--lg">
+                                    <Calendar size={14} /> Book a free call
+                                </a>
+                            </div>
+                            <p className="pf-hero__reply">
+                                <Check size={13} /> Free quote <span>·</span> Reply within 24 hours <span>·</span> No commitment
+                            </p>
 
-                            {/* Right: copy */}
-                            <div className="pf-hero__copy">
-                                <div className="pf-eyebrow">
-                                    <span className="pf-eyebrow__dot" />
-                                    Portfolio
-                                </div>
-                                <h1 className="pf-hero__title">
-                                    Building<br />high-velocity<br /><em>web systems.</em>
-                                </h1>
-                                <p className="pf-hero__desc">
-                                    I bypass boilerplate conventions to architect zero-latency frontends and structural
-                                    layout lifecycles. Focused on lightweight footprints, decoupled data routing pipelines,
-                                    and robust execution context safety.
-                                </p>
-                                <div className="pf-hero__actions">
-                                    <button
-                                        className="pf-btn pf-btn--accent"
-                                        onClick={() => scrollToSection("projects")}
-                                    >
-                                        View projects <ArrowRight size={13} />
-                                    </button>
-                                    <Link href="/cv" className="pf-btn">
-                                        <Download size={13} /> Resume
-                                    </Link>
-                                    <Link href="/bc/about" className="pf-btn">
-                                        <User size={13} /> About me
-                                    </Link>
-                                </div>
+                            <div className="pf-stats">
+                                {stats.map((s) => (
+                                    <div key={s.label} className="pf-stat">
+                                        <div className="pf-stat__num">{s.num}</div>
+                                        <div className="pf-stat__label">{s.label}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="pf-portrait">
+                            <div className="pf-portrait__frame">
+                                <img src="/sirb.png" alt="Sir Brown AD" />
+                            </div>
+                            <div className="pf-portrait__tag">
+                                <div className="pf-portrait__name">Sir Brown AD</div>
+                                <div className="pf-portrait__role">Full stack developer · Abuja</div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* ── ABOUT / DIAGNOSTIC ── */}
-                <section id="about">
-                    <div className="pf-about">
-                        <div className="pf-about__grid">
+                {/* ── TRUST STRIP ── */}
+                <div className="pf-trust">
+                    <div className="pf-wrap pf-trust__inner">
+                        <span className="pf-trust__label">Built and shipped</span>
+                        <div className="pf-trust__list">
+                            {trusted.map((t) => (
+                                <span key={t} className="pf-trust__item">{t}</span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
 
-                            {/* Left */}
-                            <div>
-                                <div className="pf-eyebrow">
-                                    <span className="pf-eyebrow__dot" />
-                                    Architectural manifesto
-                                </div>
-                                <div className="pf-about__manifesto">
-                                    <p>
-                                        My development process bypasses visual decoration in favour of systemic
-                                        precision. I scale custom JavaScript applications with strict operational limits,
-                                        explicit side-effect tracking, and encapsulated data isolation loops.
-                                    </p>
-                                    <p>
-                                        Every application stack I initialise prioritises layout render performance,
-                                        robust data schema safety boundaries, and modular component isolation.
-                                    </p>
-                                    <Link href="/bc_dev" className="pf-btn" style={{ display: "inline-flex" }}>
-                                        Full profile <ArrowRight size={12} />
-                                    </Link>
-                                </div>
-
-                                <div className="pf-values">
-                                    {values.map((v) => (
-                                        <div key={v.title} className="pf-value">
-                                            <div className="pf-value__icon">{v.icon}</div>
-                                            <div>
-                                                <div className="pf-value__title">{v.title}</div>
-                                                <div className="pf-value__body">{v.body}</div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Right */}
-                            <div>
-                                <div className="pf-eyebrow">
-                                    <span className="pf-eyebrow__dot" />
-                                    Stack capacities
-                                </div>
-                                <div className="pf-skills">
-                                    <div className="pf-skill-list">
-                                        {skills.map((s) => (
-                                            <div key={s.name}>
-                                                <div className="pf-skill__header">
-                                                    <span className="pf-skill__name">{s.name}</span>
-                                                    <span className="pf-skill__pct">{s.level}%</span>
-                                                </div>
-                                                <div className="pf-skill__track">
-                                                    <div className="pf-skill__fill" style={{ width: `${s.level}%` }} />
-                                                </div>
-                                                <div className="pf-skill__tag">{s.tag}</div>
-                                            </div>
+                {/* ── SERVICES ── */}
+                <section id="about" className="pf-section">
+                    <div className="pf-wrap">
+                        <SectionHead
+                            kicker="What I do"
+                            title="How I can help your business"
+                            note="Pick one, or combine them. Every project starts with a conversation about your goals."
+                        />
+                        <div className="pf-services">
+                            {services.map((s) => (
+                                <article key={s.title} className="pf-service">
+                                    <div className="pf-service__icon">{s.icon}</div>
+                                    <h3 className="pf-service__title">{s.title}</h3>
+                                    <p className="pf-service__body">{s.body}</p>
+                                    <ul className="pf-service__points">
+                                        {s.points.map((p) => (
+                                            <li key={p}><Check size={13} /> {p}</li>
                                         ))}
-                                    </div>
-                                </div>
-
-                                <div className="pf-timeline">
-                                    <div className="pf-timeline__label">Career timeline</div>
-                                    <div className="pf-tl-list">
-                                        {timeline.map((t) => (
-                                            <div key={t.year} className="pf-tl-item">
-                                                <div className="pf-tl-dot" />
-                                                <span className="pf-tl-year">{t.year}</span>
-                                                <div className="pf-tl-title">{t.title}</div>
-                                                <div className="pf-tl-body">{t.body}</div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-
+                                    </ul>
+                                </article>
+                            ))}
                         </div>
                     </div>
                 </section>
 
                 {/* ── PROJECTS ── */}
-                <section id="projects">
-                    <div className="pf-projects">
-                        <div style={{ maxWidth: 1120, margin: "0 auto" }}>
-                            <div className="pf-eyebrow">
-                                <span className="pf-eyebrow__dot" />
-                                Production deployments
-                            </div>
-                            <div className="pf-projects__grid">
-                                {projects.map((p) => (
-                                    <article key={p.id} className="pf-proj">
-                                        <div className="pf-proj__img">
-                                            <img src={p.image} alt={p.title} />
-                                            <div className="pf-proj__img-fade" />
-                                            <span className="pf-proj__id">{p.id}</span>
-                                            <span className="pf-proj__status">{p.status}</span>
-                                        </div>
-                                        <div className="pf-proj__body">
-                                            <div className="pf-proj__year">{p.year}</div>
-                                            <div className="pf-proj__title">{p.title}</div>
-                                            <p className="pf-proj__desc">{p.description}</p>
-                                        </div>
-                                        <div className="pf-proj__footer">
-                                            <div className="pf-proj__tags">
+                <section id="projects" className="pf-section">
+                    <div className="pf-wrap">
+                        <SectionHead
+                            kicker="Selected work"
+                            title="Live products you can visit"
+                            note="Real platforms in production. Open any of them and see how they work."
+                        />
+                        <div className="pf-projects">
+                            {projects.map((p) => (
+                                <a key={p.title} href={p.link} target="_blank" rel="noopener noreferrer" className="pf-proj">
+                                    <div className="pf-proj__media">
+                                        <img src={p.image} alt={p.title} loading="lazy" />
+                                        <span className="pf-proj__chip">{p.kind}</span>
+                                    </div>
+                                    <div className="pf-proj__body">
+                                        <h3 className="pf-proj__title">{p.title}</h3>
+                                        <p className="pf-proj__desc">{p.description}</p>
+                                        <div className="pf-proj__foot">
+                                            <div className="pf-tags">
                                                 {p.tags.map((t) => (
-                                                    <span key={t} className="pf-proj__tag">{t}</span>
+                                                    <span key={t} className="pf-tag">{t}</span>
                                                 ))}
                                             </div>
-
-                                            <a
-                                                href={p.link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="pf-proj__link"
-                                            >
-                                                Visit <ArrowUpRight size={11} />
-                                            </a>
+                                            <span className="pf-proj__visit">Visit <ArrowUpRight size={12} /></span>
                                         </div>
-                                    </article>
-                                ))}
-                            </div>
-                            <div className="pf-projects__more">
-                                <Link href="/bc/projects" className="pf-btn" style={{ display: "inline-flex" }}>
-                                    All projects <ArrowRight size={12} />
-                                </Link>
-                            </div>
+                                    </div>
+                                </a>
+                            ))}
                         </div>
-                    </div>
-                </section>
 
-                 {/* ── BLOG PREVIEW ── */}
-                <section id="blog">
-                    <div className="pf-blog">
-                        <div style={{ maxWidth: 1120, margin: "0 auto" }}>
-                            <div className="pf-eyebrow">
-                                <span className="pf-eyebrow__dot" />
-                                Latest from the blog
-                            </div>
-                            <div className="pf-blog__grid">
-                                {latestArticles.map((a) => (
-                                    <Link key={a.slug} href={`/blog/${a.slug}`} className="pf-article">
-                                        <div className="pf-article__img">
-                                            {a.image ? (
-                                                <img
-                                                    src={a.image}
-                                                    alt={a.title}
-                                                    onError={(e) => (e.target.style.display = "none")}
-                                                />
-                                            ) : (
-                                                <div className="pf-article__img-placeholder" />
-                                            )}
-                                            <span className="pf-article__tag">{a.category}</span>
-                                        </div>
-                                        <div className="pf-article__body">
-                                            <div className="pf-article__title">{a.title}</div>
-                                            <p className="pf-article__desc">{a.preview}</p>
-                                            <div className="pf-article__meta">
-                                                {a.postedBy && <span className="pf-article__author">{a.postedBy}</span>}
-                                                {a.postedBy && <span className="pf-article__dot" />}
-                                                <span>{a.readingTime} min read</span>
-                                            </div>
-                                        </div>
-                                        <div className="pf-article__footer">
-                                            <span className="pf-article__link">
-                                                Read <ArrowUpRight size={11} />
-                                            </span>
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
-                            <div className="pf-blog__more">
-                                <Link href="/blog" className="pf-btn" style={{ display: "inline-flex" }}>
-                                    All articles <ArrowRight size={12} />
-                                </Link>
-                            </div>
+                        <div className="pf-also">
+                            {alsoBuilt.map((b) => (
+                                <a key={b.name} href={b.url} target="_blank" rel="noopener noreferrer" className="pf-also__item">
+                                    <div>
+                                        <div className="pf-also__name">{b.name}</div>
+                                        <div className="pf-also__note">{b.note}</div>
+                                    </div>
+                                    <ArrowUpRight size={18} />
+                                </a>
+                            ))}
                         </div>
-                    </div>
-                </section>
-               
-                {/* ── JOBS CTA ── */}
-                <section id="jobs">
-                    <div className="pf-jobs">
-                        <div className="pf-jobs__inner">
-                            <div className="pf-jobs__content">
-                                <div className="pf-eyebrow" style={{ marginBottom: 10 }}>
-                                    <span className="pf-eyebrow__dot" />
-                                    Remote opportunities
-                                </div>
-                                <div className="pf-jobs__title">Worldwide remote work</div>
-                                <p className="pf-jobs__sub">
-                                    Parameters configured for distributed micro-tasks, long-term full-stack infrastructure,
-                                    and secure remote platform execution.
-                                </p>
-                                <Link href="/jobs" className="pf-btn pf-btn--accent" style={{ marginTop: 20 }}>
-                                    View opportunities <ArrowRight size={13} />
-                                </Link>
-                            </div>
-                            <div className="pf-jobs__img">
-                                <img
-                                    src="/remote-work.jpg"
-                                    alt="Remote work illustration"
-                                    onError={(e) => (e.target.style.display = "none")}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </section>
 
-                <Testimonials />
-
-                {/* ── CONTACT ── */}
-                <section id="contact">
-                    <div className="pf-contact">
-                        <div className="pf-contact__inner">
-                            <div className="pf-eyebrow" style={{ justifyContent: "center" }}>
-                                <span className="pf-eyebrow__dot" />
-                                Get in touch
-                            </div>
-                            <h2 className="pf-contact__title">Let's build something together</h2>
-                            <p className="pf-contact__sub">
-                                Submit project queries, remote contracts, or JavaScript system design consults
-                                and I'll respond within 24 hours.
-                            </p>
-                            <div className="pf-contact__socials">
-                                {[
-                                    { href: "https://github.com/Brown-Oziomachi", icon: <Github size={16} />, label: "GitHub" },
-                                    { href: "https://www.linkedin.com/in/brownoziomachi72a5a3229", icon: <Linkedin size={16} />, label: "LinkedIn" },
-                                    { href: "mailto:browncemmanuel@gmail.com", icon: <Mail size={16} />, label: "Email" },
-                                ].map((s) => (
-                                    <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="pf-social" aria-label={s.label}>
-                                        {s.icon}
-                                    </a>
-                                ))}
-                            </div>
-                            <Link href="/bc/contact" className="pf-btn pf-btn--accent">
-                                Start a conversation <ArrowRight size={13} />
+                        <div className="pf-more">
+                            <Link href="/bc/projects" className="pf-btn">
+                                All projects <ArrowRight size={13} />
                             </Link>
                         </div>
                     </div>
                 </section>
 
-                {/* ── POPUP ── */}
-                {
-                    showPopup && (
-                        <div className="pf-popup-overlay">
-                            <div className="pf-popup">
-                                <button className="pf-popup__close" onClick={() => setShowPopup(false)}>
-                                    [✕] close
-                                </button>
-                                <div className="pf-popup__eyebrow">
-                                    <ShieldAlert size={11} /> Remote opportunities open
-                                </div>
-                                <div className="pf-popup__title">Active job pipelines</div>
-                                <p className="pf-popup__body">
-                                    Global remote endpoints are currently open for deep structural integration.
-                                    Browse available positions now.
+                {/* ── WHY + PROCESS ── */}
+                <section className="pf-section">
+                    <div className="pf-wrap">
+                        <div className="pf-why">
+                            <div>
+                                <div className="pf-kicker">Why work with me</div>
+                                <h2 className="pf-h2">Direct, fast and built to last</h2>
+                                <p className="pf-why__lead">
+                                    A good site is more than good looks. It loads quickly, protects your customers and is easy
+                                    for you to manage. That is what I build.
                                 </p>
-                                <Link
-                                    href="/jobs"
-                                    className="pf-btn pf-btn--accent"
-                                    style={{ width: "100%", justifyContent: "center" }}
-                                    onClick={() => setShowPopup(false)}
-                                >
-                                    View open roles <ArrowRight size={13} />
+                                <ul className="pf-reasons">
+                                    {reasons.map((r) => (
+                                        <li key={r}>
+                                            <span className="pf-reasons__tick"><Check size={14} /></span>
+                                            {r}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div>
+                                <div className="pf-kicker">How it works</div>
+                                <div className="pf-steps">
+                                    {steps.map((s) => (
+                                        <div key={s.n} className="pf-step">
+                                            <span className="pf-step__n">{s.n}</span>
+                                            <div>
+                                                <div className="pf-step__title">{s.title}</div>
+                                                <p className="pf-step__body">{s.body}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="pf-stack">
+                            <span className="pf-stack__label">Tools I use</span>
+                            <div className="pf-stack__list">
+                                {stack.map((s) => (
+                                    <span key={s} className="pf-stack__chip">{s}</span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* ── TESTIMONIALS ── */}
+                <div className="pf-section">
+                    <Testimonials />
+                </div>
+
+                {/* ── BLOG ── */}
+                {latestArticles?.length > 0 && (
+                    <section id="blog" className="pf-section">
+                        <div className="pf-wrap">
+                            <SectionHead
+                                kicker="From the blog"
+                                title="Notes on fraud, security and building"
+                                note="Free to read. Shared to help people avoid costly mistakes."
+                            />
+                            <div className="pf-blog">
+                                {latestArticles.slice(0, 3).map((a) => (
+                                    <Link key={a.slug} href={`/blog/${a.slug}`} className="pf-post">
+                                        <div className="pf-post__media">
+                                            {a.image ? (
+                                                <img src={a.image} alt={a.title} loading="lazy" onError={(e) => (e.target.style.display = "none")} />
+                                            ) : (
+                                                <div className="pf-post__ph" />
+                                            )}
+                                            {a.category && <span className="pf-post__chip">{a.category}</span>}
+                                        </div>
+                                        <div className="pf-post__body">
+                                            <h3 className="pf-post__title">{a.title}</h3>
+                                            <p className="pf-post__desc">{a.preview}</p>
+                                            <div className="pf-post__meta">
+                                                {a.postedBy && <>{a.postedBy} · </>}
+                                                {a.readingTime} min read
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                            <div className="pf-more">
+                                <Link href="/blog" className="pf-btn">
+                                    All articles <ArrowRight size={13} />
                                 </Link>
                             </div>
                         </div>
-                    )
-                }
+                    </section>
+                )}
+
+                {/* ── CONTACT ── */}
+                <section id="contact" className="pf-wrap pf-contact">
+                    <div className="pf-contact__card">
+                        <div>
+                            <div className="pf-kicker">Let&apos;s talk</div>
+                            <h2 className="pf-contact__title">
+                                Got an idea? Let&apos;s turn it into a <em>working product.</em>
+                            </h2>
+                            <p className="pf-contact__sub">
+                                Tell me what you want to build, even if it is rough. I will reply with a clear plan, a
+                                timeline and a price.
+                            </p>
+                            <div className="pf-contact__promise">
+                                <span><Check size={14} /> Free quote, no pressure</span>
+                                <span><Check size={14} /> I reply within 24 hours</span>
+                                <span><Check size={14} /> You work with the developer directly</span>
+                            </div>
+                        </div>
+
+                        <div className="pf-contact__actions">
+                            <Link href="/bc/contact" className="pf-btn pf-btn--solid pf-btn--lg">
+                                Start a project <ArrowRight size={14} />
+                            </Link>
+                            <a href={CALL_URL} target="_blank" rel="noopener noreferrer" className="pf-btn pf-btn--lg">
+                                Book a free call <Calendar size={14} />
+                            </a>
+                            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="pf-btn pf-btn--lg">
+                                Chat on WhatsApp <WhatsAppIcon size={15} />
+                            </a>
+                            <a href={`mailto:${EMAIL}`} className="pf-btn pf-btn--lg">
+                                Send an email <Mail size={14} />
+                            </a>
+                            <div className="pf-contact__socials">
+                                <a href="https://github.com/Brown-Oziomachi" target="_blank" rel="noopener noreferrer" className="pf-social" aria-label="GitHub"><Github size={16} /></a>
+                                <a href="https://www.linkedin.com/in/brownoziomachi72a5a3229" target="_blank" rel="noopener noreferrer" className="pf-social" aria-label="LinkedIn"><Linkedin size={16} /></a>
+                                <Link href="/cv" className="pf-social" aria-label="Resume"><Download size={16} /></Link>
+                                <Link href="/bc/about" className="pf-social" aria-label="About me"><ArrowUpRight size={16} /></Link>
+                            </div>
+                            <p className="pf-contact__channel">
+                                Prefer to follow along first?{" "}
+                                <a href={CHANNEL_URL} target="_blank" rel="noopener noreferrer">Join my WhatsApp channel</a>{" "}
+                                for new articles and fraud alerts.
+                            </p>
+                        </div>
+                    </div>
+                </section>
 
                 <Footer />
 
@@ -1057,8 +601,7 @@ export default function PortfolioClients() {
                     <FloatingClient onChatOpen={() => setIsChatOpen(true)} />
                 </Suspense>
                 <FirebaseChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-
-            </div >
+            </div>
         </>
     );
 }
