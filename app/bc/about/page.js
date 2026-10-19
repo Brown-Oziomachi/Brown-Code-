@@ -66,29 +66,10 @@ const systems = [
         problem: "African students and academics need an affordable place to find, sell and request documents.",
         build: "Seller wallets and withdrawals, Flutterwave payments, a bounty board, boosted listings, an admin panel and pricing in 30+ African currencies. Financial writes run on secured server routes with idempotent webhooks.",
         stack: ["Next.js", "Firebase", "Flutterwave", "Node.js"],
-        href: "https://learningaccessnetwork.com",
+        href: "https://learningaccessnetwork.vercel.app",
         icon: <Globe size={15} />,
     },
-    {
-        tag: "Publishing",
-        status: "Live",
-        title: "browncode.name.ng",
-        problem: "Security knowledge rarely reaches everyday readers in plain language.",
-        build: "An SEO-first publishing platform: dynamic sitemaps, IndexNow pings, newsletter signups, comments, a sponsored-article model and an automated image watermarking pipeline.",
-        stack: ["Next.js", "Firebase", "SEO", "Node.js"],
-        href: "/blog",
-        icon: <PenLine size={15} />,
-    },
-    {
-        tag: "Studio",
-        status: "In development",
-        title: "Sir Brown AD Studio",
-        problem: "Clients need one clear place to see what I offer and what it costs.",
-        build: "A multi-page Nuxt site on sirbrownad.name.ng with Home, Services, Pricing and Contact pages.",
-        stack: ["Nuxt", "Vue 3", "Vercel"],
-        href: null,
-        icon: <Rocket size={15} />,
-    },
+   
 ];
 
 const beats = [
@@ -423,7 +404,7 @@ export default function AboutMePage() {
                         <a href="/bc_dev" className="ab-nav__link ab-nav__link--active">About</a>
                         <a href="/portfolio" className="ab-nav__link">Portfolio</a>
                         <a href="/blog" className="ab-nav__link">Blog</a>
-                        <a href="/cv" className="ab-nav__link">Resume</a>
+                        {/* <a href="/cv" className="ab-nav__link">Resume</a> */}
                         <a href="/bc/contact" className="ab-btn ab-btn--solid ab-nav__cta">
                             Start a project <ArrowRight size={12} />
                         </a>
@@ -476,9 +457,9 @@ export default function AboutMePage() {
                                 <a href="https://cal.com/sir-brown" className="ab-btn">
                                     Book a call <ArrowRight size={12} />
                                 </a>
-                                <a href="/cv" className="ab-btn">
+                                {/* <a href="/cv" className="ab-btn">
                                     <Download size={12} /> Resume
-                                </a>
+                                </a> */}
                                 <Link href="/bc_dev" className="ab-btn">
                                     Full profile <ArrowRight size={12} />
                                 </Link>
@@ -576,6 +557,9 @@ export default function AboutMePage() {
                                 );
                             })}
                         </div>
+                        <p className="ab-more">
+                            <a href="/bc/projects" className="ab-more__link">Explore more of my work →</a>
+                        </p>
                     </section>
 
                     {/* The desk */}

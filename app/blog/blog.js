@@ -1,241 +1,242 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, ArrowUpRight, Search, X, Mail } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+    ArrowRight, ArrowUpRight, Search, X, Mail, Heart, Menu,
+    ChevronLeft, ChevronRight,
+} from "lucide-react";
 import Footer from "@/components/footer";
 import { CATEGORIES, CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
-import Link from "next/link";
-import { Heart } from "lucide-react";
 
 const ITEMS_PER_PAGE = 9;
 
-// ─── helpers ────────────────────────────────────────────────────────────────
+/* ── helpers ─────────────────────────────────────────── */
 
 const formatDate = (dateString) => {
     if (!dateString) return null;
     return new Date(dateString).toLocaleDateString("en-US", {
         year: "numeric",
-        month: "long",
+        month: "short",
         day: "numeric",
     });
 };
 
-// ─── sub-components ─────────────────────────────────────────────────────────
+const readingTimeOf = (a) =>
+    a.readingTime || Math.max(1, Math.ceil((a.content || "").split(/\s+/).length / 200));
 
-const FeaturedHero = ({ article }) => (
-    <a href={`/blog/${article.slug}`} className="bl-hero-card">
-        <div className="bl-hero-card__img-wrap">
-            {article.image ? (
-                <img
-                    src={article.image}
-                    alt={article.title}
-                    className="bl-hero-card__img"
-                    onError={(e) => (e.target.style.display = "none")}
-                />
-            ) : (
-                <div className="bl-hero-card__img-placeholder" />
-            )}
-            <span className="bl-tag bl-hero-card__tag">
-                {CATEGORY_LABELS[getCategoryKey(article)]}
-            </span>
-        </div>
-        <div className="bl-hero-card__body">
-            <span className="bl-tag bl-tag--ghost">
-                {CATEGORY_LABELS[getCategoryKey(article)]}
-            </span>
-            <h2 className="bl-hero-card__title">{article.title}</h2>
-            <p className="bl-hero-card__preview">{article.preview}</p>
-            <div className="bl-meta">
-                <span className="bl-meta__author">{article.postedBy}</span>
-                <span>{article.readingTime} min read</span>
-                <span className="bl-meta__dot" />
-                {formatDate(article.datePublished) && ` ${formatDate(article.datePublished)}`}
-            </div>
-        </div>
-        <span className="bl-hero-card__arrow-wrap">
-            <ArrowUpRight size={14} className="bl-hero-card__arrow" />
-        </span>
-    </a>
-);
+const labelOf = (a) => CATEGORY_LABELS[getCategoryKey(a)];
 
-const SideFeaturedItem = ({ article, index }) => (
-    <a href={`/blog/${article.slug}`} className="bl-side-item">
-        <span className="bl-side-item__num">{String(index).padStart(2, "0")}</span>
-        <div className="bl-side-item__thumb-wrap">
-            {article.image ? (
-                <img
-                    src={article.image}
-                    alt={article.title}
-                    className="bl-side-item__thumb"
-                    onError={(e) => (e.target.style.display = "none")}
-                />
-            ) : (
-                <div className="bl-side-item__thumb-placeholder" />
-            )}
-        </div>
-        <div className="bl-side-item__body">
-            <span className="bl-tag bl-tag--sm">
-                {CATEGORY_LABELS[getCategoryKey(article)]}
-            </span>
-            <h3 className="bl-side-item__title">{article.title}</h3>
-            <span className="bl-side-item__meta">
-                {article.readingTime} min read
-                {formatDate(article.datePublished) && ` ${formatDate(article.datePublished)}`}
-            </span>
-        </div>
-    </a>
-);
-
-const PopularItem = ({ article, index }) => (
-    <a href={`/blog/${article.slug}`} className="bl-popular-item">
-        <span className="bl-popular-item__num">{String(index).padStart(2, "0")}</span>
-        <div className="bl-popular-item__body">
-            <h4 className="bl-popular-item__title">{article.title}</h4>
-            <span className="bl-popular-item__meta">
-                {CATEGORY_LABELS[getCategoryKey(article)]} · {article.readingTime} min
-                {formatDate(article.datePublished) && ` · ${formatDate(article.datePublished)}`}
-            </span>
-        </div>
-    </a>
-);
-
-const ArticleCard = ({ article, index }) => (
-
-  <a  href = {`/blog/${article.slug}`}
-className = "bl-card"
-style = {{ animationDelay: `${index * 40}ms` }}
-    >
-        <div className="bl-card__img-wrap">
-            {article.image ? (
-                <img
-                    src={article.image}
-                    alt={article.title}
-                    className="bl-card__img"
-                    onError={(e) => (e.target.style.display = "none")}
-                />
-            ) : (
-                <div className="bl-card__img-placeholder" />
-            )}
-        </div>
-        <div className="bl-card__body">
-            <span className="bl-tag bl-tag--sm">
-                {CATEGORY_LABELS[getCategoryKey(article)]}
-            </span>
-            <h3 className="bl-card__title">{article.title}</h3>
-            <p className="bl-card__preview">{article.preview}</p>
-            <div className="bl-meta bl-meta--sm">
-                <span className="bl-meta__author">{article.postedBy}</span>
-                <span className="bl-meta__dot" />
-                <span>{article.readingTime} min read</span>
-                {formatDate(article.datePublished) && (
-                    <>
-                        <span className="bl-meta__dot" />
-                        <span>{formatDate(article.datePublished)}</span>
-                    </>
-                )}
-            </div>
-        </div>
-    </a >
-);
-
-/** Numbered pagination — matches: [1] 2 3 4 5 6 Next → */
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-    if (totalPages <= 1) return null;
-
-    const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-
+/* Image with a clean fallback instead of a blank hole */
+function Cover({ src, alt, className }) {
+    const [failed, setFailed] = useState(false);
+    if (!src || failed) return <div className="bl-ph" aria-hidden="true" />;
     return (
-        <nav className="bl-pagination" aria-label="Article pages">
-            {pages.map((page) => (
+        <img
+            src={src}
+            alt={alt}
+            className={className}
+            loading="lazy"
+            onError={() => setFailed(true)}
+        />
+    );
+}
+
+function Meta({ article }) {
+    const date = formatDate(article.datePublished);
+    return (
+        <div className="bl-meta">
+            <span>{readingTimeOf(article)} min read</span>
+            {date && (
+                <>
+                    <span className="bl-meta__dot" />
+                    <span>{date}</span>
+                </>
+            )}
+        </div>
+    );
+}
+
+/* ── sub-components ──────────────────────────────────── */
+
+function HeroCard({ article }) {
+    return (
+        <Link href={`/blog/${article.slug}`} className="bl-hero">
+            <div className="bl-hero__media">
+                <Cover src={article.image} alt={article.title} className="bl-img" />
+                <span className="bl-chip">{labelOf(article)}</span>
+            </div>
+            <div className="bl-hero__body">
+                <h3 className="bl-hero__title">{article.title}</h3>
+                <p className="bl-hero__preview">{article.preview}</p>
+                <Meta article={article} />
+            </div>
+        </Link>
+    );
+}
+
+function PickItem({ article }) {
+    return (
+        <Link href={`/blog/${article.slug}`} className="bl-pick">
+            <div className="bl-pick__thumb">
+                <Cover src={article.image} alt={article.title} className="bl-img" />
+            </div>
+            <div className="bl-pick__body">
+                <span className="bl-pick__cat">{labelOf(article)}</span>
+                <h3 className="bl-pick__title">{article.title}</h3>
+                <Meta article={article} />
+            </div>
+        </Link>
+    );
+}
+
+function PopularItem({ article, rank }) {
+    return (
+        <Link href={`/blog/${article.slug}`} className="bl-pop">
+            <span className="bl-pop__rank">{rank}</span>
+            <div>
+                <h3 className="bl-pop__title">{article.title}</h3>
+                <div className="bl-pop__meta">
+                    {labelOf(article)}
+                    <span className="bl-meta__dot" />
+                    {readingTimeOf(article)} min read
+                </div>
+            </div>
+        </Link>
+    );
+}
+
+function ArticleCard({ article }) {
+    return (
+        <Link href={`/blog/${article.slug}`} className="bl-card">
+            <div className="bl-card__media">
+                <Cover src={article.image} alt={article.title} className="bl-img" />
+                <span className="bl-chip">{labelOf(article)}</span>
+            </div>
+            <div className="bl-card__body">
+                <h3 className="bl-card__title">{article.title}</h3>
+                <p className="bl-card__preview">{article.preview}</p>
+                <Meta article={article} />
+            </div>
+        </Link>
+    );
+}
+
+function Pagination({ currentPage, totalPages, onPageChange }) {
+    if (totalPages <= 1) return null;
+    const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+    return (
+        <nav className="bl-pager" aria-label="Article pages">
+            <button
+                className="bl-pager__btn"
+                onClick={() => onPageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                aria-label="Previous page"
+            >
+                <ChevronLeft size={14} />
+            </button>
+            {pages.map((p) => (
                 <button
-                    key={page}
-                    className={`bl-page-btn ${page === currentPage ? "bl-page-btn--active" : ""}`}
-                    onClick={() => onPageChange(page)}
-                    aria-current={page === currentPage ? "page" : undefined}
+                    key={p}
+                    className={`bl-pager__btn${p === currentPage ? " bl-pager__btn--on" : ""}`}
+                    onClick={() => onPageChange(p)}
+                    aria-current={p === currentPage ? "page" : undefined}
                 >
-                    {page}
+                    {p}
                 </button>
             ))}
-            {currentPage < totalPages && (
-                <button
-                    className="bl-page-btn bl-page-btn--next"
-                    onClick={() => onPageChange(currentPage + 1)}
-                >
-                    Next <ArrowRight size={13} />
-                </button>
-            )}
+            <button
+                className="bl-pager__btn"
+                onClick={() => onPageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                aria-label="Next page"
+            >
+                <ChevronRight size={14} />
+            </button>
         </nav>
     );
-};
+}
 
-/** Desktop-only sticky sidebar — About + Contact */
-const Sidebar = () => {
-    const router = useRouter();
+function Sidebar() {
     return (
-        <aside className="bl-sidebar">
-            <div className="bl-sidebar__card">
-                <p className="bl-sidebar__eyebrow">About</p>
-                <h3 className="bl-sidebar__title">Sir Brown AD</h3>
-                <p className="bl-sidebar__text">
-                    Full-stack developer building web platforms and writing about
-                    fraud awareness, fintech security, and software engineering.
+        <aside className="bl-side">
+            <div className="bl-side__card">
+                <p className="bl-side__kicker">About the author</p>
+                <h3 className="bl-side__title">Sir Brown AD</h3>
+                <p className="bl-side__text">
+                    Full stack engineer in Abuja. I build web platforms and write about fraud
+                    awareness, fintech security and software engineering.
                 </p>
-                <a href="/bc/about" className="bl-btn" style={{ width: "100%", justifyContent: "center" }}>
-                    About me
-                </a>
+                <Link href="/bc/about" className="bl-btn">
+                    About me <ArrowRight size={12} />
+                </Link>
             </div>
-            <div className="bl-sidebar__card">
-                <p className="bl-sidebar__eyebrow">Get in touch</p>
-                <h3 className="bl-sidebar__title">Have a project?</h3>
-                <p className="bl-sidebar__text">
-                    Open to freelance work, collaborations, and questions about
-                    anything I&apos;ve written here.
+            <div className="bl-side__card">
+                <p className="bl-side__kicker">Work with me</p>
+                <h3 className="bl-side__title">Have a project?</h3>
+                <p className="bl-side__text">
+                    Open to freelance builds, collaborations and sponsored articles.
                 </p>
-                <button
-                    className="bl-btn bl-btn--accent"
-                    style={{ width: "100%", justifyContent: "center" }}
-                    onClick={() => router.push("/bc/contact")}
+                <Link href="/bc/contact" className="bl-btn bl-btn--solid">
+                    <Mail size={12} /> Contact me
+                </Link>
+            </div>
+            <div className="bl-side__card">
+                <p className="bl-side__kicker">Support the writing</p>
+                <h3 className="bl-side__title">Sponsor on GitHub</h3>
+                <p className="bl-side__text">
+                    Every article is free to read. Sponsors help keep it that way.
+                </p>
+                <a
+                    href="https://github.com/sponsors/Brown-Oziomachi/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bl-btn"
                 >
-                    <Mail size={13} />
-                    Contact me
-                </button>
+                    <Heart size={12} fill="currentColor" /> Sponsor
+                </a>
             </div>
         </aside>
     );
-};
+}
+
+/* ── page ────────────────────────────────────────────── */
 
 export default function BlogListClient({ articles }) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
-    const [filteredArticles, setFilteredArticles] = useState(articles);
+    const [debounced, setDebounced] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const [menuOpen, setMenuOpen] = useState(false);
 
+    // Debounce search
     useEffect(() => {
         const id = setTimeout(() => {
-            let result = articles;
-            if (searchTerm.trim()) {
-                const q = searchTerm.toLowerCase();
-                result = result.filter(
-                    (a) =>
-                        a.title.toLowerCase().includes(q) ||
-                        a.preview?.toLowerCase().includes(q) ||
-                        a.postedBy.toLowerCase().includes(q)
-                );
-            }
-            setFilteredArticles(result);
+            setDebounced(searchTerm.trim().toLowerCase());
             setCurrentPage(1);
         }, 250);
         return () => clearTimeout(id);
-    }, [searchTerm, articles]);
+    }, [searchTerm]);
+
+    // Newest first, then filter
+    const filteredArticles = useMemo(() => {
+        const sorted = [...articles].sort((a, b) =>
+            (b.datePublished || "").localeCompare(a.datePublished || "")
+        );
+        if (!debounced) return sorted;
+        return sorted.filter(
+            (a) =>
+                a.title?.toLowerCase().includes(debounced) ||
+                a.preview?.toLowerCase().includes(debounced) ||
+                a.postedBy?.toLowerCase().includes(debounced)
+        );
+    }, [articles, debounced]);
 
     const heroArticle = filteredArticles[0];
     const sideArticles = filteredArticles.slice(1, 4);
     const popularArticles = filteredArticles.slice(4, 10);
-    const restSlugs = new Set(
-        [heroArticle, ...sideArticles, ...popularArticles].filter(Boolean).map((a) => a.slug)
-    );
-    const remainingArticles = filteredArticles.filter((a) => !restSlugs.has(a.slug));
+    const remainingArticles = filteredArticles.slice(10);
 
     const totalPages = Math.max(1, Math.ceil(remainingArticles.length / ITEMS_PER_PAGE));
     const paginatedArticles = useMemo(() => {
@@ -244,300 +245,243 @@ export default function BlogListClient({ articles }) {
     }, [remainingArticles, currentPage]);
 
     const handlePageChange = (page) => {
-        setCurrentPage(page);
-        document.getElementById("bl-all-articles")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        const next = Math.min(Math.max(1, page), totalPages);
+        setCurrentPage(next);
+        document.getElementById("bl-all")?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
     return (
         <>
             <style>{`
-                *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-                :root {
-                    --bg:          #0a0a0b;
-                    --surface:     #111113;
-                    --border:      #1e1e22;
-                    --border-hi:   #2e2e34;
-                    --text-1:      #f4f4f5;
-                    --text-2:      #a1a1aa;
-                    --text-3:      #52525b;
-                    --accent:      #e8ff47;
-                    --accent-dim:  rgba(232,255,71,0.08);
-                    --radius:      6px;
-                    --font-serif:  'DM Serif Display', 'Georgia', serif;
-                    --font-sans:   'Inter', system-ui, sans-serif;
-                    --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
-                }
+        .bl-page {
+          --paper: #000000; --paper-2: #121212; --card: #0d0d0d;
+          --ink: #f4f1ea; --ink-2: #bdb8ae; --ink-3: #85807a;
+          --rule: #242424; --rule-dark: #3a3a3a;
+          --accent: #e8ff47; --on-accent: #0a0a0b;
+          --serif: 'Playfair Display', Georgia, serif;
+          --sans: 'Inter', system-ui, sans-serif;
+          --mono: 'JetBrains Mono', 'Fira Code', monospace;
+          background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh;
+        }
+        .bl-page *, .bl-page *::before, .bl-page *::after { box-sizing: border-box; }
+        .bl-page a { color: inherit; }
+        .bl-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+        .bl-section { margin-top: 72px; }
 
-                .bl-page { font-family: var(--font-sans); background: var(--bg); color: var(--text-1); min-height: 100vh; }
+        /* Nav */
+        .bl-nav { position: sticky; top: 0; z-index: 1000; background: rgba(0,0,0,0.78); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 1px solid var(--rule-dark); }
+        .bl-nav__inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+        .bl-nav__brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--serif); font-weight: 800; font-size: 22px; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+        .bl-nav__brand em { color: var(--accent); font-style: normal; }
+        .bl-nav__tag { font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: 0.12em; color: var(--ink-3); border: 1px solid var(--rule-dark); padding: 2px 6px; }
+        .bl-nav__menu { display: flex; align-items: center; gap: 6px; }
+        .bl-nav__link { position: relative; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; padding: 10px 14px; transition: color 0.15s; }
+        .bl-nav__link::after { content: ''; position: absolute; left: 14px; right: 14px; bottom: 4px; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease; }
+        .bl-nav__link:hover, .bl-nav__link--active { color: var(--ink); }
+        .bl-nav__link:hover::after, .bl-nav__link--active::after { transform: scaleX(1); }
+        .bl-nav__cta { margin-left: 10px; }
+        .bl-nav__burger { display: none; width: 40px; height: 40px; border: 1px solid var(--rule-dark); background: transparent; color: var(--ink); cursor: pointer; align-items: center; justify-content: center; }
+        @media (max-width: 780px) {
+          .bl-nav__inner { height: 60px; }
+          .bl-nav__burger { display: inline-flex; }
+          .bl-nav__menu { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; padding: 12px 24px 20px; background: #000; border-bottom: 1px solid var(--rule-dark); }
+          .bl-nav__menu--open { display: flex; }
+          .bl-nav__link { padding: 14px 0; border-bottom: 1px solid var(--rule); }
+          .bl-nav__link::after { display: none; }
+          .bl-nav__link--active { color: var(--accent); }
+          .bl-nav__cta { margin: 16px 0 0; justify-content: center; }
+        }
 
-                /* ── Nav ── */
-                .bl-nav {
-                    position: sticky; top: 0; z-index: 100;
-                    background: rgba(10,10,11,0.92);
-                    backdrop-filter: blur(12px);
-                    border-bottom: 1px solid var(--border);
-                    padding: 0 24px; height: 56px;
-                    display: flex; align-items: center; justify-content: space-between;
-                }
-                .bl-nav__brand { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; color: var(--text-1); text-decoration: none; }
-                .bl-nav__brand em { font-style: normal; color: var(--accent); }
-                .bl-nav__back {
-                    display: inline-flex; align-items: center; gap: 6px;
-                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
-                    color: var(--text-2); text-decoration: none; padding: 6px 12px;
-                    border: 1px solid var(--border); border-radius: var(--radius);
-                    transition: color 0.15s, border-color 0.15s, background 0.15s;
-                }
-                .bl-nav__back:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
+        /* Buttons */
+        .bl-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; padding: 10px 16px; border: 1px solid var(--rule-dark); background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; transition: background 0.15s, color 0.15s, transform 0.15s; }
+        .bl-btn:hover { background: var(--ink); color: var(--paper); transform: translateY(-1px); }
+        .bl-btn--solid { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 500; }
+        .bl-btn--solid:hover { background: #d4e63c; border-color: #d4e63c; color: var(--on-accent); }
 
-                /* ── Main ── */
-                .bl-main { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+        /* Section heads */
+        .bl-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+        .bl-h2 { font-family: var(--serif); font-weight: 800; font-size: clamp(26px, 3.6vw, 38px); line-height: 1.1; color: var(--ink); }
+        .bl-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 26px; padding-bottom: 14px; border-bottom: 3px double var(--rule-dark); flex-wrap: wrap; }
+        .bl-head__note { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
 
-                /* ── Masthead ── */
-                .bl-masthead {
-                    display: flex; align-items: flex-end; justify-content: space-between;
-                    gap: 16px; padding: 52px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 32px;
-                }
-                .bl-masthead__eyebrow { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
-                .bl-masthead__title { font-family: var(--font-serif); font-size: clamp(36px, 5vw, 60px); font-weight: 400; line-height: 1.05; color: var(--text-1); }
-                .bl-masthead__desc { font-size: 13px; color: var(--text-2); line-height: 1.6; max-width: 320px; text-align: right; }
+        /* Masthead */
+        .bl-mast { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; padding: 56px 0 30px; border-bottom: 3px double var(--rule-dark); flex-wrap: wrap; }
+        .bl-mast__title { font-family: var(--serif); font-weight: 800; font-size: clamp(44px, 7vw, 76px); line-height: 1; letter-spacing: -0.01em; color: var(--ink); }
+        .bl-mast__title em { color: var(--accent); font-style: italic; }
+        .bl-mast__dek { max-width: 380px; font-size: 16px; line-height: 1.6; font-weight: 300; color: var(--ink-2); border-left: 3px solid var(--accent); padding-left: 16px; }
 
-                /* ── Toolbar ── */
-                .bl-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 48px; }
-                .bl-cat-nav { display: flex; gap: 6px; flex-wrap: wrap; }
-                .bl-cat-nav__link {
-                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
-                    padding: 6px 14px; border-radius: var(--radius); border: 1px solid var(--border);
-                    color: var(--text-2); text-decoration: none;
-                    transition: color 0.15s, border-color 0.15s, background 0.15s;
-                }
-                .bl-cat-nav__link:hover { color: var(--accent); border-color: rgba(232,255,71,0.3); background: var(--accent-dim); }
+        /* Toolbar */
+        .bl-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--rule); }
+        .bl-cats { display: flex; gap: 8px; flex-wrap: wrap; }
+        .bl-cats a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; padding: 8px 14px; border: 1px solid var(--rule-dark); color: var(--ink-2); text-decoration: none; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+        .bl-cats a:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+        .bl-search { display: flex; align-items: center; gap: 8px; min-width: 280px; background: var(--card); border: 1px solid var(--rule-dark); padding: 9px 14px; transition: border-color 0.15s; }
+        .bl-search:focus-within { border-color: var(--accent); }
+        .bl-search svg { color: var(--ink-3); flex-shrink: 0; }
+        .bl-search input { background: none; border: none; outline: none; width: 100%; font-family: var(--sans); font-size: 13px; color: var(--ink); }
+        .bl-search input::placeholder { color: var(--ink-3); }
+        .bl-search button { background: none; border: none; color: var(--ink-3); cursor: pointer; display: flex; padding: 0; }
+        .bl-search button:hover { color: var(--ink); }
+        .bl-count { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); margin-top: 6px; }
+        .bl-count b { color: var(--accent); font-weight: 500; }
+        @media (max-width: 700px) { .bl-search { min-width: 100%; width: 100%; } .bl-toolbar > div:last-child { width: 100%; } }
 
-                .bl-search {
-                    position: relative; display: flex; align-items: center; gap: 8px;
-                    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-                    padding: 8px 14px; min-width: 260px; transition: border-color 0.15s;
-                }
-                .bl-search:focus-within { border-color: var(--border-hi); }
-                .bl-search__icon { color: var(--text-3); flex-shrink: 0; }
-                .bl-search input { background: none; border: none; outline: none; font-family: var(--font-sans); font-size: 13px; color: var(--text-1); width: 100%; }
-                .bl-search input::placeholder { color: var(--text-3); }
-                .bl-search__clear { background: none; border: none; color: var(--text-3); cursor: pointer; padding: 0; display: flex; align-items: center; transition: color 0.15s; }
-                .bl-search__clear:hover { color: var(--text-1); }
-                .bl-search__count { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); margin-top: 6px; padding-left: 2px; }
-                .bl-search__count em { font-style: normal; color: var(--accent); }
+        /* Shared: images stay clean and bright */
+        .bl-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.45s ease; }
+        .bl-ph { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, #101010, #101010 6px, #171717 6px, #171717 12px); }
+        .bl-chip { position: absolute; top: 12px; left: 12px; font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 4px 9px; }
+        .bl-meta { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); flex-wrap: wrap; }
+        .bl-meta__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-3); flex-shrink: 0; }
 
-                /* ── Section labels ── */
-                .bl-section-label {
-                    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-                    color: var(--accent); display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
-                }
-                .bl-section-label::before { content: '—'; }
+        /* Lead + picks */
+        .bl-lead { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; align-items: stretch; }
+        @media (max-width: 900px) { .bl-lead { grid-template-columns: 1fr; } }
+        .bl-hero { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--rule-dark); text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+        .bl-hero:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--accent); }
+        .bl-hero__media { position: relative; height: 230px; background: #fff; overflow: hidden; border-bottom: 1px solid var(--rule-dark); }
+        .bl-hero:hover .bl-img { transform: scale(1.03); }
+        .bl-hero__body { padding: 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+        .bl-hero__title { font-family: var(--serif); font-weight: 800; font-size: clamp(22px, 2.8vw, 30px); line-height: 1.2; color: var(--ink); }
+        .bl-hero:hover .bl-hero__title { color: var(--accent); }
+        .bl-hero__preview { font-size: 14px; line-height: 1.7; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .bl-hero .bl-meta { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--rule); }
 
-                /* ── Tags / meta ── */
-                .bl-tag {
-                    display: inline-block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em;
-                    text-transform: uppercase; padding: 3px 8px; border-radius: 3px;
-                    background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(232,255,71,0.2); line-height: 1;
-                }
-                .bl-tag--sm { font-size: 9px; padding: 2px 6px; }
-                .bl-tag--ghost { background: transparent; border-color: transparent; padding: 0; }
-                .bl-meta { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); margin-top: 10px; }
-                .bl-meta--sm { font-size: 10px; margin-top: 8px; }
-                .bl-meta__author { color: var(--text-2); }
-                .bl-meta__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border-hi); flex-shrink: 0; }
+        .bl-picks { display: flex; flex-direction: column; border: 1px solid var(--rule-dark); background: var(--card); }
+        .bl-pick { display: flex; gap: 14px; padding: 16px; text-decoration: none; border-bottom: 1px solid var(--rule); flex: 1; transition: background 0.15s; }
+        .bl-pick:last-child { border-bottom: none; }
+        .bl-pick:hover { background: var(--paper-2); }
+        .bl-pick__thumb { width: 96px; height: 72px; flex-shrink: 0; overflow: hidden; background: #fff; border: 1px solid var(--rule); }
+        .bl-pick:hover .bl-img { transform: scale(1.06); }
+        .bl-pick__body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+        .bl-pick__cat { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+        .bl-pick__title { font-family: var(--serif); font-weight: 800; font-size: 15.5px; line-height: 1.25; color: var(--ink); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .bl-pick:hover .bl-pick__title { color: var(--accent); }
 
-                /* ── Hero (Editor picks) ── */
-                .bl-hero-section { margin-bottom: 56px; }
-                .bl-hero-title { font-family: var(--font-serif); font-size: clamp(26px, 3vw, 34px); font-weight: 400; color: var(--text-1); margin-bottom: 6px; }
-                .bl-hero-sub { font-size: 13px; color: var(--text-2); margin-bottom: 24px; }
-                .bl-hero-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; align-items: stretch; }
+        /* Popular */
+        .bl-pops { display: grid; grid-template-columns: 1fr 1fr; column-gap: 44px; }
+        @media (max-width: 760px) { .bl-pops { grid-template-columns: 1fr; } }
+        .bl-pop { display: grid; grid-template-columns: 44px 1fr; gap: 6px; padding: 18px 0; border-bottom: 1px solid var(--rule); text-decoration: none; }
+        .bl-pop__rank { font-family: var(--serif); font-weight: 800; font-size: 28px; line-height: 1; color: var(--accent); }
+        .bl-pop__title { font-family: var(--serif); font-weight: 800; font-size: 17px; line-height: 1.3; color: var(--ink); margin-bottom: 6px; }
+        .bl-pop:hover .bl-pop__title { color: var(--accent); }
+        .bl-pop__meta { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); }
 
-                .bl-hero-card {
-                    display: flex; flex-direction: column; background: var(--surface);
-                    border: 1px solid var(--border); border-radius: var(--radius);
-                    overflow: hidden; text-decoration: none; position: relative;
-                    transition: border-color 0.15s, background 0.15s;
-                }
-                .bl-hero-card:hover { border-color: var(--border-hi); background: #141417; }
-                .bl-hero-card__img-wrap { position: relative; height: 280px; background: var(--bg); overflow: hidden; }
-                .bl-hero-card__img { width: 100%; height: 100%; object-fit: cover; opacity: 0.55; filter: grayscale(25%); transition: opacity 0.3s, transform 0.4s; }
-                .bl-hero-card:hover .bl-hero-card__img { opacity: 0.75; transform: scale(1.03); }
-                .bl-hero-card__img-placeholder { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(255,255,255,0.015) 8px, rgba(255,255,255,0.015) 16px); }
-                .bl-hero-card__tag { position: absolute; top: 14px; left: 14px; background: var(--bg); }
-                .bl-hero-card__body { padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 8px; }
-                .bl-hero-card__title { font-family: var(--font-serif); font-size: clamp(20px, 2.4vw, 26px); font-weight: 400; line-height: 1.25; color: var(--text-1); transition: color 0.15s; }
-                .bl-hero-card:hover .bl-hero-card__title { color: #fff; }
-                .bl-hero-card__preview { font-size: 13px; color: var(--text-2); line-height: 1.6; }
-                .bl-hero-card__arrow-wrap { position: absolute; top: 14px; right: 14px; }
-                .bl-hero-card__arrow { color: var(--text-3); transition: color 0.15s, transform 0.15s; }
-                .bl-hero-card:hover .bl-hero-card__arrow { color: var(--accent); transform: translate(2px, -2px); }
+        /* All articles */
+        .bl-row { display: grid; grid-template-columns: 1fr 290px; gap: 40px; align-items: start; }
+        @media (max-width: 960px) { .bl-row { grid-template-columns: 1fr; } }
+        .bl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        @media (max-width: 1100px) { .bl-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 560px) { .bl-grid { grid-template-columns: 1fr; } }
+        .bl-card { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--rule-dark); text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+        .bl-card:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--accent); }
+        .bl-card__media { position: relative; height: 140px; background: #fff; overflow: hidden; border-bottom: 1px solid var(--rule-dark); }
+        .bl-card:hover .bl-img { transform: scale(1.04); }
+        .bl-card__body { padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+        .bl-card__title { font-family: var(--serif); font-weight: 800; font-size: 18px; line-height: 1.25; color: var(--ink); }
+        .bl-card:hover .bl-card__title { color: var(--accent); }
+        .bl-card__preview { font-size: 13px; line-height: 1.65; color: var(--ink-3); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .bl-card .bl-meta { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--rule); }
 
-                .bl-side-list {
-                    display: flex; flex-direction: column;
-                    border: 1px solid var(--border); border-radius: var(--radius);
-                    background: var(--surface); overflow: hidden;
-                }
-                .bl-side-item {
-                    display: flex; align-items: flex-start; gap: 12px; padding: 16px;
-                    text-decoration: none; border-bottom: 1px solid var(--border);
-                    transition: background 0.15s;
-                }
-                .bl-side-item:last-child { border-bottom: none; }
-                .bl-side-item:hover { background: #141417; }
-                .bl-side-item__num { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--accent); flex-shrink: 0; padding-top: 2px; }
-                .bl-side-item__thumb-wrap { width: 56px; height: 56px; border-radius: 4px; overflow: hidden; background: var(--bg); flex-shrink: 0; }
-                .bl-side-item__thumb { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; filter: grayscale(25%); }
-                .bl-side-item__thumb-placeholder { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(255,255,255,0.02) 6px, rgba(255,255,255,0.02) 12px); }
-                .bl-side-item__body { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-                .bl-side-item__title { font-family: var(--font-sans); font-weight: 600; font-size: 13px; line-height: 1.35; color: var(--text-1); }
-                .bl-side-item__meta { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); }
+        /* Pager */
+        .bl-pager { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+        .bl-pager__btn { min-width: 38px; height: 38px; padding: 0 10px; display: inline-flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 12px; background: transparent; color: var(--ink-2); border: 1px solid var(--rule-dark); cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+        .bl-pager__btn:hover:not(:disabled) { color: var(--ink); border-color: var(--ink); }
+        .bl-pager__btn--on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+        .bl-pager__btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-                /* ── Popular this month ── */
-                .bl-popular-section { margin-bottom: 64px; }
-                .bl-popular-title { font-family: var(--font-serif); font-size: clamp(24px, 3vw, 32px); font-weight: 400; color: var(--text-1); margin-bottom: 22px; }
-                .bl-popular-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
-                .bl-popular-item { display: flex; gap: 14px; align-items: flex-start; text-decoration: none; padding: 16px 0; border-bottom: 1px solid var(--border); transition: opacity 0.15s; }
-                .bl-popular-item:hover { opacity: 0.8; }
-                .bl-popular-item__num { font-family: var(--font-mono); font-size: 22px; font-weight: 600; color: var(--accent); opacity: 0.4; flex-shrink: 0; line-height: 1; }
-                .bl-popular-item__title { font-family: var(--font-sans); font-weight: 600; font-size: 14px; line-height: 1.4; color: var(--text-1); margin-bottom: 4px; }
-                .bl-popular-item__meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
-                @media (max-width: 700px) { .bl-popular-grid { grid-template-columns: 1fr; } }
+        /* Sidebar */
+        .bl-side { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 92px; }
+        @media (max-width: 960px) { .bl-side { position: static; } }
+        .bl-side__card { background: var(--card); border: 1px solid var(--rule-dark); border-top: 3px solid var(--accent); padding: 20px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+        .bl-side__kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+        .bl-side__title { font-family: var(--serif); font-weight: 800; font-size: 21px; line-height: 1.15; color: var(--ink); }
+        .bl-side__text { font-size: 13px; line-height: 1.65; color: var(--ink-2); }
+        .bl-side__card .bl-btn { margin-top: 4px; }
 
-                /* ── All articles + sidebar layout ── */
-                .bl-content-row { display: grid; grid-template-columns: 1fr 280px; gap: 40px; align-items: start; }
-                @media (max-width: 900px) { .bl-content-row { grid-template-columns: 1fr; } }
+        /* Empty */
+        .bl-empty { padding: 90px 0; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .bl-empty__title { font-family: var(--serif); font-weight: 800; font-size: 28px; color: var(--ink); }
+        .bl-empty__msg { font-size: 14px; color: var(--ink-2); }
 
-                .bl-all-title { font-family: var(--font-serif); font-size: clamp(24px, 3vw, 32px); font-weight: 400; color: var(--text-1); margin-bottom: 22px; }
+        /* Footer CTA */
+        .bl-cta { border-top: 3px double var(--rule-dark); padding: 44px 0 96px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-top: 72px; }
+        .bl-cta__title { font-family: var(--serif); font-weight: 800; font-size: clamp(26px, 3.6vw, 38px); line-height: 1.1; color: var(--ink); margin-bottom: 8px; }
+        .bl-cta__sub { font-size: 14px; color: var(--ink-2); line-height: 1.7; max-width: 480px; }
+        .bl-cta__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
-                .bl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-                @media (max-width: 1100px) and (min-width: 901px) { .bl-grid { grid-template-columns: 1fr 1fr; } }
-                @media (max-width: 900px) { .bl-grid { grid-template-columns: 1fr 1fr; } }
-                @media (max-width: 600px) { .bl-grid { grid-template-columns: 1fr; } }
-
-                .bl-card { display: flex; flex-direction: column; background: var(--surface); text-decoration: none; overflow: hidden; position: relative; transition: background 0.15s; animation: blFadeUp 0.4s ease-out both; }
-                .bl-card:hover { background: #141417; }
-                .bl-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); transform: scaleY(0); transform-origin: bottom; transition: transform 0.2s ease; z-index: 5; }
-                .bl-card:hover::before { transform: scaleY(1); }
-                @keyframes blFadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-                .bl-card__img-wrap { height: 160px; background: var(--bg); overflow: hidden; flex-shrink: 0; }
-                .bl-card__img { width: 100%; height: 100%; object-fit: cover; opacity: 0.45; filter: grayscale(25%); transition: opacity 0.3s, transform 0.4s; }
-                .bl-card:hover .bl-card__img { opacity: 0.65; transform: scale(1.04); }
-                .bl-card__img-placeholder { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(255,255,255,0.015) 6px, rgba(255,255,255,0.015) 12px); }
-                .bl-card__body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
-                .bl-card__title { font-family: var(--font-serif); font-size: 17px; font-weight: 400; line-height: 1.3; color: var(--text-1); transition: color 0.15s; }
-                .bl-card:hover .bl-card__title { color: #fff; }
-                .bl-card__preview { font-size: 12px; color: var(--text-2); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-                /* ── Pagination ── */
-                .bl-pagination { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 28px; }
-                .bl-page-btn {
-                    min-width: 36px; height: 36px; padding: 0 10px;
-                    border-radius: 999px; border: 1px solid var(--border);
-                    background: var(--surface); color: var(--text-2);
-                    font-family: var(--font-mono); font-size: 13px; font-weight: 500;
-                    cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-                    transition: color 0.15s, border-color 0.15s, background 0.15s;
-                }
-                .bl-page-btn:hover { color: var(--text-1); border-color: var(--border-hi); }
-                .bl-page-btn--active { background: var(--accent); border-color: var(--accent); color: #0a0a0b; font-weight: 700; }
-                .bl-page-btn--active:hover { color: #0a0a0b; }
-                .bl-page-btn--next { width: auto; padding: 0 16px; border-radius: 999px; }
-
-                /* ── Sidebar (desktop only) ── */
-                .bl-sidebar { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 80px; }
-                .bl-sidebar__card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 8px; }
-                .bl-sidebar__eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
-                .bl-sidebar__title { font-family: var(--font-serif); font-size: 19px; font-weight: 400; color: var(--text-1); }
-                .bl-sidebar__text { font-size: 12.5px; color: var(--text-2); line-height: 1.6; margin-bottom: 6px; }
-                @media (max-width: 900px) { .bl-sidebar { display: none; } }
-
-                /* ── Empty state ── */
-                .bl-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 80px 0; text-align: center; }
-                .bl-empty__code { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.1em; }
-                .bl-empty__msg { font-size: 14px; color: var(--text-2); }
-                .bl-empty__reset { font-family: var(--font-mono); font-size: 11px; color: var(--accent); background: none; border: none; cursor: pointer; margin-top: 4px; transition: opacity 0.15s; }
-                .bl-empty__reset:hover { opacity: 0.7; }
-
-                /* ── Footer row ── */
-                .bl-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-top: 40px; margin-top: 48px; border-top: 1px solid var(--border); }
-                .bl-footer__info { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); letter-spacing: 0.06em; }
-                .bl-footer__actions { display: flex; gap: 10px; flex-wrap: wrap; }
-                .bl-btn { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; padding: 8px 16px; border-radius: var(--radius); border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: color 0.15s, border-color 0.15s, background 0.15s; text-decoration: none; }
-                .bl-btn:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
-                .bl-btn--accent { border-color: rgba(232,255,71,0.3); color: var(--accent); background: var(--accent-dim); }
-                .bl-btn--accent:hover { background: rgba(232,255,71,0.15); border-color: rgba(232,255,71,0.5); color: var(--accent); }
-
-                @media (max-width: 700px) {
-                    .bl-hero-row { grid-template-columns: 1fr; }
-                    .bl-masthead { flex-direction: column; align-items: flex-start; }
-                    .bl-masthead__desc { text-align: left; }
-                    .bl-toolbar { flex-direction: column; align-items: flex-start; }
-                    .bl-search { min-width: 100%; width: 100%; }
-                }
-            `}</style>
+        .bl-page :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        @media (prefers-reduced-motion: reduce) { .bl-page * { transition: none !important; } }
+      `}</style>
 
             <div className="bl-page">
+                {/* ── Nav (delete this block if your global Navbar already renders on /blog) ── */}
+                <header className="bl-nav">
+                    <div className="bl-nav__inner">
+                        <Link href="/" className="bl-nav__brand">
+                            brown<em>.</em>dev
+                            <span className="bl-nav__tag">SBA-01</span>
+                        </Link>
+                        <button
+                            className="bl-nav__burger"
+                            aria-label="Toggle menu"
+                            aria-expanded={menuOpen}
+                            onClick={() => setMenuOpen((v) => !v)}
+                        >
+                            {menuOpen ? <X size={18} /> : <Menu size={18} />}
+                        </button>
+                        <nav className={`bl-nav__menu${menuOpen ? " bl-nav__menu--open" : ""}`} aria-label="Main">
+                            <Link href="/bc/about" className="bl-nav__link">About</Link>
+                            <Link href="/portfolio" className="bl-nav__link">Portfolio</Link>
+                            <Link href="/blog" className="bl-nav__link bl-nav__link--active">Blog</Link>
+                            <Link href="/cv" className="bl-nav__link">Resume</Link>
+                            <Link href="/bc/contact" className="bl-btn bl-btn--solid bl-nav__cta">
+                                Start a project <ArrowRight size={12} />
+                            </Link>
+                        </nav>
+                    </div>
+                </header>
 
-                <nav className="bl-nav">
-                    <a href="/" className="bl-nav__brand">
-                        brown<em>.</em>dev
-                    </a>
-
-                    <Link
-                        href="https://github.com/sponsors/Brown-Oziomachi/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bl-nav__back"
-                    >
-                        <Heart size={12} strokeWidth={2.5} fill="currentColor" />
-                        Sponsor
-                    </Link>
-
-                    <a href="/portfolio" className="bl-nav__back">
-                        <ArrowLeft size={13} />
-                        Portfolio
-                    </a>
-                </nav>
-
-                <main className="bl-main">
-                    <header className="bl-masthead">
-                        <div>
-                            <p className="bl-masthead__eyebrow">Writing</p>
-                            <h1 className="bl-masthead__title">The<br />Stack</h1>
-                        </div>
-                        <p className="bl-masthead__desc">
-                            Notes on building tech, platforms, and businesses across Africa — from the code up.
+                <main className="bl-wrap">
+                    {/* Masthead */}
+                    <header className="bl-mast">
+                        <h1 className="bl-mast__title">
+                            The <em>Stack</em>
+                        </h1>
+                        <p className="bl-mast__dek">
+                            Notes on building tech, platforms and businesses across Africa, from the code up.
                         </p>
                     </header>
 
+                    {/* Toolbar */}
                     <div className="bl-toolbar">
-                        <nav className="bl-cat-nav">
+                        <nav className="bl-cats" aria-label="Topics">
                             {CATEGORIES.map((cat) => (
-                                <a key={cat.key} href={`/blog/topic/${cat.key}`} className="bl-cat-nav__link">
+                                <Link key={cat.key} href={`/blog/topic/${cat.key}`}>
                                     {cat.label}
-                                </a>
+                                </Link>
                             ))}
                         </nav>
                         <div>
                             <div className="bl-search">
-                                <Search size={14} className="bl-search__icon" />
+                                <Search size={14} />
                                 <input
                                     type="text"
-                                    placeholder="Search articles…"
+                                    placeholder="Search articles"
+                                    aria-label="Search articles"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                                 {searchTerm && (
-                                    <button className="bl-search__clear" onClick={() => setSearchTerm("")}>
+                                    <button onClick={() => setSearchTerm("")} aria-label="Clear search">
                                         <X size={13} />
                                     </button>
                                 )}
                             </div>
-                            {searchTerm && (
-                                <p className="bl-search__count">
-                                    <em>{filteredArticles.length}</em> result{filteredArticles.length !== 1 ? "s" : ""}
+                            {debounced && (
+                                <p className="bl-count">
+                                    <b>{filteredArticles.length}</b> result{filteredArticles.length !== 1 ? "s" : ""}
                                 </p>
                             )}
                         </div>
@@ -545,78 +489,105 @@ export default function BlogListClient({ articles }) {
 
                     {filteredArticles.length === 0 ? (
                         <div className="bl-empty">
-                            <span className="bl-empty__code">NO_RESULTS</span>
-                            <p className="bl-empty__msg">No articles match your search.</p>
-                            <button className="bl-empty__reset" onClick={() => setSearchTerm("")}>
+                            <h2 className="bl-empty__title">No matching articles</h2>
+                            <p className="bl-empty__msg">Try a different keyword, or clear the search to see everything.</p>
+                            <button className="bl-btn" onClick={() => setSearchTerm("")}>
                                 Clear search
                             </button>
                         </div>
                     ) : (
                         <>
+                            {/* Start here */}
                             {heroArticle && (
-                                <section className="bl-hero-section">
-                                    <p className="bl-section-label">Start here</p>
-                                    <h2 className="bl-hero-title">Editor picks</h2>
-                                    <p className="bl-hero-sub">The cornerstone articles most readers read first.</p>
-                                    <div className="bl-hero-row">
-                                        <FeaturedHero article={heroArticle} />
+                                <section className="bl-section" style={{ marginTop: 48 }}>
+                                    <div className="bl-head">
+                                        <div>
+                                            <div className="bl-kicker">Start here</div>
+                                            <h2 className="bl-h2">Editor picks</h2>
+                                        </div>
+                                        <span className="bl-head__note">The articles most readers open first</span>
+                                    </div>
+                                    <div className="bl-lead">
+                                        <HeroCard article={heroArticle} />
                                         {sideArticles.length > 0 && (
-                                            <aside className="bl-side-list">
-                                                {sideArticles.map((a, i) => (
-                                                    <SideFeaturedItem key={a.slug} article={a} index={i + 1} />
+                                            <div className="bl-picks">
+                                                {sideArticles.map((a) => (
+                                                    <PickItem key={a.slug} article={a} />
                                                 ))}
-                                            </aside>
+                                            </div>
                                         )}
                                     </div>
                                 </section>
                             )}
 
+                            {/* Popular */}
                             {popularArticles.length > 0 && (
-                                <section className="bl-popular-section">
-                                    <p className="bl-section-label">Most read</p>
-                                    <h2 className="bl-popular-title">Popular this month</h2>
-                                    <div className="bl-popular-grid">
+                                <section className="bl-section">
+                                    <div className="bl-head">
+                                        <div>
+                                            <div className="bl-kicker">Most read</div>
+                                            <h2 className="bl-h2">Popular this month</h2>
+                                        </div>
+                                        <span className="bl-head__note">{popularArticles.length} articles</span>
+                                    </div>
+                                    <div className="bl-pops">
                                         {popularArticles.map((a, i) => (
-                                            <PopularItem key={a.slug} article={a} index={i + 1} />
+                                            <PopularItem key={a.slug} article={a} rank={String(i + 1).padStart(2, "0")} />
                                         ))}
                                     </div>
                                 </section>
                             )}
 
+                            {/* All articles */}
                             {remainingArticles.length > 0 && (
-                                <section id="bl-all-articles" className="bl-content-row">
-                                    <div>
-                                        <p className="bl-section-label">Browse</p>
-                                        <h2 className="bl-all-title">All articles</h2>
-                                        <div className="bl-grid">
-                                            {paginatedArticles.map((a, i) => (
-                                                <ArticleCard key={a.slug} article={a} index={i} />
-                                            ))}
+                                <section id="bl-all" className="bl-section">
+                                    <div className="bl-head">
+                                        <div>
+                                            <div className="bl-kicker">Browse</div>
+                                            <h2 className="bl-h2">All articles</h2>
                                         </div>
-                                        <Pagination
-                                            currentPage={currentPage}
-                                            totalPages={totalPages}
-                                            onPageChange={handlePageChange}
-                                        />
+                                        <span className="bl-head__note">{remainingArticles.length} articles</span>
                                     </div>
-                                    <Sidebar />
+                                    <div className="bl-row">
+                                        <div>
+                                            <div className="bl-grid">
+                                                {paginatedArticles.map((a) => (
+                                                    <ArticleCard key={a.slug} article={a} />
+                                                ))}
+                                            </div>
+                                            <Pagination
+                                                currentPage={currentPage}
+                                                totalPages={totalPages}
+                                                onPageChange={handlePageChange}
+                                            />
+                                        </div>
+                                        <Sidebar />
+                                    </div>
                                 </section>
                             )}
                         </>
                     )}
 
-                    <footer className="bl-footer">
-                        <span className="bl-footer__info">brown.dev — writing & insights</span>
-                        <div className="bl-footer__actions">
-                            <button className="bl-btn bl-btn--accent" onClick={() => router.push("/bc/contact")}>
-                                Get in touch
-                            </button>
-                            <button className="bl-btn" onClick={() => router.push("/portfolio")}>
-                                <ArrowLeft size={13} />
-                                Portfolio
-                            </button>
+                    {/* Footer CTA */}
+                    <section>
+                        <div className="bl-cta">
+                            <div>
+                                <div className="bl-cta__title">Have a platform to build or a story to run?</div>
+                                <p className="bl-cta__sub">
+                                    I take on full stack builds, security reviews and sponsored articles. Tell me what you
+                                    need and I&apos;ll reply with a plan.
+                                </p>
+                            </div>
+                            <div className="bl-cta__actions">
+                                <button className="bl-btn bl-btn--solid" onClick={() => router.push("/bc/contact")}>
+                                    <Mail size={12} /> Get in touch
+                                </button>
+                                <Link href="/portfolio" className="bl-btn">
+                                    Portfolio <ArrowUpRight size={12} />
+                                </Link>
+                            </div>
                         </div>
-                    </footer>
+                    </section>
                 </main>
             </div>
 
