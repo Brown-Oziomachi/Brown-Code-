@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Linkedin, Github, Instagram, Mail, ArrowUpRight } from "lucide-react";
+import { Linkedin, Github, Instagram, Mail, ArrowUpRight, MessageCircle } from "lucide-react";
 
 export default function Footer() {
     const year = new Date().getFullYear();
@@ -243,6 +243,15 @@ export default function Footer() {
                                 </span>
                                 Open to projects
                             </div>
+                            <a
+                                href="https://whatsapp.com/channel/0029VbEGWFsC1FuAo5qoPh0q"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="ft-btn ft-btn--solid"
+                                style={{ marginBottom: 18 }}
+                            >
+                                <MessageCircle size={13} /> Join my WhatsApp channel
+                            </a>
                             <div className="ft-socials">
                                 {socials.map((s) => (
                                     <a

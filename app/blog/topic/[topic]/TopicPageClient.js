@@ -1,58 +1,63 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, ArrowRight, ChevronDown, Mail } from "lucide-react";
 import { CATEGORIES } from "@/lib/blogCategories";
-import { ArrowLeft, ChevronDown } from "lucide-react";
 import Footer from "@/components/footer";
+
+/* ── helpers ─────────────────────────────────────────── */
 
 const formatDate = (dateString) => {
     if (!dateString) return null;
     return new Date(dateString).toLocaleDateString("en-US", {
         year: "numeric",
-        month: "long",
+        month: "short",
         day: "numeric",
     });
 };
 
-const ArticleCard = ({ article, index }) => (
-    <a
-        href={`/blog/${article.slug}`}
-        className="bl-card"
-        style={{ animationDelay: `${index * 40}ms` }}
-    >
-        <div className="bl-card__img-wrap">
-            {article.image ? (
-                <img
-                    src={article.image}
-                    alt={article.title}
-                    className="bl-card__img"
-                    onError={(e) => (e.target.style.display = "none")}
-                />
-            ) : (
-                <div className="bl-card__img-placeholder" />
-            )}
-        </div>
-        <div className="bl-card__body">
-            <span className="bl-tag bl-tag--sm">{article.categoryLabel}</span>
-            <h3 className="bl-card__title">{article.title}</h3>
-            <p className="bl-card__preview">{article.preview}</p>
-            <div className="bl-meta bl-meta--sm">
-                <span className="bl-meta__author">{article.postedBy}</span>
-                <span className="bl-meta__dot" />
-                <span>{article.readingTime} min read</span>
-                <span className="bl-meta__dot" />
-                <span>{formatDate(article.datePublished)}</span>
+/* Image with a clean fallback instead of a blank hole */
+function Cover({ src, alt }) {
+    const [failed, setFailed] = useState(false);
+    if (!src || failed) return <div className="tp-ph" aria-hidden="true" />;
+    return (
+        <img
+            src={src}
+            alt={alt}
+            className="tp-img"
+            loading="lazy"
+            onError={() => setFailed(true)}
+        />
+    );
+}
+
+function ArticleCard({ article, fallbackLabel }) {
+    const date = formatDate(article.datePublished);
+    return (
+        <Link href={`/blog/${article.slug}`} className="tp-card">
+            <div className="tp-card__media">
+                <Cover src={article.image} alt={article.title} />
+                <span className="tp-chip">{article.categoryLabel || fallbackLabel}</span>
             </div>
-        </div>
-    </a>
-);
+            <div className="tp-card__body">
+                <h3 className="tp-card__title">{article.title}</h3>
+                <p className="tp-card__preview">{article.preview}</p>
+                <div className="tp-meta">
+                    {article.readingTime && <span>{article.readingTime} min read</span>}
+                    {article.readingTime && date && <span className="tp-meta__dot" />}
+                    {date && <span>{date}</span>}
+                </div>
+            </div>
+        </Link>
+    );
+}
+
+/* ── page ────────────────────────────────────────────── */
 
 // `topic`, `label`, and the already-filtered, already-lightened `articles`
-// list all arrive as props from the server component (page.js) now. This
-// component no longer imports the full articles array or does the
-// getCategoryKey filtering itself — that was shipping every article's full
-// content into every topic page's bundle.
+// list all arrive as props from the server component (page.js).
 export default function TopicPageClient({ topic, label, articles: topicArticles }) {
     const router = useRouter();
 
@@ -61,9 +66,7 @@ export default function TopicPageClient({ topic, label, articles: topicArticles 
     const dropdownRef = useRef(null);
 
     useEffect(() => {
-        const handleScroll = () => {
-            setIsSticky(window.scrollY > 120);
-        };
+        const handleScroll = () => setIsSticky(window.scrollY > 120);
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
@@ -81,269 +84,167 @@ export default function TopicPageClient({ topic, label, articles: topicArticles 
     return (
         <>
             <style>{`
-                *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+                @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-                :root {
-                    --bg:          #0a0a0b;
-                    --surface:     #111113;
-                    --border:      #1e1e22;
-                    --border-hi:   #2e2e34;
-                    --text-1:      #f4f4f5;
-                    --text-2:      #a1a1aa;
-                    --text-3:      #52525b;
-                    --accent:      #e8ff47;
-                    --accent-dim:  rgba(232,255,71,0.08);
-                    --radius:      6px;
-                    --font-serif:  'DM Serif Display', 'Georgia', serif;
-                    --font-sans:   'Inter', system-ui, sans-serif;
-                    --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+                .tp-page {
+                    --paper: #000000; --paper-2: #121212; --card: #0d0d0d;
+                    --ink: #f4f1ea; --ink-2: #bdb8ae; --ink-3: #85807a;
+                    --rule: #242424; --rule-dark: #3a3a3a;
+                    --accent: #e8ff47; --on-accent: #0a0a0b;
+                    --serif: 'Playfair Display', Georgia, serif;
+                    --sans: 'Inter', system-ui, sans-serif;
+                    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+                    background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh;
+                }
+                .tp-page *, .tp-page *::before, .tp-page *::after { box-sizing: border-box; }
+                :where(.tp-page a) { color: inherit; }
+                .tp-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+                /* Nav */
+                .tp-nav { position: sticky; top: 0; z-index: 1000; background: rgba(0,0,0,0.78); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 1px solid var(--rule-dark); }
+                .tp-nav__inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+                .tp-nav__brand { font-family: var(--serif); font-weight: 800; font-size: 21px; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+                .tp-nav__brand em { color: var(--accent); font-style: normal; }
+
+                /* Buttons */
+                .tp-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; padding: 10px 16px; border: 1px solid var(--rule-dark); background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; transition: background 0.15s, color 0.15s, transform 0.15s; }
+                .tp-btn:hover { background: var(--ink); color: var(--paper); transform: translateY(-1px); }
+                .tp-btn--solid { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 500; }
+                .tp-btn--solid:hover { background: #d4e63c; border-color: #d4e63c; color: var(--on-accent); }
+
+                /* Masthead */
+                .tp-mast { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: 52px 0 30px; border-bottom: 3px double var(--rule-dark); flex-wrap: wrap; }
+                .tp-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+                .tp-mast__title { font-family: var(--serif); font-weight: 800; font-size: clamp(36px, 6vw, 64px); line-height: 1.05; letter-spacing: -0.01em; color: var(--ink); }
+                .tp-mast__desc { font-family: var(--mono); font-size: 11px; color: var(--ink-3); border-left: 3px solid var(--accent); padding-left: 14px; }
+
+                /* Category dropdown */
+                .tp-cats { position: relative; margin: 28px 0 36px; width: fit-content; }
+                .tp-cats--sticky { position: sticky; top: 60px; z-index: 50; margin: 0 0 24px; padding: 10px 0; background: var(--paper); }
+                .tp-cats__trigger { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: var(--on-accent); background: var(--accent); border: 1px solid var(--accent); padding: 9px 14px; cursor: pointer; transition: background 0.15s; }
+                .tp-cats__trigger:hover { background: #d4e63c; }
+                .tp-cats__chev { transition: transform 0.2s ease; }
+                .tp-cats__chev--open { transform: rotate(180deg); }
+                .tp-cats__menu { position: absolute; top: calc(100% + 6px); left: 0; z-index: 60; display: flex; flex-direction: column; min-width: 210px; background: var(--card); border: 1px solid var(--rule-dark); box-shadow: 5px 5px 0 var(--accent); animation: tpDrop 0.15s ease-out; }
+                @keyframes tpDrop { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+                .tp-cats__item { font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; color: var(--ink-2); text-decoration: none; padding: 11px 14px; border-bottom: 1px solid var(--rule); transition: background 0.15s, color 0.15s; }
+                .tp-cats__item:last-child { border-bottom: none; }
+                .tp-cats__item:hover { background: var(--accent); color: var(--on-accent); }
+                .tp-cats__item--active { color: var(--accent); }
+                .tp-cats__item--active:hover { color: var(--on-accent); }
+
+                /* Cards: bright, short images */
+                .tp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+                @media (max-width: 1100px) { .tp-grid { grid-template-columns: 1fr 1fr; } }
+                @media (max-width: 560px) { .tp-grid { grid-template-columns: 1fr; } }
+                .tp-card { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--rule-dark); text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+                .tp-card:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--accent); }
+                .tp-card__media { position: relative; height: 140px; background: #fff; overflow: hidden; border-bottom: 1px solid var(--rule-dark); }
+                .tp-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.45s ease; }
+                .tp-card:hover .tp-img { transform: scale(1.04); }
+                .tp-ph { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, #101010, #101010 6px, #171717 6px, #171717 12px); }
+                .tp-chip { position: absolute; top: 12px; left: 12px; font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 4px 9px; }
+                .tp-card__body { padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+                .tp-card__title { font-family: var(--serif); font-weight: 800; font-size: 18px; line-height: 1.25; color: var(--ink); }
+                .tp-card:hover .tp-card__title { color: var(--accent); }
+                .tp-card__preview { font-size: 13px; line-height: 1.65; color: var(--ink-3); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+                .tp-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); margin-top: auto; padding-top: 12px; border-top: 1px solid var(--rule); }
+                .tp-meta__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-3); flex-shrink: 0; }
+
+                /* Empty */
+                .tp-empty { padding: 80px 0; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+                .tp-empty__title { font-family: var(--serif); font-weight: 800; font-size: 28px; color: var(--ink); }
+                .tp-empty__msg { font-size: 14px; color: var(--ink-2); }
+
+                /* Bottom CTA */
+                .tp-cta { border-top: 3px double var(--rule-dark); padding: 40px 0 80px; margin-top: 64px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+                .tp-cta__text { font-family: var(--serif); font-weight: 800; font-size: clamp(20px, 2.6vw, 26px); line-height: 1.2; max-width: 520px; }
+                .tp-cta__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+                @media (max-width: 640px) {
+                    .tp-wrap { padding: 0 18px; }
+                    .tp-mast { padding-top: 32px; }
+                    .tp-cta__actions .tp-btn { flex: 1 1 auto; }
                 }
 
-                .bl-page { font-family: var(--font-sans); background: var(--bg); color: var(--text-1); min-height: 100vh; }
-
-                .bl-nav {
-                    position: sticky; top: 0; z-index: 100;
-                    background: rgba(10,10,11,0.92);
-                    backdrop-filter: blur(12px);
-                    border-bottom: 1px solid var(--border);
-                    padding: 0 24px; height: 56px;
-                    display: flex; align-items: center; justify-content: space-between;
-                }
-                .bl-nav__brand { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; color: var(--text-1); text-decoration: none; }
-                .bl-nav__brand em { font-style: normal; color: var(--accent); }
-                .bl-nav__back {
-                    display: inline-flex; align-items: center; gap: 6px;
-                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
-                    color: var(--text-2); text-decoration: none; padding: 6px 12px;
-                    border: 1px solid var(--border); border-radius: var(--radius);
-                    transition: color 0.15s, border-color 0.15s, background 0.15s;
-                }
-                .bl-nav__back:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
-
-                .bl-main { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
-
-                .bl-masthead {
-                    display: flex; align-items: flex-end; justify-content: space-between;
-                    gap: 16px; padding: 52px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 32px;
-                }
-                .bl-masthead__eyebrow { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
-                .bl-masthead__title { font-family: var(--font-serif); font-size: clamp(36px, 5vw, 60px); font-weight: 400; line-height: 1.05; color: var(--text-1); }
-                .bl-masthead__desc { font-size: 13px; color: var(--text-2); line-height: 1.6; max-width: 320px; text-align: right; }
-
-                /* ── Category dropdown nav ── */
-                .bl-cat-nav-wrap {
-                    position: relative;
-                    margin-bottom: 48px;
-                    width: fit-content;
-                    transition: margin-bottom 0.2s ease;
-                }
-
-                .bl-cat-nav-wrap--sticky {
-                    position: sticky;
-                    top: 56px;
-                    z-index: 50;
-                    margin-bottom: 24px;
-                    padding: 10px 0;
-                    background: var(--bg);
-                }
-
-                .bl-cat-nav__trigger {
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 8px;
-                    font-family: var(--font-mono);
-                    font-size: 11px;
-                    font-weight: 600;
-                    letter-spacing: 0.06em;
-                    color: var(--accent);
-                    background: var(--accent-dim);
-                    border: 1px solid rgba(232,255,71,0.3);
-                    border-radius: var(--radius);
-                    padding: 8px 14px;
-                    cursor: pointer;
-                    transition: background 0.15s, border-color 0.15s;
-                }
-
-                .bl-cat-nav__trigger:hover {
-                    background: rgba(232,255,71,0.15);
-                    border-color: rgba(232,255,71,0.5);
-                }
-
-                .bl-cat-nav__chevron {
-                    transition: transform 0.2s ease;
-                }
-
-                .bl-cat-nav__chevron--open {
-                    transform: rotate(180deg);
-                }
-
-                .bl-cat-nav__dropdown {
-                    position: absolute;
-                    top: calc(100% + 6px);
-                    left: 0;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 2px;
-                    min-width: 200px;
-                    background: var(--surface);
-                    border: 1px solid var(--border-hi);
-                    border-radius: var(--radius);
-                    padding: 6px;
-                    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-                    z-index: 60;
-                    animation: blDropdownIn 0.15s ease-out;
-                }
-
-                @keyframes blDropdownIn {
-                    from { opacity: 0; transform: translateY(-4px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-
-                .bl-cat-nav__item {
-                    font-family: var(--font-mono);
-                    font-size: 11px;
-                    letter-spacing: 0.05em;
-                    color: var(--text-2);
-                    text-decoration: none;
-                    padding: 8px 10px;
-                    border-radius: 4px;
-                    transition: color 0.15s, background 0.15s;
-                }
-
-                .bl-cat-nav__item:hover {
-                    color: var(--text-1);
-                    background: var(--bg);
-                }
-
-                .bl-cat-nav__item--active {
-                    color: var(--accent);
-                    background: var(--accent-dim);
-                }
-
-                .bl-tag {
-                    display: inline-block; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em;
-                    text-transform: uppercase; padding: 3px 8px; border-radius: 3px;
-                    background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(232,255,71,0.2); line-height: 1;
-                }
-                .bl-tag--sm { font-size: 9px; padding: 2px 6px; }
-                .bl-meta { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); margin-top: 10px; }
-                .bl-meta--sm { font-size: 10px; margin-top: 8px; }
-                .bl-meta__author { color: var(--text-2); }
-                .bl-meta__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border-hi); flex-shrink: 0; }
-
-                .bl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-                @media (max-width: 900px) { .bl-grid { grid-template-columns: 1fr 1fr; } }
-                @media (max-width: 600px) { .bl-grid { grid-template-columns: 1fr; } }
-
-                .bl-card { display: flex; flex-direction: column; background: var(--surface); text-decoration: none; overflow: hidden; position: relative; transition: background 0.15s; animation: blFadeUp 0.4s ease-out both; }
-                .bl-card:hover { background: #141417; }
-                .bl-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); transform: scaleY(0); transform-origin: bottom; transition: transform 0.2s ease; z-index: 5; }
-                .bl-card:hover::before { transform: scaleY(1); }
-                @keyframes blFadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-                .bl-card__img-wrap { height: 160px; background: var(--bg); overflow: hidden; flex-shrink: 0; }
-                .bl-card__img { width: 100%; height: 100%; object-fit: cover; opacity: 0.45; filter: grayscale(25%); transition: opacity 0.3s, transform 0.4s; }
-                .bl-card:hover .bl-card__img { opacity: 0.65; transform: scale(1.04); }
-                .bl-card__img-placeholder { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(255,255,255,0.015) 6px, rgba(255,255,255,0.015) 12px); }
-                .bl-card__body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
-                .bl-card__title { font-family: var(--font-serif); font-size: 17px; font-weight: 400; line-height: 1.3; color: var(--text-1); transition: color 0.15s; }
-                .bl-card:hover .bl-card__title { color: #fff; }
-                .bl-card__preview { font-size: 12px; color: var(--text-2); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-                .bl-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 80px 0; text-align: center; }
-                .bl-empty__code { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.1em; }
-                .bl-empty__msg { font-size: 14px; color: var(--text-2); }
-
-                .bl-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-top: 40px; margin-top: 48px; border-top: 1px solid var(--border); }
-                .bl-footer__info { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); letter-spacing: 0.06em; }
-                .bl-footer__actions { display: flex; gap: 10px; flex-wrap: wrap; }
-                .bl-btn { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; padding: 8px 16px; border-radius: var(--radius); border: 1px solid var(--border); background: transparent; color: var(--text-2); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: color 0.15s, border-color 0.15s, background 0.15s; text-decoration: none; }
-                .bl-btn:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
-                .bl-btn--accent { border-color: rgba(232,255,71,0.3); color: var(--accent); background: var(--accent-dim); }
-                .bl-btn--accent:hover { background: rgba(232,255,71,0.15); border-color: rgba(232,255,71,0.5); color: var(--accent); }
-
-                @media (max-width: 700px) {
-                    .bl-masthead { flex-direction: column; align-items: flex-start; }
-                    .bl-masthead__desc { text-align: left; }
-                }
+                .tp-page :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+                @media (prefers-reduced-motion: reduce) { .tp-page * { transition: none !important; } }
             `}</style>
 
-            <div className="bl-page">
-                <nav className="bl-nav">
-                    <a href="/" className="bl-nav__brand">brown<em>.</em>dev</a>
-                    <a href="/blog" className="bl-nav__back">
-                        <ArrowLeft size={13} />
-                        All articles
-                    </a>
-                </nav>
+            <div className="tp-page">
+                <header className="tp-nav">
+                    <div className="tp-nav__inner">
+                        <Link href="/" className="tp-nav__brand">brown<em>.</em>dev</Link>
+                        <Link href="/blog" className="tp-btn">
+                            <ArrowLeft size={12} /> All articles
+                        </Link>
+                    </div>
+                </header>
 
-                <main className="bl-main">
-                    <header className="bl-masthead">
+                <main className="tp-wrap">
+                    <header className="tp-mast">
                         <div>
-                            <p className="bl-masthead__eyebrow">Topic</p>
-                            <h1 className="bl-masthead__title">{label}</h1>
+                            <p className="tp-kicker">Topic</p>
+                            <h1 className="tp-mast__title">{label}</h1>
                         </div>
-                        <p className="bl-masthead__desc">
-                            {topicArticles.length} article{topicArticles.length !== 1 ? "s" : ""} in this topic.
+                        <p className="tp-mast__desc">
+                            {topicArticles.length} article{topicArticles.length !== 1 ? "s" : ""} in this topic
                         </p>
                     </header>
 
-                    <div
-                        ref={dropdownRef}
-                        className={`bl-cat-nav-wrap ${isSticky ? "bl-cat-nav-wrap--sticky" : ""}`}
-                    >
+                    <div ref={dropdownRef} className={`tp-cats${isSticky ? " tp-cats--sticky" : ""}`}>
                         <button
-                            className="bl-cat-nav__trigger"
+                            className="tp-cats__trigger"
                             onClick={() => setIsOpen((prev) => !prev)}
                             aria-expanded={isOpen}
                         >
-                            <span className="bl-cat-nav__trigger-label">{label}</span>
-                            <ChevronDown
-                                size={14}
-                                className={`bl-cat-nav__chevron ${isOpen ? "bl-cat-nav__chevron--open" : ""}`}
-                            />
+                            {label}
+                            <ChevronDown size={14} className={`tp-cats__chev${isOpen ? " tp-cats__chev--open" : ""}`} />
                         </button>
 
                         {isOpen && (
-                            <div className="bl-cat-nav__dropdown">
+                            <div className="tp-cats__menu">
                                 {CATEGORIES.map((cat) => (
-                                    <a
+                                    <Link
                                         key={cat.key}
                                         href={`/blog/topic/${cat.key}`}
-                                        className={`bl-cat-nav__item ${cat.key === topic ? "bl-cat-nav__item--active" : ""}`}
+                                        className={`tp-cats__item${cat.key === topic ? " tp-cats__item--active" : ""}`}
                                         onClick={() => setIsOpen(false)}
                                     >
                                         {cat.label}
-                                    </a>
+                                    </Link>
                                 ))}
                             </div>
                         )}
                     </div>
 
                     {topicArticles.length === 0 ? (
-                        <div className="bl-empty">
-                            <span className="bl-empty__code">NO_ARTICLES</span>
-                            <p className="bl-empty__msg">Nothing published in {label} yet.</p>
+                        <div className="tp-empty">
+                            <h2 className="tp-empty__title">Nothing here yet</h2>
+                            <p className="tp-empty__msg">Nothing published in {label} yet.</p>
+                            <Link href="/blog" className="tp-btn">
+                                <ArrowLeft size={12} /> Browse all articles
+                            </Link>
                         </div>
                     ) : (
-                        <div className="bl-grid">
-                            {topicArticles.map((a, i) => (
-                                <ArticleCard key={a.slug} article={a} index={i} />
+                        <div className="tp-grid">
+                            {topicArticles.map((a) => (
+                                <ArticleCard key={a.slug} article={a} fallbackLabel={label} />
                             ))}
                         </div>
                     )}
 
-                    <footer className="bl-footer">
-                        <span className="bl-footer__info">brown.dev — writing & insights</span>
-                        <div className="bl-footer__actions">
-                            <button className="bl-btn bl-btn--accent" onClick={() => router.push("/bc/contact")}>
-                                Get in touch
+                    <div className="tp-cta">
+                        <p className="tp-cta__text">Keep reading, or tell me about what you&apos;re building.</p>
+                        <div className="tp-cta__actions">
+                            <button className="tp-btn" onClick={() => router.push("/blog")}>
+                                <ArrowLeft size={12} /> All articles
                             </button>
-                            <button className="bl-btn" onClick={() => router.push("/blog")}>
-                                <ArrowLeft size={13} />
-                                All articles
+                            <button className="tp-btn tp-btn--solid" onClick={() => router.push("/bc/contact")}>
+                                <Mail size={12} /> Get in touch
                             </button>
                         </div>
-                    </footer>
+                    </div>
                 </main>
             </div>
 

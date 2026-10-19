@@ -318,7 +318,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
           --font-serif: var(--serif); --font-sans: var(--sans); --font-mono: var(--mono);
           background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh;
         }
-        .ap-page a { color: inherit; }
+                :where(.ap-page a) { color: inherit; }
         .ap-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 
         /* Reading progress */
@@ -401,6 +401,11 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
         .ap-sharecard__row { display: flex; flex-wrap: wrap; gap: 10px; }
         .ap-sharecard__row .ap-btn { height: 44px; }
 
+        /* WhatsApp channel card */
+        .ap-channel { margin: 48px 0 0; padding: 22px 24px; background: var(--card); border: 1px solid var(--rule-dark); border-left: 4px solid var(--accent); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+        .ap-channel__title { font-family: var(--serif); font-weight: 800; font-size: 20px; line-height: 1.2; margin-bottom: 4px; }
+        .ap-channel__sub { font-size: 13px; line-height: 1.6; color: var(--ink-2); max-width: 420px; }
+        @media (max-width: 640px) { .ap-channel { padding: 18px; } .ap-channel .ap-btn { width: 100%; } }
         /* Publication note */
         .ap-note { margin: 0 0 32px; padding: 18px 20px; border: 1px solid var(--rule-dark); background: var(--paper-2); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; }
         .ap-note p { font-size: 13px; line-height: 1.7; color: var(--ink-2); max-width: 460px; }
@@ -573,6 +578,24 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
               categoryLabel={category}
               articleSlug={article.slug}
             />
+
+            {/* WhatsApp channel */}
+            <section className="ap-channel" aria-label="Join my WhatsApp channel">
+              <div>
+                <h2 className="ap-channel__title">Join my WhatsApp channel</h2>
+                <p className="ap-channel__sub">
+                  Get new articles, fraud alerts and web security tips straight to your phone.
+                </p>
+              </div>
+              <a
+                href="https://whatsapp.com/channel/0029VbEGWFsC1FuAo5qoPh0q"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ap-btn ap-btn--solid"
+              >
+                <WhatsAppIcon size={15} /> Join channel
+              </a>
+            </section>
 
             {/* Share card */}
             <section className="ap-sharecard" aria-label="Share this article">

@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
     Menu, X, ChevronDown, Terminal, Cpu, Network,
     Globe, Layers, Server, Newspaper, TrendingUp, ExternalLink,
-    Sparkles, ArrowUpRight, ArrowRight,
+    Sparkles, ArrowUpRight, ArrowRight, MessageCircle,
 } from "lucide-react";
 import { featuredServices } from "@/app/data/services";
 
@@ -489,6 +489,9 @@ export default function Navbar() {
                             <Link href="/bc/contact" className="nb-btn nb-btn--solid" onClick={closeAll}>
                                 Start a project <ArrowRight size={12} />
                             </Link>
+                            <a href="https://whatsapp.com/channel/0029VbEGWFsC1FuAo5qoPh0q" target="_blank" rel="noopener noreferrer" className="nb-btn" onClick={closeAll}>
+                                <MessageCircle size={13} /> Join WhatsApp channel
+                            </a>
                             <a href="https://github.com/sponsors/Brown-Oziomachi/" target="_blank" rel="noopener noreferrer" className="nb-btn" onClick={closeAll}>
                                 Sponsor Sir Brown AD
                             </a>
