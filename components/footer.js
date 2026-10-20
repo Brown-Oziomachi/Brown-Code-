@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Linkedin, Github, Instagram, Mail, ArrowUpRight, MessageCircle } from "lucide-react";
+import { Linkedin, Github, Mail, ArrowUpRight, MessageCircle } from "lucide-react";
+import SocialLinks from "@/components/SocialLinks";
 
 export default function Footer() {
     const year = new Date().getFullYear();
@@ -8,10 +9,10 @@ export default function Footer() {
         { label: "Portfolio", href: "/portfolio" },
         { label: "About Me", href: "/bc/about" },
         { label: "Blog", href: "/blog" },
+        { label: "Newsletter", href: "/newsletter" },
         { label: "Tech News", href: "/tech-news" },
         { label: "FAQ", href: "/faq" },
         { label: "Jobs", href: "/jobs" },
-
     ];
 
     const work = [
@@ -37,7 +38,7 @@ export default function Footer() {
     const socials = [
         { name: "LinkedIn", href: "https://www.linkedin.com/in/brownoziomachi72a5a3229", icon: <Linkedin size={15} /> },
         { name: "GitHub", href: "https://github.com/Brown-Oziomachi", icon: <Github size={15} /> },
-        { name: "Instagram", href: "https://instagram.com/Brown-Oziomachi", icon: <Instagram size={15} /> },
+        // { name: "Instagram", href: "https://instagram.com/Brown-Oziomachi", icon: <Instagram size={15} /> },
         { name: "Email", href: "mailto:browncemmanuel@gmail.com", icon: <Mail size={15} /> },
         {
             name: "WhatsApp",

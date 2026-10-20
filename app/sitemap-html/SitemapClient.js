@@ -39,6 +39,7 @@ const seoNodes = [
     { name: "Software Developer, Africa", href: "/brown-code/software-developer-africa" },
     { name: "Web Developer, Abuja", href: "/brown-code/web-developer-abuja" },
     { name: "Web Developer, Nigeria", href: "/brown-code/web-developer-nigeria" },
+    { name: "Get a Website", href: "/get-a-website" },
 ];
 
 const totalRoutes = corePages.length + blogSlugs.length + seoNodes.length;

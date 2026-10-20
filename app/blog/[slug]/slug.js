@@ -11,6 +11,7 @@ import { doc, getDoc, setDoc, updateDoc, increment, onSnapshot } from "firebase/
 import { db1 } from "@/config/firebase.config1";
 import RelatedArticles from "@/components/relatedarticle";
 import Footer from "@/components/footer";
+import SocialLinks from "@/components/SocialLinks";
 import CommentsSection from "@/components/CommentsSection";
 import TableOfContents from "@/components/TableOfContents";
 import AlsoRead from "@/components/AlsoRead";
@@ -423,7 +424,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
         .ap-author-card__role { font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin: 2px 0 10px; }
         .ap-author-card__bio { font-size: 13.5px; line-height: 1.7; color: var(--ink-2); margin-bottom: 14px; }
         .ap-author-card__actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-        .ap-socials { display: flex; gap: 6px; margin-left: auto; }
+.ap-socials { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
         .ap-social { width: 36px; height: 36px; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; color: var(--ink); transition: background 0.15s; }
         .ap-social:hover { background: var(--accent); }
 
@@ -655,7 +656,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
                     <a href="https://www.linkedin.com/in/brownoziomachi72a5a3229" target="_blank" rel="noopener noreferrer" className="ap-social" title="LinkedIn" aria-label="LinkedIn"><Linkedin size={15} /></a>
                     <a href="https://github.com/Brown-Oziomachi" target="_blank" rel="noopener noreferrer" className="ap-social" title="GitHub" aria-label="GitHub"><Github size={15} /></a>
                     <a href="mailto:browncemmanuel@gmail.com" className="ap-social" title="Email" aria-label="Email"><Mail size={15} /></a>
-                    <a href="https://wa.me/2348142995114" target="_blank" rel="noopener noreferrer" className="ap-social" title="WhatsApp" aria-label="WhatsApp"><WhatsAppIcon size={15} /></a>
+                    <SocialLinks size={15} linkClass="ap-social" />
                   </div>
                 </div>
               </div>

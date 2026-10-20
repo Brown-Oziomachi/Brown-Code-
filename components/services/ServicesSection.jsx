@@ -8,7 +8,7 @@ import { featuredServices, services } from "@/app/data/services";
  * mode="home"  -> intro + featured only, with a "View all services" link (use on the homepage)
  * mode="full"  -> intro + featured + full remaining catalog (use on /services)
  */
-export default function ServicesSection({ mode = "home" }) {
+export default function ServicesSection({ mode = "home", showNav = true }) {
   const rest = services.filter((s) => !s.featured);
 
   const normalizeImage = (img) => {
@@ -24,7 +24,8 @@ export default function ServicesSection({ mode = "home" }) {
 
   return (
     <>
-      <header className="sv-nav">
+{showNav && (
+  <header className="sv-nav">
         <div className="sv-nav__inner">
           <Link href="/" className="sv-nav__brand">
             brown<em>.</em>dev
@@ -56,7 +57,8 @@ export default function ServicesSection({ mode = "home" }) {
           </nav>
         </div>
       </header>
-
+      )}
+      
       <section className="services-section" id="services">
         <div className="services-section__intro">
           <span className="services-section__eyebrow">Services</span>

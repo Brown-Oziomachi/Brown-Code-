@@ -1,227 +1,200 @@
 import Footer from "@/components/footer";
 import Link from "next/link";
+import LandingNav from "@/components/landing/LandingNav";
+import "@/components/landing/landing.css";
 
-// 1. METADATA CONFIGURATION
 export const metadata = {
-    title: "Web Developer in Nigeria | Professional Website Developer – Browncode",
+    title: "Software Developer in Nigeria – Brown Code | Professional Website Developer",
     description:
-        "Looking for a web developer in Nigeria? Browncode builds modern, responsive, SEO-optimized websites, e-commerce stores, portfolios, and web apps for local businesses.",
+        "Brown Code builds fast, modern, and SEO-optimized websites across Nigeria. Hire a trusted web developer in Nigeria for business websites, e-commerce, portfolios, and web apps.",
     keywords: [
         "web developer in Nigeria",
-        "website developer Nigeria",
+        "best website developer Nigeria",
         "professional web developer Nigeria",
-        "affordable web developer Nigeria",
-        "software developer Nigeria",
+        "hire developer in Lagos Abuja",
+        "software engineer Nigeria",
     ],
     alternates: {
         canonical: "https://browncode.name.ng/web-developer-nigeria",
     },
 };
 
-// 2. SEO STRUCTURED DATA (JSON-LD)
 const structuredData = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    name: "Brown Oziomachi (Browncode)",
+    name: "Brown Code (Brown Oziomachi A.)",
     url: "https://browncode.name.ng",
     logo: "https://browncode.name.ng/logo.png",
-    description: "Professional web development services in Nigeria, Nigeria — websites, e-commerce, portfolios, web apps, SEO.",
+    description: "Professional full-stack web development services (Next.js, React, Tailwind CSS) available nationwide across Nigeria.",
     telephone: "+234-814-299-5114",
+    priceRange: "₦300,000 - ₦1,500,000+",
     address: {
         "@type": "PostalAddress",
-        streetAddress: "Kubwa",
-        addressLocality: "Nigeria",
+        addressLocality: "Abuja",
         addressRegion: "FCT",
         addressCountry: "NG",
     },
     areaServed: [
-        { "@type": "AdministrativeArea", name: "Nigeria" },
-        { "@type": "Country", name: "Nigeria" }
+        { "@type": "Country", name: "Nigeria" },
+        { "@type": "AdministrativeArea", name: "Lagos" },
+        { "@type": "AdministrativeArea", name: "Abuja" },
+        { "@type": "AdministrativeArea", name: "Rivers" },
     ],
     sameAs: [
         "https://x.com/BrownC15427449",
-        "https://www.linkedin.com/in/brownoziomachi72a5a3229"
+        "https://www.linkedin.com/in/brownoziomachi72a5a3229",
     ],
-    priceRange: "₦100,000 - ₦500,000+"
 };
 
-// 3. SEPARATED DATA ARRAYS
-const SERVICES = [
-    "Custom business websites & landing pages",
-    "Portfolio & personal websites",
-    "E-commerce stores with payment integration",
-    "Blogs, news portals, and media websites",
-    "Web applications & dashboards",
-    "SEO optimization & speed improvements",
+const WA = "https://wa.me/2348142995114";
+
+const NIGERIA_SERVICES = [
+    { title: "Enterprise & Business Sites", desc: "High-conversion corporate platforms and optimized landing pages built to secure market leads." },
+    { title: "E-Commerce Infrastructures", desc: "Digital storefronts equipped with payment gateway integrations and custom backend admin systems." },
+    { title: "Creative & Agent Portfolios", desc: "Fast, striking online portfolios showcasing services for elite professionals across Nigeria." },
+    { title: "Progressive Web Applications", desc: "Dynamic dashboards and client management systems designed to execute offline-first tasks seamlessly." },
+    { title: "Technical SEO & Optimization", desc: "Fine-tuning Core Web Vitals, performance speeds, and clean JSON-LD structured data mapping." },
 ];
 
-const ADVANTAGES = [
-    { title: "Local Expertise", desc: "We understand Nigeria businesses and customers." },
-    { title: "Modern Technologies", desc: "Next.js, React, Tailwind, Firebase." },
-    { title: "Responsive Design", desc: "Works perfectly on mobile, tablet, and desktop." },
-    { title: "Fast & SEO-Friendly", desc: "Optimized for Google search and page speed." },
-    { title: "Affordable Packages", desc: "High-quality work without breaking your budget." },
+const METRICS = [
+    { label: "Performance Engine", text: "Sub-second load times engineered via custom Next.js server routing architectures." },
+    { label: "Mobile-First UX Strategy", text: "Tailwind interfaces explicitly structured for unstable network connections and mobile-dominant audiences." },
+    { label: "Data Architecture", text: "Clean database integrations and semantic markup structures that search engine bots crawl with ease." },
 ];
 
-const PROJECTS = [
-    { name: "IJ Stitches", desc: "Fashion website for Nigeria-based business", emoji: "🧵" },
-    { name: "The Cyclopedia", desc: "News & media website", emoji: "📰" },
-    { name: "Browncode Portfolio", desc: "Professional web developer showcase", emoji: "👤", href: "https://browncode.name.ng" },
-    { name: "E-commerce Store / Yotapoint", desc: "Online shop ecosystem", emoji: "🛍" },
+const SEO_ITEMS = [
+    "High-Intent Local Keywords",
+    "Automated JSON-LD Graphs",
+    "Core Web Vitals Optimization",
+    "Local Business Snippet Schema",
 ];
 
 const FAQS = [
-    { q: "How much does a website cost in Nigeria?", a: "Prices depend on features. Portfolio websites start from ₦100,000, business sites ₦300,000, e-commerce ₦500,000+." },
-    { q: "How long will it take?", a: "Most websites are delivered within 5–10 days depending on complexity." },
-    { q: "Do you meet clients locally?", a: "Yes, we can meet in Nigeria for briefings, handovers, or training sessions. Virtual meetings are also available." },
+    { q: "How much does a website cost in Nigeria?", a: "Project costs vary depending on features. Standard business portfolios start around ₦300,000, while deep e-commerce architectures and integrated software systems scale upward based on structural complexity." },
+    { q: "How long will it take?", a: "Production lifecycles typically span 1 to 3 weeks. Timeline schedules rely entirely on the engineering scope and asset delivery cycles." },
 ];
 
 export default function WebDeveloperNigeria() {
-    const currentYear = new Date().getFullYear();
-
     return (
-        // Canvas Wrapper: VOID Background (#0b0b0f) & WHITE text (#f8f8ff)
-        <div className="min-h-screen bg-[#0b0b0f] text-[#f8f8ff] antialiased selection:bg-[#7c3aed] selection:text-[#f8f8ff]">
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-            />
+        <div className="lp-page">
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+            <LandingNav />
 
-            <main className="max-w-4xl mx-auto px-4 py-16 sm:px-6 lg:py-24">
-
-                {/* Header Section */}
-                <header className="border-b border-[rgba(248,248,255,.07)] (BORDER2) pb-10 mb-12">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#a3e635] (LIME) bg-[#a3e635]/10 px-3 py-1 rounded-full border border-[#a3e635]/20">
-                        Nigeria, Nigeria
-                    </span>
-                    <h1 className="text-4xl sm:text-5xl font-black tracking-tight mt-4">
-                        Web Developer in Nigeria <span className="text-[#7c3aed] (PURPLE)">.</span>
-                    </h1>
-                    <p className="text-xl text-[rgba(248,248,255,.4)] (MUTED) mt-4 max-w-2xl leading-relaxed">
-                        Searching for a <strong className="text-[#f8f8ff] font-semibold">professional web developer in Nigeria</strong>?
-                        Browncode provides modern, responsive, and SEO-friendly web ecosystems for businesses and individuals looking to scale.
-                    </p>
-                </header>
-
-                {/* Services & Benefits Grid (DARK #11111a cards) */}
-                <section className="grid md:grid-cols-2 gap-8 mb-16">
-                    {/* Services Column */}
-                    <div className="bg-[#11111a] (DARK) border border-[rgba(248,248,255,.07)] (BORDER2) rounded-2xl p-6 shadow-xl">
-                        <h2 className="text-xl font-bold text-[#a3e635] (LIME) mb-4 flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-[#a3e635]"></span> Services Offered
-                        </h2>
-                        <ul className="space-y-3 text-[rgba(248,248,255,.4)] (MUTED)">
-                            {SERVICES.map((service, index) => (
-                                <li key={index} className="flex items-start gap-2">
-                                    <span className="text-[#7c3aed] (PURPLE) mt-0.5">▹</span>
-                                    <span className="text-sm">{service}</span>
-                                </li>
-                            ))}
-                        </ul>
+            <main>
+                {/* Hero */}
+                <section className="lp-wrap lp-hero lp-hero--split">
+                    <div>
+                        <span className="lp-chip">Nationwide availability — Nigeria</span>
+                        <h1 className="lp-title">
+                            Software Developer<br />in Nigeria<span>.</span>
+                        </h1>
+                        <p className="lp-dek">
+                            Looking for a reliable <strong>developer in Nigeria</strong>? Brown Code develops high-speed,
+                            modern, and SEO-optimized interfaces that empower brands across the federation to process
+                            payments, track leads, and capture markets.
+                        </p>
+                        <div className="lp-actions">
+                            <a href={WA} target="_blank" rel="noopener noreferrer" className="lp-btn lp-btn--solid">Start a project</a>
+                            <Link href="/portfolio" className="lp-btn">View portfolio</Link>
+                        </div>
                     </div>
 
-                    {/* Advantages Column */}
-                    <div className="bg-[#11111a] (DARK) border border-[rgba(124,58,237,.25)] (BORDER) rounded-2xl p-6 shadow-xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#7c3aed]/5 blur-3xl pointer-events-none"></div>
-                        <h2 className="text-xl font-bold text-[#a855f7] (PURPLEL) mb-4 flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-[#a855f7]"></span> Why Hire Browncode?
-                        </h2>
-                        <ul className="space-y-4">
-                            {ADVANTAGES.map((item, index) => (
-                                <li key={index} className="text-sm">
-                                    <strong className="text-[#f8f8ff] (WHITE) block font-medium">{item.title}</strong>
-                                    <span className="text-[rgba(248,248,255,.4)] (MUTED)">{item.desc}</span>
-                                </li>
-                            ))}
-                        </ul>
+                    <div className="lp-panel lp-panel--soft lp-panel--top">
+                        <div className="lp-kicker"><b>Developing architecture</b></div>
+                        <p className="lp-panel__text" style={{ marginBottom: 16 }}>
+                            Physical operations are located in <strong>Abuja (FCT)</strong>, with remote deployment
+                            capabilities and developing consultations available across all states, including Lagos,
+                            Port Harcourt, and Kano.
+                        </p>
+                        <div className="lp-tags">
+                            {["Next.js", "React.js", "Tailwind", "Firebase"].map((t) => <span key={t} className="lp-tag">{t}</span>)}
+                        </div>
                     </div>
                 </section>
 
-                {/* Portfolio Section (DARK2 #18182a container) */}
-                <section className="bg-[#18182a] (DARK2) border border-[rgba(248,248,255,.07)] (BORDER2) rounded-2xl p-6 sm:p-8 mb-16 shadow-2xl">
-                    <h2 className="text-2xl font-extrabold tracking-tight mb-6">
-                        Portfolio – Projects in Nigeria
-                    </h2>
-                    <div className="grid sm:grid-cols-2 gap-4">
-                        {PROJECTS.map((project, index) => (
-                            <div
-                                key={index}
-                                className="bg-[#11111a] (DARK) p-4 rounded-xl border border-[rgba(248,248,255,.07)] (BORDER2) hover:border-[#7c3aed]/40 transition-all duration-300 group"
-                            >
-                                <div className="flex items-center gap-3 mb-2">
-                                    <span className="text-xl p-2 bg-[#0b0b0f] (VOID) rounded-lg border border-[rgba(248,248,255,.07)]">{project.emoji}</span>
-                                    {project.href ? (
-                                        <Link
-                                            href={project.href}
-                                            className="text-[#a855f7] (PURPLEL) hover:text-[#7c3aed] (PURPLE) font-bold underline transition-colors"
-                                        >
-                                            {project.name}
-                                        </Link>
-                                    ) : (
-                                        <h3 className="font-bold text-[#f8f8ff] (WHITE)">{project.name}</h3>
-                                    )}
+                {/* Body */}
+                <section className="lp-wrap lp-section">
+                    <div className="lp-cols">
+                        {/* Left */}
+                        <div className="lp-stack">
+                            <section>
+                                <div className="lp-head">
+                                    <div>
+                                        <div className="lp-kicker">Services</div>
+                                        <h2 className="lp-h2">Services I offer across Nigeria</h2>
+                                    </div>
                                 </div>
-                                <p className="text-xs text-[rgba(248,248,255,.4)] (MUTED) leading-relaxed pl-1">
-                                    {project.desc}
-                                </p>
-                            </div>
-                        ))}
+                                <div className="lp-grid">
+                                    {NIGERIA_SERVICES.map((s, i) => (
+                                        <div key={s.title} className="lp-card">
+                                            <span className="lp-card__badge">{String(i + 1).padStart(2, "0")}</span>
+                                            <h3 className="lp-card__title">{s.title}</h3>
+                                            <p className="lp-card__text">{s.desc}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+
+                            <section className="lp-panel lp-panel--soft">
+                                <h2 className="lp-panel__title">On-page search optimizations implemented</h2>
+                                <ul className="lp-list">
+                                    {SEO_ITEMS.map((s) => <li key={s}>{s}</li>)}
+                                </ul>
+                            </section>
+                        </div>
+
+                        {/* Right */}
+                        <div className="lp-stack">
+                            <section className="lp-panel lp-panel--top">
+                                <h2 className="lp-panel__title">Why scale with Brown Code?</h2>
+                                <ul className="lp-list">
+                                    {METRICS.map((m) => (
+                                        <li key={m.label}><span><b>{m.label}</b>{m.text}</span></li>
+                                    ))}
+                                </ul>
+                            </section>
+
+                            <section>
+                                <div className="lp-head">
+                                    <div>
+                                        <div className="lp-kicker">Questions</div>
+                                        <h2 className="lp-h2" style={{ fontSize: 26 }}>Frequently asked</h2>
+                                    </div>
+                                </div>
+                                {FAQS.map((f, i) => (
+                                    <article key={f.q} className="lp-qa">
+                                        <h3 className="lp-qa__q" style={{ fontSize: 16 }}><span className="lp-qa__n">{i + 1}</span>{f.q}</h3>
+                                        <p className="lp-qa__a">{f.a}</p>
+                                    </article>
+                                ))}
+                            </section>
+                        </div>
                     </div>
                 </section>
 
-                {/* FAQ Section */}
-                <section className="mb-16">
-                    <h2 className="text-2xl font-extrabold tracking-tight mb-8">
-                        FAQ – Web Developer in Nigeria
-                    </h2>
-                    <div className="space-y-4">
-                        {FAQS.map((faq, index) => (
-                            <div
-                                key={index}
-                                className="bg-[#11111a] (DARK) border border-[rgba(248,248,255,.07)] (BORDER2) p-5 rounded-xl hover:bg-[#18182a]/50 transition-colors duration-200"
-                            >
-                                <h3 className="text-base font-bold flex items-start gap-2">
-                                    <span className="text-[#a3e635] (LIME) font-mono">{index + 1}.</span>
-                                    {faq.q}
-                                </h3>
-                                <p className="text-sm text-[rgba(248,248,255,.4)] (MUTED) mt-2 pl-6 leading-relaxed">
-                                    {faq.a}
-                                </p>
-                            </div>
-                        ))}
+                {/* CTA */}
+                <section className="lp-wrap lp-section">
+                    <div className="lp-cta">
+                        <p className="lp-cta__kicker">Work with me</p>
+                        <h2 className="lp-cta__title">Ready to kickstart your system build?</h2>
+                        <p className="lp-cta__sub">
+                            Schedule a briefing. See live projects and screenshots at{" "}
+                            <Link href="https://browncode.name.ng" style={{ textDecoration: "underline", textUnderlineOffset: 3 }}>
+                                browncode.name.ng
+                            </Link>.
+                        </p>
+                        <p className="lp-cta__lines">
+                            <span>WhatsApp: <strong>+234-814-299-5114</strong></span>
+                            <span>Email: <strong>browncemmanuel@gmail.com</strong></span>
+                        </p>
+                        <div className="lp-actions">
+                            <a href={WA} target="_blank" rel="noopener noreferrer" className="lp-btn lp-btn--solid">Start a briefing on WhatsApp</a>
+                        </div>
                     </div>
                 </section>
-
-                {/* Contact Banner Section (DARK3 #1e1e30 with variant accents) */}
-                <section className="bg-[#1e1e30] (DARK3) border border-[rgba(124,58,237,.25)] (BORDER) rounded-2xl p-8 text-center relative overflow-hidden shadow-2xl">
-                    <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-[#7c3aed]/10 blur-3xl pointer-events-none rounded-full"></div>
-                    <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#a3e635]/5 blur-3xl pointer-events-none rounded-full"></div>
-
-                    <h2 className="text-2xl sm:text-3xl font-black">
-                        Contact Browncode in Nigeria
-                    </h2>
-                    <p className="text-sm text-[rgba(248,248,255,.4)] (MUTED) mt-3 mx-auto leading-relaxed">
-                        Ready to build your website? Reach out directly via WhatsApp or secure a consultation block via email.
-                    </p>
-                    <div className="mt-4 text-xs text-[rgba(248,248,255,.4)] (MUTED) space-y-1">
-                        <p>Line Secure: <span className="text-[#a3e635] (LIME) font-mono">+234-814-299-5114</span></p>
-                        <p>Routing: <span className="text-[#a855f7] (PURPLEL) font-mono">browncemmanuel@gmail.com</span></p>
-                    </div>
-
-                    <div className="mt-8">
-                        <Link
-                            href="https://wa.me/2348142995114"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-block bg-[#65a30d] (LIMED) hover:bg-[#a3e635] (LIME) text-[#0b0b0f] (VOID) px-8 py-3 rounded-xl text-sm font-bold tracking-wide transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg shadow-[#65a30d]/20"
-                        >
-                            Chat on WhatsApp
-                        </Link>
-                    </div>
-                </section>
-
-                <Footer />
             </main>
+
+            <Footer />
         </div>
     );
 }
