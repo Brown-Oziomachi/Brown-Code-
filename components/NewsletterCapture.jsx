@@ -184,7 +184,7 @@ export default function NewsletterCapture({
           border-radius: var(--radius);
           border: 1px solid rgba(232,255,71,0.3);
           background: var(--accent-dim);
-          color: var(--accent);
+          color: black;
           cursor: pointer;
           white-space: nowrap;
           transition: background 0.15s, border-color 0.15s;

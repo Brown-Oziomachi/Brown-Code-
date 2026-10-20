@@ -10,11 +10,14 @@ export default function Footer() {
         { label: "Blog", href: "/blog" },
         { label: "Tech News", href: "/tech-news" },
         { label: "FAQ", href: "/faq" },
+        { label: "Jobs", href: "/jobs" },
+
     ];
 
     const work = [
         { label: "Contact Me", href: "/bc/contact" },
         { label: "Advertise", href: "/advertise" },
+        { label: "Services", href: "/services" },
         { label: "Sponsor", href: "https://github.com/sponsors/Brown-Oziomachi/", external: true },
     ];
 
@@ -61,27 +64,29 @@ export default function Footer() {
     return (
         <>
             <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
                 .ft {
-                    --ft-bg: #000000;
-                    --ft-card: #0d0d0d;
-                    --ft-rule: #242424;
-                    --ft-rule-hi: #3a3a3a;
-                    --ft-ink: #f4f1ea;
-                    --ft-ink-2: #bdb8ae;
-                    --ft-ink-3: #85807a;
+                    --ft-bg: #ffffff;
+                    --ft-soft: #f6f5f0;
+                    --ft-rule: #e4e2da;
+                    --ft-ink: #111111;
+                    --ft-ink-2: #3f3f3f;
+                    --ft-ink-3: #6f6f6f;
                     --ft-accent: #e8ff47;
                     --ft-on-accent: #0a0a0b;
-                    --ft-serif: 'Playfair Display', 'DM Serif Display', Georgia, serif;
+                    --ft-serif: 'Playfair Display', Georgia, serif;
                     --ft-sans: 'Inter', system-ui, sans-serif;
                     --ft-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
                     background: var(--ft-bg);
-                    border-top: 3px solid var(--ft-accent);
+                    border-top: 5px solid var(--ft-ink);
                     font-family: var(--ft-sans);
                     margin-top: 80px;
                     color: var(--ft-ink-2);
                 }
                 .ft *, .ft *::before, .ft *::after { box-sizing: border-box; }
+                .ft h2, .ft p { margin: 0; }
 
                 .ft-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 
@@ -96,19 +101,19 @@ export default function Footer() {
                     font-size: clamp(26px, 3.6vw, 40px); line-height: 1.1;
                     color: var(--ft-ink); max-width: 620px;
                 }
-                .ft-band__title em { font-style: italic; color: var(--ft-accent); }
+                .ft-band__title em { font-style: italic; background: linear-gradient(transparent 62%, var(--ft-accent) 62%); }
                 .ft-band__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
                 .ft-btn {
                     display: inline-flex; align-items: center; gap: 8px;
                     font-family: var(--ft-mono); font-size: 11px; letter-spacing: 0.06em;
-                    padding: 12px 18px; border: 1px solid var(--ft-rule-hi);
+                    padding: 12px 18px; border: 1.5px solid var(--ft-ink);
                     color: var(--ft-ink); text-decoration: none; background: transparent;
-                    transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
+                    transition: background 0.15s, color 0.15s, transform 0.15s;
                 }
-                .ft-btn:hover { background: var(--ft-ink); color: var(--ft-bg); border-color: var(--ft-ink); transform: translateY(-1px); }
-                .ft-btn--solid { background: var(--ft-accent); border-color: var(--ft-accent); color: var(--ft-on-accent); font-weight: 600; }
-                .ft-btn--solid:hover { background: #d4e63c; border-color: #d4e63c; color: var(--ft-on-accent); }
+                .ft-btn:hover { background: var(--ft-ink); color: #fff; transform: translateY(-1px); }
+                .ft-btn--solid { background: var(--ft-accent); color: var(--ft-on-accent); font-weight: 600; }
+                .ft-btn--solid:hover { background: var(--ft-ink); color: var(--ft-accent); }
                 .ft-btn__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ft-on-accent); }
 
                 /* Main grid */
@@ -126,38 +131,41 @@ export default function Footer() {
                     font-family: var(--ft-serif); font-weight: 800; font-size: 26px;
                     color: var(--ft-ink); text-decoration: none; display: inline-block; margin-bottom: 14px;
                 }
-                .ft-wordmark em { font-style: normal; color: var(--ft-accent); }
-                .ft-tagline { font-size: 13px; line-height: 1.75; color: var(--ft-ink-3); max-width: 320px; margin-bottom: 20px; }
+                .ft-wordmark em { font-style: normal; background: var(--ft-accent); padding: 0 3px; }
+                .ft-tagline { font-size: 13.5px; line-height: 1.75; color: var(--ft-ink-2); max-width: 340px; margin-bottom: 20px; }
 
                 .ft-status {
                     display: inline-flex; align-items: center; gap: 9px;
                     font-family: var(--ft-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase;
-                    color: var(--ft-ink-2); padding: 7px 12px; border: 1px solid var(--ft-rule-hi); background: var(--ft-card);
-                    margin-bottom: 22px;
+                    color: var(--ft-ink); padding: 7px 12px; border: 1px solid var(--ft-ink); background: var(--ft-soft);
+                    margin-bottom: 18px;
                 }
                 .ft-ping { position: relative; width: 8px; height: 8px; flex-shrink: 0; }
-                .ft-ping__ring { position: absolute; inset: 0; border-radius: 50%; background: var(--ft-accent); opacity: 0.4; animation: ft-ping 1.6s ease-out infinite; }
-                .ft-ping__dot { position: absolute; inset: 1px; border-radius: 50%; background: var(--ft-accent); }
+                .ft-ping__ring { position: absolute; inset: 0; border-radius: 50%; background: #15803d; opacity: 0.4; animation: ft-ping 1.6s ease-out infinite; }
+                .ft-ping__dot { position: absolute; inset: 1px; border-radius: 50%; background: #15803d; }
                 @keyframes ft-ping { 0% { transform: scale(1); opacity: 0.4; } 100% { transform: scale(2.6); opacity: 0; } }
+
+                .ft-channel { display: flex; margin-bottom: 18px; width: fit-content; }
 
                 .ft-socials { display: flex; gap: 6px; flex-wrap: wrap; }
                 .ft-social {
                     width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
-                    border: 1px solid var(--ft-rule-hi); background: var(--ft-card); color: var(--ft-ink-3);
-                    text-decoration: none; transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.15s;
+                    border: 1px solid var(--ft-ink); background: #fff; color: var(--ft-ink);
+                    text-decoration: none; transition: background 0.15s, transform 0.15s;
                 }
-                .ft-social:hover { color: var(--ft-on-accent); background: var(--ft-accent); border-color: var(--ft-accent); transform: translateY(-2px); }
+                .ft-social:hover { background: var(--ft-accent); transform: translateY(-2px); }
 
                 .ft-label {
-                    display: block; font-family: var(--ft-mono); font-size: 9.5px; letter-spacing: 0.16em;
-                    text-transform: uppercase; color: var(--ft-accent); margin-bottom: 18px;
+                    display: inline-block; font-family: var(--ft-mono); font-size: 9.5px; letter-spacing: 0.16em;
+                    text-transform: uppercase; color: var(--ft-on-accent); background: var(--ft-accent);
+                    padding: 2px 7px; margin-bottom: 18px;
                 }
                 .ft-list { display: flex; flex-direction: column; gap: 11px; }
                 .ft-link {
                     display: inline-flex; align-items: center; gap: 5px; width: fit-content;
-                    font-size: 13px; color: var(--ft-ink-3); text-decoration: none; transition: color 0.15s, transform 0.15s;
+                    font-size: 13.5px; color: var(--ft-ink-2); text-decoration: none; transition: color 0.15s, transform 0.15s;
                 }
-                .ft-link:hover { color: var(--ft-ink); transform: translateX(3px); }
+                .ft-link:hover { color: var(--ft-ink); transform: translateX(3px); text-decoration: underline; text-underline-offset: 3px; }
 
                 /* Built-by strip */
                 .ft-builds {
@@ -171,22 +179,12 @@ export default function Footer() {
                 .ft-builds__list { display: flex; flex-wrap: wrap; gap: 8px; }
                 .ft-build {
                     font-family: var(--ft-mono); font-size: 10.5px; letter-spacing: 0.04em;
-                    color: var(--ft-ink-2); text-decoration: none; padding: 5px 11px;
-                    border: 1px solid var(--ft-rule); background: var(--ft-card);
+                    color: var(--ft-ink); text-decoration: none; padding: 5px 11px;
+                    border: 1px solid var(--ft-ink); background: #fff;
                     display: inline-flex; align-items: center; gap: 6px;
-                    transition: border-color 0.15s, color 0.15s;
+                    transition: background 0.15s;
                 }
-                .ft-build:hover { border-color: var(--ft-accent); color: var(--ft-accent); }
-
-                /* Client logos */
-                .ft-clients {
-                    padding: 26px 0; border-bottom: 1px solid var(--ft-rule);
-                    display: flex; align-items: center; gap: 14px 28px; flex-wrap: wrap;
-                }
-                .ft-clients__logos { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
-                .ft-client { display: inline-block; opacity: 0.4; filter: grayscale(100%); transition: opacity 0.2s, filter 0.2s, transform 0.2s; }
-                a.ft-client:hover { opacity: 0.95; filter: grayscale(0); transform: translateY(-2px); }
-                .ft-client img { height: 32px; width: auto; max-width: 72px; object-fit: contain; display: block; }
+                .ft-build:hover { background: var(--ft-accent); }
 
                 /* Base bar */
                 .ft-base {
@@ -199,7 +197,11 @@ export default function Footer() {
                     font-family: var(--ft-mono); font-size: 10px; letter-spacing: 0.06em;
                     color: var(--ft-ink-3); text-decoration: none; transition: color 0.15s;
                 }
-                .ft-base__legal a:hover { color: var(--ft-accent); }
+                .ft-base__legal a:hover { color: var(--ft-ink); text-decoration: underline; text-underline-offset: 3px; }
+
+                @media (max-width: 640px) { .ft-inner { padding: 0 18px; } }
+                .ft :focus-visible { outline: 2px solid var(--ft-ink); outline-offset: 2px; }
+                @media (prefers-reduced-motion: reduce) { .ft * { transition: none !important; animation: none !important; } }
             `}</style>
 
             <footer className="ft">
@@ -240,8 +242,7 @@ export default function Footer() {
                                 href="https://whatsapp.com/channel/0029VbEGWFsC1FuAo5qoPh0q"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="ft-btn ft-btn--solid"
-                                style={{ marginBottom: 18 }}
+                                className="ft-btn ft-btn--solid ft-channel"
                             >
                                 <MessageCircle size={13} /> Join my WhatsApp channel
                             </a>

@@ -3,62 +3,50 @@
 import { useState, useEffect, useRef } from "react";
 import { MessageSquare, Send, X, Mail, CheckCircle, Loader2, MessageCircle } from "lucide-react";
 import {
-    collection, addDoc, query, where, orderBy,
-    onSnapshot, serverTimestamp, updateDoc, doc, setDoc
+    collection, query, where, orderBy, onSnapshot,
 } from "firebase/firestore";
-import { db1 } from "@/config/firebase.config1";
+import { db1, auth1 } from "@/config/firebase.config1";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth1 } from "@/config/firebase.config1";
 
 const OWNER_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 const PREVIEW_LIMIT = 6;
 
 const formatDate = (ts) => {
-    if (!ts?.toDate) return "—";
+    if (!ts?.toDate) return "";
     return ts.toDate().toLocaleDateString("en-US", {
-        month: "short", day: "numeric", year: "numeric"
+        month: "short", day: "numeric", year: "numeric",
     });
 };
 
-const AVATAR_COLORS = [
-    "#e8ff47", "#4ade80", "#60a5fa", "#f472b6", "#fb923c", "#a78bfa", "#2dd4bf",
-];
+const AVATAR_COLORS = ["#e8ff47", "#86efac", "#93c5fd", "#f9a8d4", "#fdba74", "#c4b5fd", "#5eead4"];
 const avatarColorFor = (name) => {
     let hash = 0;
     for (let i = 0; i < (name?.length || 0); i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
     return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 };
 
-function DrawerCommentItem({ comment, isOwner, handleMarkReplied }) {
+function CommentRow({ comment, isOwner, onReply, compact }) {
     const initials = comment.authorName?.slice(0, 2).toUpperCase() || "?";
-    const color = avatarColorFor(comment.authorName || "?");
-
     return (
-        <div className="cs-drow">
-            <div className="cs-drow__avatar" style={{ background: `${color}22`, borderColor: `${color}55`, color }}>
+        <div className={compact ? "cs-row cs-row--compact" : "cs-row"}>
+            <div className="cs-avatar" style={{ background: avatarColorFor(comment.authorName || "?") }}>
                 {initials}
             </div>
-            <div className="cs-drow__main">
-                <div className="cs-drow__head">
-                    <span className="cs-drow__name">{comment.authorName}</span>
-                    <span className="cs-drow__date">{formatDate(comment.createdAt)}</span>
+            <div className="cs-row__main">
+                <div className="cs-row__head">
+                    <span className="cs-row__name">{comment.authorName}</span>
+                    <span className="cs-row__date">{formatDate(comment.createdAt)}</span>
                 </div>
-                <p className="cs-drow__text">{comment.text}</p>
-                <div className="cs-drow__footer">
+                <p className="cs-row__text">{comment.text}</p>
+                <div className="cs-row__foot">
                     {comment.brownReplied ? (
-                        <span className="cs-drow__replied">
-                            <Mail size={9} />
-                            Replied
-                        </span>
+                        <span className="cs-replied"><Mail size={10} /> Replied</span>
                     ) : (
-                        !isOwner && <span className="cs-drow__pending">Awaiting reply</span>
+                        !isOwner && <span className="cs-pending">Awaiting reply</span>
                     )}
                     {isOwner && (
-                        <button
-                            onClick={() => handleMarkReplied(comment.id)}
-                            className="cs-drow__reply-link"
-                        >
-                            <Mail size={10} />
+                        <button onClick={() => onReply(comment.id)} className="cs-link-btn">
+                            <Mail size={11} />
                             {comment.brownReplied ? "Reply again" : "Reply via email"}
                         </button>
                     )}
@@ -108,7 +96,6 @@ export default function CommentsSection({ articleSlug }) {
         return () => unsub();
     }, [articleSlug]);
 
-    // ── Drawer open/close (slide up from bottom) ──
     const openDrawer = () => {
         setShowDrawer(true);
         document.documentElement.style.overflow = "hidden";
@@ -213,337 +200,203 @@ export default function CommentsSection({ articleSlug }) {
 
     const visibleComments = comments.slice(0, PREVIEW_LIMIT);
     const hasMore = comments.length > PREVIEW_LIMIT;
+    const count = `${comments.length} comment${comments.length !== 1 ? "s" : ""}`;
 
     return (
-        <>
+        <div className="cs-root">
             <style>{`
-                .cs-section {
-                    margin-top: 56px;
-                    padding-top: 40px;
-                    border-top: 1px solid var(--border);
-                }
+                @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-                /* ── Header ── */
-                .cs-header {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    margin-bottom: 28px;
+                .cs-root {
+                    --cs-ink: #111111; --cs-ink-2: #3f3f3f; --cs-ink-3: #6f6f6f;
+                    --cs-rule: #e4e2da; --cs-soft: #f6f5f0;
+                    --cs-accent: #e8ff47; --cs-on: #0a0a0b; --cs-danger: #b91c1c; --cs-green: #15803d;
+                    --cs-serif: 'Playfair Display', Georgia, serif;
+                    --cs-sans: 'Inter', system-ui, sans-serif;
+                    --cs-mono: 'JetBrains Mono', 'Fira Code', monospace;
+                    font-family: var(--cs-sans); color: var(--cs-ink);
                 }
+                .cs-root *, .cs-root *::before, .cs-root *::after { box-sizing: border-box; }
+                .cs-root h3, .cs-root h4, .cs-root p { margin: 0; }
+
+                .cs-section { margin-top: 8px; }
+
+                .cs-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
                 .cs-header__left { display: flex; align-items: center; gap: 10px; }
-                .cs-header__icon { color: var(--accent); }
-                .cs-header__title { font-family: var(--font-serif); font-size: 20px; color: var(--text-1); font-weight: 400; }
-                .cs-header__count { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+                .cs-header__icon { width: 30px; height: 30px; background: var(--cs-accent); border: 1.5px solid var(--cs-ink); display: flex; align-items: center; justify-content: center; color: var(--cs-on); }
+                .cs-header__title { font-family: var(--cs-serif); font-weight: 800; font-size: 24px; }
+                .cs-header__count { font-family: var(--cs-mono); font-size: 11px; color: var(--cs-ink-3); }
 
-                /* ── Success banner ── */
-                .cs-success {
-                    display: flex; align-items: center; gap: 10px;
-                    padding: 12px 16px;
-                    background: rgba(74,222,128,0.06);
-                    border: 1px solid rgba(74,222,128,0.2);
-                    border-radius: var(--radius);
-                    font-size: 13px; color: #4ade80; margin-bottom: 20px;
-                }
+                .cs-success { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #f0fdf4; border: 1px solid var(--cs-green); font-size: 13px; color: var(--cs-green); margin-bottom: 20px; }
 
-                /* ── Toggle trigger ── */
-                .cs-trigger {
-                    width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
-                    padding: 12px; border: 1px dashed var(--border); border-radius: var(--radius);
-                    background: transparent; color: var(--text-3);
-                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
-                    cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s;
-                    margin-bottom: 24px;
-                }
-                .cs-trigger:hover { color: var(--accent); border-color: rgba(232,255,71,0.3); background: var(--accent-dim); }
+                .cs-trigger { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; border: 1.5px dashed var(--cs-ink); background: transparent; color: var(--cs-ink); font-family: var(--cs-mono); font-size: 11.5px; letter-spacing: 0.06em; cursor: pointer; transition: background 0.15s; margin-bottom: 22px; }
+                .cs-trigger:hover { background: var(--cs-accent); }
 
-                .cs-field label {
-                    display: block; font-family: var(--font-mono); font-size: 10px;
-                    letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px;
-                }
-                .cs-field input, .cs-field textarea {
-                    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
-                    padding: 10px 12px; font-family: var(--font-sans); font-size: 13px; color: var(--text-1);
-                    outline: none; transition: border-color 0.15s;
-                }
-                .cs-field input::placeholder, .cs-field textarea::placeholder { color: var(--text-3); }
-                .cs-field input:focus, .cs-field textarea:focus { border-color: var(--border-hi); }
+                .cs-field label { display: block; font-family: var(--cs-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cs-ink-3); margin-bottom: 6px; }
+                .cs-field input, .cs-field textarea { width: 100%; background: #fff; border: 1.5px solid #c9c6bc; padding: 11px 12px; font-family: var(--cs-sans); font-size: 14px; color: var(--cs-ink); outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
+                .cs-field input::placeholder, .cs-field textarea::placeholder { color: #9a978f; }
+                .cs-field input:focus, .cs-field textarea:focus { border-color: var(--cs-ink); box-shadow: 3px 3px 0 var(--cs-accent); }
                 .cs-field textarea { resize: none; }
 
-                /* ── Shared button ── */
-                .cs-btn {
-                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
-                    padding: 8px 16px; border-radius: var(--radius); border: 1px solid var(--border);
-                    background: transparent; color: var(--text-2); cursor: pointer;
-                    display: inline-flex; align-items: center; gap: 6px;
-                    transition: color 0.15s, border-color 0.15s, background 0.15s;
-                }
-                .cs-btn:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
-                .cs-btn--accent { background: var(--accent-dim); border-color: rgba(232,255,71,0.3); color: var(--accent); }
-                .cs-btn--accent:hover { background: rgba(232,255,71,0.15); border-color: rgba(232,255,71,0.5); }
-                .cs-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+                .cs-btn { font-family: var(--cs-mono); font-size: 11px; letter-spacing: 0.06em; padding: 10px 16px; border: 1.5px solid var(--cs-ink); background: transparent; color: var(--cs-ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s, color 0.15s; }
+                .cs-btn:hover { background: var(--cs-ink); color: #fff; }
+                .cs-btn--accent { background: var(--cs-accent); color: var(--cs-on); font-weight: 600; }
+                .cs-btn--accent:hover { background: var(--cs-ink); color: var(--cs-accent); }
+                .cs-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+                .cs-spin { animation: cs-spin 0.8s linear infinite; }
+                @keyframes cs-spin { to { transform: rotate(360deg); } }
 
-                /* ── Comment list (page preview) ── */
-                .cs-list { display: flex; flex-direction: column; border: 1px solid var(--border); overflow: hidden; }
-                .cs-empty { padding: 40px 24px; text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.06em; }
+                /* List */
+                .cs-list { border: 1px solid var(--cs-ink); background: #fff; }
+                .cs-empty { padding: 40px 24px; text-align: center; font-family: var(--cs-mono); font-size: 11.5px; color: var(--cs-ink-3); }
 
-                .cs-comment { padding: 18px 20px; background: var(--background); border-bottom: 1px solid var(--border); transition: background 0.15s; }
-                .cs-comment:last-child { border-bottom: none; }
-                .cs-comment:hover { background: #141417; }
-                .cs-comment__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-                .cs-comment__author { display: flex; align-items: center; gap: 8px; }
-                .cs-comment__avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-dim); border: 1px solid rgba(232,255,71,0.2); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 10px; color: var(--accent); flex-shrink: 0; }
-                .cs-comment__name { font-family: var(--font-mono); font-size: 12px; color: var(--text-1); font-weight: 500; }
-                .cs-comment__date { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); }
-                .cs-comment__text { font-size: 14px; color: var(--text-2); line-height: 1.65; font-weight: 300; white-space: pre-wrap; }
-                .cs-comment__footer { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
-                .cs-comment__replied { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 10px; color: #4ade80; background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.2); padding: 2px 8px; border-radius: 99px; }
-                .cs-comment__pending { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); }
-                .cs-comment__reply-link { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 10px; color: var(--text-3); text-decoration: none; transition: color 0.15s; margin-left: auto; background: none; border: none; cursor: pointer; }
-                .cs-comment__reply-link:hover { color: var(--accent); }
+                .cs-row { display: flex; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--cs-rule); }
+                .cs-row:last-child { border-bottom: none; }
+                .cs-row--compact { padding: 16px 20px; }
+                .cs-avatar { width: 38px; height: 38px; flex-shrink: 0; border: 1.5px solid var(--cs-ink); display: flex; align-items: center; justify-content: center; font-family: var(--cs-mono); font-size: 12px; font-weight: 600; color: var(--cs-on); }
+                .cs-row__main { flex: 1; min-width: 0; }
+                .cs-row__head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+                .cs-row__name { font-weight: 600; font-size: 14px; }
+                .cs-row__date { font-family: var(--cs-mono); font-size: 10.5px; color: var(--cs-ink-3); margin-left: auto; }
+                .cs-row__text { font-size: 14.5px; color: var(--cs-ink-2); line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
+                .cs-row__foot { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+                .cs-replied { display: inline-flex; align-items: center; gap: 5px; font-family: var(--cs-mono); font-size: 10px; color: var(--cs-green); border: 1px solid var(--cs-green); background: #f0fdf4; padding: 2px 8px; }
+                .cs-pending { font-family: var(--cs-mono); font-size: 10px; color: var(--cs-ink-3); }
+                .cs-link-btn { display: inline-flex; align-items: center; gap: 5px; font-family: var(--cs-mono); font-size: 10.5px; color: var(--cs-ink); background: none; border: none; border-bottom: 2px solid var(--cs-accent); cursor: pointer; padding: 0; margin-left: auto; }
+                .cs-link-btn:hover { background: var(--cs-accent); }
 
-                .cs-view-all {
-                    width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
-                    padding: 12px; border: 1px solid var(--border); border-top: none;
-                    background: var(--surface); color: var(--text-3);
-                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
-                    cursor: pointer; transition: color 0.15s, background 0.15s;
-                }
-                .cs-view-all:hover { color: var(--accent); background: var(--accent-dim); }
+                .cs-view-all { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; border: 1px solid var(--cs-ink); border-top: none; background: var(--cs-soft); color: var(--cs-ink); font-family: var(--cs-mono); font-size: 11px; letter-spacing: 0.06em; cursor: pointer; transition: background 0.15s; }
+                .cs-view-all:hover { background: var(--cs-accent); }
 
-                /* ════════════════════════════════════
-                   BOTTOM SHEET DRAWER
-                ════════════════════════════════════ */
-                .cs-drawer-backdrop {
-                    position: fixed; inset: 0; z-index: 9990;
-                    background: rgba(0,0,0,0);
-                    transition: background 0.32s ease;
-                }
-                .cs-drawer-backdrop--in { background: rgba(0,0,0,0.6); }
-
-                .cs-drawer {
-                    position: fixed;
-                    left: 0; right: 0; bottom: 0;
-                    z-index: 9991;
-                    height: 88vh;
-                    max-width: 640px;
-                    margin: 0 auto;
-                    background: var(--bg);
-                    border-top: 1px solid var(--border);
-                    border-left: 1px solid var(--border);
-                    border-right: 1px solid var(--border);
-                    border-radius: 16px 16px 0 0;
-                    display: flex; flex-direction: column;
-                    transform: translateY(100%);
-                    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-                    box-shadow: 0 -20px 60px rgba(0,0,0,0.5);
-                }
+                /* Drawer */
+                .cs-backdrop { position: fixed; inset: 0; z-index: 9990; background: rgba(0,0,0,0); transition: background 0.32s ease; }
+                .cs-backdrop--in { background: rgba(0,0,0,0.45); }
+                .cs-drawer { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9991; height: 88vh; max-width: 640px; margin: 0 auto; background: #fff; border: 1.5px solid var(--cs-ink); border-bottom: none; border-top: 5px solid var(--cs-accent); display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 -20px 60px rgba(0,0,0,0.25); }
                 .cs-drawer--in { transform: translateY(0); }
+                .cs-drawer__handle-row { display: flex; justify-content: center; padding: 10px 0 4px; flex-shrink: 0; }
+                .cs-drawer__handle { width: 40px; height: 4px; border-radius: 99px; background: #c9c6bc; }
+                .cs-drawer__head { display: flex; align-items: center; justify-content: space-between; padding: 8px 20px 14px; border-bottom: 1px solid var(--cs-rule); flex-shrink: 0; }
+                .cs-drawer__title { display: flex; align-items: center; gap: 8px; font-family: var(--cs-serif); font-weight: 800; font-size: 19px; }
+                .cs-drawer__close { background: none; border: 1px solid var(--cs-ink); color: var(--cs-ink); cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+                .cs-drawer__close:hover { background: var(--cs-ink); color: #fff; }
+                .cs-drawer__body { flex: 1; overflow-y: auto; }
+                .cs-drawer__empty { padding: 60px 24px; text-align: center; font-family: var(--cs-mono); font-size: 11.5px; color: var(--cs-ink-3); }
 
-                .cs-drawer__handle-row {
-                    display: flex; justify-content: center; padding: 10px 0 4px; flex-shrink: 0;
-                }
-                .cs-drawer__handle { width: 40px; height: 4px; border-radius: 99px; background: var(--border-hi); }
-
-                .cs-drawer__head {
-                    display: flex; align-items: center; justify-content: space-between;
-                    padding: 8px 20px 14px; border-bottom: 1px solid var(--border); flex-shrink: 0;
-                }
-                .cs-drawer__title { display: flex; align-items: center; gap: 8px; font-family: var(--font-serif); font-size: 17px; color: var(--text-1); }
-                .cs-drawer__sort { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
-                .cs-drawer__close { background: none; border: none; color: var(--text-3); cursor: pointer; padding: 4px; display: flex; transition: color 0.15s; }
-                .cs-drawer__close:hover { color: var(--text-1); }
-
-                .cs-drawer__body { flex: 1; overflow-y: auto; padding: 4px 0 12px; }
-
-                .cs-drow { display: flex; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
-                .cs-drow__avatar {
-                    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
-                    border: 1px solid; display: flex; align-items: center; justify-content: center;
-                    font-family: var(--font-mono); font-size: 12px; font-weight: 600;
-                }
-                .cs-drow__main { flex: 1; min-width: 0; }
-                .cs-drow__head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
-                .cs-drow__name { font-family: var(--font-sans); font-weight: 600; font-size: 13.5px; color: var(--text-1); }
-                .cs-drow__date { font-family: var(--font-mono); font-size: 10.5px; color: var(--text-3); margin-left: auto; }
-                .cs-drow__text { font-size: 13.5px; color: var(--text-2); line-height: 1.55; white-space: pre-wrap; }
-                .cs-drow__footer { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-                .cs-drow__replied { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 10px; color: #4ade80; background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.2); padding: 2px 8px; border-radius: 99px; }
-                .cs-drow__pending { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); }
-                .cs-drow__reply-link { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 10px; color: var(--text-3); background: none; border: none; cursor: pointer; transition: color 0.15s; }
-                .cs-drow__reply-link:hover { color: var(--accent); }
-
-                .cs-drawer__empty { padding: 60px 24px; text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); letter-spacing: 0.06em; }
-
-                /* Sticky composer at bottom of drawer */
-                .cs-composer {
-                    flex-shrink: 0;
-                    border-top: 1px solid var(--border);
-                    background: var(--surface);
-                    padding: 12px 16px;
-                    padding-bottom: max(12px, env(safe-area-inset-bottom));
-                }
-                .cs-composer__bar {
-                    display: flex; align-items: center; gap: 10px;
-                }
-                .cs-composer__avatar {
-                    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
-                    background: var(--accent-dim); border: 1px solid rgba(232,255,71,0.25);
-                    display: flex; align-items: center; justify-content: center; color: var(--accent);
-                }
-                .cs-composer__trigger {
-                    flex: 1; text-align: left;
-                    background: var(--bg); border: 1px solid var(--border); border-radius: 99px;
-                    padding: 10px 16px; font-family: var(--font-sans); font-size: 13px; color: var(--text-3);
-                    cursor: pointer; transition: border-color 0.15s;
-                }
-                .cs-composer__trigger:hover { border-color: var(--border-hi); }
-
-                .cs-composer__form {
-                    display: flex; flex-direction: column; gap: 12px; padding-top: 4px;
-                }
-                .cs-composer__form-top { display: flex; align-items: center; justify-content: space-between; }
-                .cs-composer__label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
-                .cs-composer__form-close { background: none; border: none; color: var(--text-3); cursor: pointer; padding: 2px; display: flex; }
-                .cs-composer__form-close:hover { color: var(--text-1); }
+                .cs-composer { flex-shrink: 0; border-top: 1.5px solid var(--cs-ink); background: var(--cs-soft); padding: 12px 16px; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+                .cs-composer__bar { display: flex; align-items: center; gap: 10px; }
+                .cs-composer__avatar { width: 34px; height: 34px; flex-shrink: 0; background: var(--cs-accent); border: 1.5px solid var(--cs-ink); display: flex; align-items: center; justify-content: center; color: var(--cs-on); }
+                .cs-composer__trigger { flex: 1; text-align: left; background: #fff; border: 1.5px solid #c9c6bc; padding: 11px 14px; font-family: var(--cs-sans); font-size: 14px; color: var(--cs-ink-3); cursor: pointer; }
+                .cs-composer__trigger:hover { border-color: var(--cs-ink); }
+                .cs-composer__form { display: flex; flex-direction: column; gap: 12px; }
+                .cs-composer__top { display: flex; align-items: center; justify-content: space-between; }
+                .cs-composer__label { font-family: var(--cs-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; background: var(--cs-accent); padding: 2px 7px; }
+                .cs-composer__x { background: none; border: none; color: var(--cs-ink-3); cursor: pointer; display: flex; padding: 2px; }
+                .cs-composer__x:hover { color: var(--cs-ink); }
                 .cs-composer__actions { display: flex; gap: 10px; }
 
-                @media (max-width: 700px) {
-                    .cs-drawer { height: 92vh; border-radius: 14px 14px 0 0; }
-                }
+                /* Email modal */
+                .cs-modal { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 24px; }
+                .cs-modal__bg { position: absolute; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); }
+                .cs-modal__card { position: relative; width: 100%; max-width: 440px; background: #fff; border: 1.5px solid var(--cs-ink); border-top: 5px solid var(--cs-accent); box-shadow: 8px 8px 0 var(--cs-accent); padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+                .cs-modal__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+                .cs-modal__kicker { font-family: var(--cs-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; background: var(--cs-accent); padding: 2px 7px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+                .cs-modal__title { font-family: var(--cs-serif); font-weight: 800; font-size: 22px; }
+                .cs-modal__sub { font-size: 12.5px; color: var(--cs-ink-3); line-height: 1.6; margin-top: 4px; }
+                .cs-modal__preview { background: var(--cs-soft); border: 1px solid var(--cs-rule); padding: 12px 14px; }
+                .cs-modal__preview span { display: block; font-family: var(--cs-mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cs-ink-3); margin-bottom: 6px; }
+                .cs-modal__preview b { display: block; font-size: 13px; margin-bottom: 3px; }
+                .cs-modal__preview p { font-size: 13px; color: var(--cs-ink-2); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+                .cs-modal__err { font-family: var(--cs-mono); font-size: 11px; color: var(--cs-danger); margin-top: 6px; }
+                .cs-modal__actions { display: flex; gap: 10px; }
+
+                .cs-root :focus-visible { outline: 2px solid var(--cs-ink); outline-offset: 2px; }
+                @media (max-width: 700px) { .cs-drawer { height: 92vh; } }
+                @media (prefers-reduced-motion: reduce) { .cs-root * { transition: none !important; } }
             `}</style>
 
             <section className="cs-section">
-                {/* Header */}
                 <div className="cs-header">
                     <div className="cs-header__left">
-                        <MessageSquare size={16} className="cs-header__icon" />
+                        <span className="cs-header__icon"><MessageSquare size={15} /></span>
                         <h3 className="cs-header__title">Discussion</h3>
                     </div>
-                    <span className="cs-header__count">{comments.length} comment{comments.length !== 1 ? "s" : ""}</span>
+                    <span className="cs-header__count">{count}</span>
                 </div>
 
-                {/* Success */}
                 {justPosted && (
                     <div className="cs-success">
-                        <CheckCircle size={14} />
-                        Your comment has been posted.
+                        <CheckCircle size={14} /> Your comment has been posted.
                     </div>
                 )}
 
-                {/* Trigger */}
                 {!justPosted && (
                     <button className="cs-trigger" onClick={openDrawer}>
-                        <MessageSquare size={13} />
-                        Leave a comment
+                        <MessageSquare size={13} /> Leave a comment
                     </button>
                 )}
 
-                {/* Preview list */}
                 <div className="cs-list">
                     {comments.length === 0 ? (
-                        <div className="cs-empty">No comments yet — be the first.</div>
+                        <div className="cs-empty">No comments yet. Be the first.</div>
                     ) : (
-                        visibleComments.map((comment) => (
-                            <div key={comment.id} className="cs-comment">
-                                <div className="cs-comment__head">
-                                    <div className="cs-comment__author">
-                                        <div className="cs-comment__avatar">
-                                            {comment.authorName?.slice(0, 2).toUpperCase() || "?"}
-                                        </div>
-                                        <span className="cs-comment__name">{comment.authorName}</span>
-                                    </div>
-                                    <span className="cs-comment__date">{formatDate(comment.createdAt)}</span>
-                                </div>
-                                <p className="cs-comment__text">{comment.text}</p>
-                                <div className="cs-comment__footer">
-                                    {comment.brownReplied ? (
-                                        <span className="cs-comment__replied"><Mail size={9} /> Replied</span>
-                                    ) : (
-                                        !isOwner && <span className="cs-comment__pending">Awaiting reply</span>
-                                    )}
-                                    {isOwner && (
-                                        <button onClick={() => handleMarkReplied(comment.id)} className="cs-comment__reply-link">
-                                            <Mail size={10} />
-                                            {comment.brownReplied ? "Reply again" : "Reply via email"}
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
+                        visibleComments.map((c) => (
+                            <CommentRow key={c.id} comment={c} isOwner={isOwner} onReply={handleMarkReplied} />
                         ))
                     )}
                 </div>
 
                 {hasMore && (
                     <button className="cs-view-all" onClick={openDrawer}>
-                        <MessageSquare size={12} />
-                        View all {comments.length} comments
+                        <MessageSquare size={12} /> View all {comments.length} comments
                     </button>
                 )}
             </section>
 
-            {/* ── Bottom sheet drawer ── */}
             {showDrawer && (
                 <>
-                    <div
-                        className={`cs-drawer-backdrop ${drawerIn ? "cs-drawer-backdrop--in" : ""}`}
-                        onClick={closeDrawer}
-                    />
-                    <div className={`cs-drawer ${drawerIn ? "cs-drawer--in" : ""}`}>
-                        <div className="cs-drawer__handle-row">
-                            <span className="cs-drawer__handle" />
-                        </div>
+                    <div className={`cs-backdrop${drawerIn ? " cs-backdrop--in" : ""}`} onClick={closeDrawer} />
+                    <div className={`cs-drawer${drawerIn ? " cs-drawer--in" : ""}`}>
+                        <div className="cs-drawer__handle-row"><span className="cs-drawer__handle" /></div>
 
                         <div className="cs-drawer__head">
                             <div className="cs-drawer__title">
-                                <MessageCircle size={16} style={{ color: "var(--accent)" }} />
-                                {comments.length} comment{comments.length !== 1 ? "s" : ""}
+                                <MessageCircle size={17} /> {count}
                             </div>
-                            <button className="cs-drawer__close" onClick={closeDrawer}>
-                                <X size={18} />
+                            <button className="cs-drawer__close" onClick={closeDrawer} aria-label="Close comments">
+                                <X size={16} />
                             </button>
                         </div>
 
                         <div className="cs-drawer__body">
                             {comments.length === 0 ? (
-                                <div className="cs-drawer__empty">No comments yet — be the first.</div>
+                                <div className="cs-drawer__empty">No comments yet. Be the first.</div>
                             ) : (
-                                comments.map((comment) => (
-                                    <DrawerCommentItem
-                                        key={comment.id}
-                                        comment={comment}
-                                        isOwner={isOwner}
-                                        handleMarkReplied={handleMarkReplied}
-                                    />
+                                comments.map((c) => (
+                                    <CommentRow key={c.id} comment={c} isOwner={isOwner} onReply={handleMarkReplied} compact />
                                 ))
                             )}
                         </div>
 
-                        {/* Sticky composer */}
                         <div className="cs-composer">
                             {!composerOpen ? (
                                 <div className="cs-composer__bar">
-                                    <div className="cs-composer__avatar">
-                                        <MessageSquare size={14} />
-                                    </div>
+                                    <div className="cs-composer__avatar"><MessageSquare size={14} /></div>
                                     <button className="cs-composer__trigger" onClick={openComposer}>
                                         Add a comment…
                                     </button>
                                 </div>
                             ) : (
                                 <form className="cs-composer__form" onSubmit={handleInitialSubmit}>
-                                    <div className="cs-composer__form-top">
+                                    <div className="cs-composer__top">
                                         <span className="cs-composer__label">New comment</span>
-                                        <button
-                                            type="button"
-                                            className="cs-composer__form-close"
-                                            onClick={() => setComposerOpen(false)}
-                                        >
+                                        <button type="button" className="cs-composer__x" onClick={() => setComposerOpen(false)} aria-label="Cancel">
                                             <X size={14} />
                                         </button>
                                     </div>
                                     <div className="cs-field">
-                                        <label>Name</label>
+                                        <label htmlFor="cs-name">Name</label>
                                         <input
+                                            id="cs-name"
                                             ref={composerInputRef}
                                             type="text"
                                             value={name}
@@ -553,8 +406,9 @@ export default function CommentsSection({ articleSlug }) {
                                         />
                                     </div>
                                     <div className="cs-field">
-                                        <label>Comment</label>
+                                        <label htmlFor="cs-text">Comment</label>
                                         <textarea
+                                            id="cs-text"
                                             rows={3}
                                             value={commentText}
                                             onChange={(e) => setCommentText(e.target.value)}
@@ -564,8 +418,7 @@ export default function CommentsSection({ articleSlug }) {
                                     </div>
                                     <div className="cs-composer__actions">
                                         <button type="submit" className="cs-btn cs-btn--accent">
-                                            Post comment
-                                            <Send size={12} />
+                                            Post comment <Send size={12} />
                                         </button>
                                         <button type="button" className="cs-btn" onClick={() => setComposerOpen(false)}>
                                             Cancel
@@ -578,62 +431,54 @@ export default function CommentsSection({ articleSlug }) {
                 </>
             )}
 
-            {/* Email verification modal — sits above the drawer */}
             {showEmailModal && (
-                <div className="cs-modal-backdrop" style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
-                    <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }} onClick={handleModalClose} />
-                    <div style={{ position: "relative", width: "100%", maxWidth: 440, background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--radius)", overflow: "hidden", boxShadow: "0 32px 64px rgba(0,0,0,0.6)" }}>
-                        <div style={{ height: 2, background: "linear-gradient(90deg, transparent, var(--accent), transparent)" }} />
-                        <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 20 }}>
-                            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-                                <div>
-                                    <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--accent)", display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-                                        <Mail size={12} />
-                                        Verify email
-                                    </div>
-                                    <h4 style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--text-1)", fontWeight: 400 }}>Confirm your address</h4>
-                                    <p style={{ fontSize: 12, color: "var(--text-3)", lineHeight: 1.6, marginTop: 4 }}>
-                                        Used to prevent duplicate submissions — not displayed publicly.
-                                    </p>
-                                </div>
-                                <button style={{ background: "none", border: "none", color: "var(--text-3)", cursor: "pointer", padding: 4, display: "flex", flexShrink: 0 }} onClick={handleModalClose}>
-                                    <X size={15} />
-                                </button>
+                <div className="cs-modal">
+                    <div className="cs-modal__bg" onClick={handleModalClose} />
+                    <div className="cs-modal__card" role="dialog" aria-modal="true" aria-label="Confirm your email">
+                        <div className="cs-modal__top">
+                            <div>
+                                <div className="cs-modal__kicker"><Mail size={11} /> Verify email</div>
+                                <h4 className="cs-modal__title">Confirm your address</h4>
+                                <p className="cs-modal__sub">
+                                    Used to prevent duplicate submissions and so I can reply. It is not shown publicly.
+                                </p>
                             </div>
+                            <button className="cs-drawer__close" onClick={handleModalClose} aria-label="Close">
+                                <X size={15} />
+                            </button>
+                        </div>
 
-                            {pendingComment && (
-                                <div style={{ background: "var(--bg)", border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: "12px 14px" }}>
-                                    <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text-3)", display: "block", marginBottom: 6 }}>Your comment</span>
-                                    <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--accent)", marginBottom: 4 }}>{pendingComment.name}</p>
-                                    <p style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.55, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{pendingComment.text}</p>
-                                </div>
-                            )}
-
-                            <div className="cs-field">
-                                <label>Email address</label>
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
-                                    placeholder="you@example.com"
-                                    autoFocus
-                                    onKeyDown={(e) => e.key === "Enter" && handleEmailConfirm()}
-                                />
-                                {emailError && (
-                                    <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#f87171", marginTop: 6 }}>{emailError}</p>
-                                )}
+                        {pendingComment && (
+                            <div className="cs-modal__preview">
+                                <span>Your comment</span>
+                                <b>{pendingComment.name}</b>
+                                <p>{pendingComment.text}</p>
                             </div>
+                        )}
 
-                            <div style={{ display: "flex", gap: 10 }}>
-                                <button className="cs-btn cs-btn--accent" style={{ flex: 1, justifyContent: "center" }} onClick={handleEmailConfirm} disabled={emailSubmitting}>
-                                    {emailSubmitting ? (<><Loader2 size={12} className="animate-spin" /> Posting…</>) : (<><Send size={12} /> Post comment</>)}
-                                </button>
-                                <button className="cs-btn" onClick={handleModalClose}>Cancel</button>
-                            </div>
+                        <div className="cs-field">
+                            <label htmlFor="cs-email">Email address</label>
+                            <input
+                                id="cs-email"
+                                type="email"
+                                value={email}
+                                onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
+                                placeholder="you@example.com"
+                                autoFocus
+                                onKeyDown={(e) => e.key === "Enter" && handleEmailConfirm()}
+                            />
+                            {emailError && <p className="cs-modal__err">{emailError}</p>}
+                        </div>
+
+                        <div className="cs-modal__actions">
+                            <button className="cs-btn cs-btn--accent" style={{ flex: 1 }} onClick={handleEmailConfirm} disabled={emailSubmitting}>
+                                {emailSubmitting ? (<><Loader2 size={12} className="cs-spin" /> Posting…</>) : (<><Send size={12} /> Post comment</>)}
+                            </button>
+                            <button className="cs-btn" onClick={handleModalClose}>Cancel</button>
                         </div>
                     </div>
                 </div>
             )}
-        </>
+        </div>
     );
 }

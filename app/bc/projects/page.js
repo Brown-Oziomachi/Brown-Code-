@@ -1,17 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import {
-    ArrowLeft,
-    ExternalLink,
-    Lock,
-    Clock,
-    Cpu,
-    Layers,
-    Binary,
-    Activity
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Lock, Clock } from "lucide-react";
 import Footer from "@/components/footer";
 
 // state: "live" = has a public link, "dev" = still being built, "nda" = private work
@@ -115,264 +105,141 @@ const projects = [
 ];
 
 const STATS = [
-    { label: "INDEXED_BUILDS", value: String(projects.length).padStart(2, "0"), desc: "Active modules", icon: <Layers size={14} /> },
-    { label: "SUCCESS_RATIO", value: "100%", desc: "Deployment status", icon: <Binary size={14} /> },
-    { label: "YEARS_ACTIVE", value: "05+", desc: "Years validated", icon: <Cpu size={14} /> },
-    { label: "UPTIME", value: "24/7", desc: "Service continuity", icon: <Activity size={14} /> },
+    { label: "Indexed builds", value: String(projects.length).padStart(2, "0") },
+    { label: "Deployment success", value: "100%" },
+    { label: "Years active", value: "05+" },
+    { label: "Service uptime", value: "24/7" },
 ];
 
 export default function ProjectsPage() {
-    const router = useRouter();
-
     return (
         <>
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-
-                *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-                :root {
-                    --bg:         #0a0a0b;
-                    --surface:    #111113;
-                    --border:     #1e1e22;
-                    --border-hi:  #2e2e34;
-                    --text-1:     #f4f4f5;
-                    --text-2:     #a1a1aa;
-                    --text-3:     #52525b;
-                    --accent:     #e8ff47;
-                    --accent-dim: rgba(232,255,71,0.08);
-                    --radius:     6px;
-                    --font-serif: 'DM Serif Display', 'Georgia', serif;
-                    --font-sans:  'Inter', system-ui, sans-serif;
-                    --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
-                }
+                @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
                 .pj-page {
-                    font-family: var(--font-sans);
-                    background: var(--bg);
-                    color: var(--text-1);
-                    min-height: 100vh;
+                    --paper: #ffffff; --paper-2: #f6f5f0; --card: #ffffff;
+                    --ink: #111111; --ink-2: #3f3f3f; --ink-3: #6f6f6f;
+                    --rule: #e4e2da; --rule-dark: #111111;
+                    --accent: #e8ff47; --on-accent: #0a0a0b;
+                    --green: #15803d; --amber: #b45309;
+                    --serif: 'Playfair Display', Georgia, serif;
+                    --sans: 'Inter', system-ui, sans-serif;
+                    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+                    background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh;
                 }
+                .pj-page *, .pj-page *::before, .pj-page *::after { box-sizing: border-box; }
+                .pj-page h1, .pj-page h2, .pj-page h3, .pj-page p { margin: 0; padding: 0; }
+                :where(.pj-page a) { color: inherit; text-decoration: none; }
+                .pj-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 
-                /* ── Nav ── */
-                .pj-nav {
-                    position: sticky; top: 0; z-index: 100;
-                    background: rgba(10,10,11,0.92);
-                    backdrop-filter: blur(12px);
-                    border-bottom: 1px solid var(--border);
-                    padding: 0 24px; height: 56px;
-                    display: flex; align-items: center; justify-content: space-between;
-                }
-                .pj-nav__brand {
-                    font-family: var(--font-mono); font-size: 12px; font-weight: 500;
-                    letter-spacing: 0.08em; color: var(--text-1); text-decoration: none;
-                }
-                .pj-nav__brand em { font-style: normal; color: var(--accent); }
-                .pj-nav__back {
-                    display: inline-flex; align-items: center; gap: 6px;
-                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
-                    color: var(--text-2); text-decoration: none;
-                    padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius);
-                    transition: color .15s, border-color .15s, background .15s;
-                }
-                .pj-nav__back:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
+                /* Nav */
+                .pj-nav { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.92); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 1px solid var(--rule); }
+                .pj-nav__inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+                .pj-nav__brand { font-family: var(--serif); font-weight: 800; font-size: 21px; letter-spacing: -0.01em; }
+                .pj-nav__brand em { font-style: normal; background: var(--accent); padding: 0 3px; }
+                .pj-nav__links { display: flex; align-items: center; gap: 4px; }
+                .pj-nav__link { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); padding: 8px 12px; transition: color 0.15s; }
+                .pj-nav__link:hover, .pj-nav__link--on { color: var(--ink); }
+                .pj-nav__link--on { box-shadow: inset 0 -3px 0 var(--accent); }
+                @media (max-width: 700px) { .pj-nav__hide { display: none; } }
 
-                /* ── Main ── */
-                .pj-main { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+                /* Buttons */
+                .pj-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; padding: 13px 20px; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: background 0.15s, color 0.15s, transform 0.15s; }
+                .pj-btn:hover { background: var(--ink); color: #fff; transform: translateY(-1px); }
+                .pj-btn--solid { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+                .pj-btn--solid:hover { background: var(--ink); color: var(--accent); }
+                .pj-btn--sm { padding: 9px 14px; }
+                .pj-btn--locked { border-color: var(--rule); color: var(--ink-3); background: var(--paper-2); cursor: not-allowed; }
+                .pj-btn--locked:hover { background: var(--paper-2); color: var(--ink-3); transform: none; }
 
-                /* ── Masthead ── */
-                .pj-masthead {
-                    display: flex; align-items: flex-end; justify-content: space-between;
-                    gap: 16px; padding: 52px 0 32px;
-                    border-bottom: 1px solid var(--border); margin-bottom: 36px;
-                }
-                .pj-masthead__eyebrow {
-                    font-family: var(--font-mono); font-size: 11px; color: var(--accent);
-                    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px;
-                }
-                .pj-masthead__title {
-                    font-family: var(--font-serif);
-                    font-size: clamp(36px, 5vw, 60px); font-weight: 400; line-height: 1.05;
-                }
-                .pj-masthead__desc {
-                    font-size: 13px; color: var(--text-2); line-height: 1.6;
-                    max-width: 320px; text-align: right;
-                }
-                @media (max-width: 700px) {
-                    .pj-masthead { flex-direction: column; align-items: flex-start; }
-                    .pj-masthead__desc { text-align: left; }
-                }
+                /* Masthead */
+                .pj-masthead { padding-top: 64px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+                .pj-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 10px; }
+                .pj-kicker b { background: var(--accent); color: var(--on-accent); padding: 2px 7px; font-weight: 500; }
+                .pj-masthead__title { font-family: var(--serif); font-weight: 800; font-size: clamp(44px, 8vw, 96px); line-height: 0.98; letter-spacing: -0.03em; }
+                .pj-masthead__title span { background: linear-gradient(transparent 64%, var(--accent) 64%); }
+                .pj-masthead__desc { font-size: 15px; line-height: 1.7; font-weight: 300; color: var(--ink-2); max-width: 340px; }
+                @media (max-width: 700px) { .pj-masthead { padding-top: 40px; } }
 
-                /* ── Section label ── */
-                .pj-section-label {
-                    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
-                    text-transform: uppercase; color: var(--text-3);
-                    display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
-                }
-                .pj-section-label::after {
-                    content: ''; flex: 1; height: 1px; background: var(--border);
-                }
+                /* Section heads */
+                .pj-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 12px; border-top: 3px solid var(--rule-dark); margin: 64px 0 32px; }
+                .pj-h2 { font-family: var(--serif); font-weight: 800; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.01em; }
+                .pj-head__note { font-size: 14px; line-height: 1.6; color: var(--ink-2); max-width: 380px; }
 
-                /* ── Stats grid ── */
-                .pj-stats {
-                    display: grid; grid-template-columns: repeat(4, 1fr);
-                    gap: 1px; background: var(--border);
-                    border: 1px solid var(--border); border-radius: var(--radius);
-                    overflow: hidden; margin-bottom: 48px;
-                }
+                /* Stats */
+                .pj-stats { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 48px; background: var(--ink); color: #f4f1ea; }
                 @media (max-width: 700px) { .pj-stats { grid-template-columns: 1fr 1fr; } }
+                .pj-stat { padding: 26px 22px; border-right: 1px solid #333; }
+                .pj-stat:last-child { border-right: none; }
+                @media (max-width: 700px) { .pj-stat:nth-child(2) { border-right: none; } .pj-stat:nth-child(-n+2) { border-bottom: 1px solid #333; } }
+                .pj-stat__num { font-family: var(--serif); font-weight: 800; font-size: 44px; line-height: 1; color: var(--accent); }
+                .pj-stat__label { margin-top: 8px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: #bdb8ae; }
 
-                .pj-stat {
-                    background: var(--surface); padding: 20px 24px;
-                    display: flex; flex-direction: column; gap: 4px;
-                    transition: background .15s;
-                }
-                .pj-stat:hover { background: #141417; }
-                .pj-stat__label {
-                    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em;
-                    text-transform: uppercase; color: var(--text-3);
-                }
-                .pj-stat__value {
-                    font-family: var(--font-serif); font-size: 32px; font-weight: 400;
-                    color: var(--text-1); line-height: 1;
-                }
-                .pj-stat__desc { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+                /* Project rows */
+                .pj-list { border-top: 1px solid var(--rule-dark); }
+                .pj-card { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 32px; padding: 32px 0; border-bottom: 1px solid var(--rule-dark); align-items: stretch; transition: background 0.15s; }
+                .pj-card:hover { background: var(--paper-2); }
+                @media (max-width: 800px) { .pj-card { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
 
-                /* ── Project cards ── */
-                .pj-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 48px; }
+                .pj-card__img-wrap { position: relative; height: 220px; border: 1.5px solid var(--ink); background: var(--paper-2); overflow: hidden; }
+                @media (max-width: 800px) { .pj-card__img-wrap { height: 190px; } }
+                .pj-card__img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+                .pj-card:hover .pj-card__img { transform: scale(1.04); }
+                .pj-card__img-placeholder { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, #ebe8e0, #ebe8e0 6px, #e3e0d7 6px, #e3e0d7 12px); }
+                .pj-card__id { position: absolute; top: 10px; left: 10px; font-family: var(--mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; background: var(--accent); color: var(--on-accent); padding: 3px 8px; }
 
-                .pj-card {
-                    display: grid; grid-template-columns: 280px 1fr;
-                    background: var(--surface); overflow: hidden;
-                    position: relative; transition: background .15s;
-                }
-                .pj-card:hover { background: #141417; }
-                .pj-card::before {
-                    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
-                    background: var(--accent); transform: scaleY(0); transform-origin: bottom;
-                    transition: transform .2s ease; z-index: 5;
-                }
-                .pj-card:hover::before { transform: scaleY(1); }
+                .pj-card__body { display: flex; flex-direction: column; justify-content: space-between; gap: 18px; }
+                .pj-card__meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 12px; }
+                .pj-card__meta b { font-weight: 500; color: var(--ink); }
+                .pj-status--live { color: var(--green); font-weight: 600; }
+                .pj-status--locked { color: var(--amber); font-weight: 600; }
+                .pj-card__title { font-family: var(--serif); font-weight: 800; font-size: clamp(22px, 2.6vw, 30px); line-height: 1.1; }
+                .pj-card__desc { margin-top: 10px; font-size: 14px; line-height: 1.7; color: var(--ink-2); }
+                .pj-card__footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+                .pj-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+                .pj-chip { font-family: var(--mono); font-size: 10.5px; color: var(--ink-2); border: 1px solid var(--rule-dark); padding: 3px 9px; background: #fff; }
 
-                @media (max-width: 800px) { .pj-card { grid-template-columns: 1fr; } }
+                /* CTA */
+                .pj-cta { margin-top: 80px; background: var(--ink); color: #f4f1ea; border-top: 5px solid var(--accent); padding: 56px 48px; display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+                @media (max-width: 700px) { .pj-cta { padding: 36px 22px; } }
+                .pj-cta__kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+                .pj-cta__title { font-family: var(--serif); font-weight: 800; font-size: clamp(28px, 4vw, 44px); line-height: 1.08; }
+                .pj-cta__desc { margin-top: 14px; font-size: 15px; line-height: 1.75; color: #bdb8ae; max-width: 460px; }
+                .pj-cta .pj-btn--solid { background: var(--accent); border-color: var(--accent); color: var(--on-accent); padding: 16px 24px; }
+                .pj-cta .pj-btn--solid:hover { background: #fff; border-color: #fff; color: var(--ink); }
 
-                .pj-card__img-wrap {
-                    position: relative; height: 220px; background: var(--bg); overflow: hidden;
-                }
-                @media (max-width: 800px) { .pj-card__img-wrap { height: 180px; } }
+                .pj-footer-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 32px 0 72px; }
+                .pj-footer-row__info { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--ink-3); }
 
-                .pj-card__img {
-                    width: 100%; height: 100%; object-fit: cover;
-                    opacity: 0.4; filter: grayscale(30%);
-                    transition: opacity .3s, transform .4s, filter .3s;
-                }
-                .pj-card:hover .pj-card__img { opacity: 0.7; transform: scale(1.03); filter: grayscale(0); }
-
-                .pj-card__img-placeholder {
-                    width: 100%; height: 100%;
-                    background: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(255,255,255,0.015) 8px, rgba(255,255,255,0.015) 16px);
-                }
-
-                .pj-card__id {
-                    position: absolute; top: 12px; left: 12px;
-                    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
-                    color: var(--text-3); background: rgba(10,10,11,0.85);
-                    padding: 4px 8px; border: 1px solid var(--border); border-radius: 3px;
-                }
-
-                .pj-card__body {
-                    padding: 24px 28px; display: flex; flex-direction: column; justify-content: space-between; gap: 16px;
-                }
-
-                .pj-card__meta {
-                    display: flex; flex-wrap: wrap; gap: 16px;
-                    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
-                    text-transform: uppercase; color: var(--text-3);
-                    border-bottom: 1px solid var(--border); padding-bottom: 14px;
-                }
-                .pj-card__meta span { color: var(--text-2); }
-                .pj-card__meta-live { color: var(--accent) !important; }
-                .pj-card__meta-locked { color: #f59e0b !important; }
-
-                .pj-card__title {
-                    font-family: var(--font-serif);
-                    font-size: clamp(18px, 2vw, 22px); font-weight: 400; line-height: 1.25;
-                    color: var(--text-1); transition: color .15s;
-                }
-                .pj-card:hover .pj-card__title { color: #fff; }
-
-                .pj-card__desc {
-                    font-size: 13px; color: var(--text-2); line-height: 1.6; margin-top: 6px;
-                }
-
-                .pj-card__footer {
-                    display: flex; align-items: center; justify-content: space-between;
-                    flex-wrap: wrap; gap: 12px; padding-top: 14px; border-top: 1px solid var(--border);
-                }
-
-                .pj-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-                .pj-tag {
-                    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em;
-                    text-transform: uppercase; padding: 3px 8px; border-radius: 3px;
-                    background: var(--accent-dim); color: var(--accent);
-                    border: 1px solid rgba(232,255,71,0.2); line-height: 1;
-                }
-
-                .pj-btn {
-                    display: inline-flex; align-items: center; gap: 6px;
-                    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
-                    padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius);
-                    background: transparent; color: var(--text-2);
-                    text-decoration: none; cursor: pointer;
-                    transition: color .15s, border-color .15s, background .15s;
-                }
-                .pj-btn:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
-                .pj-btn--accent {
-                    border-color: rgba(232,255,71,0.3); color: var(--accent); background: var(--accent-dim);
-                }
-                .pj-btn--accent:hover { background: rgba(232,255,71,0.15); border-color: rgba(232,255,71,0.5); color: var(--accent); }
-                .pj-btn--locked {
-                    border-color: rgba(245,158,11,0.2); color: #78716c; background: transparent; cursor: not-allowed;
-                }
-                .pj-btn--locked:hover { color: #78716c; border-color: rgba(245,158,11,0.2); background: transparent; }
-
-                /* ── CTA ── */
-                .pj-cta {
-                    border: 1px solid var(--border); border-radius: var(--radius);
-                    background: var(--surface); padding: 40px;
-                    text-align: center; position: relative; overflow: hidden;
-                }
-                .pj-cta::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); }
-                .pj-cta__title {
-                    font-family: var(--font-serif); font-size: 28px; font-weight: 400;
-                    color: var(--text-1); margin-bottom: 10px;
-                }
-                .pj-cta__desc { font-size: 13px; color: var(--text-2); line-height: 1.6; max-width: 400px; margin: 0 auto 24px; }
-
-                /* ── Footer row ── */
-                .pj-footer {
-                    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-                    gap: 12px; padding-top: 40px; margin-top: 48px; border-top: 1px solid var(--border);
-                }
-                .pj-footer__info { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); letter-spacing: 0.06em; }
+                @media (max-width: 640px) { .pj-wrap, .pj-nav__inner { padding-left: 18px; padding-right: 18px; } }
+                .pj-page :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+                @media (prefers-reduced-motion: reduce) { .pj-page * { transition: none !important; } }
             `}</style>
 
             <div className="pj-page">
                 {/* Nav */}
-                <nav className="pj-nav">
-                    <a href="/" className="pj-nav__brand">brown<em>.</em>dev</a>
-                    <a href="/portfolio" className="pj-nav__back">
-                        <ArrowLeft size={13} /> Portfolio
-                    </a>
-                </nav>
+                <header className="pj-nav">
+                    <div className="pj-nav__inner">
+                        <Link href="/" className="pj-nav__brand">brown<em>.</em>dev</Link>
+                        <nav className="pj-nav__links" aria-label="Main">
+                            <Link href="/bc/about" className="pj-nav__link pj-nav__hide">About</Link>
+                            <Link href="/portfolio" className="pj-nav__link pj-nav__link--on">Portfolio</Link>
+                            <Link href="/blog" className="pj-nav__link pj-nav__hide">Blog</Link>
+                            <Link href="/bc/contact" className="pj-btn pj-btn--solid pj-btn--sm">
+                                Start a project <ArrowRight size={12} />
+                            </Link>
+                        </nav>
+                    </div>
+                </header>
 
-                <main className="pj-main">
+                <main className="pj-wrap">
                     {/* Masthead */}
                     <header className="pj-masthead">
                         <div>
-                            <p className="pj-masthead__eyebrow">Work</p>
+                            <div className="pj-kicker"><b>Work</b></div>
                             <h1 className="pj-masthead__title">
-                                Production<br />Deployments
+                                Production<br /><span>Deployments</span>
                             </h1>
                         </div>
                         <p className="pj-masthead__desc">
@@ -381,55 +248,67 @@ export default function ProjectsPage() {
                     </header>
 
                     {/* Stats */}
-                    <p className="pj-section-label">Metrics</p>
                     <div className="pj-stats">
-                        {STATS.map((s, i) => (
-                            <div key={i} className="pj-stat">
-                                <span className="pj-stat__label">{s.label}</span>
-                                <span className="pj-stat__value">{s.value}</span>
-                                <span className="pj-stat__desc">{s.desc}</span>
+                        {STATS.map((s) => (
+                            <div key={s.label} className="pj-stat">
+                                <div className="pj-stat__num">{s.value}</div>
+                                <div className="pj-stat__label">{s.label}</div>
                             </div>
                         ))}
                     </div>
 
                     {/* Projects */}
-                    <p className="pj-section-label">All projects</p>
+                    <div className="pj-head">
+                        <div>
+                            <div className="pj-kicker">Archive</div>
+                            <h2 className="pj-h2">All projects</h2>
+                        </div>
+                        <p className="pj-head__note">Live platforms, client work and what is still in the workshop.</p>
+                    </div>
+
                     <div className="pj-list">
                         {projects.map((p, i) => (
                             <article key={p.id} className="pj-card">
                                 <div className="pj-card__img-wrap">
                                     {p.image
-                                        ? <img src={p.image} alt={p.title} className="pj-card__img" onError={e => e.target.style.display = "none"} />
+                                        ? <img src={p.image} alt={p.title} className="pj-card__img" loading="lazy" onError={(e) => (e.target.style.display = "none")} />
                                         : <div className="pj-card__img-placeholder" />
                                     }
                                     <span className="pj-card__id">{p.id} // #{String(i + 1).padStart(2, "0")}</span>
                                 </div>
+
                                 <div className="pj-card__body">
                                     <div>
                                         <div className="pj-card__meta">
-                                            <span>Role: <span>{p.role}</span></span>
-                                            <span>Year: <span>{p.year}</span></span>
-                                            <span>Status: <span className={p.state === "live" ? "pj-card__meta-live" : "pj-card__meta-locked"}>[{p.status}]</span></span>
+                                            <span>Role: <b>{p.role}</b></span>
+                                            <span>Year: <b>{p.year}</b></span>
+                                            <span>
+                                                Status:{" "}
+                                                <span className={p.state === "live" ? "pj-status--live" : "pj-status--locked"}>
+                                                    [{p.status}]
+                                                </span>
+                                            </span>
                                         </div>
-                                        <h2 className="pj-card__title">{p.title}</h2>
+                                        <h3 className="pj-card__title">{p.title}</h3>
                                         <p className="pj-card__desc">{p.description}</p>
                                     </div>
+
                                     <div className="pj-card__footer">
-                                        <div className="pj-tags">
-                                            {p.tags.map(t => <span key={t} className="pj-tag">{t}</span>)}
+                                        <div className="pj-chips">
+                                            {p.tags.map((t) => <span key={t} className="pj-chip">{t}</span>)}
                                         </div>
                                         {p.state === "live" && p.link && (
-                                            <a href={p.link} target="_blank" rel="noopener noreferrer" className="pj-btn">
-                                                View live <ExternalLink size={12} />
+                                            <a href={p.link} target="_blank" rel="noopener noreferrer" className="pj-btn pj-btn--sm">
+                                                View live <ArrowUpRight size={12} />
                                             </a>
                                         )}
                                         {p.state === "dev" && (
-                                            <span className="pj-btn pj-btn--locked">
+                                            <span className="pj-btn pj-btn--sm pj-btn--locked">
                                                 <Clock size={12} /> Coming soon
                                             </span>
                                         )}
                                         {p.state === "nda" && (
-                                            <span className="pj-btn pj-btn--locked">
+                                            <span className="pj-btn pj-btn--sm pj-btn--locked">
                                                 <Lock size={12} /> NDA restricted
                                             </span>
                                         )}
@@ -440,28 +319,30 @@ export default function ProjectsPage() {
                     </div>
 
                     {/* CTA */}
-                    <div className="pj-cta">
-                        <h2 className="pj-cta__title">Start a project</h2>
-                        <p className="pj-cta__desc">
-                            Channels are open for contract work, system builds, and remote collaborations.
-                        </p>
-                        <Link href="/bc/contact" className="pj-btn pj-btn--accent">
-                            Get in touch
+                    <section className="pj-cta">
+                        <div>
+                            <p className="pj-cta__kicker">Work with me</p>
+                            <h2 className="pj-cta__title">Start a project</h2>
+                            <p className="pj-cta__desc">
+                                Channels are open for contract work, system builds, and remote collaborations.
+                            </p>
+                        </div>
+                        <Link href="/bc/contact" className="pj-btn pj-btn--solid">
+                            Get in touch <ArrowRight size={13} />
                         </Link>
-                    </div>
+                    </section>
 
                     {/* Footer row */}
-                    <footer className="pj-footer">
-                        <span className="pj-footer__info">brown.dev — production deployments</span>
-                        <div style={{ display: "flex", gap: "10px" }}>
-                            <button className="pj-btn" onClick={() => router.push("/portfolio")}>
-                                <ArrowLeft size={13} /> Portfolio
-                            </button>
-                        </div>
-                    </footer>
+                    <div className="pj-footer-row">
+                        <span className="pj-footer-row__info">brown.dev — production deployments</span>
+                        <Link href="/portfolio" className="pj-btn pj-btn--sm">
+                            <ArrowLeft size={13} /> Portfolio
+                        </Link>
+                    </div>
                 </main>
+
+                <Footer />
             </div>
-            <Footer />
         </>
     );
 }

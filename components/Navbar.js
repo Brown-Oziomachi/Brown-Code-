@@ -12,6 +12,8 @@ import { featuredServices } from "@/app/data/services";
 
 /* ── Data ─────────────────────────────────────────────── */
 
+const CHANNEL_URL = "https://whatsapp.com/channel/0029VbEGWFsC1FuAo5qoPh0q";
+
 const anchorItems = ["home", "about", "projects", "testimonials", "contact"];
 const linkItems = ["blog", "tech-news"];
 const navItems = [...anchorItems, ...linkItems];
@@ -101,9 +103,9 @@ export default function Navbar() {
     const shellRef = useRef(null);
 
     const [isScrolled, setIsScrolled] = useState(false);
-    const [openMenu, setOpenMenu] = useState(null);        // desktop mega: null | "services" | "utilities" | "news"
+    const [openMenu, setOpenMenu] = useState(null); // null | "services" | "utilities" | "news"
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [mobileSection, setMobileSection] = useState(null); // drawer accordion
+    const [mobileSection, setMobileSection] = useState(null);
 
     const closeAll = () => {
         setOpenMenu(null);
@@ -130,7 +132,7 @@ export default function Navbar() {
     // Close everything on route change
     useEffect(() => { closeAll(); }, [pathname]);
 
-    // One click-outside + Escape handler for the whole shell
+    // Click-outside + Escape
     useEffect(() => {
         if (!openMenu && !isDrawerOpen) return;
         const onDown = (e) => {
@@ -168,10 +170,12 @@ export default function Navbar() {
     return (
         <div className="nb-shell" ref={shellRef}>
             <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
         .nb-shell {
-          --nb-bg: #000000; --nb-card: #0d0d0d; --nb-card-2: #121212;
-          --nb-ink: #f4f1ea; --nb-ink-2: #bdb8ae; --nb-ink-3: #85807a;
-          --nb-rule: #242424; --nb-rule-dark: #3a3a3a;
+          --nb-bg: #ffffff; --nb-card: #ffffff; --nb-card-2: #f6f5f0;
+          --nb-ink: #111111; --nb-ink-2: #3f3f3f; --nb-ink-3: #6f6f6f;
+          --nb-rule: #e4e2da; --nb-rule-dark: #111111;
           --nb-accent: #e8ff47; --nb-on: #0a0a0b;
           --nb-serif: 'Playfair Display', Georgia, serif;
           --nb-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -179,16 +183,18 @@ export default function Navbar() {
           --nb-h: 68px;
           font-family: var(--nb-mono);
         }
+        .nb-shell *, .nb-shell *::before, .nb-shell *::after { box-sizing: border-box; }
+        .nb-shell p { margin: 0; }
 
         /* Bar */
         .nb-root {
           position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-          background: rgba(0,0,0,0.72);
+          background: rgba(255,255,255,0.92);
           -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
           border-bottom: 1px solid var(--nb-rule);
-          transition: background 0.2s, border-color 0.2s;
+          transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .nb-root--scrolled { background: rgba(0,0,0,0.9); border-bottom-color: var(--nb-rule-dark); }
+        .nb-root--scrolled { border-bottom-color: var(--nb-rule-dark); }
         .nb-inner {
           max-width: 1120px; margin: 0 auto; padding: 0 24px; height: var(--nb-h);
           display: flex; align-items: center; justify-content: space-between; gap: 20px;
@@ -200,22 +206,22 @@ export default function Navbar() {
           font-family: var(--nb-serif); font-weight: 800; font-size: 22px;
           letter-spacing: -0.01em; color: var(--nb-ink); text-decoration: none;
         }
-        .nb-brand em { color: var(--nb-accent); font-style: normal; }
+        .nb-brand em { font-style: normal; background: var(--nb-accent); padding: 0 3px; }
         .nb-brand__tag {
           font-family: var(--nb-mono); font-size: 9px; font-weight: 500; letter-spacing: 0.12em;
-          color: var(--nb-ink-3); border: 1px solid var(--nb-rule-dark); padding: 2px 6px;
+          color: var(--nb-ink-3); border: 1px solid var(--nb-rule); padding: 2px 6px;
         }
 
         /* Desktop links */
         .nb-links { display: flex; align-items: center; gap: 0; }
         .nb-link, .nb-dd {
           position: relative; font-family: var(--nb-mono); font-size: 10.5px; letter-spacing: 0.09em;
-          text-transform: uppercase; color: var(--nb-ink-2); background: none; border: none;
+          text-transform: uppercase; color: var(--nb-ink-3); background: none; border: none;
           cursor: pointer; text-decoration: none; white-space: nowrap; padding: 10px 10px;
           display: inline-flex; align-items: center; gap: 5px; transition: color 0.15s;
         }
         .nb-link::after, .nb-dd::after {
-          content: ''; position: absolute; left: 10px; right: 10px; bottom: 4px; height: 2px;
+          content: ''; position: absolute; left: 10px; right: 10px; bottom: 4px; height: 3px;
           background: var(--nb-accent); transform: scaleX(0); transform-origin: left;
           transition: transform 0.2s ease;
         }
@@ -228,17 +234,17 @@ export default function Navbar() {
         .nb-btn {
           display: inline-flex; align-items: center; gap: 7px; font-family: var(--nb-mono);
           font-size: 11px; letter-spacing: 0.06em; padding: 10px 16px; cursor: pointer;
-          border: 1px solid var(--nb-rule-dark); background: transparent; color: var(--nb-ink);
+          border: 1.5px solid var(--nb-ink); background: transparent; color: var(--nb-ink);
           text-decoration: none; transition: background 0.15s, color 0.15s, transform 0.15s;
         }
-        .nb-btn:hover { background: var(--nb-ink); color: var(--nb-bg); transform: translateY(-1px); }
-        .nb-btn--solid { background: var(--nb-accent); border-color: var(--nb-accent); color: var(--nb-on); font-weight: 500; }
-        .nb-btn--solid:hover { background: #d4e63c; border-color: #d4e63c; color: var(--nb-on); }
+        .nb-btn:hover { background: var(--nb-ink); color: #fff; transform: translateY(-1px); }
+        .nb-btn--solid { background: var(--nb-accent); color: var(--nb-on); font-weight: 600; }
+        .nb-btn--solid:hover { background: var(--nb-ink); color: var(--nb-accent); }
         .nb-cta { margin-left: 10px; }
 
         /* Burger */
         .nb-burger {
-          display: none; width: 40px; height: 40px; border: 1px solid var(--nb-rule-dark);
+          display: none; width: 40px; height: 40px; border: 1.5px solid var(--nb-ink);
           background: transparent; color: var(--nb-ink); cursor: pointer;
           align-items: center; justify-content: center;
         }
@@ -252,67 +258,67 @@ export default function Navbar() {
         /* Mega panel */
         .nb-mega {
           position: fixed; left: 0; right: 0; top: var(--nb-h); z-index: 999;
-          background: rgba(10,10,10,0.98); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-          border-bottom: 1px solid var(--nb-rule-dark); border-top: 1px solid var(--nb-rule);
+          background: rgba(255,255,255,0.98); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+          border-bottom: 1.5px solid var(--nb-ink); border-top: 1px solid var(--nb-rule);
+          box-shadow: 0 18px 40px rgba(0,0,0,0.08);
           animation: nb-drop 0.18s ease-out;
         }
         @keyframes nb-drop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
         .nb-mega__inner { max-width: 1120px; margin: 0 auto; padding: 26px 24px 28px; }
         .nb-mega__header {
           display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
-          padding-bottom: 14px; margin-bottom: 20px; border-bottom: 3px double var(--nb-rule-dark);
+          padding-top: 10px; border-top: 3px solid var(--nb-ink); margin-bottom: 20px;
         }
         .nb-mega__kicker {
-          font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--nb-accent);
+          font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--nb-ink-3);
           display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
         }
         .nb-mega__sub { font-family: var(--nb-serif); font-weight: 800; font-size: 22px; color: var(--nb-ink); line-height: 1.15; }
         .nb-mega__close {
           font-family: var(--nb-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
-          color: var(--nb-ink-3); border: 1px solid var(--nb-rule-dark); background: transparent;
-          padding: 6px 12px; cursor: pointer; transition: color 0.15s, border-color 0.15s;
+          color: var(--nb-ink-2); border: 1px solid var(--nb-ink); background: transparent;
+          padding: 6px 12px; cursor: pointer; transition: background 0.15s, color 0.15s;
         }
-        .nb-mega__close:hover { color: var(--nb-ink); border-color: var(--nb-ink); }
+        .nb-mega__close:hover { background: var(--nb-ink); color: #fff; }
         .nb-mega__grid { display: grid; gap: 14px; grid-template-columns: repeat(var(--cols), 1fr); }
         .nb-mega__footer { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--nb-rule); display: flex; justify-content: flex-end; }
         .nb-mega__viewall {
-          display: inline-flex; align-items: center; gap: 6px; font-size: 10px; letter-spacing: 0.1em;
-          text-transform: uppercase; color: var(--nb-accent); text-decoration: none;
+          display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em;
+          text-transform: uppercase; color: var(--nb-ink); text-decoration: none; background: var(--nb-accent); padding: 8px 12px;
         }
-        .nb-mega__viewall:hover { text-decoration: underline; text-underline-offset: 4px; }
+        .nb-mega__viewall:hover { background: var(--nb-ink); color: var(--nb-accent); }
         @media (max-width: 1100px) { .nb-mega { display: none; } }
 
         /* Card */
         .nb-card {
           background: var(--nb-card); border: 1px solid var(--nb-rule-dark); padding: 16px; height: 100%;
           display: flex; flex-direction: column; gap: 8px; cursor: pointer;
-          transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+          transition: transform 0.2s, box-shadow 0.2s;
         }
-        .nb-card:hover { transform: translate(-3px, -3px); box-shadow: 4px 4px 0 var(--nb-accent); border-color: var(--nb-accent); }
+        .nb-card:hover { transform: translate(-3px, -3px); box-shadow: 4px 4px 0 var(--nb-accent); }
         .nb-card__top { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--nb-rule); }
         .nb-card__id { font-size: 8.5px; letter-spacing: 0.1em; color: var(--nb-ink-3); }
-        .nb-card__tag { font-size: 8.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--nb-accent); }
-        .nb-card__icon { color: var(--nb-ink-3); margin-top: 4px; }
-        .nb-card:hover .nb-card__icon { color: var(--nb-accent); }
+        .nb-card__tag { font-size: 8.5px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--nb-on); background: var(--nb-accent); padding: 2px 6px; }
+        .nb-card__icon { color: var(--nb-ink); margin-top: 4px; }
         .nb-card__title { font-family: var(--nb-serif); font-weight: 800; font-size: 16px; line-height: 1.2; color: var(--nb-ink); }
         .nb-card__desc { font-family: var(--nb-sans); font-size: 12px; line-height: 1.6; color: var(--nb-ink-3); flex: 1; }
         .nb-card__cta {
           align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; font-size: 9px;
-          letter-spacing: 0.1em; text-transform: uppercase; color: var(--nb-ink-3);
+          letter-spacing: 0.1em; text-transform: uppercase; color: var(--nb-ink-2);
           background: var(--nb-card-2); border: 1px solid var(--nb-rule); padding: 3px 8px;
         }
-        .nb-card:hover .nb-card__cta { color: var(--nb-on); background: var(--nb-accent); border-color: var(--nb-accent); }
+        .nb-card:hover .nb-card__cta { color: var(--nb-on); background: var(--nb-accent); border-color: var(--nb-ink); }
 
         /* Drawer */
-        .nb-overlay { position: fixed; inset: 0; z-index: 1001; background: rgba(0,0,0,0.7); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+        .nb-overlay { position: fixed; inset: 0; z-index: 1001; background: rgba(0,0,0,0.45); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
         .nb-drawer {
           position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 88vw); z-index: 1002;
-          background: #000; border-left: 1px solid var(--nb-rule-dark); display: flex; flex-direction: column;
+          background: #fff; border-left: 1.5px solid var(--nb-ink); display: flex; flex-direction: column;
           animation: nb-slide 0.22s cubic-bezier(0.16,1,0.3,1) forwards;
         }
         @keyframes nb-slide { from { transform: translateX(100%); } to { transform: translateX(0); } }
-        .nb-drawer__head { display: flex; justify-content: space-between; align-items: center; height: 60px; padding: 0 18px; border-bottom: 1px solid var(--nb-rule-dark); }
-        .nb-drawer__close { width: 36px; height: 36px; border: 1px solid var(--nb-rule-dark); background: transparent; color: var(--nb-ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .nb-drawer__head { display: flex; justify-content: space-between; align-items: center; height: 60px; padding: 0 18px; border-bottom: 1px solid var(--nb-rule); }
+        .nb-drawer__close { width: 36px; height: 36px; border: 1.5px solid var(--nb-ink); background: transparent; color: var(--nb-ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
         .nb-drawer__body { flex: 1; overflow-y: auto; padding: 8px 18px 16px; }
         .nb-drawer__link {
           display: flex; align-items: center; justify-content: space-between; width: 100%; text-align: left;
@@ -320,18 +326,22 @@ export default function Navbar() {
           font-family: var(--nb-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
           color: var(--nb-ink-2); text-decoration: none; cursor: pointer; transition: color 0.15s;
         }
-        .nb-drawer__link:hover, .nb-drawer__link--active { color: var(--nb-accent); }
+        .nb-drawer__link:hover { color: var(--nb-ink); }
+        .nb-drawer__link--active { color: var(--nb-ink); font-weight: 600; box-shadow: inset 4px 0 0 var(--nb-accent); padding-left: 12px; }
         .nb-drawer__link svg { transition: transform 0.2s; }
         .nb-drawer__link--open svg { transform: rotate(180deg); }
-        .nb-drawer__sub { padding: 6px 0 10px 12px; border-left: 2px solid var(--nb-accent); margin: 6px 0 4px; }
+        .nb-drawer__sub { padding: 6px 0 10px 12px; border-left: 3px solid var(--nb-accent); margin: 6px 0 4px; }
         .nb-drawer__sublink {
           display: block; padding: 10px 0 10px 12px; text-decoration: none; border-bottom: 1px solid var(--nb-rule);
         }
         .nb-drawer__sublink:last-child { border-bottom: none; }
         .nb-drawer__sublink b { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-family: var(--nb-serif); font-weight: 800; font-size: 15px; color: var(--nb-ink); }
         .nb-drawer__sublink span { display: block; margin-top: 3px; font-family: var(--nb-sans); font-size: 11.5px; line-height: 1.5; color: var(--nb-ink-3); }
-        .nb-drawer__foot { padding: 16px 18px 20px; border-top: 1px solid var(--nb-rule-dark); display: flex; flex-direction: column; gap: 10px; }
+        .nb-drawer__foot { padding: 16px 18px 20px; border-top: 1px solid var(--nb-rule); display: flex; flex-direction: column; gap: 10px; }
         .nb-drawer__foot .nb-btn { justify-content: center; }
+
+        .nb-shell :focus-visible { outline: 2px solid var(--nb-ink); outline-offset: 2px; }
+        @media (prefers-reduced-motion: reduce) { .nb-shell * { transition: none !important; animation: none !important; } }
       `}</style>
 
             {/* ── Bar ── */}
@@ -473,7 +483,7 @@ export default function Navbar() {
                                                 )}
                                                 {m.footer && (
                                                     <Link href={m.footer.href} className="nb-drawer__sublink" onClick={closeAll}>
-                                                        <b style={{ color: "var(--nb-accent)", fontFamily: "var(--nb-mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                                                        <b style={{ fontFamily: "var(--nb-mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase" }}>
                                                             {m.footer.label} <ArrowUpRight size={12} />
                                                         </b>
                                                     </Link>
@@ -489,7 +499,7 @@ export default function Navbar() {
                             <Link href="/bc/contact" className="nb-btn nb-btn--solid" onClick={closeAll}>
                                 Start a project <ArrowRight size={12} />
                             </Link>
-                            <a href="https://whatsapp.com/channel/0029VbEGWFsC1FuAo5qoPh0q" target="_blank" rel="noopener noreferrer" className="nb-btn" onClick={closeAll}>
+                            <a href={CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="nb-btn" onClick={closeAll}>
                                 <MessageCircle size={13} /> Join WhatsApp channel
                             </a>
                             <a href="https://github.com/sponsors/Brown-Oziomachi/" target="_blank" rel="noopener noreferrer" className="nb-btn" onClick={closeAll}>

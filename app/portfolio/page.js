@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import {
-    Github, Linkedin, Mail, Download, ArrowRight, ArrowUpRight,
-    Calendar, ShieldCheck, CreditCard, Layers, Newspaper, Check, MessageCircle,
+    Github, Linkedin, Mail, Download, ArrowRight, ArrowUpRight, ArrowLeft,
+    Calendar, ShieldCheck, CreditCard, Layers, Newspaper, Check, User, MapPin,
 } from "lucide-react";
 import Testimonials from "@/components/Testimonials";
 import FirebaseChat from "@/components/FirebaseChat";
@@ -12,7 +12,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/footer";
 import FloatingClient from "../floatingchat/chat";
 import { latestArticles } from "../data/latestArticles";
-import { Suspense } from "react";
 
 /* ── data ────────────────────────────────────────────── */
 
@@ -129,19 +128,15 @@ function SectionHead({ kicker, title, note }) {
 export default function PortfolioClients() {
     const [isChatOpen, setIsChatOpen] = useState(false);
 
-    const scrollToSection = (id) => {
-        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    };
-
     return (
         <>
             <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
                 .pf-page {
-                    --paper: #000000; --paper-2: #121212; --card: #0d0d0d;
-                    --ink: #f4f1ea; --ink-2: #bdb8ae; --ink-3: #85807a;
-                    --rule: #242424; --rule-dark: #3a3a3a;
+                    --paper: #ffffff; --paper-2: #f6f5f0; --card: #ffffff;
+                    --ink: #111111; --ink-2: #3f3f3f; --ink-3: #6f6f6f;
+                    --rule: #e4e2da; --rule-dark: #111111;
                     --accent: #e8ff47; --on-accent: #0a0a0b;
                     --serif: 'Playfair Display', Georgia, serif;
                     --sans: 'Inter', system-ui, sans-serif;
@@ -150,155 +145,171 @@ export default function PortfolioClients() {
                     min-height: 100vh; overflow-x: hidden;
                 }
                 .pf-page *, .pf-page *::before, .pf-page *::after { box-sizing: border-box; }
-                .pf-page h1, .pf-page h2, .pf-page h3, .pf-page p { margin: 0; }
-                :where(.pf-page a) { color: inherit; }
+                .pf-page h1, .pf-page h2, .pf-page h3, .pf-page p, .pf-page ul { margin: 0; }
+                :where(.pf-page a) { color: inherit; text-decoration: none; }
                 .pf-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
                 .pf-section { padding: 88px 0 0; }
 
                 /* Buttons */
-                .pf-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; padding: 13px 20px; border: 1px solid var(--rule-dark); background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.15s; }
-                .pf-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); transform: translateY(-1px); }
-                .pf-btn--solid { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
-                .pf-btn--solid:hover { background: #d4e63c; border-color: #d4e63c; color: var(--on-accent); }
+                .pf-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; padding: 13px 20px; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: background 0.15s, color 0.15s, transform 0.15s; }
+                .pf-btn:hover { background: var(--ink); color: #fff; transform: translateY(-1px); }
+                .pf-btn--solid { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+                .pf-btn--solid:hover { background: var(--ink); color: var(--accent); }
                 .pf-btn--lg { padding: 16px 26px; font-size: 12px; }
 
                 /* Section heads */
-                .pf-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
-                .pf-h2 { font-family: var(--serif); font-weight: 800; font-size: clamp(28px, 4vw, 42px); line-height: 1.1; letter-spacing: -0.01em; color: var(--ink); }
-                .pf-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 16px; margin-bottom: 30px; border-bottom: 3px double var(--rule-dark); }
+                .pf-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 10px; }
+                .pf-kicker b { background: var(--accent); color: var(--on-accent); padding: 2px 7px; font-weight: 500; }
+                .pf-h2 { font-family: var(--serif); font-weight: 800; font-size: clamp(28px, 4vw, 42px); line-height: 1.1; letter-spacing: -0.01em; }
+                .pf-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 12px; border-top: 3px solid var(--rule-dark); margin-bottom: 30px; }
                 .pf-head__note { font-size: 14px; line-height: 1.6; color: var(--ink-2); max-width: 380px; }
 
-                /* ── Hero ── */
-                .pf-hero { padding: 132px 0 64px; border-bottom: 1px solid var(--rule-dark); }
+                /* Hero */
+                .pf-hero { padding: 132px 0 64px; border-bottom: 1px solid var(--rule); }
                 .pf-hero__grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: 56px; align-items: center; }
                 @media (max-width: 900px) { .pf-hero__grid { grid-template-columns: minmax(0, 1fr); gap: 40px; } .pf-hero { padding-top: 108px; } }
-                .pf-avail { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); border: 1px solid var(--rule-dark); background: var(--card); padding: 8px 14px; margin-bottom: 26px; }
+                .pf-avail { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 7px 13px; margin-bottom: 26px; }
                 .pf-ping { position: relative; width: 8px; height: 8px; flex-shrink: 0; }
-                .pf-ping__ring { position: absolute; inset: 0; border-radius: 50%; background: var(--accent); opacity: 0.4; animation: pf-ping 1.6s ease-out infinite; }
-                .pf-ping__dot { position: absolute; inset: 1px; border-radius: 50%; background: var(--accent); }
+                .pf-ping__ring { position: absolute; inset: 0; border-radius: 50%; background: var(--on-accent); opacity: 0.4; animation: pf-ping 1.6s ease-out infinite; }
+                .pf-ping__dot { position: absolute; inset: 1px; border-radius: 50%; background: var(--on-accent); }
                 @keyframes pf-ping { 0% { transform: scale(1); opacity: 0.4; } 100% { transform: scale(2.6); opacity: 0; } }
-                .pf-hero__title { font-family: var(--serif); font-weight: 800; font-size: clamp(38px, 6vw, 70px); line-height: 1.04; letter-spacing: -0.015em; color: var(--ink); }
-                .pf-hero__title em { font-style: italic; color: var(--accent); }
+                .pf-hero__title { font-family: var(--serif); font-weight: 800; font-size: clamp(38px, 6vw, 70px); line-height: 1.04; letter-spacing: -0.015em; }
+                .pf-hero__title em { font-style: italic; background: linear-gradient(transparent 62%, var(--accent) 62%); }
                 .pf-hero__dek { margin-top: 24px; max-width: 560px; font-size: clamp(15px, 1.6vw, 18px); line-height: 1.7; font-weight: 300; color: var(--ink-2); border-left: 3px solid var(--accent); padding-left: 18px; }
                 .pf-hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
                 .pf-hero__reply { margin-top: 16px; font-family: var(--mono); font-size: 11px; color: var(--ink-3); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-                .pf-hero__reply svg { color: var(--accent); }
+                .pf-hero__reply svg { color: var(--ink); background: var(--accent); padding: 2px; width: 17px; height: 17px; }
 
-                .pf-stats { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 44px; border-top: 1px solid var(--rule-dark); border-bottom: 3px double var(--rule-dark); }
+                .pf-stats { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 44px; border-top: 3px solid var(--rule-dark); border-bottom: 1px solid var(--rule); }
                 .pf-stat { padding: 18px 16px 16px 0; }
                 .pf-stat + .pf-stat { padding-left: 18px; border-left: 1px solid var(--rule); }
-                .pf-stat__num { font-family: var(--serif); font-weight: 800; font-size: 34px; line-height: 1; color: var(--ink); }
+                .pf-stat__num { font-family: var(--serif); font-weight: 800; font-size: 34px; line-height: 1; }
                 .pf-stat__label { margin-top: 6px; font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
 
-                /* Portrait */
                 .pf-portrait { position: relative; max-width: 380px; margin-left: auto; }
                 @media (max-width: 900px) { .pf-portrait { margin: 0 auto; width: 100%; } }
-                .pf-portrait__frame { aspect-ratio: 4 / 5; background: #fff; border: 1px solid var(--rule-dark); overflow: hidden; box-shadow: 8px 8px 0 var(--accent); }
+                .pf-portrait__frame { aspect-ratio: 4 / 5; background: var(--paper-2); border: 1.5px solid var(--ink); overflow: hidden; box-shadow: 8px 8px 0 var(--accent); }
                 .pf-portrait__frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
-                .pf-portrait__tag { position: absolute; left: -14px; bottom: 28px; background: var(--card); border: 1px solid var(--rule-dark); border-left: 4px solid var(--accent); padding: 12px 16px; }
+                .pf-portrait__tag { position: absolute; left: -14px; bottom: 28px; background: #fff; border: 1.5px solid var(--ink); border-left: 5px solid var(--accent); padding: 12px 16px; }
                 @media (max-width: 480px) { .pf-portrait__tag { left: 8px; } }
-                .pf-portrait__name { font-family: var(--serif); font-weight: 800; font-size: 18px; color: var(--ink); }
-                .pf-portrait__role { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-top: 3px; }
+                .pf-portrait__name { font-family: var(--serif); font-weight: 800; font-size: 18px; }
+                .pf-portrait__role { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); margin-top: 3px; }
 
                 /* Trust strip */
-                .pf-trust { padding: 22px 0; border-bottom: 1px solid var(--rule); }
+                .pf-trust { padding: 22px 0; background: var(--paper-2); border-bottom: 1px solid var(--rule); }
                 .pf-trust__inner { display: flex; align-items: center; gap: 14px 28px; flex-wrap: wrap; }
                 .pf-trust__label { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); flex-shrink: 0; }
                 .pf-trust__list { display: flex; flex-wrap: wrap; gap: 8px 22px; }
                 .pf-trust__item { font-family: var(--serif); font-weight: 800; font-size: 16px; color: var(--ink-2); }
 
-                /* ── Services ── */
+                /* About strip */
+                .pf-about { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 48px; align-items: center; border: 1.5px solid var(--ink); background: var(--paper-2); padding: 36px; }
+                @media (max-width: 820px) { .pf-about { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 24px 20px; } }
+                .pf-about__img { aspect-ratio: 1; background: #fff; border: 1.5px solid var(--ink); overflow: hidden; box-shadow: 6px 6px 0 var(--accent); max-width: 280px; }
+                .pf-about__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+                .pf-about__title { font-family: var(--serif); font-weight: 800; font-size: clamp(26px, 3.6vw, 38px); line-height: 1.12; letter-spacing: -0.01em; }
+                .pf-about__title em { font-style: italic; background: linear-gradient(transparent 62%, var(--accent) 62%); }
+                .pf-about__text { margin-top: 14px; font-size: 15px; line-height: 1.8; color: var(--ink-2); max-width: 600px; }
+                .pf-about__meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+                .pf-about__meta span { display: inline-flex; align-items: center; gap: 6px; }
+                .pf-about__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+
+                /* Services */
                 .pf-services { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
                 @media (max-width: 760px) { .pf-services { grid-template-columns: 1fr; } }
-                .pf-service { background: var(--card); border: 1px solid var(--rule-dark); border-top: 3px solid var(--accent); padding: 26px; display: flex; flex-direction: column; gap: 12px; transition: transform 0.2s, box-shadow 0.2s; }
-                .pf-service:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--accent); }
-                .pf-service__icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--accent); color: var(--on-accent); }
-                .pf-service__title { font-family: var(--serif); font-weight: 800; font-size: 22px; line-height: 1.2; color: var(--ink); }
+                .pf-service { background: var(--card); border: 1px solid var(--rule-dark); border-top: 4px solid var(--accent); padding: 26px; display: flex; flex-direction: column; gap: 12px; transition: transform 0.2s, box-shadow 0.2s; }
+                .pf-service:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--ink); }
+                .pf-service__icon { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; background: var(--accent); color: var(--on-accent); border: 1.5px solid var(--ink); }
+                .pf-service__title { font-family: var(--serif); font-weight: 800; font-size: 22px; line-height: 1.2; }
                 .pf-service__body { font-size: 14px; line-height: 1.7; color: var(--ink-2); }
-                .pf-service__points { list-style: none; padding: 0; margin: 4px 0 0; display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid var(--rule); }
+                .pf-service__points { list-style: none; padding: 14px 0 0; margin-top: 4px; border-top: 1px solid var(--rule); display: flex; flex-direction: column; gap: 8px; }
                 .pf-service__points li { display: flex; align-items: center; gap: 9px; font-family: var(--mono); font-size: 11px; color: var(--ink-2); }
-                .pf-service__points svg { color: var(--accent); flex-shrink: 0; }
+                .pf-service__points svg { color: var(--ink); background: var(--accent); padding: 2px; width: 17px; height: 17px; flex-shrink: 0; }
 
-                /* ── Projects ── */
+                /* Projects */
                 .pf-projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
                 @media (max-width: 960px) { .pf-projects { grid-template-columns: 1fr 1fr; } }
                 @media (max-width: 600px) { .pf-projects { grid-template-columns: 1fr; } }
-                .pf-proj { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--rule-dark); text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
-                .pf-proj:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--accent); }
-                .pf-proj__media { position: relative; height: 160px; background: #fff; overflow: hidden; border-bottom: 1px solid var(--rule-dark); }
+                .pf-proj { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--rule-dark); transition: transform 0.2s, box-shadow 0.2s; }
+                .pf-proj:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--accent); }
+                .pf-proj__media { position: relative; height: 160px; background: var(--paper-2); overflow: hidden; border-bottom: 1px solid var(--rule-dark); }
                 .pf-proj__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.45s ease; }
                 .pf-proj:hover .pf-proj__media img { transform: scale(1.04); }
-                .pf-proj__chip { position: absolute; top: 12px; left: 12px; font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 4px 9px; }
+                .pf-chip { position: absolute; top: 12px; left: 12px; font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 4px 9px; border: 1px solid var(--ink); }
                 .pf-proj__body { padding: 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
-                .pf-proj__title { font-family: var(--serif); font-weight: 800; font-size: 20px; line-height: 1.2; color: var(--ink); }
-                .pf-proj:hover .pf-proj__title { color: var(--accent); }
+                .pf-proj__title { font-family: var(--serif); font-weight: 800; font-size: 20px; line-height: 1.2; }
+                .pf-proj:hover .pf-proj__title { text-decoration: underline; text-underline-offset: 3px; }
                 .pf-proj__desc { font-size: 13px; line-height: 1.65; color: var(--ink-3); }
                 .pf-proj__foot { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
                 .pf-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-                .pf-tag { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.05em; color: var(--ink-2); border: 1px solid var(--rule-dark); padding: 3px 8px; }
-                .pf-proj__visit { display: inline-flex; align-items: center; gap: 4px; font-family: var(--mono); font-size: 10.5px; color: var(--accent); flex-shrink: 0; }
+                .pf-tag { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.05em; color: var(--ink-2); border: 1px solid var(--rule-dark); padding: 3px 8px; background: #fff; }
+                .pf-proj__visit { display: inline-flex; align-items: center; gap: 4px; font-family: var(--mono); font-size: 10.5px; font-weight: 600; flex-shrink: 0; }
 
                 .pf-also { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
                 @media (max-width: 600px) { .pf-also { grid-template-columns: 1fr; } }
-                .pf-also__item { display: flex; align-items: center; justify-content: space-between; gap: 14px; background: var(--paper-2); border: 1px solid var(--rule-dark); padding: 18px 20px; text-decoration: none; transition: border-color 0.15s; }
-                .pf-also__item:hover { border-color: var(--accent); }
-                .pf-also__name { font-family: var(--serif); font-weight: 800; font-size: 18px; color: var(--ink); }
+                .pf-also__item { display: flex; align-items: center; justify-content: space-between; gap: 14px; background: var(--paper-2); border: 1px solid var(--rule-dark); padding: 18px 20px; transition: background 0.15s; }
+                .pf-also__item:hover { background: var(--accent); }
+                .pf-also__name { font-family: var(--serif); font-weight: 800; font-size: 18px; }
                 .pf-also__note { font-size: 12.5px; color: var(--ink-3); margin-top: 3px; }
-                .pf-also__item svg { color: var(--accent); flex-shrink: 0; }
-                .pf-more { display: flex; justify-content: center; margin-top: 32px; }
+                .pf-also__item:hover .pf-also__note { color: var(--ink-2); }
+                .pf-also__item svg { flex-shrink: 0; }
+                .pf-more { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
 
-                /* ── Why + process ── */
+                /* Why + process */
                 .pf-why { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
                 @media (max-width: 860px) { .pf-why { grid-template-columns: 1fr; gap: 44px; } }
                 .pf-why__lead { margin-top: 12px; font-size: 15px; line-height: 1.75; color: var(--ink-2); font-weight: 300; max-width: 480px; }
                 .pf-reasons { list-style: none; padding: 0; margin: 26px 0 0; display: flex; flex-direction: column; gap: 14px; }
                 .pf-reasons li { display: flex; gap: 14px; align-items: flex-start; font-size: 14.5px; line-height: 1.6; color: var(--ink-2); }
-                .pf-reasons__tick { width: 24px; height: 24px; background: var(--accent); color: var(--on-accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-                .pf-steps { display: flex; flex-direction: column; border: 1px solid var(--rule-dark); background: var(--card); }
+                .pf-reasons__tick { width: 24px; height: 24px; background: var(--accent); color: var(--on-accent); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+                .pf-steps { display: flex; flex-direction: column; border: 1.5px solid var(--ink); background: var(--card); margin-top: 10px; }
                 .pf-step { display: grid; grid-template-columns: 56px 1fr; gap: 6px; padding: 20px; border-bottom: 1px solid var(--rule); }
                 .pf-step:last-child { border-bottom: none; }
-                .pf-step__n { font-family: var(--serif); font-weight: 800; font-size: 26px; line-height: 1; color: var(--accent); }
-                .pf-step__title { font-family: var(--serif); font-weight: 800; font-size: 18px; color: var(--ink); margin-bottom: 4px; }
+                .pf-step__n { font-family: var(--serif); font-weight: 800; font-size: 26px; line-height: 1; background: linear-gradient(transparent 60%, var(--accent) 60%); width: fit-content; height: fit-content; }
+                .pf-step__title { font-family: var(--serif); font-weight: 800; font-size: 18px; margin-bottom: 4px; }
                 .pf-step__body { font-size: 13px; line-height: 1.6; color: var(--ink-3); }
 
-                .pf-stack { margin-top: 56px; display: flex; align-items: center; gap: 14px 22px; flex-wrap: wrap; padding: 22px 0; border-top: 1px solid var(--rule-dark); border-bottom: 1px solid var(--rule-dark); }
+                .pf-stack { margin-top: 56px; display: flex; align-items: center; gap: 14px 22px; flex-wrap: wrap; padding: 22px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule); }
                 .pf-stack__label { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
                 .pf-stack__list { display: flex; flex-wrap: wrap; gap: 8px; }
-                .pf-stack__chip { font-family: var(--mono); font-size: 11px; color: var(--ink-2); background: var(--card); border: 1px solid var(--rule-dark); padding: 6px 12px; }
+                .pf-stack__chip { font-family: var(--mono); font-size: 11px; color: var(--ink-2); background: var(--paper-2); border: 1px solid var(--rule); padding: 6px 12px; }
 
-                /* ── Blog ── */
+                /* Blog */
                 .pf-blog { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
                 @media (max-width: 960px) { .pf-blog { grid-template-columns: 1fr 1fr; } }
                 @media (max-width: 600px) { .pf-blog { grid-template-columns: 1fr; } }
-                .pf-post { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--rule-dark); text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
-                .pf-post:hover { transform: translate(-3px, -3px); box-shadow: 5px 5px 0 var(--accent); }
-                .pf-post__media { position: relative; height: 140px; background: #fff; overflow: hidden; border-bottom: 1px solid var(--rule-dark); }
+                .pf-post { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--rule-dark); transition: transform 0.2s, box-shadow 0.2s; }
+                .pf-post:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--accent); }
+                .pf-post__media { position: relative; height: 140px; background: var(--paper-2); overflow: hidden; border-bottom: 1px solid var(--rule-dark); }
                 .pf-post__media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.45s ease; }
                 .pf-post:hover .pf-post__media img { transform: scale(1.04); }
-                .pf-post__ph { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, #101010, #101010 6px, #171717 6px, #171717 12px); }
-                .pf-post__chip { position: absolute; top: 12px; left: 12px; font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 4px 9px; }
+                .pf-post__ph { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, #ebe8e0, #ebe8e0 6px, #e3e0d7 6px, #e3e0d7 12px); }
                 .pf-post__body { padding: 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
-                .pf-post__title { font-family: var(--serif); font-weight: 800; font-size: 18px; line-height: 1.25; color: var(--ink); }
-                .pf-post:hover .pf-post__title { color: var(--accent); }
+                .pf-post__title { font-family: var(--serif); font-weight: 800; font-size: 18px; line-height: 1.25; }
+                .pf-post:hover .pf-post__title { text-decoration: underline; text-underline-offset: 3px; }
                 .pf-post__desc { font-size: 13px; line-height: 1.65; color: var(--ink-3); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
                 .pf-post__meta { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--rule); font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); }
 
-                /* ── Contact ── */
-                .pf-contact { margin-top: 96px; padding: 56px 0 24px; border-top: 3px double var(--rule-dark); }
-                .pf-contact__card { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 48px; background: var(--card); border: 1px solid var(--rule-dark); border-top: 4px solid var(--accent); padding: 44px; }
-                @media (max-width: 860px) { .pf-contact__card { grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 28px 22px; } }
-                .pf-contact__title { font-family: var(--serif); font-weight: 800; font-size: clamp(30px, 4.4vw, 48px); line-height: 1.08; letter-spacing: -0.01em; color: var(--ink); }
+                /* Contact */
+                .pf-contact { margin-top: 96px; }
+                .pf-contact__card { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 48px; background: var(--ink); color: #f4f1ea; border-top: 5px solid var(--accent); padding: 48px; }
+                @media (max-width: 860px) { .pf-contact__card { grid-template-columns: minmax(0, 1fr); gap: 32px; padding: 32px 22px; } }
+                .pf-contact__kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+                .pf-contact__title { font-family: var(--serif); font-weight: 800; font-size: clamp(30px, 4.4vw, 48px); line-height: 1.08; letter-spacing: -0.01em; }
                 .pf-contact__title em { font-style: italic; color: var(--accent); }
-                .pf-contact__sub { margin-top: 16px; font-size: 15px; line-height: 1.75; color: var(--ink-2); font-weight: 300; max-width: 460px; }
+                .pf-contact__sub { margin-top: 16px; font-size: 15px; line-height: 1.75; color: #bdb8ae; font-weight: 300; max-width: 460px; }
                 .pf-contact__promise { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
-                .pf-contact__promise span { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
+                .pf-contact__promise span { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 11.5px; color: #d9d6cc; }
                 .pf-contact__promise svg { color: var(--accent); flex-shrink: 0; }
                 .pf-contact__actions { display: flex; flex-direction: column; gap: 12px; }
-                .pf-contact__actions .pf-btn { justify-content: space-between; width: 100%; }
+                .pf-contact .pf-btn { border-color: #f4f1ea; color: #f4f1ea; justify-content: space-between; width: 100%; }
+                .pf-contact .pf-btn:hover { background: #f4f1ea; color: var(--ink); }
+                .pf-contact .pf-btn--solid { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+                .pf-contact .pf-btn--solid:hover { background: #fff; border-color: #fff; color: var(--ink); }
                 .pf-contact__socials { display: flex; gap: 8px; margin-top: 6px; }
-                .pf-social { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--rule-dark); color: var(--ink-2); text-decoration: none; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+                .pf-social { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid #555; color: #f4f1ea; transition: background 0.15s, color 0.15s, border-color 0.15s; }
                 .pf-social:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-                .pf-contact__channel { margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+                .pf-contact__channel { margin-top: 6px; padding-top: 16px; border-top: 1px solid #333; font-size: 13px; color: #bdb8ae; line-height: 1.6; }
                 .pf-contact__channel a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 
                 @media (max-width: 640px) {
@@ -308,7 +319,7 @@ export default function PortfolioClients() {
                     .pf-stat__num { font-size: 28px; }
                 }
 
-                .pf-page :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+                .pf-page :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
                 @media (prefers-reduced-motion: reduce) { .pf-page * { transition: none !important; animation: none !important; } }
             `}</style>
 
@@ -341,9 +352,12 @@ export default function PortfolioClients() {
                                 <a href={CALL_URL} target="_blank" rel="noopener noreferrer" className="pf-btn pf-btn--lg">
                                     <Calendar size={14} /> Book a free call
                                 </a>
+                                <Link href="/bc/about" className="pf-btn pf-btn--lg">
+                                    <User size={14} /> About me
+                                </Link>
                             </div>
                             <p className="pf-hero__reply">
-                                <Check size={13} /> Free quote <span>·</span> Reply within 24 hours <span>·</span> No commitment
+                                <Check /> Free quote <span>·</span> Reply within 24 hours <span>·</span> No commitment
                             </p>
 
                             <div className="pf-stats">
@@ -380,8 +394,42 @@ export default function PortfolioClients() {
                     </div>
                 </div>
 
-                {/* ── SERVICES ── */}
+                {/* ── ABOUT ── */}
                 <section id="about" className="pf-section">
+                    <div className="pf-wrap">
+                        <div className="pf-about">
+                            <div className="pf-about__img">
+                                <img src="/sirb.png" alt="Sir Brown AD" />
+                            </div>
+                            <div>
+                                <div className="pf-kicker"><b>Who you&apos;ll work with</b></div>
+                                <h2 className="pf-about__title">
+                                    One developer. <em>Your whole project.</em>
+                                </h2>
+                                <p className="pf-about__text">
+                                    I build secure web platforms for Nigeria and Africa, and I write about fraud and web
+                                    security on my blog. I run my own live products, so I know what it takes to keep a site
+                                    fast, safe and working after launch.
+                                </p>
+                                <div className="pf-about__meta">
+                                    <span><MapPin size={13} /> Abuja, Nigeria (remote)</span>
+                                    <span><Check size={13} /> Next.js, Nuxt, Node.js, Firebase</span>
+                                </div>
+                                <div className="pf-about__actions">
+                                    <Link href="/bc/about" className="pf-btn pf-btn--solid">
+                                        Read my full story <ArrowRight size={13} />
+                                    </Link>
+                                    <Link href="/bc/contact" className="pf-btn">
+                                        Start a project
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* ── SERVICES ── */}
+                <section className="pf-section">
                     <div className="pf-wrap">
                         <SectionHead
                             kicker="What I do"
@@ -396,7 +444,7 @@ export default function PortfolioClients() {
                                     <p className="pf-service__body">{s.body}</p>
                                     <ul className="pf-service__points">
                                         {s.points.map((p) => (
-                                            <li key={p}><Check size={13} /> {p}</li>
+                                            <li key={p}><Check /> {p}</li>
                                         ))}
                                     </ul>
                                 </article>
@@ -418,7 +466,7 @@ export default function PortfolioClients() {
                                 <a key={p.title} href={p.link} target="_blank" rel="noopener noreferrer" className="pf-proj">
                                     <div className="pf-proj__media">
                                         <img src={p.image} alt={p.title} loading="lazy" />
-                                        <span className="pf-proj__chip">{p.kind}</span>
+                                        <span className="pf-chip">{p.kind}</span>
                                     </div>
                                     <div className="pf-proj__body">
                                         <h3 className="pf-proj__title">{p.title}</h3>
@@ -451,6 +499,9 @@ export default function PortfolioClients() {
                         <div className="pf-more">
                             <Link href="/bc/projects" className="pf-btn">
                                 All projects <ArrowRight size={13} />
+                            </Link>
+                            <Link href="/bc/about" className="pf-btn pf-btn--solid">
+                                <User size={13} /> About me
                             </Link>
                         </div>
                     </div>
@@ -526,7 +577,7 @@ export default function PortfolioClients() {
                                             ) : (
                                                 <div className="pf-post__ph" />
                                             )}
-                                            {a.category && <span className="pf-post__chip">{a.category}</span>}
+                                            {a.category && <span className="pf-chip">{a.category}</span>}
                                         </div>
                                         <div className="pf-post__body">
                                             <h3 className="pf-post__title">{a.title}</h3>
@@ -552,7 +603,7 @@ export default function PortfolioClients() {
                 <section id="contact" className="pf-wrap pf-contact">
                     <div className="pf-contact__card">
                         <div>
-                            <div className="pf-kicker">Let&apos;s talk</div>
+                            <div className="pf-contact__kicker">Let&apos;s talk</div>
                             <h2 className="pf-contact__title">
                                 Got an idea? Let&apos;s turn it into a <em>working product.</em>
                             </h2>
@@ -580,11 +631,13 @@ export default function PortfolioClients() {
                             <a href={`mailto:${EMAIL}`} className="pf-btn pf-btn--lg">
                                 Send an email <Mail size={14} />
                             </a>
+                            <Link href="/bc/about" className="pf-btn pf-btn--lg">
+                                About me <User size={14} />
+                            </Link>
                             <div className="pf-contact__socials">
                                 <a href="https://github.com/Brown-Oziomachi" target="_blank" rel="noopener noreferrer" className="pf-social" aria-label="GitHub"><Github size={16} /></a>
                                 <a href="https://www.linkedin.com/in/brownoziomachi72a5a3229" target="_blank" rel="noopener noreferrer" className="pf-social" aria-label="LinkedIn"><Linkedin size={16} /></a>
                                 <Link href="/cv" className="pf-social" aria-label="Resume"><Download size={16} /></Link>
-                                <Link href="/bc/about" className="pf-social" aria-label="About me"><ArrowUpRight size={16} /></Link>
                             </div>
                             <p className="pf-contact__channel">
                                 Prefer to follow along first?{" "}
@@ -594,6 +647,8 @@ export default function PortfolioClients() {
                         </div>
                     </div>
                 </section>
+
+                <div style={{ height: 80 }} />
 
                 <Footer />
 

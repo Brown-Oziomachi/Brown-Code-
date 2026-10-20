@@ -1,9 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
     ArrowLeft,
-    ExternalLink,
+    ArrowRight,
+    ArrowUpRight,
     Cpu,
     Network,
     Globe,
@@ -70,209 +71,143 @@ const UtilCard = ({ job, index }) => {
             </div>
             <div className="util-card__title-row">
                 <div className="util-card__icon">
-                    <Icon size={15} />
+                    <Icon size={16} />
                 </div>
                 <h3 className="util-card__title">{job.title}</h3>
             </div>
             <p className="util-card__desc">{job.description}</p>
             <div className="util-card__cta">
-                REDIRECT_TO_TARGET()
-                <ExternalLink size={10} />
+                Redirect to target <ArrowUpRight size={12} />
             </div>
         </a>
     );
 };
 
 export default function JobsClient() {
-    const router = useRouter();
-
     return (
         <>
             <style>{`
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+                @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
-        :root {
-          --bg:         #0a0a0b;
-          --surface:    #111113;
-          --border:     #1e1e22;
-          --border-hi:  #2e2e34;
-          --text-1:     #f4f4f5;
-          --text-2:     #a1a1aa;
-          --text-3:     #52525b;
-          --accent:     #e8ff47;
-          --accent-dim: rgba(232,255,71,0.08);
-          --radius:     6px;
-          --font-serif: 'DM Serif Display', Georgia, serif;
-          --font-sans:  'Inter', system-ui, sans-serif;
-          --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
-        }
+                .jp-page {
+                    --paper: #ffffff; --paper-2: #f6f5f0;
+                    --ink: #111111; --ink-2: #3f3f3f; --ink-3: #6f6f6f;
+                    --rule: #e4e2da; --rule-dark: #111111;
+                    --accent: #e8ff47; --on-accent: #0a0a0b;
+                    --serif: 'Playfair Display', Georgia, serif;
+                    --sans: 'Inter', system-ui, sans-serif;
+                    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+                    background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh;
+                }
+                .jp-page *, .jp-page *::before, .jp-page *::after { box-sizing: border-box; }
+                .jp-page h1, .jp-page h2, .jp-page h3, .jp-page p { margin: 0; padding: 0; }
+                :where(.jp-page a) { color: inherit; text-decoration: none; }
+                .jp-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 
-        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+                /* Nav */
+                .jp-nav { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.92); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 1px solid var(--rule); }
+                .jp-nav__inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+                .jp-nav__brand { font-family: var(--serif); font-weight: 800; font-size: 21px; letter-spacing: -0.01em; }
+                .jp-nav__brand em { font-style: normal; background: var(--accent); padding: 0 3px; }
+                .jp-nav__links { display: flex; align-items: center; gap: 4px; }
+                .jp-nav__link { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); padding: 8px 12px; transition: color 0.15s; }
+                .jp-nav__link:hover, .jp-nav__link--on { color: var(--ink); }
+                .jp-nav__link--on { box-shadow: inset 0 -3px 0 var(--accent); }
+                @media (max-width: 700px) { .jp-nav__hide { display: none; } }
 
-        .jp-page { font-family: var(--font-sans); background: var(--bg); color: var(--text-1); min-height: 100vh; }
+                /* Buttons */
+                .jp-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; padding: 13px 20px; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: background 0.15s, color 0.15s, transform 0.15s; }
+                .jp-btn:hover { background: var(--ink); color: #fff; transform: translateY(-1px); }
+                .jp-btn--solid { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+                .jp-btn--solid:hover { background: var(--ink); color: var(--accent); }
+                .jp-btn--sm { padding: 9px 14px; }
 
-        /* Nav */
-        .jp-nav {
-          position: sticky; top: 0; z-index: 100;
-          background: rgba(10,10,11,0.92);
-          backdrop-filter: blur(12px);
-          border-bottom: 1px solid var(--border);
-          padding: 0 24px; height: 56px;
-          display: flex; align-items: center; justify-content: space-between;
-        }
-        .jp-nav__brand { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; color: var(--text-1); text-decoration: none; }
-        .jp-nav__brand em { font-style: normal; color: var(--accent); }
-        .jp-nav__back {
-          display: inline-flex; align-items: center; gap: 6px;
-          font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
-          color: var(--text-2); text-decoration: none;
-          padding: 6px 12px; border: 1px solid var(--border); border-radius: var(--radius);
-          transition: color 0.15s, border-color 0.15s, background 0.15s;
-        }
-        .jp-nav__back:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
+                /* Masthead */
+                .jp-masthead { padding-top: 64px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+                @media (max-width: 700px) { .jp-masthead { padding-top: 40px; } }
+                .jp-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 10px; }
+                .jp-kicker b { background: var(--accent); color: var(--on-accent); padding: 2px 7px; font-weight: 500; }
+                .jp-masthead__title { font-family: var(--serif); font-weight: 800; font-size: clamp(40px, 7.5vw, 88px); line-height: 0.98; letter-spacing: -0.03em; }
+                .jp-masthead__title span { background: linear-gradient(transparent 64%, var(--accent) 64%); }
+                .jp-masthead__desc { font-size: 15px; line-height: 1.7; font-weight: 300; color: var(--ink-2); max-width: 360px; }
 
-        /* Main */
-        .jp-main { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+                /* Section head */
+                .jp-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 12px; border-top: 3px solid var(--rule-dark); margin: 64px 0 28px; }
+                .jp-h2 { font-family: var(--serif); font-weight: 800; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.01em; }
+                .jp-head__note { font-size: 14px; line-height: 1.6; color: var(--ink-2); max-width: 380px; }
 
-        /* Masthead */
-        .jp-masthead {
-          display: flex; align-items: flex-end; justify-content: space-between;
-          gap: 16px; padding: 52px 0 32px;
-          border-bottom: 1px solid var(--border); margin-bottom: 36px;
-        }
-        @media (max-width: 700px) {
-          .jp-masthead { flex-direction: column; align-items: flex-start; }
-          .jp-masthead__desc { text-align: left; }
-        }
-        .jp-masthead__eyebrow { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
-        .jp-masthead__title { font-family: var(--font-serif); font-size: clamp(36px, 5vw, 60px); font-weight: 400; line-height: 1.05; color: var(--text-1); }
-        .jp-masthead__desc { font-size: 13px; color: var(--text-2); line-height: 1.6; max-width: 320px; text-align: right; }
+                /* Grid + card */
+                .util-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 64px; }
+                @media (max-width: 960px) { .util-grid { grid-template-columns: 1fr 1fr; } }
+                @media (max-width: 600px) { .util-grid { grid-template-columns: 1fr; } }
 
-        /* Section label */
-        .jp-section-label {
-          font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
-          text-transform: uppercase; color: var(--text-3);
-          display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
-        }
-        .jp-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+                .util-card {
+                    display: flex; flex-direction: column; gap: 12px; padding: 18px;
+                    background: #fff; border: 1px solid var(--rule); border-radius: 6px;
+                    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+                    animation: jpFadeUp 0.4s ease-out both;
+                }
+                .util-card:hover { border-color: var(--ink); box-shadow: 4px 4px 0 var(--accent), 4px 4px 0 1px var(--ink); transform: translate(-2px, -2px); }
+                @keyframes jpFadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Tag */
-        .util-tag {
-          display: inline-block;
-          font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em;
-          text-transform: uppercase; padding: 2px 7px; border-radius: 3px;
-          background: var(--accent-dim); color: var(--accent);
-          border: 1px solid rgba(232,255,71,0.2); line-height: 1;
-        }
+                .util-card__meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
+                .util-card__id { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; color: var(--ink-3); }
+                .util-tag { font-family: var(--mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 2px 7px; }
 
-        /* Grid */
-        .util-grid {
-          display: grid; grid-template-columns: repeat(3, 1fr);
-          gap: 1px; background: var(--border);
-          border: 1px solid var(--border); border-radius: var(--radius);
-          overflow: hidden; margin-bottom: 56px;
-        }
-        @media (max-width: 900px) { .util-grid { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 600px) { .util-grid { grid-template-columns: 1fr; } }
+                .util-card__title-row { display: flex; align-items: center; gap: 10px; }
+                .util-card__icon { flex-shrink: 0; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; background: var(--paper-2); border: 1px solid var(--rule); border-radius: 4px; color: var(--ink); }
+                .util-card__title { font-family: var(--serif); font-weight: 800; font-size: 18px; line-height: 1.25; }
+                .util-card__desc { font-size: 13px; color: var(--ink-2); line-height: 1.65; flex: 1; }
 
-        /* Card */
-        .util-card {
-          display: flex; flex-direction: column; gap: 12px;
-          background: var(--surface); text-decoration: none;
-          padding: 20px; position: relative; overflow: hidden;
-          transition: background 0.15s;
-          animation: jpFadeUp 0.4s ease-out both;
-        }
-        .util-card:hover { background: #141417; }
-        .util-card::before {
-          content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-          width: 2px; background: var(--accent);
-          transform: scaleY(0); transform-origin: bottom;
-          transition: transform 0.2s ease; z-index: 5;
-        }
-        .util-card:hover::before { transform: scaleY(1); }
-        @keyframes jpFadeUp {
-          from { opacity: 0; transform: translateY(10px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
+                .util-card__cta { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; font-weight: 500; color: var(--ink); }
+                .util-card:hover .util-card__cta { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--accent); text-decoration-thickness: 3px; }
 
-        .util-card__meta {
-          display: flex; align-items: center; justify-content: space-between;
-          padding-bottom: 12px; border-bottom: 1px solid var(--border);
-        }
-        .util-card__id { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.1em; color: var(--text-3); text-transform: uppercase; }
+                /* Footer */
+                .jp-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 32px 0 72px; border-top: 1px solid var(--rule); }
+                .jp-footer__info { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--ink-3); }
+                .jp-footer__actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-        .util-card__title-row { display: flex; align-items: flex-start; gap: 10px; }
-
-        .util-card__icon {
-          flex-shrink: 0; width: 30px; height: 30px;
-          display: flex; align-items: center; justify-content: center;
-          background: var(--bg); border: 1px solid var(--border);
-          border-radius: 4px; color: var(--text-3);
-          transition: color 0.15s, border-color 0.15s;
-        }
-        .util-card:hover .util-card__icon { color: var(--accent); border-color: rgba(232,255,71,0.3); }
-
-        .util-card__title {
-          font-family: var(--font-serif); font-size: 17px; font-weight: 400;
-          line-height: 1.3; color: var(--text-1); transition: color 0.15s; padding-top: 4px;
-        }
-        .util-card:hover .util-card__title { color: #fff; }
-
-        .util-card__desc { font-size: 12px; color: var(--text-2); line-height: 1.6; flex: 1; }
-
-        .util-card__cta {
-          display: flex; align-items: center; justify-content: center; gap: 6px;
-          padding: 8px 0; font-family: var(--font-mono); font-size: 10px;
-          letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3);
-          border: 1px solid var(--border); border-radius: var(--radius);
-          transition: color 0.15s, border-color 0.15s, background 0.15s;
-          margin-top: 4px;
-        }
-        .util-card:hover .util-card__cta { color: var(--accent); border-color: rgba(232,255,71,0.25); background: var(--accent-dim); }
-
-        /* Footer */
-        .jp-footer {
-          display: flex; flex-wrap: wrap; align-items: center;
-          justify-content: space-between; gap: 12px;
-          padding-top: 40px; margin-top: 8px; border-top: 1px solid var(--border);
-        }
-        .jp-footer__info { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); letter-spacing: 0.06em; }
-        .jp-footer__actions { display: flex; gap: 10px; flex-wrap: wrap; }
-
-        .jp-btn {
-          font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
-          padding: 8px 16px; border-radius: var(--radius);
-          border: 1px solid var(--border); background: transparent; color: var(--text-2);
-          cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-          transition: color 0.15s, border-color 0.15s, background 0.15s; text-decoration: none;
-        }
-        .jp-btn:hover { color: var(--text-1); border-color: var(--border-hi); background: var(--surface); }
-        .jp-btn--accent { border-color: rgba(232,255,71,0.3); color: var(--accent); background: var(--accent-dim); }
-        .jp-btn--accent:hover { background: rgba(232,255,71,0.15); border-color: rgba(232,255,71,0.5); color: var(--accent); }
-      `}</style>
+                @media (max-width: 640px) { .jp-wrap, .jp-nav__inner { padding-left: 18px; padding-right: 18px; } }
+                .jp-page :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+                @media (prefers-reduced-motion: reduce) { .jp-page * { transition: none !important; animation: none !important; } }
+            `}</style>
 
             <div className="jp-page">
-                <nav className="jp-nav">
-                    <a href="/" className="jp-nav__brand">brown<em>.</em>dev</a>
-                    <a href="/portfolio" className="jp-nav__back">
-                        <ArrowLeft size={13} />
-                        Portfolio
-                    </a>
-                </nav>
+                <header className="jp-nav">
+                    <div className="jp-nav__inner">
+                        <Link href="/" className="jp-nav__brand">brown<em>.</em>dev</Link>
+                        <nav className="jp-nav__links" aria-label="Main">
+                            <Link href="/bc/about" className="jp-nav__link jp-nav__hide">About</Link>
+                            <Link href="/portfolio" className="jp-nav__link jp-nav__link--on">Portfolio</Link>
+                            <Link href="/blog" className="jp-nav__link jp-nav__hide">Blog</Link>
+                            <Link href="/bc/contact" className="jp-btn jp-btn--solid jp-btn--sm">
+                                Start a project <ArrowRight size={12} />
+                            </Link>
+                        </nav>
+                    </div>
+                </header>
 
-                <main className="jp-main">
+                <main className="jp-wrap">
                     <header className="jp-masthead">
                         <div>
-                            <p className="jp-masthead__eyebrow">Utilities</p>
-                            <h1 className="jp-masthead__title">Career &amp;<br />Pipeline Gateways</h1>
+                            <div className="jp-kicker"><b>Utilities</b></div>
+                            <h1 className="jp-masthead__title">
+                                Career &amp;<br /><span>Pipeline Gateways</span>
+                            </h1>
                         </div>
                         <p className="jp-masthead__desc">
                             Direct connections to external automation layers, career enhancement toolsets, and development resource instances.
                         </p>
                     </header>
 
-                    <p className="jp-section-label">External interfaces</p>
+                    <div className="jp-head">
+                        <div>
+                            <div className="jp-kicker">Tools</div>
+                            <h2 className="jp-h2">External interfaces</h2>
+                        </div>
+                        <p className="jp-head__note">Tools I use and recommend. Some links are affiliate links.</p>
+                    </div>
+
                     <div className="util-grid">
                         {jobOptions.map((job, i) => (
                             <UtilCard key={job.id} job={job} index={i} />
@@ -282,13 +217,12 @@ export default function JobsClient() {
                     <footer className="jp-footer">
                         <span className="jp-footer__info">brown.dev — utilities &amp; tools</span>
                         <div className="jp-footer__actions">
-                            <button className="jp-btn jp-btn--accent" onClick={() => router.push("/bc/contact")}>
+                            <Link href="/bc/contact" className="jp-btn jp-btn--solid jp-btn--sm">
                                 Get in touch
-                            </button>
-                            <button className="jp-btn" onClick={() => router.push("/portfolio")}>
-                                <ArrowLeft size={13} />
-                                Portfolio
-                            </button>
+                            </Link>
+                            <Link href="/portfolio" className="jp-btn jp-btn--sm">
+                                <ArrowLeft size={13} /> Portfolio
+                            </Link>
                         </div>
                     </footer>
                 </main>
