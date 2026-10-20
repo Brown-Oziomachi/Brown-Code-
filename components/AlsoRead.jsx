@@ -21,7 +21,7 @@ export default function AlsoRead({ items }) {
           font-weight: 600;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: var(--accent);
+          color: black;
           margin-bottom: 12px;
           padding-bottom: 12px;
           border-bottom: 1px dashed var(--border-hi);
@@ -52,7 +52,7 @@ export default function AlsoRead({ items }) {
       `}</style>
 
       <div className="ar-box">
-        <div className="ar-box__label">Also Read</div>
+        <div className="ar-box__label">New Updates</div>
         <div className="ar-list">
           {items.map((item) => (
             <a key={item.slug} href={`/blog/${item.slug}`} className="ar-item">

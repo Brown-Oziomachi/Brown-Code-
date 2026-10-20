@@ -83,7 +83,7 @@ const engines = [
     },
     {
         name: "Bing",
-        status: "Indexing",
+        status: "Indexed",
         live: false,
         desc: "100 URLs discovered via IndexNow.",
         detail: "IndexNow active · Webmaster Tools verified",

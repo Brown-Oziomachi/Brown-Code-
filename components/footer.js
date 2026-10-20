@@ -9,16 +9,17 @@ export default function Footer() {
         { label: "Portfolio", href: "/portfolio" },
         { label: "About Me", href: "/bc/about" },
         { label: "Blog", href: "/blog" },
+        { label: "Jobs", href: "/jobs" },
         { label: "Newsletter", href: "/newsletter" },
         { label: "Tech News", href: "/tech-news" },
         { label: "FAQ", href: "/faq" },
-        { label: "Jobs", href: "/jobs" },
     ];
 
     const work = [
         { label: "Contact Me", href: "/bc/contact" },
         { label: "Advertise", href: "/advertise" },
         { label: "Services", href: "/services" },
+        { label: "Get a Website", href: "/get-a-website" },
         { label: "Sponsor", href: "https://github.com/sponsors/Brown-Oziomachi/", external: true },
     ];
 

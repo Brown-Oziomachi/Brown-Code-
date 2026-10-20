@@ -1,8 +1,10 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MessageCircle } from "lucide-react";
 import Footer from "@/components/footer";
 import NewsletterForm from "@/components/NewsletterForm";
 import SocialLinks from "@/components/SocialLinks";
+import NewspaperStack from "@/components/NewspaperStack";
+import { waLink } from "@/lib/newsletter-config";
 
 export const metadata = {
     title: "Newsletter | Fraud Alerts, Web Security and Building in Public",
@@ -15,6 +17,13 @@ const beats = [
     ["Fraud and scam awareness", "How scams work, how to spot them and where to report them in Nigeria, written so anyone can act on it."],
     ["Web security", "Practical notes on securing real apps: access rules, server-side writes, payments and the mistakes that cause breaches."],
     ["Building in public", "What broke in production, how I traced it and what I changed."],
+];
+
+const faqs = [
+    ["Is it free?", "Yes. Joining and reading are free."],
+    ["How often will I get an email?", "You get an email when a new article goes up, so nothing lands in your inbox just to fill space."],
+    ["Do you share my email address?", "No. Your email is used only to send you the newsletter."],
+    ["Can I leave whenever I want?", "Yes. Every email has an unsubscribe link."],
 ];
 
 const CSS = `
@@ -105,6 +114,69 @@ const CSS = `
 .nl-social .sl-text b { font-family: var(--serif); font-weight: 800; font-size: 16px; }
 .nl-social .sl-text small { font-family: var(--mono); font-size: 11px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+
+/* Extras */
+.nl-narrow { max-width: 760px; }
+.nl-btn--wa { background: #25d366; color: var(--on-accent); font-weight: 600; }
+.nl-btn--wa:hover { background: var(--ink); color: #25d366; }
+.nl-card__alt { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-2); }
+.nl-proof { margin-top: 14px; font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+.nl-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+.nl-band { max-width: 640px; margin: 56px auto 0; background: #fff; border: 1.5px solid var(--ink); border-top: 5px solid var(--accent); box-shadow: 6px 6px 0 var(--accent), 6px 6px 0 1.5px var(--ink); padding: 24px; }
+.nl-band h3 { font-family: var(--serif); font-weight: 800; font-size: 22px; line-height: 1.2; margin-bottom: 6px; }
+.nl-band p { font-size: 14px; line-height: 1.6; color: var(--ink-2); margin-bottom: 16px; }
+
+.nl-quiz { background: #fff; border: 1.5px solid var(--ink); padding: 24px; }
+.nl-quiz__count { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 10px; }
+.nl-quiz__scene { font-family: var(--serif); font-weight: 600; font-size: clamp(18px, 2.4vw, 22px); line-height: 1.4; margin-bottom: 20px; overflow-wrap: anywhere; }
+.nl-quiz__choices, .nl-quiz__actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.nl-quiz__result { margin-top: 18px; padding: 14px 16px; border-left: 4px solid var(--ink); background: var(--paper-2); font-size: 14.5px; line-height: 1.65; color: var(--ink-2); }
+.nl-quiz__result.is-right { border-left-color: #15803d; }
+.nl-quiz__result.is-wrong { border-left-color: #b91c1c; }
+.nl-quiz__result .nl-btn { margin-top: 12px; }
+.nl-quiz__score { font-family: var(--serif); font-weight: 800; font-size: 56px; line-height: 1; margin: 4px 0 12px; }
+.nl-quiz__why { font-size: 15px; line-height: 1.7; color: var(--ink-2); margin-bottom: 20px; }
+
+.nl-check { background: #fff; border: 1.5px solid var(--ink); padding: 8px 24px 20px; }
+.nl-check__list { list-style: none; margin: 0; padding: 0; }
+.nl-check__list li { border-bottom: 1px solid var(--rule); }
+.nl-check__row { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; font-size: 15px; line-height: 1.55; color: var(--ink-2); cursor: pointer; }
+.nl-check__row input { width: 20px; height: 20px; margin: 2px 0 0; flex-shrink: 0; accent-color: var(--ink); cursor: pointer; }
+.nl-check__foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-top: 18px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); }
+
+.nl-mail { max-width: 640px; background: #fff; border: 1.5px solid var(--ink); box-shadow: 8px 8px 0 var(--accent), 8px 8px 0 1.5px var(--ink); }
+.nl-mail__bar { padding: 14px 20px; border-bottom: 1px solid var(--ink); background: var(--paper-2); font-size: 13px; line-height: 1.7; color: var(--ink-2); }
+.nl-mail__bar b { font-weight: 600; color: var(--ink); }
+.nl-mail__body { padding: 22px 20px 24px; }
+.nl-mail__body h3 { font-family: var(--serif); font-weight: 800; font-size: 22px; line-height: 1.2; margin-bottom: 12px; }
+.nl-mail__body p { font-size: 14.5px; line-height: 1.7; color: var(--ink-2); margin-bottom: 12px; }
+.nl-mail__body p:last-child { margin-bottom: 0; }
+.nl-mail__tip { border-left: 4px solid var(--accent); padding-left: 12px; color: var(--ink); }
+
+.nl-author { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 22px; align-items: start; max-width: 760px; }
+.nl-author__mark { width: 88px; height: 88px; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--ink); background: var(--accent); font-family: var(--serif); font-weight: 800; font-size: 32px; }
+.nl-author p { font-size: 15.5px; line-height: 1.75; color: var(--ink-2); margin-bottom: 12px; }
+.nl-author a.nl-link { font-family: var(--mono); font-size: 12px; box-shadow: inset 0 -3px 0 var(--accent); }
+
+.nl-report { max-width: 640px; }
+.nl-report__box { display: block; width: 100%; resize: vertical; min-height: 120px; font-family: var(--sans); line-height: 1.6; }
+.nl-report .nl-form__fine { margin: 10px 0 16px; line-height: 1.6; }
+
+.nl-faq { max-width: 760px; border-top: 1px solid var(--ink); }
+.nl-faq details { border-bottom: 1px solid var(--ink); }
+.nl-faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 0; font-family: var(--serif); font-weight: 800; font-size: 18px; }
+.nl-faq summary::-webkit-details-marker { display: none; }
+.nl-faq summary::after { content: "+"; font-family: var(--mono); font-weight: 400; font-size: 20px; }
+.nl-faq details[open] summary::after { content: "–"; }
+.nl-faq details p { padding: 0 0 18px; font-size: 15px; line-height: 1.7; color: var(--ink-2); max-width: 620px; }
+
+@media (max-width: 640px) {
+  .nl-author { grid-template-columns: 1fr; gap: 14px; }
+  .nl-quiz, .nl-band { padding: 20px 16px; }
+  .nl-check { padding: 4px 16px 16px; }
+}
+
 .nl-end { height: 72px; }
 @media (max-width: 640px) { .nl-wrap { padding-left: 18px; padding-right: 18px; } .nl-section { padding-top: 64px; } .nl-card { padding: 22px 18px; } }
 .nl-page :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
@@ -146,11 +218,42 @@ export default function NewsletterPage() {
                             </p>
                         </div>
 
-                        <div className="nl-card">
+                        <div className="nl-card" id="join">
                             <h2 className="nl-card__title">Join the list</h2>
                             <p className="nl-card__sub">Enter your email and I&apos;ll send you new articles as they go up.</p>
                             <NewsletterForm />
+                           
+                            <div className="nl-card__alt">
+                                <span>Rather use WhatsApp?</span>
+                                <a
+                                    className="nl-btn nl-btn--wa nl-btn--sm"
+                                    href={waLink("Hello, please add me to the scam alert list.")}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <MessageCircle size={14} /> Message me
+                                </a>
+                            </div>
                         </div>
+                    </section>
+
+                    {/* Newspaper */}
+                    <section className="nl-wrap nl-section" aria-label="Latest from the newsletter">
+                        <div className="nl-head">
+                            <div>
+                                <div className="nl-kicker">The paper</div>
+                                <h2 className="nl-h2">Flip through the latest editions</h2>
+                            </div>
+                            <p className="nl-head__note">Every story below is a full article. Tap one to read it.</p>
+                        </div>
+                        <NewspaperStack />
+
+                        <div className="nl-band">
+                            <h3>Don&apos;t miss the next edition</h3>
+                            <p>New fraud warnings go straight to your inbox the day they are published.</p>
+                            <NewsletterForm />
+                        </div>
+                     
                     </section>
 
                     {/* What you get */}
@@ -168,6 +271,102 @@ export default function NewsletterPage() {
                                     <p>{body}</p>
                                 </div>
                             ))}
+                        </div>
+                    </section>
+
+                    {/* Sample email */}
+                    <section className="nl-wrap nl-section" aria-label="Sample email">
+                        <div className="nl-head">
+                            <div>
+                                <div className="nl-kicker">Inside the inbox</div>
+                                <h2 className="nl-h2">What an email looks like</h2>
+                            </div>
+                        </div>
+                        <div className="nl-mail">
+                            <div className="nl-mail__bar">
+                                <div><b>From:</b> Sir-AD Blog</div>
+                                <div><b>Subject:</b> The fake alert that costs agents the most</div>
+                            </div>
+                            <div className="nl-mail__body">
+                                <h3>Your POS terminal does not lie</h3>
+                                <p>A scammer shows a credit alert, you release the goods, and the money never arrives. This week: how the fake alert works and the one check that stops it.</p>
+                                <p className="nl-mail__tip">Check your own balance before you release anything.</p>
+                                <p>Read the full story, then forward it to one person who handles money for a living.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* About the writer */}
+                    <section className="nl-wrap nl-section" aria-label="About the writer">
+                        <div className="nl-head">
+                            <div>
+                                <div className="nl-kicker">The writer</div>
+                                <h2 className="nl-h2">Who writes this</h2>
+                            </div>
+                        </div>
+                        <div className="nl-author">
+                            <div className="nl-author__mark" aria-hidden="true">
+                                <img src="/sirb.png" alt="Sir Brown AD" width={88} height={88} />
+                            </div>
+                            <div>
+                                <p>
+                                    I&apos;m Sir Brown AD, a full-stack developer in Abuja building platforms for African digital markets.
+                                    I write this newsletter so ordinary people can spot a scam before it costs them money.
+                                </p>
+                                <p>
+                                    I also build Fraud Radar NG, a platform that tracks fraud in Nigeria, so what you read here comes from
+                                    watching real cases.
+                                </p>
+                                <a className="nl-link" href="https://fraudradarng.vercel.app" target="_blank" rel="noopener noreferrer">
+                                    Visit Fraud Radar NG
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Report a scam */}
+                    <section className="nl-wrap nl-section" aria-label="Report a scam">
+                        <div className="nl-head">
+                            <div>
+                                <div className="nl-kicker">Your story</div>
+                                <h2 className="nl-h2">Saw a scam? Tell me.</h2>
+                            </div>
+                            <p className="nl-head__note">The best reports become articles that warn other people.</p>
+                        </div>
+                    </section>
+
+                    {/* FAQ */}
+                    <section className="nl-wrap nl-section" aria-label="Frequently asked questions">
+                        <div className="nl-head">
+                            <div>
+                                <div className="nl-kicker">Questions</div>
+                                <h2 className="nl-h2">Before you join</h2>
+                            </div>
+                        </div>
+                        <div className="nl-faq">
+                            {faqs.map(([q, a]) => (
+                                <details key={q}>
+                                    <summary>{q}</summary>
+                                    <p>{a}</p>
+                                </details>
+                            ))}
+                        </div>
+
+                        <div className="nl-band">
+                            <h3>Read it here before it happens to you</h3>
+                            <p>Join the list, or follow on WhatsApp.</p>
+                            <NewsletterForm />
+                            <div className="nl-card__alt">
+                                <span>Prefer a chat?</span>
+                                <a
+                                    className="nl-btn nl-btn--wa nl-btn--sm"
+                                    href={waLink("Hello, please add me to the scam alert list.")}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <MessageCircle size={14} /> WhatsApp me
+                                </a>
+                            </div>
                         </div>
                     </section>
 

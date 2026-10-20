@@ -366,7 +366,7 @@ const TechnologyClient = () => {
                     <div className="tn-nav__inner">
                         <Link href="/tech-news" className="is-active">Technology</Link>
                         <Link href="/blog">Blog</Link>
-                        <Link href="/blog/topic/fraud-awareness">Fraud Alerts</Link>
+                        <Link href="/newsletter">Fraud Alerts</Link>
                         <Link href="/portfolio">Portfolio</Link>
                         <Link href="/advertise">Advertise</Link>
                     </div>

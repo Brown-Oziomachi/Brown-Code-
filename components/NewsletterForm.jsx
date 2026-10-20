@@ -1,19 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db1 } from "@/config/firebase.config1";
 
 // If your existing NewsletterCapture already saves to a collection, set this to the same name
 const COLLECTION = "newsletter";
+const STORAGE_KEY = "nl_subscribed_email";
 const EMAIL_RE = /^[^\s@/]+@[^\s@/]+\.[^\s@/]{2,}$/;
 
 export default function NewsletterForm() {
   const [email, setEmail] = useState("");
   const [trap, setTrap] = useState(""); // honeypot, real people leave it empty
-  const [status, setStatus] = useState("idle"); // idle | loading | done | error
+  const [status, setStatus] = useState("idle"); // idle | loading | done | exists | error
   const [message, setMessage] = useState("");
+
+  // If this browser already subscribed, skip the form entirely
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(STORAGE_KEY)) setStatus("exists");
+    } catch {
+      /* storage blocked, ignore */
+    }
+  }, []);
+
+  const remember = (value) => {
+    try {
+      localStorage.setItem(STORAGE_KEY, value);
+    } catch {
+      /* storage blocked, ignore */
+    }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -32,21 +50,28 @@ export default function NewsletterForm() {
 
     setStatus("loading");
     try {
+      // The email is the document ID, and your Firestore rules only allow
+      // `create` (update is false). So if this email already exists,
+      // Firestore rejects the write with "permission-denied".
       await setDoc(doc(db1, COLLECTION, clean), {
         email: clean,
         source: "newsletter-page",
         createdAt: serverTimestamp(),
       });
+      remember(clean);
       setStatus("done");
       setEmail("");
     } catch (err) {
+      if (err?.code === "permission-denied") {
+        // Valid email (checked above) + rejected write = already subscribed
+        remember(clean);
+        setEmail("");
+        setStatus("exists");
+        return;
+      }
       console.error(err);
       setStatus("error");
-      setMessage(
-        err?.code === "permission-denied"
-          ? "You may already be on the list. If not, try again later."
-          : "Something went wrong. Please try again.",
-      );
+      setMessage("Something went wrong. Please try again.");
     }
   };
 
@@ -59,6 +84,23 @@ export default function NewsletterForm() {
         <div>
           <strong>You&apos;re on the list.</strong>
           <p>Thanks for subscribing. Watch your inbox.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === "exists") {
+    return (
+      <div className="nl-done" role="status">
+        <span className="nl-done__icon">
+          <Check size={18} />
+        </span>
+        <div>
+          <strong>You&apos;re already subscribed.</strong>
+          <p>
+            This email is already on the list, so there is nothing more to do.
+            Watch your inbox.
+          </p>
         </div>
       </div>
     );
