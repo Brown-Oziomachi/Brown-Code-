@@ -471,7 +471,7 @@ export default function BlogListClient({ articles }) {
                             The <em>Stack</em>
                         </h1>
                         <p className="bl-mast__dek">
-                            Notes on building tech, platforms and businesses across Africa, from the code up.
+                            Notes on tech, fraud awareness, business and faith across Africa, from the code up.
                         </p>
                     </header>
 
