@@ -3,12 +3,13 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 
 export const metadata = {
-  metadataBase: new URL("https://browncode.name.ng"),
+  metadataBase: new URL("https://sirbrownad.name.ng"),
   title: "Brown Code — Full-Stack Software Developer | Portfolio",
   description:
     "Sir Brown AD (Brown Oziomachi) — Full-Stack Software Developer based in Abuja, Nigeria. Specializing in Next.js, Firebase, scalable web systems, and African market payment infrastructure. View projects, blog, and contact.",
   keywords: [
     "Sir Brown AD",
+    "brown.dev",
     "Brown Code",
     "Brown Oziomachi",
     "Brown ad",
@@ -26,7 +27,7 @@ export const metadata = {
   icons: { icon: "/logo.png", shortcut: "/logo.png", apple: "/logo.png" },
 
   alternates: {
-    canonical: "https://browncode.name.ng",
+    canonical: "https://sirbrownad.name.ng",
     types: {
       "application/rss+xml": "https://browncode.name.ng/feed.xml",
     },
@@ -45,14 +46,14 @@ export const metadata = {
   },
 
   openGraph: {
-    title: "Brown Code — Full-Stack Software Developer | browncode.name.ng",
+    title: "Sir Brown AD — Full-Stack Software Developer | sirbrownad.name.ng",
     description:
       "Portfolio of Brown Oziomachi (Sir Brown AD). Professional web applications, distributed platforms, and full-stack architecture for Nigerian and African businesses.",
-    url: "https://browncode.name.ng",
+    url: "https://sirbrownad.name.ng",
     siteName: "Sir Brown AD",
     images: [
       {
-        url: "https://browncode.name.ng/logo.png",
+        url: "https://sirbrownad.name.ng/logo.png",
         width: 1200,
         height: 630,
         alt: "Sir Brown AD Portfolio Preview",
@@ -67,7 +68,7 @@ export const metadata = {
     title: "Brown Code — Full-Stack Software Developer | browncode.name.ng",
     description:
       "Get a professional website built by Sir Brown AD and grow your business or platform online. Based in Abuja, Nigeria.",
-    images: ["https://browncode.name.ng/logo.png"],
+    images: ["https://sirbrownad.name.ng/logo.png"],
   },
 
   verification: {

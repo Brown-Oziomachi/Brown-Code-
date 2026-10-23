@@ -309,35 +309,46 @@ export default function Navbar() {
         }
         .nb-card:hover .nb-card__cta { color: var(--nb-on); background: var(--nb-accent); border-color: var(--nb-ink); }
 
-        /* Drawer */
+        /* Drawer — drops down from the top, content centered */
         .nb-overlay { position: fixed; inset: 0; z-index: 1001; background: rgba(0,0,0,0.45); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
         .nb-drawer {
-          position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 88vw); z-index: 1002;
-          background: #fff; border-left: 1.5px solid var(--nb-ink); display: flex; flex-direction: column;
-          animation: nb-slide 0.22s cubic-bezier(0.16,1,0.3,1) forwards;
+          position: fixed; top: 0; left: 0; right: 0; z-index: 1002;
+          max-height: 100vh; max-height: 100dvh;
+          background: #fff; border-bottom: 1.5px solid var(--nb-ink);
+          box-shadow: 0 24px 48px rgba(0,0,0,0.18);
+          display: flex; flex-direction: column; text-align: center;
+          animation: nb-slide 0.26s cubic-bezier(0.16,1,0.3,1) forwards;
         }
-        @keyframes nb-slide { from { transform: translateX(100%); } to { transform: translateX(0); } }
-        .nb-drawer__head { display: flex; justify-content: space-between; align-items: center; height: 60px; padding: 0 18px; border-bottom: 1px solid var(--nb-rule); }
-        .nb-drawer__close { width: 36px; height: 36px; border: 1.5px solid var(--nb-ink); background: transparent; color: var(--nb-ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
-        .nb-drawer__body { flex: 1; overflow-y: auto; padding: 8px 18px 16px; }
+        @keyframes nb-slide { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+        .nb-drawer__head {
+          display: flex; justify-content: space-between; align-items: center;
+          height: 60px; flex-shrink: 0; padding: 0 18px; border-bottom: 1px solid var(--nb-rule);
+          text-align: left;
+        }
+        .nb-drawer__close {
+          flex-shrink: 0;
+          width: 36px; height: 36px; border: 1.5px solid var(--nb-ink); background: transparent;
+          color: var(--nb-ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+        }
+        .nb-drawer__body { flex: 1; overflow-y: auto; padding: 8px 24px 12px; }
         .nb-drawer__link {
-          display: flex; align-items: center; justify-content: space-between; width: 100%; text-align: left;
+          display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; text-align: center;
           padding: 14px 0; background: none; border: none; border-bottom: 1px solid var(--nb-rule);
           font-family: var(--nb-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
           color: var(--nb-ink-2); text-decoration: none; cursor: pointer; transition: color 0.15s;
         }
         .nb-drawer__link:hover { color: var(--nb-ink); }
-        .nb-drawer__link--active { color: var(--nb-ink); font-weight: 600; box-shadow: inset 4px 0 0 var(--nb-accent); padding-left: 12px; }
+        .nb-drawer__link--active { color: var(--nb-ink); font-weight: 600; box-shadow: inset 0 -3px 0 var(--nb-accent); }
         .nb-drawer__link svg { transition: transform 0.2s; }
         .nb-drawer__link--open svg { transform: rotate(180deg); }
-        .nb-drawer__sub { padding: 6px 0 10px 12px; border-left: 3px solid var(--nb-accent); margin: 6px 0 4px; }
+        .nb-drawer__sub { padding: 8px 0 10px; border-top: 3px solid var(--nb-accent); margin: 0 0 4px; }
         .nb-drawer__sublink {
-          display: block; padding: 10px 0 10px 12px; text-decoration: none; border-bottom: 1px solid var(--nb-rule);
+          display: block; padding: 12px 8px; text-decoration: none; text-align: center; border-bottom: 1px solid var(--nb-rule);
         }
         .nb-drawer__sublink:last-child { border-bottom: none; }
-        .nb-drawer__sublink b { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-family: var(--nb-serif); font-weight: 800; font-size: 15px; color: var(--nb-ink); }
+        .nb-drawer__sublink b { display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--nb-serif); font-weight: 800; font-size: 15px; color: var(--nb-ink); }
         .nb-drawer__sublink span { display: block; margin-top: 3px; font-family: var(--nb-sans); font-size: 11.5px; line-height: 1.5; color: var(--nb-ink-3); }
-        .nb-drawer__foot { padding: 16px 18px 20px; border-top: 1px solid var(--nb-rule); display: flex; flex-direction: column; gap: 10px; }
+        .nb-drawer__foot { flex-shrink: 0; padding: 16px 24px 20px; border-top: 1px solid var(--nb-rule); display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
         .nb-drawer__foot .nb-btn { justify-content: center; }
 
         .nb-shell :focus-visible { outline: 2px solid var(--nb-ink); outline-offset: 2px; }
@@ -349,7 +360,6 @@ export default function Navbar() {
                 <div className="nb-inner">
                     <Link href="/" className="nb-brand" onClick={closeAll}>
                         brown<em>.</em>dev
-                        <span className="nb-brand__tag">SBA-01</span>
                     </Link>
 
                     <nav className="nb-links" aria-label="Main">
@@ -425,7 +435,7 @@ export default function Navbar() {
                 </div>
             )}
 
-            {/* ── Mobile drawer ── */}
+            {/* ── Mobile drawer (drops from the top, centered) ── */}
             {isDrawerOpen && (
                 <>
                     <div className="nb-overlay" onClick={closeAll} />

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { X, Terminal, Radio, Mail, Network } from "lucide-react";
+import { X, Terminal, Mail, Network } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth1 } from "@/config/firebase.config1";
 
@@ -42,23 +42,21 @@ export default function FloatingClient({ onChatOpen }) {
     return (
         <>
             <style>{`
-        :root {
-          --accent:     #e8ff47;
-          --accent-dim: rgba(232,255,71,0.08);
-          --bg:         #0a0a0b;
-          --surface:    #111113;
-          --border:     #1e1e22;
-          --border-hi:  #2e2e34;
-          --text-2:     #a1a1aa;
-          --text-3:     #52525b;
-          --font-mono:  'JetBrains Mono', 'Fira Code', monospace;
-          --radius:     6px;
-        }
-
         .fc-wrap {
+          --fc-card: #ffffff;
+          --fc-card-2: #f6f5f0;
+          --fc-ink: #111111;
+          --fc-ink-2: #3f3f3f;
+          --fc-ink-3: #6f6f6f;
+          --fc-rule: #e4e2da;
+          --fc-accent: #e8ff47;
+          --fc-on: #0a0a0b;
+          --fc-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
           position: fixed; bottom: 24px; right: 24px;
-          z-index: 9999; font-family: var(--font-mono);
+          z-index: 9999; font-family: var(--fc-mono);
         }
+        .fc-wrap *, .fc-wrap *::before, .fc-wrap *::after { box-sizing: border-box; }
 
         .fc-stack { display: flex; flex-direction: column; align-items: flex-end; }
 
@@ -75,77 +73,70 @@ export default function FloatingClient({ onChatOpen }) {
         .fc-action-btn {
           display: flex; align-items: center; justify-content: center;
           width: 44px; height: 44px; border-radius: 50%;
-          border: 1px solid var(--border);
-          background: var(--surface);
-          color: var(--text-3);
+          border: 1.5px solid var(--fc-ink);
+          background: var(--fc-card);
+          color: var(--fc-ink);
+          box-shadow: 0 6px 18px rgba(0,0,0,0.12);
           cursor: pointer; text-decoration: none;
-          transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.15s;
+          transition: color 0.15s, background 0.15s, transform 0.15s, box-shadow 0.15s;
           position: relative;
         }
-
         .fc-action-btn:hover {
-          color: var(--accent);
-          border-color: rgba(232,255,71,0.35);
-          background: var(--accent-dim);
+          color: var(--fc-on);
+          background: var(--fc-accent);
           transform: scale(1.08);
+          box-shadow: 0 8px 22px rgba(0,0,0,0.16);
         }
 
         .fc-action-btn__tooltip {
-          position: absolute; right: 52px;
-          font-family: var(--font-mono); font-size: 9px;
+          position: absolute; right: 54px;
+          font-family: var(--fc-mono); font-size: 9px;
           letter-spacing: 0.08em; text-transform: uppercase;
-          background: var(--bg); color: var(--text-2);
-          border: 1px solid var(--border);
-          padding: 3px 8px; border-radius: var(--radius);
+          background: var(--fc-card); color: var(--fc-ink);
+          border: 1px solid var(--fc-ink);
+          padding: 3px 8px;
           white-space: nowrap; pointer-events: none;
           opacity: 0; transition: opacity 0.15s;
         }
-
         .fc-action-btn:hover .fc-action-btn__tooltip { opacity: 1; }
 
         /* Main trigger */
         .fc-trigger {
           display: flex; align-items: center; justify-content: center;
           width: 52px; height: 52px; border-radius: 50%;
-          background: var(--surface);
-          border: 1px solid var(--border);
-          color: var(--text-2);
+          background: var(--fc-card);
+          border: 1.5px solid var(--fc-ink);
+          color: var(--fc-ink);
+          box-shadow: 0 6px 18px rgba(0,0,0,0.14);
           cursor: pointer; position: relative;
-          transition: color 0.15s, border-color 0.15s, background 0.15s;
+          transition: color 0.15s, background 0.15s, transform 0.15s;
         }
-
         .fc-trigger:hover {
-          color: var(--accent);
-          border-color: rgba(232,255,71,0.35);
-          background: var(--accent-dim);
+          color: var(--fc-on);
+          background: var(--fc-accent);
         }
-
         .fc-trigger--open {
-          color: var(--text-2);
-          border-color: var(--border-hi);
+          background: var(--fc-ink);
+          color: #fff;
         }
-
         .fc-trigger--open:hover {
-          color: var(--text-1);
-          border-color: var(--border-hi);
-          background: var(--surface);
+          background: var(--fc-ink);
+          color: var(--fc-accent);
         }
 
         .fc-ping {
           position: absolute; inset: 0; border-radius: 50%;
-          background: rgba(232,255,71,0.12);
+          background: rgba(232,255,71,0.55);
           animation: fcPing 2s ease-in-out infinite;
+          pointer-events: none;
         }
         @keyframes fcPing {
-          0%, 100% { transform: scale(1); opacity: 0.4; }
+          0%, 100% { transform: scale(1); opacity: 0.6; }
           50% { transform: scale(1.5); opacity: 0; }
         }
 
-        .fc-radio-pulse { animation: fcRadio 2s ease-in-out infinite; }
-        @keyframes fcRadio {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
+        .fc-wrap :focus-visible { outline: 2px solid var(--fc-ink); outline-offset: 3px; }
+        @media (prefers-reduced-motion: reduce) { .fc-wrap * { transition: none !important; animation: none !important; } }
       `}</style>
 
             <div className="fc-wrap">
@@ -177,18 +168,17 @@ export default function FloatingClient({ onChatOpen }) {
                                 <span className="fc-action-btn__tooltip">Email</span>
                             </a>
 
-                            {/* Live chat */}
-                            
+                            {/* Book a meeting */}
                             <a
                                 href="https://cal.com/sir-brown"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="fc-action-btn"
-                                title="Email"
+                                title="Meet With Me"
                             >
                                 <Network size={17} />
                                 <span className="fc-action-btn__tooltip">Meet With Me</span>
                             </a>
-
-                            
                         </div>
                     )}
 

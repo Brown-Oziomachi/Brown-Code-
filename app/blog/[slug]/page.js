@@ -28,7 +28,7 @@ export async function generateMetadata({ params }) {
     meta.metaTitle ||
     (article.title.length > 57
       ? article.title.slice(0, 57) + "..."
-      : `${article.title} | Brown Code`);
+      : `${article.title} | Sir-AD Blog`);
 
   const safeDescription = meta.metaDescription || article.preview.slice(0, 155);
 

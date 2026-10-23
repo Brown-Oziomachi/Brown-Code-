@@ -23,7 +23,7 @@ import { CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
 const getReadingTime = (content) =>
   Math.max(1, Math.ceil((content || "").split(" ").length / 200));
 
-const shareUrl = (slug) => `https://browncode.name.ng/blog/${slug}`;
+const shareUrl = (slug) => `https://sirbrownad.name.ng/blog/${slug}`;
 
 const formatDate = (dateString) => {
   if (!dateString) return null;
@@ -624,7 +624,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
               ) : (
                 <p>
                   This article was originally written and published by{" "}
-                  <a href={shareUrl(article.slug)} className="ap-note__link">brown.dev</a>.
+                  <a href={shareUrl(article.slug)} className="ap-note__link">Sir Brown AD</a>.
                 </p>
               )}
               <Link href="/advertise" className="ap-btn">

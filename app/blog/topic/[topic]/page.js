@@ -14,12 +14,12 @@ export async function generateMetadata({ params }) {
 
     if (!label) {
         return {
-            title: "Topic not found | Brown Code",
+            title: "Topic not found | Sir-AD Blog",
             robots: { index: false, follow: false },
         };
     }
 
-    const title = `${label} Articles | Brown Code`;
+    const title = `${label} Articles | Sir-AD Blog`;
     const description = `Engineering insights, fraud-awareness writing, and deep dives on ${label.toLowerCase()} from Sir Brown AD at Brown Code.`;
     const url = `${SITE_URL}/blog/topic/${topic}`;
 
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }) {
             title,
             description,
             url,
-            siteName: "Brown Code",
+            siteName: "Sir-AD Blog",
             type: "website",
         },
         twitter: {
