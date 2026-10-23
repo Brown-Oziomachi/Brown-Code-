@@ -1,6 +1,9 @@
 import InteractionTracker from "@/components/InteractionTracker";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import InstallPrompt from "@/components/InstallPrompt";
+import Script from "next/script";
 
 export const metadata = {
   metadataBase: new URL("https://sirbrownad.name.ng"),
@@ -24,7 +27,14 @@ export const metadata = {
     "website development Abuja Nigeria",
     "browncode.name.ng",
   ],
-  icons: { icon: "/logo.png", shortcut: "/logo.png", apple: "/logo.png" },
+  icons: { icon: "/logo.png", shortcut: "/logo.png", apple: "/icons/icon-192.png" },
+
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "Sir-AD Blog",
+    statusBarStyle: "default",
+  },
 
   alternates: {
     canonical: "https://sirbrownad.name.ng",
@@ -81,10 +91,23 @@ export const metadata = {
   },
 };
 
+export const viewport = {
+  themeColor: "#ffffff",
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="" suppressHydrationWarning>
+        <Script id="pwa-capture" strategy="beforeInteractive">{`
+          window.addEventListener("beforeinstallprompt", function (e) {
+            e.preventDefault();
+            window.__pwaPrompt = e;
+            window.dispatchEvent(new Event("pwa-install-ready"));
+          });
+        `}</Script>
+        <ServiceWorkerRegister />
+        <InstallPrompt />
         <InteractionTracker />
         <Navbar />
         {children}

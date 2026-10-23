@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Linkedin, Github, Mail, ArrowUpRight, MessageCircle } from "lucide-react";
 import SocialLinks from "@/components/SocialLinks";
+import InstallAppButton from "@/components/InstallAppButton";
 
 export default function Footer() {
     const year = new Date().getFullYear();
@@ -220,6 +221,7 @@ export default function Footer() {
                             <Link href="/advertise" className="ft-btn">
                                 Advertise with us <ArrowUpRight size={13} />
                             </Link>
+                            <InstallAppButton className="ft-btn" />
                         </div>
                     </div>
 
@@ -248,6 +250,7 @@ export default function Footer() {
                             >
                                 <MessageCircle size={13} /> Join my WhatsApp channel
                             </a>
+                            <InstallAppButton className="ft-btn ft-channel" />
                             <div className="ft-socials">
                                 {socials.map((s) => (
                                     <a

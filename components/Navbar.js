@@ -9,6 +9,7 @@ import {
     Sparkles, ArrowUpRight, ArrowRight, MessageCircle,
 } from "lucide-react";
 import { featuredServices } from "@/app/data/services";
+import InstallAppButton from "@/components/InstallAppButton";
 
 /* ── Data ─────────────────────────────────────────────── */
 
@@ -393,6 +394,8 @@ export default function Navbar() {
                             </button>
                         ))}
 
+                        <InstallAppButton className="nb-btn" style={{ marginLeft: 10 }} />
+
                         <Link href="/bc/contact" className="nb-btn nb-btn--solid nb-cta">
                             Start a project <ArrowRight size={12} />
                         </Link>
@@ -509,6 +512,7 @@ export default function Navbar() {
                             <Link href="/bc/contact" className="nb-btn nb-btn--solid" onClick={closeAll}>
                                 Start a project <ArrowRight size={12} />
                             </Link>
+                            <InstallAppButton className="nb-btn" />
                             <a href={CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="nb-btn" onClick={closeAll}>
                                 <MessageCircle size={13} /> Join WhatsApp channel
                             </a>

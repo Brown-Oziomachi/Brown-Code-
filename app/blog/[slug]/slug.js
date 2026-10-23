@@ -17,6 +17,7 @@ import TableOfContents from "@/components/TableOfContents";
 import AlsoRead from "@/components/AlsoRead";
 import NewsletterCapture from "@/components/NewsletterCapture";
 import { CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
+import InstallAppButton from "@/components/InstallAppButton";
 
 /* ── helpers ─────────────────────────────────────────── */
 
@@ -339,7 +340,8 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
         .ap-nav__link:hover { color: var(--ink); }
         .ap-nav__link--box { border: 1.5px solid var(--ink); color: var(--ink); }
         .ap-nav__link--box:hover { background: var(--ink); color: #fff; }
-        @media (max-width: 640px) { .ap-nav__hide { display: none; } }
+        button.ap-nav__link { background: transparent; cursor: pointer; }
+                @media (max-width: 640px) { .ap-nav__hide { display: none; } }
 
         /* Buttons */
         .ap-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; padding: 10px 16px; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: background 0.15s, color 0.15s, transform 0.15s; }
@@ -500,6 +502,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
             <nav className="ap-nav__links" aria-label="Main">
               <Link href="/bc/about" className="ap-nav__link ap-nav__hide">About</Link>
               <Link href="/portfolio" className="ap-nav__link ap-nav__hide">Portfolio</Link>
+              <InstallAppButton className="ap-nav__link ap-nav__link--box ap-nav__hide" />
               <a
                 href="https://github.com/sponsors/Brown-Oziomachi/"
                 target="_blank"
@@ -705,6 +708,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
                 <ArrowLeft size={13} /> All articles
               </button>
               <button className="ap-btn" onClick={() => router.push("/portfolio")}>Portfolio</button>
+              <InstallAppButton className="ap-btn" />
               <button className="ap-btn ap-btn--solid" onClick={() => router.push("/bc/contact")}>
                 Get in touch
               </button>
