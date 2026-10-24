@@ -101,5 +101,14 @@ export async function POST(request) {
         );
     }
 
+    // Only mark as notified if someone actually received it
+    if (sent > 0) {
+        try {
+            await metaRef.set({ url, title, sentAt: new Date().toISOString() });
+        } catch {
+            // not critical
+        }
+    }
+
     return NextResponse.json({ total: docs.length, sent, removed, failed });
 }

@@ -1,0 +1,36 @@
+name: Notify subscribers of new article
+
+on:
+  deployment_status:
+  schedule:
+    - cron: "0 7 * * *" # daily, 08:00 Nigeria time (catches future-dated articles)
+  workflow_dispatch:
+
+concurrency:
+  group: notify
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    if: >
+      github.event_name != 'deployment_status' ||
+      (github.event.deployment_status.state == 'success' &&
+       github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Wait for the domain to point at the new deployment
+        if: github.event_name == 'deployment_status'
+        run: sleep 30
+
+      - name: Send alert for the newest article
+        env:
+          PUSH_ADMIN_SECRET: ${{ secrets.PUSH_ADMIN_SECRET }}
+          SITE_URL: https://www.browncode.name.ng
+          ARTICLES_FILE: data/article.js
+        run: node scripts/notify.mjs
