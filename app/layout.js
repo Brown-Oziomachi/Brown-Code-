@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import InstallPrompt from "@/components/InstallPrompt";
+import PushAlertPrompt from "@/components/PushAlertPrompt";
 import Script from "next/script";
 
 export const metadata = {
@@ -111,6 +112,7 @@ export default function RootLayout({ children }) {
         <InteractionTracker />
         <Navbar />
         {children}
+        <PushAlertPrompt />
       </body>
     </html>
   );
