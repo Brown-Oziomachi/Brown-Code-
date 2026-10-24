@@ -15,7 +15,8 @@ jobs:
     if: >
       github.event_name != 'deployment_status' ||
       (github.event.deployment_status.state == 'success' &&
-       github.event.deployment.environment == 'Production')
+       startsWith(github.event.deployment.environment, 'Production') &&
+       contains(github.event.deployment.environment, 'brown-code-coef'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
