@@ -19,15 +19,7 @@ function authorized(request) {
 
 export async function POST(request) {
     if (!authorized(request)) {
-        const h = request.headers.get("authorization") || "";
-        return NextResponse.json(
-            {
-                error: "Unauthorized",
-                serverSecretLength: (process.env.PUSH_ADMIN_SECRET || "").length,
-                headerLength: h.startsWith("Bearer ") ? h.length - 7 : h.length,
-            },
-            { status: 401 }
-        );
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
@@ -36,7 +28,14 @@ export async function POST(request) {
     if (!publicKey || !privateKey || !subject) {
         return NextResponse.json({ error: "Missing VAPID env vars" }, { status: 500 });
     }
-    webpush.setVapidDetails(subject, publicKey, privateKey);
+    try {
+        webpush.setVapidDetails(subject, publicKey, privateKey);
+    } catch (err) {
+        return NextResponse.json(
+            { error: "Invalid VAPID config", detail: String(err.message || err) },
+            { status: 500 }
+        );
+    }
 
     let body = {};
     try {
@@ -63,8 +62,16 @@ export async function POST(request) {
         tag: url,
     });
 
-    const snap = await adminDb().collection("pushSubscriptions").get();
-    const docs = snap.docs;
+    let docs;
+    try {
+        const snap = await adminDb().collection("pushSubscriptions").get();
+        docs = snap.docs;
+    } catch (err) {
+        return NextResponse.json(
+            { error: "Firestore error", detail: String(err.message || err) },
+            { status: 500 }
+        );
+    }
     let sent = 0;
     let removed = 0;
     let failed = 0;
