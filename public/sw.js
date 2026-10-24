@@ -1,16 +1,22 @@
-const CACHE_NAME = "sir-ad-blog-v4";
+const CACHE_NAME = "sir-ad-blog-v5";
 const OFFLINE_URL = "/offline.html";
-const PRECACHE = [OFFLINE_URL, "/icons/icon-192.png", "/icons/icon-512.png"];
+const PRECACHE = ["/icons/icon-192.png", "/icons/icon-512.png"];
 
 const FALLBACK_HTML = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>You're offline | Sir-AD Blog</title><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;color:#111;font-family:Georgia,serif;text-align:center;padding:24px}h1{font-size:40px;margin:0 0 12px}em{font-style:italic;background:linear-gradient(transparent 62%,#e8ff47 62%)}p{font-family:system-ui,sans-serif;color:#3f3f3f;line-height:1.6}button{margin-top:16px;padding:14px 24px;border:1.5px solid #111;background:#e8ff47;color:#0a0a0b;font-weight:600;cursor:pointer}</style></head><body><div><h1>You&rsquo;re <em>offline</em> right now.</h1><p>Check your connection and try again.</p><button onclick="location.reload()">Try again</button></div></body></html>`;
 
-// Make sure the offline page is stored; safe to call any time
+// Make sure the offline page is stored; safe to call any time.
+// Refuses to cache anything that is not a real HTML page.
 async function ensureOfflinePage() {
     try {
         const cache = await caches.open(CACHE_NAME);
         if (await cache.match(OFFLINE_URL)) return;
         const res = await fetch(new Request(OFFLINE_URL, { cache: "reload" }));
-        if (res && res.ok) await cache.put(OFFLINE_URL, res);
+        const type = res.headers.get("content-type") || "";
+        if (!res.ok || !type.includes("text/html")) return;
+        const body = await res.clone().text();
+        // Never cache a page that contains service worker code
+        if (body.includes("addEventListener(") || body.includes("CACHE_NAME")) return;
+        await cache.put(OFFLINE_URL, res);
     } catch (e) {
         // try again on the next page load
     }
@@ -18,13 +24,16 @@ async function ensureOfflinePage() {
 
 self.addEventListener("install", (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) =>
-            Promise.all(
-                PRECACHE.map((url) =>
-                    cache.add(new Request(url, { cache: "reload" })).catch(() => null)
+        caches
+            .open(CACHE_NAME)
+            .then((cache) =>
+                Promise.all(
+                    PRECACHE.map((url) =>
+                        cache.add(new Request(url, { cache: "reload" })).catch(() => null)
+                    )
                 )
             )
-        )
+            .then(ensureOfflinePage)
     );
     self.skipWaiting();
 });
@@ -98,4 +107,61 @@ self.addEventListener("fetch", (event) => {
             })
         );
     }
+});
+
+/* -- Push notifications -------------------------------- */
+
+self.addEventListener("push", (event) => {
+    let data = {};
+    try {
+        data = event.data ? event.data.json() : {};
+    } catch (e) {
+        data = { body: event.data ? event.data.text() : "" };
+    }
+
+    const title = data.title || "Sir-AD Blog";
+    const options = {
+        body: data.body || "",
+        icon: "/icons/icon-192.png",
+        data: { url: data.url || "/blog" },
+    };
+    if (data.image) options.image = data.image;
+    if (data.tag) options.tag = data.tag;
+
+    event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+    event.notification.close();
+
+    let target = new URL("/blog", self.location.origin);
+    try {
+        const wanted = new URL(
+            (event.notification.data && event.notification.data.url) || "/blog",
+            self.location.origin
+        );
+        // Only ever open pages on our own site
+        if (wanted.origin === self.location.origin) target = wanted;
+    } catch (e) {
+        // keep /blog
+    }
+
+    event.waitUntil(
+        (async () => {
+            const list = await self.clients.matchAll({
+                type: "window",
+                includeUncontrolled: true,
+            });
+            for (const client of list) {
+                if (new URL(client.url).origin === self.location.origin && "focus" in client) {
+                    await client.focus();
+                    if ("navigate" in client) {
+                        try { await client.navigate(target.href); } catch (e) { /* ignore */ }
+                    }
+                    return;
+                }
+            }
+            await self.clients.openWindow(target.href);
+        })()
+    );
 });

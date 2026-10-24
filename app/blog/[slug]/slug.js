@@ -18,6 +18,7 @@ import AlsoRead from "@/components/AlsoRead";
 import NewsletterCapture from "@/components/NewsletterCapture";
 import { CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
 import InstallAppButton from "@/components/InstallAppButton";
+import NotifyButton from "@/components/NotifyButton";
 
 /* ── helpers ─────────────────────────────────────────── */
 
@@ -709,6 +710,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
               </button>
               <button className="ap-btn" onClick={() => router.push("/portfolio")}>Portfolio</button>
               <InstallAppButton className="ap-btn" />
+              <NotifyButton className="ap-btn" />
               <button className="ap-btn ap-btn--solid" onClick={() => router.push("/bc/contact")}>
                 Get in touch
               </button>

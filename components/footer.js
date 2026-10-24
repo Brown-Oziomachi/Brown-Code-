@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Linkedin, Github, Mail, ArrowUpRight, MessageCircle } from "lucide-react";
 import SocialLinks from "@/components/SocialLinks";
 import InstallAppButton from "@/components/InstallAppButton";
+import NotifyButton from "@/components/NotifyButton";
 
 export default function Footer() {
     const year = new Date().getFullYear();
@@ -32,7 +33,7 @@ export default function Footer() {
 
     const builds = [
         { name: "Fraud Radar NG", url: "https://fraudradarng.vercel.app" },
-        { name: "LAN Library", url: "https://learningaccessnetwork.com" },
+        { name: "LAN Library", url: "https://learningaccessnetwork.vercel.app" },
         { name: "TheCyclopedia News", url: "https://www.thecyclopedia.com.ng" },
         { name: "YotaPoint", url: "https://yotapoint.com" },
     ];
@@ -222,6 +223,7 @@ export default function Footer() {
                                 Advertise with us <ArrowUpRight size={13} />
                             </Link>
                             <InstallAppButton className="ft-btn" />
+                            <NotifyButton className="ft-btn" />
                         </div>
                     </div>
 
