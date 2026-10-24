@@ -19,7 +19,15 @@ function authorized(request) {
 
 export async function POST(request) {
     if (!authorized(request)) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const h = request.headers.get("authorization") || "";
+        return NextResponse.json(
+            {
+                error: "Unauthorized",
+                serverSecretLength: (process.env.PUSH_ADMIN_SECRET || "").length,
+                headerLength: h.startsWith("Bearer ") ? h.length - 7 : h.length,
+            },
+            { status: 401 }
+        );
     }
 
     const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
