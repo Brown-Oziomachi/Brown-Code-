@@ -25,6 +25,10 @@ export async function POST(request) {
                 error: "Unauthorized",
                 serverSecretLength: (process.env.PUSH_ADMIN_SECRET || "").length,
                 headerLength: h.startsWith("Bearer ") ? h.length - 7 : h.length,
+                vercelEnv: process.env.VERCEL_ENV || null,
+                visibleVars: Object.keys(process.env).filter((k) =>
+                    /PUSH|VAPID|FIREBASE/.test(k)
+                ),
             },
             { status: 401 }
         );
