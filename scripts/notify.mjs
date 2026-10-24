@@ -13,8 +13,7 @@ const slugArg = args.find((a) => !a.startsWith("--"));
 
 const site = (process.env.SITE_URL || "http://localhost:3000").replace(/\/$/, "");
 const secret = process.env.PUSH_ADMIN_SECRET;
-const file = process.env.ARTICLES_FILE || "data/article.js";
-
+const file = process.env.ARTICLES_FILE || "app/data/article.js";
 if (!secret && !dry) {
     console.error("Missing PUSH_ADMIN_SECRET");
     process.exit(1);

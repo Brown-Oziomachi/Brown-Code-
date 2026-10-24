@@ -33,5 +33,5 @@ jobs:
         env:
           PUSH_ADMIN_SECRET: ${{ secrets.PUSH_ADMIN_SECRET }}
           SITE_URL: https://www.browncode.name.ng
-          ARTICLES_FILE: data/article.js
+          ARTICLES_FILE: app/data/article.js
         run: node scripts/notify.mjs
