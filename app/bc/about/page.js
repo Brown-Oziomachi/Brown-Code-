@@ -61,7 +61,7 @@ const cases = [
         problem: "African students and academics need an affordable place to find, sell and request documents.",
         build: "Seller wallets and withdrawals, Flutterwave payments, a bounty board, boosted listings and an admin panel. Financial writes run on secured server routes.",
         stack: ["Next.js", "Firebase", "Flutterwave", "Node.js"],
-        href: "https://learningaccessnetwork.com",
+        href: "https://learningaccessnetwork.vercel.app",
     },
 ];
 
@@ -495,6 +495,7 @@ export default function AboutMePage() {
 
                         <div className="ab-more">
                             <Link href="/blog" className="ab-btn">Read all articles <ArrowRight size={13} /></Link>
+                            <Link href="/gallery" className="ab-btn">Why I teach fraud awareness <ArrowRight size={13} /></Link>
                             <a href={CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="ab-btn ab-btn--solid">
                                 Join my WhatsApp channel
                             </a>

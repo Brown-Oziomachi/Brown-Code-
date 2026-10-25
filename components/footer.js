@@ -11,6 +11,7 @@ export default function Footer() {
         { label: "Portfolio", href: "/portfolio" },
         { label: "About Me", href: "/bc/about" },
         { label: "Blog", href: "/blog" },
+        { label: "Gallery", href: "/gallery" },
         { label: "Jobs", href: "/jobs" },
         { label: "Newsletter", href: "/newsletter" },
         { label: "Tech News", href: "/tech-news" },

@@ -28,7 +28,11 @@ export const metadata = {
     "website development Abuja Nigeria",
     "browncode.name.ng",
   ],
-  icons: { icon: "/logo.png", shortcut: "/logo.png", apple: "/icons/icon-192.png" },
+  icons: {
+    icon: "/icons/icon-192.png?v=2",
+    shortcut: "/icons/icon-192.png?v=2",
+    apple: "/icons/apple-touch-icon.png?v=2",
+  },
 
   manifest: "/manifest.json",
   appleWebApp: {
@@ -64,7 +68,7 @@ export const metadata = {
     siteName: "Sir Brown AD",
     images: [
       {
-        url: "https://sirbrownad.name.ng/logo.png",
+        url: "https://sirbrownad.name.ng/og-image.jpg?v=3",
         width: 1200,
         height: 630,
         alt: "Sir Brown AD Portfolio Preview",
@@ -79,7 +83,7 @@ export const metadata = {
     title: "Brown Code — Full-Stack Software Developer | browncode.name.ng",
     description:
       "Get a professional website built by Sir Brown AD and grow your business or platform online. Based in Abuja, Nigeria.",
-    images: ["https://sirbrownad.name.ng/logo.png"],
+    images: ["https://sirbrownad.name.ng/og-image.jpg?v=3"],
   },
 
   verification: {
@@ -93,7 +97,7 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#0c192f",
 };
 
 export default function RootLayout({ children }) {

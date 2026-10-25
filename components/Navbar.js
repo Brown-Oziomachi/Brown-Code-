@@ -16,7 +16,7 @@ import InstallAppButton from "@/components/InstallAppButton";
 const CHANNEL_URL = "https://whatsapp.com/channel/0029VbEGWFsC1FuAo5qoPh0q";
 
 const anchorItems = ["home", "about", "projects", "testimonials", "contact"];
-const linkItems = ["blog", "tech-news"];
+const linkItems = ["blog", "gallery", "tech-news"];
 const navItems = [...anchorItems, ...linkItems];
 
 const isLinkItem = (item) => linkItems.includes(item);
@@ -250,7 +250,7 @@ export default function Navbar() {
           align-items: center; justify-content: center;
         }
 
-        @media (max-width: 1100px) {
+               @media (max-width: 1250px) {
           .nb-links { display: none; }
           .nb-burger { display: inline-flex; }
         }
@@ -288,8 +288,8 @@ export default function Navbar() {
           text-transform: uppercase; color: var(--nb-ink); text-decoration: none; background: var(--nb-accent); padding: 8px 12px;
         }
         .nb-mega__viewall:hover { background: var(--nb-ink); color: var(--nb-accent); }
-        @media (max-width: 1100px) { .nb-mega { display: none; } }
-
+        @media (max-width: 1250px) { .nb-mega { display: none; } }
+        
         /* Card */
         .nb-card {
           background: var(--nb-card); border: 1px solid var(--nb-rule-dark); padding: 16px; height: 100%;

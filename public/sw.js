@@ -1,6 +1,6 @@
-const CACHE_NAME = "sir-ad-blog-v5";
+const CACHE_NAME = "sir-ad-blog-v6";
 const OFFLINE_URL = "/offline.html";
-const PRECACHE = ["/icons/icon-192.png", "/icons/icon-512.png"];
+const PRECACHE = ["/icons/icon-192.png?v=2", "/icons/icon-512.png?v=2"];
 
 const FALLBACK_HTML = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>You're offline | Sir-AD Blog</title><style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;color:#111;font-family:Georgia,serif;text-align:center;padding:24px}h1{font-size:40px;margin:0 0 12px}em{font-style:italic;background:linear-gradient(transparent 62%,#e8ff47 62%)}p{font-family:system-ui,sans-serif;color:#3f3f3f;line-height:1.6}button{margin-top:16px;padding:14px 24px;border:1.5px solid #111;background:#e8ff47;color:#0a0a0b;font-weight:600;cursor:pointer}</style></head><body><div><h1>You&rsquo;re <em>offline</em> right now.</h1><p>Check your connection and try again.</p><button onclick="location.reload()">Try again</button></div></body></html>`;
 
@@ -122,7 +122,7 @@ self.addEventListener("push", (event) => {
     const title = data.title || "Sir-AD Blog";
     const options = {
         body: data.body || "",
-        icon: "/icons/icon-192.png",
+        icon: "/icons/icon-192.png?v=2",
         data: { url: data.url || "/blog" },
     };
     if (data.image) options.image = data.image;
