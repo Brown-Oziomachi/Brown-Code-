@@ -496,29 +496,6 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
           <div className="ap-progress__bar" ref={progressRef} />
         </div>
 
-        {/* Nav */}
-        <header className="ap-nav">
-          <div className="ap-nav__inner">
-            <Link href="/" className="ap-nav__brand">brown<em>.</em>dev</Link>
-            <nav className="ap-nav__links" aria-label="Main">
-              <Link href="/bc/about" className="ap-nav__link ap-nav__hide">About</Link>
-              <Link href="/portfolio" className="ap-nav__link ap-nav__hide">Portfolio</Link>
-              <InstallAppButton className="ap-nav__link ap-nav__link--box ap-nav__hide" />
-              <a
-                href="https://github.com/sponsors/Brown-Oziomachi/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ap-nav__link ap-nav__link--box ap-nav__hide"
-              >
-                <Heart size={12} fill="currentColor" /> Sponsor
-              </a>
-              <Link href="/blog" className="ap-nav__link ap-nav__link--box">
-                <ArrowLeft size={12} /> Blog
-              </Link>
-            </nav>
-          </div>
-        </header>
-
         {/* Hero */}
         <header className="ap-wrap ap-hero">
           <span className="ap-chip">{category}</span>

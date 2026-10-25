@@ -274,7 +274,8 @@ export default function BlogListClient({ articles }) {
           --serif: 'Playfair Display', Georgia, serif;
           --sans: 'Inter', system-ui, sans-serif;
           --mono: 'JetBrains Mono', 'Fira Code', monospace;
-          background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh;
+                   background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh;
+          padding-top: 68px;
         }
         .bl-page *, .bl-page *::before, .bl-page *::after { box-sizing: border-box; }
         .bl-page h1, .bl-page h2, .bl-page h3, .bl-page p { margin: 0; }
@@ -437,33 +438,6 @@ export default function BlogListClient({ articles }) {
       `}</style>
 
             <div className="bl-page">
-                {/* ── Nav ── */}
-                <header className="bl-nav">
-                    <div className="bl-nav__inner">
-                        <Link href="/" className="bl-nav__brand">
-                            brown<em>.</em>dev
-                            <span className="bl-nav__tag">SBA-01</span>
-                        </Link>
-                        <button
-                            className="bl-nav__burger"
-                            aria-label="Toggle menu"
-                            aria-expanded={menuOpen}
-                            onClick={() => setMenuOpen((v) => !v)}
-                        >
-                            {menuOpen ? <X size={18} /> : <Menu size={18} />}
-                        </button>
-                        <nav className={`bl-nav__menu${menuOpen ? " bl-nav__menu--open" : ""}`} aria-label="Main">
-                            <Link href="/bc/about" className="bl-nav__link">About</Link>
-                            <Link href="/portfolio" className="bl-nav__link">Portfolio</Link>
-                            <Link href="/blog" className="bl-nav__link bl-nav__link--active">Blog</Link>
-                            <Link href="/tech-news" className="bl-nav__link">Tech News</Link>
-                            <Link href="/bc/contact" className="bl-btn bl-btn--solid bl-nav__cta">
-                                Start a project <ArrowRight size={12} />
-                            </Link>
-                        </nav>
-                    </div>
-                </header>
-
                 <main className="bl-wrap">
                     {/* Masthead */}
                     <header className="bl-mast">

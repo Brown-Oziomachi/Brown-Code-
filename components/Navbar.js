@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { featuredServices } from "@/app/data/services";
 import InstallAppButton from "@/components/InstallAppButton";
+import InstallBanner from "./InstallBanner";
 
 /* ── Data ─────────────────────────────────────────────── */
 
@@ -169,7 +170,7 @@ export default function Navbar() {
     const active = openMenu ? MENUS[openMenu] : null;
 
     return (
-        <div className="nb-shell" ref={shellRef}>
+             <div className="nb-shell" ref={shellRef}>
             <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -190,7 +191,7 @@ export default function Navbar() {
         /* Bar */
         .nb-root {
           position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-          background: rgba(255,255,255,0.92);
+                              background: rgba(255,255,255,0.92);
           -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
           border-bottom: 1px solid var(--nb-rule);
           transition: border-color 0.2s, box-shadow 0.2s;
@@ -242,6 +243,8 @@ export default function Navbar() {
         .nb-btn--solid { background: var(--nb-accent); color: var(--nb-on); font-weight: 600; }
         .nb-btn--solid:hover { background: var(--nb-ink); color: var(--nb-accent); }
         .nb-cta { margin-left: 10px; }
+        .nb-right { display: none; align-items: center; gap: 8px; }
+        .nb-btn--sm { padding: 8px 12px; font-size: 10px; }
 
         /* Burger */
         .nb-burger {
@@ -251,15 +254,16 @@ export default function Navbar() {
         }
 
                @media (max-width: 1250px) {
-          .nb-links { display: none; }
+                    .nb-links { display: none; }
+          .nb-right { display: flex; }
           .nb-burger { display: inline-flex; }
         }
         @media (max-width: 480px) { .nb-brand__tag { display: none; } }
 
         /* Mega panel */
         .nb-mega {
-          position: fixed; left: 0; right: 0; top: var(--nb-h); z-index: 999;
-          background: rgba(255,255,255,0.98); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+          position: fixed; left: 0; right: 0; top: calc(var(--nb-h) + var(--install-bar-h, 0px)); z-index: 999;
+                    background: rgba(255,255,255,0.98); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
           border-bottom: 1.5px solid var(--nb-ink); border-top: 1px solid var(--nb-rule);
           box-shadow: 0 18px 40px rgba(0,0,0,0.08);
           animation: nb-drop 0.18s ease-out;
@@ -289,7 +293,7 @@ export default function Navbar() {
         }
         .nb-mega__viewall:hover { background: var(--nb-ink); color: var(--nb-accent); }
         @media (max-width: 1250px) { .nb-mega { display: none; } }
-        
+
         /* Card */
         .nb-card {
           background: var(--nb-card); border: 1px solid var(--nb-rule-dark); padding: 16px; height: 100%;
@@ -358,6 +362,7 @@ export default function Navbar() {
 
             {/* ── Bar ── */}
             <header className={`nb-root${isScrolled ? " nb-root--scrolled" : ""}`}>
+                <InstallBanner />
                 <div className="nb-inner">
                     <Link href="/" className="nb-brand" onClick={closeAll}>
                         brown<em>.</em>dev
@@ -394,20 +399,21 @@ export default function Navbar() {
                             </button>
                         ))}
 
-                        <InstallAppButton className="nb-btn" style={{ marginLeft: 10 }} />
-
+                        
                         <Link href="/bc/contact" className="nb-btn nb-btn--solid nb-cta">
                             Start a project <ArrowRight size={12} />
                         </Link>
                     </nav>
 
-                    <button
-                        className="nb-burger"
-                        aria-label="Open menu"
-                        onClick={() => { setIsDrawerOpen(true); setOpenMenu(null); }}
-                    >
-                        <Menu size={18} />
-                    </button>
+                    <div className="nb-right">
+                        <button
+                            className="nb-burger"
+                            aria-label="Open menu"
+                            onClick={() => { setIsDrawerOpen(true); setOpenMenu(null); }}
+                        >
+                            <Menu size={18} />
+                        </button>
+                    </div>
                 </div>
             </header>
 
