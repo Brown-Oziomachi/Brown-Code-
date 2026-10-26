@@ -2145,5 +2145,23 @@ export const articlesMeta = {
             "Sir Brown AD",
         ],
     },
+    "scammers-in-my-dms-young-nigerians-asking-to-learn-fraud": {
+        category: "security",
+        metaTitle: "Young Nigerians Asked Me to Teach Them Scams | Sir Brown AD",
+        metaDescription: "Young people keep messaging me on WhatsApp asking to learn fraud, and Search Console shows the same demand. Here is what I refused and how sellers stay safe.",
+        keywords: [
+            "young Nigerians asking to learn scam",
+            "teach me how to scam WhatsApp Nigeria",
+            "opay fake alert app",
+            "opay fake alert",
+            "fake transfer alert opay",
+            "how to spot a fake alert Nigeria",
+            "fake alert scam Nigeria 2026",
+            "insider fraud family business Nigeria",
+            "why young people turn to fraud Nigeria",
+            "how sellers verify bank transfers Nigeria",
+            "Sir Brown AD",
+        ],
+    },
 
 };

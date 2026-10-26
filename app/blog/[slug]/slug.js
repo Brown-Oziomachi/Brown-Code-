@@ -27,6 +27,17 @@ const getReadingTime = (content) =>
 
 const shareUrl = (slug) => `https://sirbrownad.name.ng/blog/${slug}`;
 
+const GOOGLE_SOURCE_URL = "https://www.google.com/preferences/source?q=browncode.name.ng";
+
+const GoogleIcon = ({ size = 18 }) => (
+  <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true">
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+  </svg>
+);
+
 const formatDate = (dateString) => {
   if (!dateString) return null;
   return new Date(dateString).toLocaleDateString("en-US", {
@@ -351,8 +362,8 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
         .ap-btn--solid:hover { background: var(--ink); color: var(--accent); }
 
         /* Hero */
-        .ap-hero { padding-top: 48px; max-width: 880px; }
-        .ap-chip { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 5px 10px; margin-bottom: 20px; border: 1px solid var(--ink); }
+        .ap-hero { padding-top: 120px; max-width: 880px; }
+                .ap-chip { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 5px 10px; margin-bottom: 20px; border: 1px solid var(--ink); }
         .ap-title { font-family: var(--serif); font-weight: 800; font-size: clamp(28px, 4.6vw, 48px); line-height: 1.1; letter-spacing: -0.015em; }
         .ap-dek { margin-top: 22px; font-size: clamp(15px, 1.7vw, 18px); line-height: 1.65; font-weight: 300; color: var(--ink-2); border-left: 3px solid var(--accent); padding-left: 18px; max-width: 720px; }
         .ap-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 30px; padding: 16px 0; border-top: 3px solid var(--rule-dark); border-bottom: 1px solid var(--rule); }
@@ -361,6 +372,16 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
         .ap-author__name { font-size: 14px; font-weight: 600; }
         .ap-meta__item { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); }
         .ap-meta .ap-like { margin-left: auto; }
+
+        /* Add to Google button */
+        .ap-gwrap { margin-top: 14px; }
+        .ap-gbtn {
+          display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px;
+          background: var(--accent); color: var(--on-accent); border: 1.5px solid var(--ink);
+          font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+          transition: background 0.15s, color 0.15s, transform 0.15s;
+        }
+        .ap-gbtn:hover { background: var(--ink); color: var(--accent); transform: translateY(-1px); }
 
         .ap-like { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 12px; color: var(--ink); background: transparent; border: 1.5px solid var(--ink); padding: 8px 14px; cursor: pointer; transition: color 0.15s, background 0.15s; }
         .ap-like:hover { background: var(--accent); }
@@ -376,7 +397,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
         @media (max-width: 960px) { .ap-layout { grid-template-columns: minmax(0, 1fr); padding-top: 28px; } }
 
         /* Share rail */
-        .ap-rail { position: sticky; top: 90px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .ap-rail { position: sticky; top: 110px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .ap-rail__label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 4px; }
         .ap-share-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--ink); background: #fff; color: var(--ink); cursor: pointer; transition: background 0.15s, transform 0.15s; }
         .ap-share-btn:hover { background: var(--accent); transform: translateY(-1px); }
@@ -435,7 +456,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
         .ap-comments { border-top: 3px solid var(--rule-dark); padding-top: 32px; }
 
         /* Sidebar */
-        .ap-side { position: sticky; top: 90px; display: flex; flex-direction: column; gap: 16px; max-height: calc(100vh - 110px); overflow-y: auto; }
+        .ap-side { position: sticky; top: 110px; display: flex; flex-direction: column; gap: 16px; max-height: calc(100vh - 110px); overflow-y: auto; }
         .ap-sidebar__box { padding: 18px; background: var(--card); border: 1px solid var(--rule-dark); }
         .ap-sidebar__label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; color: var(--on-accent); background: var(--accent); text-transform: uppercase; display: inline-block; padding: 2px 7px; margin-bottom: 12px; }
         .ap-detail { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--rule); }
@@ -452,7 +473,7 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
         .ap-toc-box a { display: block; font-size: 13px; line-height: 1.5; color: var(--ink-2); border-left: 3px solid transparent; padding-left: 10px; margin-left: -1px; transition: color 0.15s, border-color 0.15s; cursor: pointer; }
         .ap-toc-box a:hover { color: var(--ink); border-left-color: var(--rule-dark); }
         .ap-toc-box a.active, .ap-toc-box a[aria-current="true"] { color: var(--ink); font-weight: 600; border-left-color: var(--accent); }
-        .ap-toc-mobile { display: block; position: sticky; top: 60px; z-index: 20; background: var(--paper); padding-bottom: 10px; margin-bottom: 6px; }
+        .ap-toc-mobile { display: block; position: sticky; top: 90px; z-index: 20; background: var(--paper); padding-bottom: 10px; margin-bottom: 6px; }
         @media (min-width: 961px) { .ap-toc-mobile { display: none; } }
 
         /* Bottom CTA bar */
@@ -467,8 +488,8 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
         }
         @media (max-width: 640px) {
           .ap-wrap, .ap-nav__inner { padding-left: 18px; padding-right: 18px; }
-          .ap-hero { padding-top: 28px; }
-          .ap-chip { margin-bottom: 14px; }
+          .ap-hero { padding-top: 100px; }
+                    .ap-chip { margin-bottom: 14px; }
           .ap-dek { padding-left: 14px; margin-top: 16px; }
           .ap-meta { gap: 12px 16px; margin-top: 22px; }
           .ap-meta .ap-like { margin-left: 0; }
@@ -510,6 +531,18 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
             {date && <span className="ap-meta__item">{date}</span>}
             <span className="ap-meta__item"><Clock size={13} /> {readTime} min read</span>
             {likeButton}
+          </div>
+
+          <div className="ap-gwrap">
+            <a
+              href={GOOGLE_SOURCE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ap-gbtn"
+              aria-label="Add Sir-AD Blog as a preferred source on Google"
+            >
+              <GoogleIcon size={14} /> Add Sir-AD Blog on Google
+            </a>
           </div>
         </header>
 
