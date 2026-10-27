@@ -225,7 +225,7 @@ export default function TopicPageClient({ topic, label, articles: topicArticles 
             <div className="tp-page">
                 <header className="tp-nav">
                     <div className="tp-nav__inner">
-                        <Link href="/" className="tp-nav__brand">brown<em>.</em>dev</Link>
+                        <Link href="/" className="tp-nav__brand">Sir Brown <em>Blog</em></Link>
                         <Link href="/blog" className="tp-btn">
                             <ArrowLeft size={12} /> All articles
                         </Link>

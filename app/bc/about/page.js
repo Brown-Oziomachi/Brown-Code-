@@ -317,7 +317,7 @@ export default function AboutMePage() {
             <div className="ab-page">
                 <header className="ab-nav">
                     <div className="ab-nav__inner">
-                        <Link href="/" className="ab-nav__brand">brown<em>.</em>dev</Link>
+                        <Link href="/" className="ab-nav__brand">Sir-AD<em>Blog</em></Link>
                         <nav className="ab-nav__links" aria-label="Main">
                             <Link href="/bc/about" className="ab-nav__link ab-nav__link--on">About</Link>
                             <Link href="/portfolio" className="ab-nav__link ab-nav__hide">Portfolio</Link>

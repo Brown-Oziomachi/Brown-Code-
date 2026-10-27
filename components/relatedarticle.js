@@ -24,8 +24,8 @@ const TECHNICAL_SLUGS = [
 ];
 
 /* 1 featured + SIDE_COUNT in the right list + MORE_COUNT underneath */
-const SIDE_COUNT = 7;
-const MORE_COUNT = 7;
+const SIDE_COUNT = 4;
+const MORE_COUNT = 6;
 const TOTAL = 1 + SIDE_COUNT + MORE_COUNT;
 
 const formatDate = (dateString) => {

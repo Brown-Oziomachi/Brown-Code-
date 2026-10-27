@@ -7,18 +7,43 @@ import {
     Menu, X, ChevronDown, Terminal, Cpu, Network,
     Globe, Layers, Server, Newspaper, TrendingUp, ExternalLink,
     Sparkles, ArrowUpRight, ArrowRight, MessageCircle,
+    Home, User, FolderKanban, Quote, Mail, BookOpen, Image as ImageIcon,
+    Heart, Download,
 } from "lucide-react";
 import { featuredServices } from "@/app/data/services";
 import InstallAppButton from "@/components/InstallAppButton";
 import InstallBanner from "./InstallBanner";
+import { CATEGORIES } from "@/lib/blogCategories";
 
 /* ── Data ─────────────────────────────────────────────── */
 
 const CHANNEL_URL = "https://whatsapp.com/channel/0029VbEGWFsC1FuAo5qoPh0q";
 
+// Image shown at the top of the mobile drawer (put the file in /public/images/)
+const DRAWER_IMAGE = "/banner.jpg";
+
+// Topics shown in the Blog dropdown -> /blog/topic/<key>, same source as the blog page
+const blogTopics = CATEGORIES.map((c) => ({ slug: c.key, label: c.label }));
+
 const anchorItems = ["home", "about", "projects", "testimonials", "contact"];
 const linkItems = ["blog", "gallery", "tech-news"];
 const navItems = [...anchorItems, ...linkItems];
+
+const ITEM_ICONS = {
+    home: <Home size={20} />,
+    about: <User size={20} />,
+    projects: <FolderKanban size={20} />,
+    testimonials: <Quote size={20} />,
+    contact: <Mail size={20} />,
+    blog: <BookOpen size={20} />,
+    gallery: <ImageIcon size={20} />,
+    "tech-news": <Newspaper size={20} />,
+};
+const MENU_ICONS = {
+    services: <Sparkles size={20} />,
+    utilities: <Terminal size={20} />,
+    news: <Newspaper size={20} />,
+};
 
 const isLinkItem = (item) => linkItems.includes(item);
 const fmtItem = (item) =>
@@ -105,9 +130,9 @@ export default function Navbar() {
     const shellRef = useRef(null);
 
     const [isScrolled, setIsScrolled] = useState(false);
-    const [openMenu, setOpenMenu] = useState(null); // null | "services" | "utilities" | "news"
+    const [openMenu, setOpenMenu] = useState(null); // null | "services" | "utilities" | "news" | "blog"
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [mobileSection, setMobileSection] = useState(null);
+    const [mobileSection, setMobileSection] = useState(null); // menu key or "blog"
 
     const closeAll = () => {
         setOpenMenu(null);
@@ -167,10 +192,11 @@ export default function Navbar() {
     };
 
     const toggleMenu = (key) => setOpenMenu((cur) => (cur === key ? null : key));
-    const active = openMenu ? MENUS[openMenu] : null;
+    const active = openMenu && MENUS[openMenu] ? MENUS[openMenu] : null;
+    const blogActive = pathname === "/blog" || pathname.startsWith("/blog/");
 
     return (
-             <div className="nb-shell" ref={shellRef}>
+        <div className="nb-shell" ref={shellRef}>
             <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -191,7 +217,7 @@ export default function Navbar() {
         /* Bar */
         .nb-root {
           position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-                              background: rgba(255,255,255,0.92);
+          background: rgba(255,255,255,0.92);
           -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
           border-bottom: 1px solid var(--nb-rule);
           transition: border-color 0.2s, box-shadow 0.2s;
@@ -209,10 +235,6 @@ export default function Navbar() {
           letter-spacing: -0.01em; color: var(--nb-ink); text-decoration: none;
         }
         .nb-brand em { font-style: normal; background: var(--nb-accent); padding: 0 3px; }
-        .nb-brand__tag {
-          font-family: var(--nb-mono); font-size: 9px; font-weight: 500; letter-spacing: 0.12em;
-          color: var(--nb-ink-3); border: 1px solid var(--nb-rule); padding: 2px 6px;
-        }
 
         /* Desktop links */
         .nb-links { display: flex; align-items: center; gap: 0; }
@@ -233,6 +255,32 @@ export default function Navbar() {
         .nb-dd svg:last-child { transition: transform 0.2s; }
         .nb-dd--open svg:last-child { transform: rotate(180deg); }
 
+        /* Desktop Blog: link + dropdown toggle */
+        .nb-blog { position: relative; display: inline-flex; align-items: center; }
+        .nb-blog > .nb-link { padding-right: 2px; }
+        .nb-blog > .nb-link::after { right: 2px; }
+        .nb-blog__chev {
+          background: none; border: none; cursor: pointer; color: var(--nb-ink-3);
+          padding: 10px 8px 10px 2px; display: inline-flex; align-items: center;
+        }
+        .nb-blog__chev:hover, .nb-blog__chev--open { color: var(--nb-ink); }
+        .nb-blog__chev svg { transition: transform 0.2s; }
+        .nb-blog__chev--open svg { transform: rotate(180deg); }
+        .nb-blog__menu {
+          position: absolute; top: 100%; left: 0; min-width: 230px; z-index: 1001;
+          background: #fff; border: 1.5px solid var(--nb-ink);
+          box-shadow: 4px 4px 0 var(--nb-accent); animation: nb-drop 0.16s ease-out;
+        }
+        .nb-blog__item {
+          display: flex; align-items: center; justify-content: space-between; gap: 10px;
+          padding: 11px 14px; font-family: var(--nb-mono); font-size: 10.5px; letter-spacing: 0.08em;
+          text-transform: uppercase; color: var(--nb-ink-2); text-decoration: none;
+          border-bottom: 1px solid var(--nb-rule); transition: background 0.15s, color 0.15s;
+        }
+        .nb-blog__item:last-child { border-bottom: none; }
+        .nb-blog__item:hover { background: var(--nb-accent); color: var(--nb-on); }
+        .nb-blog__item--all { font-weight: 600; color: var(--nb-ink); background: var(--nb-card-2); }
+
         .nb-btn {
           display: inline-flex; align-items: center; gap: 7px; font-family: var(--nb-mono);
           font-size: 11px; letter-spacing: 0.06em; padding: 10px 16px; cursor: pointer;
@@ -244,7 +292,6 @@ export default function Navbar() {
         .nb-btn--solid:hover { background: var(--nb-ink); color: var(--nb-accent); }
         .nb-cta { margin-left: 10px; }
         .nb-right { display: none; align-items: center; gap: 8px; }
-        .nb-btn--sm { padding: 8px 12px; font-size: 10px; }
 
         /* Burger */
         .nb-burger {
@@ -253,17 +300,16 @@ export default function Navbar() {
           align-items: center; justify-content: center;
         }
 
-               @media (max-width: 1250px) {
-                    .nb-links { display: none; }
+        @media (max-width: 1250px) {
+          .nb-links { display: none; }
           .nb-right { display: flex; }
           .nb-burger { display: inline-flex; }
         }
-        @media (max-width: 480px) { .nb-brand__tag { display: none; } }
 
         /* Mega panel */
         .nb-mega {
           position: fixed; left: 0; right: 0; top: calc(var(--nb-h) + var(--install-bar-h, 0px)); z-index: 999;
-                    background: rgba(255,255,255,0.98); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+          background: rgba(255,255,255,0.98); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
           border-bottom: 1.5px solid var(--nb-ink); border-top: 1px solid var(--nb-rule);
           box-shadow: 0 18px 40px rgba(0,0,0,0.08);
           animation: nb-drop 0.18s ease-out;
@@ -292,7 +338,7 @@ export default function Navbar() {
           text-transform: uppercase; color: var(--nb-ink); text-decoration: none; background: var(--nb-accent); padding: 8px 12px;
         }
         .nb-mega__viewall:hover { background: var(--nb-ink); color: var(--nb-accent); }
-        @media (max-width: 1250px) { .nb-mega { display: none; } }
+        @media (max-width: 1250px) { .nb-mega, .nb-blog__menu { display: none; } }
 
         /* Card */
         .nb-card {
@@ -314,46 +360,82 @@ export default function Navbar() {
         }
         .nb-card:hover .nb-card__cta { color: var(--nb-on); background: var(--nb-accent); border-color: var(--nb-ink); }
 
-        /* Drawer — drops down from the top, content centered */
-        .nb-overlay { position: fixed; inset: 0; z-index: 1001; background: rgba(0,0,0,0.45); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+        /* ── Side drawer (slides in from the left) ── */
+        .nb-overlay {
+          position: fixed; inset: 0; z-index: 1001; background: rgba(0,0,0,0.5);
+          animation: nb-fade 0.2s ease-out;
+        }
+        @keyframes nb-fade { from { opacity: 0; } to { opacity: 1; } }
         .nb-drawer {
-          position: fixed; top: 0; left: 0; right: 0; z-index: 1002;
-          max-height: 100vh; max-height: 100dvh;
-          background: #fff; border-bottom: 1.5px solid var(--nb-ink);
-          box-shadow: 0 24px 48px rgba(0,0,0,0.18);
-          display: flex; flex-direction: column; text-align: center;
+          position: fixed; top: 0; left: 0; bottom: 0; z-index: 1002;
+          width: min(86vw, 340px); background: #fff;
+          box-shadow: 8px 0 32px rgba(0,0,0,0.25);
+          display: flex; flex-direction: column;
           animation: nb-slide 0.26s cubic-bezier(0.16,1,0.3,1) forwards;
         }
-        @keyframes nb-slide { from { transform: translateY(-100%); } to { transform: translateY(0); } }
-        .nb-drawer__head {
-          display: flex; justify-content: space-between; align-items: center;
-          height: 60px; flex-shrink: 0; padding: 0 18px; border-bottom: 1px solid var(--nb-rule);
-          text-align: left;
+        @keyframes nb-slide { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+
+        /* Hero image area */
+        .nb-drawer__hero {
+          position: relative; flex-shrink: 0; height: 190px;
+          background-color: #2b3a42;
+          background-image: linear-gradient(135deg, #2b3a42, #4b6472);
+          background-size: cover; background-position: center;
+        }
+        .nb-drawer__hero::after {
+          content: ''; position: absolute; inset: 0;
+          background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0) 60%);
+        }
+        .nb-drawer__heroTitle {
+          position: absolute; left: 14px; bottom: 12px; z-index: 1;
+          font-family: var(--nb-sans); font-weight: 600; font-size: 18px; color: #fff;
         }
         .nb-drawer__close {
-          flex-shrink: 0;
-          width: 36px; height: 36px; border: 1.5px solid var(--nb-ink); background: transparent;
-          color: var(--nb-ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+          position: absolute; top: 10px; right: 10px; z-index: 2;
+          width: 34px; height: 34px; border: none; border-radius: 50%;
+          background: rgba(0,0,0,0.45); color: #fff; cursor: pointer;
+          display: inline-flex; align-items: center; justify-content: center;
         }
-        .nb-drawer__body { flex: 1; overflow-y: auto; padding: 8px 24px 12px; }
-        .nb-drawer__link {
-          display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; text-align: center;
-          padding: 14px 0; background: none; border: none; border-bottom: 1px solid var(--nb-rule);
-          font-family: var(--nb-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-          color: var(--nb-ink-2); text-decoration: none; cursor: pointer; transition: color 0.15s;
+
+        /* Rows */
+        .nb-drawer__body { flex: 1; overflow-y: auto; }
+        .nb-row {
+          display: flex; align-items: center; gap: 22px; width: 100%; text-align: left;
+          padding: 0 20px; min-height: 56px; background: none; border: none;
+          border-bottom: 1px solid var(--nb-rule); cursor: pointer; text-decoration: none;
+          font-family: var(--nb-sans); font-size: 15px; color: #5b7a8c;
+          transition: background 0.15s;
         }
-        .nb-drawer__link:hover { color: var(--nb-ink); }
-        .nb-drawer__link--active { color: var(--nb-ink); font-weight: 600; box-shadow: inset 0 -3px 0 var(--nb-accent); }
-        .nb-drawer__link svg { transition: transform 0.2s; }
-        .nb-drawer__link--open svg { transform: rotate(180deg); }
-        .nb-drawer__sub { padding: 8px 0 10px; border-top: 3px solid var(--nb-accent); margin: 0 0 4px; }
-        .nb-drawer__sublink {
-          display: block; padding: 12px 8px; text-decoration: none; text-align: center; border-bottom: 1px solid var(--nb-rule);
+        .nb-row:hover { background: var(--nb-card-2); }
+        .nb-row__icon { display: inline-flex; width: 24px; justify-content: center; flex-shrink: 0; color: #4b6472; }
+        .nb-row__label { flex: 1; }
+        .nb-row--active { color: var(--nb-ink); font-weight: 600; box-shadow: inset 4px 0 0 var(--nb-accent); }
+        .nb-row__chev { transition: transform 0.2s; }
+        .nb-row--open .nb-row__chev { transform: rotate(180deg); }
+
+        /* Blog row: clickable label + separate toggle */
+        .nb-split { display: flex; align-items: stretch; border-bottom: 1px solid var(--nb-rule); }
+        .nb-split .nb-row { border-bottom: none; flex: 1; }
+        .nb-split__toggle {
+          width: 56px; flex-shrink: 0; background: none; border: none; border-left: 1px solid var(--nb-rule);
+          color: #4b6472; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
         }
-        .nb-drawer__sublink:last-child { border-bottom: none; }
-        .nb-drawer__sublink b { display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--nb-serif); font-weight: 800; font-size: 15px; color: var(--nb-ink); }
-        .nb-drawer__sublink span { display: block; margin-top: 3px; font-family: var(--nb-sans); font-size: 11.5px; line-height: 1.5; color: var(--nb-ink-3); }
-        .nb-drawer__foot { flex-shrink: 0; padding: 16px 24px 20px; border-top: 1px solid var(--nb-rule); display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+        .nb-split__toggle svg { transition: transform 0.2s; }
+        .nb-split__toggle--open svg { transform: rotate(180deg); }
+        .nb-split__toggle:hover { background: var(--nb-card-2); }
+
+        /* Sub lists */
+        .nb-sub { background: var(--nb-card-2); border-bottom: 1px solid var(--nb-rule); border-left: 4px solid var(--nb-accent); }
+        .nb-sub__link {
+          display: block; padding: 12px 20px 12px 66px; text-decoration: none;
+          border-bottom: 1px solid var(--nb-rule); font-family: var(--nb-sans); font-size: 13.5px; color: var(--nb-ink-2);
+        }
+        .nb-sub__link:last-child { border-bottom: none; }
+        .nb-sub__link:hover { background: #fff; color: var(--nb-ink); }
+        .nb-sub__link b { display: flex; align-items: center; gap: 6px; font-weight: 600; color: var(--nb-ink); }
+        .nb-sub__link span { display: block; margin-top: 2px; font-size: 11.5px; line-height: 1.5; color: var(--nb-ink-3); }
+
+        .nb-drawer__foot { flex-shrink: 0; padding: 14px 16px 18px; border-top: 1px solid var(--nb-rule); display: flex; flex-direction: column; gap: 10px; }
         .nb-drawer__foot .nb-btn { justify-content: center; }
 
         .nb-shell :focus-visible { outline: 2px solid var(--nb-ink); outline-offset: 2px; }
@@ -369,8 +451,47 @@ export default function Navbar() {
                     </Link>
 
                     <nav className="nb-links" aria-label="Main">
-                        {navItems.map((item) =>
-                            isLinkItem(item) ? (
+                        {navItems.map((item) => {
+                            if (item === "blog") {
+                                return (
+                                    <div key="blog" className="nb-blog">
+                                        <Link
+                                            href="/blog"
+                                            className={`nb-link${blogActive ? " nb-link--active" : ""}`}
+                                            onClick={closeAll}
+                                        >
+                                            Blog
+                                        </Link>
+                                        <button
+                                            className={`nb-blog__chev${openMenu === "blog" ? " nb-blog__chev--open" : ""}`}
+                                            onClick={() => toggleMenu("blog")}
+                                            aria-label="Blog topics"
+                                            aria-expanded={openMenu === "blog"}
+                                            aria-haspopup="true"
+                                        >
+                                            <ChevronDown size={10} />
+                                        </button>
+                                        {openMenu === "blog" && (
+                                            <div className="nb-blog__menu" role="menu">
+                                                <Link href="/blog" className="nb-blog__item nb-blog__item--all" onClick={closeAll}>
+                                                    All posts <ArrowUpRight size={11} />
+                                                </Link>
+                                                {blogTopics.map((t) => (
+                                                    <Link
+                                                        key={t.slug}
+                                                        href={`/blog/topic/${t.slug}`}
+                                                        className="nb-blog__item"
+                                                        onClick={closeAll}
+                                                    >
+                                                        {t.label} <ArrowRight size={11} />
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            }
+                            return isLinkItem(item) ? (
                                 <Link
                                     key={item}
                                     href={`/${item}`}
@@ -382,8 +503,8 @@ export default function Navbar() {
                                 <button key={item} className="nb-link" onClick={() => goToSection(item)}>
                                     {fmtItem(item)}
                                 </button>
-                            )
-                        )}
+                            );
+                        })}
 
                         {Object.entries(MENUS).map(([key, m]) => (
                             <button
@@ -399,7 +520,6 @@ export default function Navbar() {
                             </button>
                         ))}
 
-                        
                         <Link href="/bc/contact" className="nb-btn nb-btn--solid nb-cta">
                             Start a project <ArrowRight size={12} />
                         </Link>
@@ -444,67 +564,115 @@ export default function Navbar() {
                 </div>
             )}
 
-            {/* ── Mobile drawer (drops from the top, centered) ── */}
+            {/* ── Mobile side drawer (slides from the left) ── */}
             {isDrawerOpen && (
                 <>
                     <div className="nb-overlay" onClick={closeAll} />
                     <aside className="nb-drawer" aria-label="Navigation">
-                        <div className="nb-drawer__head">
-                            <span className="nb-brand" style={{ fontSize: 19 }}>Sir-AD<em></em>Blog</span>
+                        {/* Image area */}
+                        <div
+                            className="nb-drawer__hero"
+                            style={{ backgroundImage: `url(${DRAWER_IMAGE}), linear-gradient(135deg, #2b3a42, #4b6472)` }}
+                        >
                             <button className="nb-drawer__close" aria-label="Close menu" onClick={closeAll}>
                                 <X size={16} />
                             </button>
+                            <span className="nb-drawer__heroTitle">Sir-AD Blog</span>
                         </div>
 
                         <div className="nb-drawer__body">
-                            {navItems.map((item) =>
-                                isLinkItem(item) ? (
+                            {navItems.map((item) => {
+                                if (item === "blog") {
+                                    const open = mobileSection === "blog";
+                                    return (
+                                        <div key="blog">
+                                            <div className="nb-split">
+                                                <Link
+                                                    href="/blog"
+                                                    className={`nb-row${blogActive ? " nb-row--active" : ""}`}
+                                                    onClick={closeAll}
+                                                >
+                                                    <span className="nb-row__icon">{ITEM_ICONS.blog}</span>
+                                                    <span className="nb-row__label">Blog</span>
+                                                </Link>
+                                                <button
+                                                    className={`nb-split__toggle${open ? " nb-split__toggle--open" : ""}`}
+                                                    onClick={() => setMobileSection(open ? null : "blog")}
+                                                    aria-label="Toggle blog topics"
+                                                    aria-expanded={open}
+                                                >
+                                                    <ChevronDown size={16} />
+                                                </button>
+                                            </div>
+                                            {open && (
+                                                <div className="nb-sub">
+                                                    <Link href="/blog" className="nb-sub__link" onClick={closeAll}>
+                                                        <b>All posts <ArrowUpRight size={12} /></b>
+                                                    </Link>
+                                                    {blogTopics.map((t) => (
+                                                        <Link
+                                                            key={t.slug}
+                                                            href={`/blog/topic/${t.slug}`}
+                                                            className="nb-sub__link"
+                                                            onClick={closeAll}
+                                                        >
+                                                            {t.label}
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                }
+                                return isLinkItem(item) ? (
                                     <Link
                                         key={item}
                                         href={`/${item}`}
-                                        className={`nb-drawer__link${pathname === `/${item}` ? " nb-drawer__link--active" : ""}`}
+                                        className={`nb-row${pathname === `/${item}` ? " nb-row--active" : ""}`}
                                         onClick={closeAll}
                                     >
-                                        {fmtItem(item)}
+                                        <span className="nb-row__icon">{ITEM_ICONS[item]}</span>
+                                        <span className="nb-row__label">{fmtItem(item)}</span>
                                     </Link>
                                 ) : (
-                                    <button key={item} className="nb-drawer__link" onClick={() => goToSection(item)}>
-                                        {fmtItem(item)}
+                                    <button key={item} className="nb-row" onClick={() => goToSection(item)}>
+                                        <span className="nb-row__icon">{ITEM_ICONS[item]}</span>
+                                        <span className="nb-row__label">{fmtItem(item)}</span>
                                     </button>
-                                )
-                            )}
+                                );
+                            })}
 
                             {Object.entries(MENUS).map(([key, m]) => {
                                 const open = mobileSection === key;
                                 return (
                                     <div key={key}>
                                         <button
-                                            className={`nb-drawer__link${open ? " nb-drawer__link--open nb-drawer__link--active" : ""}`}
+                                            className={`nb-row${open ? " nb-row--open nb-row--active" : ""}`}
                                             onClick={() => setMobileSection(open ? null : key)}
                                             aria-expanded={open}
                                         >
-                                            {m.label} <ChevronDown size={12} />
+                                            <span className="nb-row__icon">{MENU_ICONS[key]}</span>
+                                            <span className="nb-row__label">{m.label}</span>
+                                            <ChevronDown size={16} className="nb-row__chev" />
                                         </button>
                                         {open && (
-                                            <div className="nb-drawer__sub">
+                                            <div className="nb-sub">
                                                 {m.options.map((o) =>
                                                     o.external ? (
-                                                        <a key={o.id} href={o.href} target="_blank" rel="noopener noreferrer" className="nb-drawer__sublink" onClick={closeAll}>
+                                                        <a key={o.id} href={o.href} target="_blank" rel="noopener noreferrer" className="nb-sub__link" onClick={closeAll}>
                                                             <b>{o.title} <ExternalLink size={11} /></b>
                                                             <span>{o.description}</span>
                                                         </a>
                                                     ) : (
-                                                        <Link key={o.id} href={o.href} className="nb-drawer__sublink" onClick={closeAll}>
+                                                        <Link key={o.id} href={o.href} className="nb-sub__link" onClick={closeAll}>
                                                             <b>{o.title} <ArrowUpRight size={12} /></b>
                                                             <span>{o.description}</span>
                                                         </Link>
                                                     )
                                                 )}
                                                 {m.footer && (
-                                                    <Link href={m.footer.href} className="nb-drawer__sublink" onClick={closeAll}>
-                                                        <b style={{ fontFamily: "var(--nb-mono)", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                                                            {m.footer.label} <ArrowUpRight size={12} />
-                                                        </b>
+                                                    <Link href={m.footer.href} className="nb-sub__link" onClick={closeAll}>
+                                                        <b>{m.footer.label} <ArrowUpRight size={12} /></b>
                                                     </Link>
                                                 )}
                                             </div>
@@ -512,6 +680,15 @@ export default function Navbar() {
                                     </div>
                                 );
                             })}
+
+                            <a href={CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="nb-row" onClick={closeAll}>
+                                <span className="nb-row__icon"><MessageCircle size={20} /></span>
+                                <span className="nb-row__label">WhatsApp channel</span>
+                            </a>
+                            <a href="https://github.com/sponsors/Brown-Oziomachi/" target="_blank" rel="noopener noreferrer" className="nb-row" onClick={closeAll}>
+                                <span className="nb-row__icon"><Heart size={20} /></span>
+                                <span className="nb-row__label">Sponsor Sir Brown AD</span>
+                            </a>
                         </div>
 
                         <div className="nb-drawer__foot">
@@ -519,12 +696,6 @@ export default function Navbar() {
                                 Start a project <ArrowRight size={12} />
                             </Link>
                             <InstallAppButton className="nb-btn" />
-                            <a href={CHANNEL_URL} target="_blank" rel="noopener noreferrer" className="nb-btn" onClick={closeAll}>
-                                <MessageCircle size={13} /> Join WhatsApp channel
-                            </a>
-                            <a href="https://github.com/sponsors/Brown-Oziomachi/" target="_blank" rel="noopener noreferrer" className="nb-btn" onClick={closeAll}>
-                                Sponsor Sir Brown AD
-                            </a>
                         </div>
                     </aside>
                 </>
