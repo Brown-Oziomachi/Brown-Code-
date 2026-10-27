@@ -222,7 +222,7 @@ export default function Footer() {
                     <div className="ft-main">
                         <div className="ft-brand">
                             <Link href="/" className="ft-wordmark">
-                                brown<em>.</em>dev
+                                Sir-AD<em>Blog</em>
                             </Link>
                             <p className="ft-tagline">
                                 Full stack engineer and publisher in Abuja, Nigeria. I build secure web platforms for
@@ -285,7 +285,7 @@ export default function Footer() {
                     {/* Base bar */}
                     <div className="ft-base">
                         <p className="ft-base__copy">
-                            &copy; {year} <strong>brown.dev</strong> / Sir Brown AD &middot; Abuja, Nigeria
+                            &copy; {year} <strong>Sir-AD Blog</strong> / Sir Brown AD &middot; Abuja, Nigeria
                         </p>
                         <nav className="ft-base__legal" aria-label="Legal">
                             {legal.map((l) => (
