@@ -11,9 +11,10 @@ import Footer from "@/components/footer";
 import { CATEGORIES, CATEGORY_LABELS, getCategoryKey } from "@/lib/blogCategories";
 
 const ITEMS_PER_PAGE = 9;
-const SLIDER_COUNT = 5;   // posts in the sliding row
-const SPOTLIGHT_COUNT = 4; // posts in the spotlight (2 per row, also on mobile)
-const UPDATES_COUNT = 6;   // posts in the compact "New updates" box
+const HERO_UNDER = 2;      // compact rows under the lead story
+const HERO_LATEST = 6;     // rows in the "Latest articles" column
+const SLIDER_COUNT = 5;    // posts in the sliding row
+const SECTION_LIST = 3;    // rows on the right of each topic section
 const CHANNEL_URL = "https://whatsapp.com/channel/0029VbEGWFsC1FuAo5qoPh0q";
 
 /* ── helpers ─────────────────────────────────────────── */
@@ -31,6 +32,8 @@ const readingTimeOf = (a) =>
     a.readingTime || Math.max(1, Math.ceil((a.content || "").split(/\s+/).length / 200));
 
 const labelOf = (a) => CATEGORY_LABELS[getCategoryKey(a)];
+
+const authorOf = (a) => a.postedBy || "Sir Brown AD";
 
 /* distance the track moves for one slide (card width + gap) */
 const getStep = (el) => {
@@ -55,6 +58,14 @@ function Cover({ src, alt, className }) {
     );
 }
 
+function Avatar({ name }) {
+    return (
+        <span className="bl-avatar" aria-hidden="true">
+            {(name || "SB").slice(0, 2).toUpperCase()}
+        </span>
+    );
+}
+
 function Meta({ article }) {
     const date = formatDate(article.datePublished);
     return (
@@ -72,6 +83,7 @@ function Meta({ article }) {
 
 /* ── sub-components ──────────────────────────────────── */
 
+/* Card used by the slider and the archive grid */
 function ArticleCard({ article, tall = false }) {
     return (
         <Link href={`/blog/${article.slug}`} className={`bl-card${tall ? " bl-card--tall" : ""}`}>
@@ -88,47 +100,105 @@ function ArticleCard({ article, tall = false }) {
     );
 }
 
-/* Big card that stands on its own */
-function FeatureCard({ article }) {
+/* Compact row: small picture, category, title, byline */
+function Row({ article }) {
     return (
-        <Link href={`/blog/${article.slug}`} className="bl-feature">
-            <div className="bl-feature__media">
+        <Link href={`/blog/${article.slug}`} className="bl-row-item">
+            <div className="bl-row-item__media">
                 <Cover src={article.image} alt={article.title} className="bl-img" />
-                <span className="bl-chip">{labelOf(article)}</span>
             </div>
-            <div className="bl-feature__body">
-                <h3 className="bl-feature__title">{article.title}</h3>
-                <p className="bl-feature__preview">{article.preview}</p>
-                <div className="bl-feature__foot">
-                    <Meta article={article} />
-                    <span className="bl-feature__cta">
-                        Read article <ArrowUpRight size={13} />
-                    </span>
-                </div>
+            <div className="bl-row-item__body">
+                <span className="bl-kick">{labelOf(article)}</span>
+                <h3 className="bl-row-item__title">{article.title}</h3>
+                <p className="bl-by">By {authorOf(article)}</p>
             </div>
         </Link>
     );
 }
 
-/* Compact list box: small picture on the left, title on the right */
-function UpdatesBox({ articles }) {
+/* Hero: big lead story + compact rows under it */
+function Lead({ article }) {
+    const date = formatDate(article.datePublished);
     return (
-        <div className="bl-upd">
-            <h2 className="bl-upd__label">New Updates</h2>
-            <div className="bl-upd__list">
-                {articles.map((a) => (
-                    <Link key={a.slug} href={`/blog/${a.slug}`} className="bl-upd__item">
-                        <div className="bl-upd__thumb">
-                            <Cover src={a.image} alt={a.title} className="bl-upd__img" />
-                        </div>
-                        <div className="bl-upd__body">
-                            <p className="bl-upd__title">{a.title}</p>
-                            <span className="bl-upd__cat">{labelOf(a)}</span>
-                        </div>
-                    </Link>
-                ))}
+        <Link href={`/blog/${article.slug}`} className="bl-lead">
+            <div className="bl-lead__media">
+                <Cover src={article.image} alt={article.title} className="bl-img" />
             </div>
-        </div>
+            <h2 className="bl-lead__title">{article.title}</h2>
+            {article.preview && <p className="bl-lead__preview">{article.preview}</p>}
+            <p className="bl-byline">
+                By {authorOf(article)}
+                {date && <span> · {date}</span>}
+            </p>
+        </Link>
+    );
+}
+
+/* Hero right column: "Latest articles" with avatar, author and date */
+function LatestList({ articles }) {
+    return (
+        <aside className="bl-latest" aria-label="Latest articles">
+            <span className="bl-latest__tag">Latest articles</span>
+            {articles.map((a, i) => {
+                const date = formatDate(a.datePublished);
+                return (
+                    <Link key={a.slug} href={`/blog/${a.slug}`} className="bl-latest__item">
+                        <div className="bl-latest__who">
+                            <Avatar name={authorOf(a)} />
+                            <span className="bl-latest__author">{authorOf(a)}</span>
+                            {date && (
+                                <>
+                                    <span className="bl-meta__dot" />
+                                    <span className="bl-latest__date">{date}</span>
+                                </>
+                            )}
+                        </div>
+                        <h3 className="bl-latest__title">{a.title}</h3>
+                        {i === 2 && a.image && (
+                            <div className="bl-latest__img">
+                                <Cover src={a.image} alt={a.title} className="bl-img" />
+                            </div>
+                        )}
+                    </Link>
+                );
+            })}
+        </aside>
+    );
+}
+
+/* One topic section: heading bar, feature on the left, rows on the right */
+function TopicSection({ cat, items }) {
+    const [feature, ...list] = items;
+    return (
+        <section className="bl-sec" aria-label={cat.label}>
+            <div className="bl-sec__head">
+                <h2 className="bl-sec__title">
+                    <Link href={`/blog/topic/${cat.key}`}>{cat.label}</Link>
+                </h2>
+                <Link href={`/blog/topic/${cat.key}`} className="bl-sec__more">
+                    View all <ArrowRight size={12} />
+                </Link>
+            </div>
+            <div className="bl-sec__grid">
+                <Link href={`/blog/${feature.slug}`} className="bl-feat">
+                    <div className="bl-feat__media">
+                        <Cover src={feature.image} alt={feature.title} className="bl-img" />
+                    </div>
+                    <div className="bl-feat__body">
+                        <span className="bl-kick">{labelOf(feature)}</span>
+                        <h3 className="bl-feat__title">{feature.title}</h3>
+                        <p className="bl-by">By {authorOf(feature)}</p>
+                    </div>
+                </Link>
+                {list.length > 0 && (
+                    <div className="bl-sec__list">
+                        {list.map((a) => (
+                            <Row key={a.slug} article={a} />
+                        ))}
+                    </div>
+                )}
+            </div>
+        </section>
     );
 }
 
@@ -183,7 +253,7 @@ function Slider({ articles }) {
             className="bl-slider"
             role="region"
             aria-roledescription="carousel"
-            aria-label="Latest articles"
+            aria-label="Trending articles"
             onMouseEnter={() => setPaused(true)}
             onMouseLeave={() => setPaused(false)}
             onFocus={() => setPaused(true)}
@@ -358,27 +428,40 @@ export default function BlogListClient({ articles }) {
 
     const searching = Boolean(debounced);
 
-    // Normal view: 5 sliding, then 2 standing alone, then the rest with pagination.
-    // While searching, every match goes into the paginated list instead.
-    const sliderArticles = searching ? [] : filteredArticles.slice(0, SLIDER_COUNT);
-    const spotlightArticles = searching
+    // Hero: lead story, rows under it, and the "Latest articles" column
+    const lead = searching ? null : filteredArticles[0];
+    const heroUnder = searching ? [] : filteredArticles.slice(1, 1 + HERO_UNDER);
+    const heroLatest = searching
         ? []
-        : filteredArticles.slice(SLIDER_COUNT, SLIDER_COUNT + SPOTLIGHT_COUNT);
-    const updatesArticles = searching
-        ? []
-        : filteredArticles.slice(
-            SLIDER_COUNT + SPOTLIGHT_COUNT,
-            SLIDER_COUNT + SPOTLIGHT_COUNT + UPDATES_COUNT
-        );
-    const remainingArticles = searching
-        ? filteredArticles
-        : filteredArticles.slice(SLIDER_COUNT + SPOTLIGHT_COUNT + UPDATES_COUNT);
+        : filteredArticles.slice(1 + HERO_UNDER, 1 + HERO_UNDER + HERO_LATEST);
+    const heroCount = 1 + HERO_UNDER + HERO_LATEST;
 
-    const totalPages = Math.max(1, Math.ceil(remainingArticles.length / ITEMS_PER_PAGE));
+    // Sliding row: the next newest posts
+    const sliderArticles = searching
+        ? []
+        : filteredArticles.slice(heroCount, heroCount + SLIDER_COUNT);
+
+    // Topic sections: newest posts per category, skipping what is already shown above
+    const topicSections = useMemo(() => {
+        if (searching) return [];
+        const used = new Set(
+            filteredArticles.slice(0, heroCount + SLIDER_COUNT).map((a) => a.slug)
+        );
+        return CATEGORIES.map((cat) => ({
+            cat,
+            items: filteredArticles
+                .filter((a) => getCategoryKey(a) === cat.key && !used.has(a.slug))
+                .slice(0, 1 + SECTION_LIST),
+        })).filter((s) => s.items.length > 0);
+    }, [filteredArticles, searching, heroCount]);
+
+    // Archive: every article, paginated (search results when searching)
+    const archiveArticles = filteredArticles;
+    const totalPages = Math.max(1, Math.ceil(archiveArticles.length / ITEMS_PER_PAGE));
     const paginatedArticles = useMemo(() => {
         const start = (currentPage - 1) * ITEMS_PER_PAGE;
-        return remainingArticles.slice(start, start + ITEMS_PER_PAGE);
-    }, [remainingArticles, currentPage]);
+        return archiveArticles.slice(start, start + ITEMS_PER_PAGE);
+    }, [archiveArticles, currentPage]);
 
     const handlePageChange = (page) => {
         const next = Math.min(Math.max(1, page), totalPages);
@@ -389,16 +472,17 @@ export default function BlogListClient({ articles }) {
     return (
         <>
             <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap');
 
         .bl-page {
           --paper: #ffffff; --paper-2: #f6f5f0; --card: #ffffff;
-          --ink: #111111; --ink-2: #3f3f3f; --ink-3: #6f6f6f;
+          --ink: #0f1626; --ink-2: #3f4655; --ink-3: #6a7080;
           --rule: #e4e2da; --rule-dark: #111111;
-          --accent: #e8ff47; --on-accent: #0a0a0b;
+          --teal: #0b6b5a; --accent: #e8ff47; --on-accent: #0a0a0b;
+          --head: 'IBM Plex Sans Condensed', 'Inter', system-ui, sans-serif;
           --serif: 'Playfair Display', Georgia, serif;
-          --sans: 'Inter', system-ui, sans-serif;
-          --mono: 'JetBrains Mono', 'Fira Code', monospace;
+          --sans: 'IBM Plex Sans', system-ui, sans-serif;
+          --mono: 'IBM Plex Mono', 'Fira Code', monospace;
           background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh;
           padding-top: 90px; /* room for the fixed site navbar */
         }
@@ -406,20 +490,12 @@ export default function BlogListClient({ articles }) {
         .bl-page h1, .bl-page h2, .bl-page h3, .bl-page p { margin: 0; }
         :where(.bl-page a) { color: inherit; text-decoration: none; }
         .bl-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
-        .bl-section { margin-top: 72px; }
 
         /* Buttons */
         .bl-btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; padding: 10px 16px; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: background 0.15s, color 0.15s, transform 0.15s; }
         .bl-btn:hover { background: var(--ink); color: #fff; transform: translateY(-1px); }
         .bl-btn--solid { background: var(--accent); color: var(--on-accent); font-weight: 600; }
         .bl-btn--solid:hover { background: var(--ink); color: var(--accent); }
-
-        /* Section heads */
-        .bl-kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; }
-        .bl-kicker b { background: var(--accent); color: var(--on-accent); padding: 2px 7px; font-weight: 500; }
-        .bl-h2 { font-family: var(--serif); font-weight: 800; font-size: clamp(26px, 3.6vw, 38px); line-height: 1.1; }
-        .bl-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 26px; padding-top: 12px; border-top: 3px solid var(--rule-dark); flex-wrap: wrap; }
-        .bl-head__note { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
 
         /* Masthead */
         .bl-mast { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; padding: 40px 0 30px; border-bottom: 3px solid var(--rule-dark); flex-wrap: wrap; }
@@ -430,7 +506,7 @@ export default function BlogListClient({ articles }) {
         /* Toolbar */
         .bl-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--rule); }
         .bl-cats { display: flex; gap: 8px; flex-wrap: wrap; }
-        .bl-cats a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; padding: 8px 14px; border: 1px solid var(--rule-dark); color: var(--ink-2); transition: background 0.15s, color 0.15s; }
+        .bl-cats a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; padding: 8px 14px; border: 1px solid var(--rule-dark); color: var(--ink-2); transition: background 0.15s, color 0.15s; }
         .bl-cats a:hover { background: var(--accent); color: var(--on-accent); }
         .bl-search { display: flex; align-items: center; gap: 8px; min-width: 280px; background: #fff; border: 1.5px solid #c9c6bc; padding: 9px 14px; transition: border-color 0.15s, box-shadow 0.15s; }
         .bl-search:focus-within { border-color: var(--ink); box-shadow: 4px 4px 0 var(--accent); }
@@ -443,12 +519,87 @@ export default function BlogListClient({ articles }) {
         .bl-count b { background: var(--accent); color: var(--on-accent); padding: 0 4px; font-weight: 500; }
         @media (max-width: 700px) { .bl-search { min-width: 100%; width: 100%; } .bl-toolbar > div:last-child { width: 100%; } }
 
-        /* Shared */
-        .bl-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.45s ease; }
+        /* Shared bits */
+        .bl-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
         .bl-ph { width: 100%; height: 100%; background: repeating-linear-gradient(45deg, #ebe8e0, #ebe8e0 6px, #e3e0d7 6px, #e3e0d7 12px); }
+        .bl-kick { font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); }
+        .bl-by { font-family: var(--sans); font-size: 12.5px; font-weight: 500; color: var(--ink-3); }
+        .bl-byline { font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--teal); }
+        .bl-byline span { font-weight: 500; }
         .bl-chip { position: absolute; top: 12px; left: 12px; font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 4px 9px; border: 1px solid var(--ink); }
         .bl-meta { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); flex-wrap: wrap; }
         .bl-meta__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-3); flex-shrink: 0; }
+        .bl-avatar { width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--accent); font-family: var(--mono); font-size: 8.5px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+        /* Hero */
+        .bl-hero { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 0 40px; padding: 36px 0 44px; align-items: start; }
+        .bl-hero__main { min-width: 0; }
+        .bl-hero__side { border-left: 1px solid var(--rule); padding-left: 40px; min-width: 0; }
+        @media (max-width: 960px) {
+          .bl-hero { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-top: 28px; }
+          .bl-hero__side { border-left: none; padding-left: 0; }
+        }
+
+        .bl-lead { display: block; }
+        .bl-lead__media { height: clamp(220px, 34vw, 380px); overflow: hidden; border: 1px solid var(--rule-dark); background: var(--paper-2); margin-bottom: 18px; }
+        .bl-lead:hover .bl-img { transform: scale(1.04); }
+        .bl-lead__title { font-family: var(--head); font-weight: 700; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.14; letter-spacing: -0.01em; margin-bottom: 12px; }
+        .bl-lead:hover .bl-lead__title { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 4px; text-underline-offset: 4px; }
+        .bl-lead__preview { font-size: 16px; line-height: 1.65; color: var(--ink-2); margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .bl-hero__under { margin-top: 26px; border-top: 2px solid var(--rule-dark); }
+
+        /* Latest articles column */
+        .bl-latest { display: flex; flex-direction: column; }
+        .bl-latest__tag { align-self: flex-start; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: var(--teal); color: #fff; padding: 9px 14px; margin-bottom: 8px; }
+        .bl-latest__item { display: block; padding: 16px 0; border-bottom: 1px solid var(--rule); }
+        .bl-latest__item:last-child { border-bottom: none; }
+        .bl-latest__who { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+        .bl-latest__author { font-family: var(--sans); font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--teal); }
+        .bl-latest__date { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); }
+        .bl-latest__title { font-family: var(--head); font-weight: 600; font-size: 18px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .bl-latest__item:hover .bl-latest__title { color: var(--teal); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 3px; text-underline-offset: 3px; }
+        .bl-latest__img { margin-top: 12px; height: 118px; overflow: hidden; border: 1px solid var(--rule); background: var(--paper-2); }
+        .bl-latest__item:hover .bl-img { transform: scale(1.05); }
+
+        /* Compact rows (hero under + topic sections) */
+        .bl-row-item { display: flex; gap: 14px; align-items: center; padding: 14px 6px 14px 0; border-bottom: 1px solid var(--rule); transition: background 0.15s, padding 0.15s; }
+        .bl-row-item:hover { background: var(--paper-2); padding-left: 8px; }
+        .bl-row-item__media { width: 92px; height: 78px; flex-shrink: 0; overflow: hidden; border: 1px solid var(--rule); background: var(--paper-2); }
+        .bl-row-item:hover .bl-img { transform: scale(1.08); }
+        .bl-row-item__body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+        .bl-row-item__title { font-family: var(--head); font-weight: 600; font-size: 18px; line-height: 1.28; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .bl-row-item:hover .bl-row-item__title { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 3px; text-underline-offset: 3px; }
+
+        /* Section scaffolding */
+        .bl-block { padding: 8px 0 8px; border-top: 1px solid var(--rule-dark); }
+        .bl-block + .bl-block { margin-top: 0; }
+        .bl-sechead { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 30px 0 26px; flex-wrap: wrap; }
+        .bl-sechead__title { font-family: var(--head); font-weight: 700; font-size: clamp(24px, 3vw, 30px); line-height: 1.1; border-left: 5px solid var(--teal); padding-left: 14px; letter-spacing: -0.01em; }
+        .bl-sechead__title a:hover { color: var(--teal); }
+        .bl-sechead__note { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+
+        /* Topic sections */
+        .bl-sec { border-top: 1px solid var(--rule-dark); padding: 6px 0 40px; }
+        .bl-sec__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 30px 0 28px; flex-wrap: wrap; }
+        .bl-sec__title { font-family: var(--head); font-weight: 700; font-size: clamp(24px, 3vw, 30px); line-height: 1.1; border-left: 5px solid var(--teal); padding-left: 14px; letter-spacing: -0.01em; }
+        .bl-sec__title a:hover { color: var(--teal); }
+        .bl-sec__more { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); border: 1.5px solid var(--ink); padding: 8px 13px; transition: background 0.15s, color 0.15s; }
+        .bl-sec__more:hover { background: var(--accent); color: var(--on-accent); }
+        .bl-sec__grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+        .bl-sec__list { border-top: 2px solid var(--rule-dark); }
+        @media (max-width: 900px) { .bl-sec__grid { grid-template-columns: minmax(0, 1fr); gap: 28px; } }
+
+        .bl-feat { display: flex; align-items: center; gap: 18px; }
+        .bl-feat__media { width: 52%; aspect-ratio: 1 / 1.05; flex-shrink: 0; overflow: hidden; border: 1px solid var(--rule-dark); background: var(--paper-2); }
+        .bl-feat:hover .bl-img { transform: scale(1.05); }
+        .bl-feat__body { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+        .bl-feat__title { font-family: var(--head); font-weight: 700; font-size: clamp(22px, 2.5vw, 30px); line-height: 1.18; color: var(--teal); letter-spacing: -0.01em; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+        .bl-feat:hover .bl-feat__title { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 4px; text-underline-offset: 4px; }
+        @media (max-width: 560px) {
+          .bl-feat { flex-direction: column; align-items: stretch; }
+          .bl-feat__media { width: 100%; aspect-ratio: 16 / 10; }
+        }
 
         /* Slider */
         .bl-slider__bar { display: flex; justify-content: flex-end; margin: 0 0 14px; }
@@ -467,52 +618,8 @@ export default function BlogListClient({ articles }) {
         .bl-dot--on { background: var(--accent); width: 26px; }
         @media (max-width: 560px) { .bl-slider__bar { display: none; } }
 
-        /* Spotlight (2 standing alone) */
-        .bl-spot { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .bl-feature { display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--rule-dark); transition: transform 0.2s, box-shadow 0.2s; }
-        .bl-feature:hover { transform: translate(-3px, -3px); box-shadow: 6px 6px 0 var(--accent); }
-        .bl-feature__media { position: relative; height: 230px; background: var(--paper-2); overflow: hidden; border-bottom: 1px solid var(--rule-dark); }
-        .bl-feature:hover .bl-img { transform: scale(1.04); }
-        .bl-feature__body { padding: 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
-        .bl-feature__title { font-family: var(--serif); font-weight: 800; font-size: clamp(22px, 2.6vw, 28px); line-height: 1.2; }
-        .bl-feature:hover .bl-feature__title { text-decoration: underline; text-underline-offset: 4px; }
-        .bl-feature__preview { font-size: 14px; line-height: 1.7; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .bl-feature__foot { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-        .bl-feature__cta { display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; background: var(--accent); color: var(--on-accent); padding: 4px 9px; border: 1px solid var(--ink); }
-
-        @media (max-width: 860px) { .bl-spot { gap: 16px; } .bl-feature__media { height: 190px; } }
-        @media (max-width: 560px) {
-          .bl-spot { gap: 12px; }
-          .bl-feature__media { height: 110px; }
-          .bl-feature .bl-chip { top: 8px; left: 8px; font-size: 8px; padding: 3px 6px; }
-          .bl-feature__body { padding: 12px; gap: 8px; }
-          .bl-feature__title { font-size: 15px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-          .bl-feature__preview, .bl-feature__cta { display: none; }
-          .bl-feature__foot { padding-top: 8px; }
-          .bl-feature .bl-meta { font-size: 9.5px; gap: 5px; }
-        }
-
-        /* New Updates box */
-        .bl-upd { --bl-teal: #0f766e; padding: 18px 22px 6px; background: #f6f7f9; border: 1px solid #dfe2e7; border-radius: 12px; }
-        .bl-upd__label { font-family: var(--sans); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--bl-teal); margin: 0 0 6px; }
-        .bl-upd__list { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
-        .bl-upd__item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid #e4e6ea; }
-        .bl-upd__item:nth-child(-n+2) { border-top: none; }
-        .bl-upd__thumb { width: 64px; height: 64px; flex-shrink: 0; border-radius: 8px; overflow: hidden; background: #e8eaee; }
-        .bl-upd__img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .bl-upd__body { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-        .bl-upd__title { font-family: var(--sans); font-size: 14px; font-weight: 600; line-height: 1.4; color: #111; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .bl-upd__cat { font-family: var(--sans); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: #6b7280; }
-        .bl-upd__item:hover .bl-upd__title { color: var(--bl-teal); }
-        @media (max-width: 760px) {
-          .bl-upd { padding: 14px 14px 2px; }
-          .bl-upd__list { grid-template-columns: 1fr; }
-          .bl-upd__item:nth-child(2) { border-top: 1px solid #e4e6ea; }
-          .bl-upd__thumb { width: 56px; height: 56px; }
-          .bl-upd__title { font-size: 13.5px; }
-        }
-
-        /* All articles */
+        /* Archive */
+        .bl-archive { border-top: 1px solid var(--rule-dark); padding-bottom: 8px; }
         .bl-row { display: grid; grid-template-columns: 1fr 290px; gap: 40px; align-items: start; }
         @media (max-width: 960px) { .bl-row { grid-template-columns: 1fr; } }
         .bl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -524,9 +631,9 @@ export default function BlogListClient({ articles }) {
         .bl-card--tall .bl-card__media { height: 190px; }
         .bl-card:hover .bl-img { transform: scale(1.04); }
         .bl-card__body { padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
-        .bl-card__title { font-family: var(--serif); font-weight: 800; font-size: 18px; line-height: 1.25; }
-        .bl-card--tall .bl-card__title { font-size: 19px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .bl-card:hover .bl-card__title { text-decoration: underline; text-underline-offset: 3px; }
+        .bl-card__title { font-family: var(--head); font-weight: 700; font-size: 20px; line-height: 1.22; }
+        .bl-card--tall .bl-card__title { font-size: 21px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .bl-card:hover .bl-card__title { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 3px; text-underline-offset: 3px; }
         .bl-card__preview { font-size: 13px; line-height: 1.65; color: var(--ink-3); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .bl-card .bl-meta { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--rule); }
 
@@ -543,19 +650,19 @@ export default function BlogListClient({ articles }) {
         @media (max-width: 960px) { .bl-side { position: static; } }
         .bl-side__card { background: var(--card); border: 1px solid var(--rule-dark); border-top: 4px solid var(--accent); padding: 20px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
         .bl-side__kicker { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
-        .bl-side__title { font-family: var(--serif); font-weight: 800; font-size: 21px; line-height: 1.15; }
+        .bl-side__title { font-family: var(--head); font-weight: 700; font-size: 22px; line-height: 1.15; }
         .bl-side__text { font-size: 13px; line-height: 1.65; color: var(--ink-2); }
         .bl-side__card .bl-btn { margin-top: 4px; }
 
         /* Empty */
         .bl-empty { padding: 90px 0; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .bl-empty__title { font-family: var(--serif); font-weight: 800; font-size: 28px; }
+        .bl-empty__title { font-family: var(--head); font-weight: 700; font-size: 28px; }
         .bl-empty__msg { font-size: 14px; color: var(--ink-2); }
 
         /* Footer CTA */
-        .bl-cta { margin-top: 88px; background: var(--ink); color: #f4f1ea; border-top: 5px solid var(--accent); padding: 44px 40px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+        .bl-cta { margin-top: 56px; background: var(--ink); color: #f4f1ea; border-top: 5px solid var(--accent); padding: 44px 40px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
         @media (max-width: 640px) { .bl-cta { padding: 32px 22px; } }
-        .bl-cta__title { font-family: var(--serif); font-weight: 800; font-size: clamp(26px, 3.6vw, 38px); line-height: 1.1; margin-bottom: 8px; }
+        .bl-cta__title { font-family: var(--head); font-weight: 700; font-size: clamp(26px, 3.6vw, 38px); line-height: 1.1; margin-bottom: 8px; }
         .bl-cta__sub { font-size: 14px; color: #bdb8ae; line-height: 1.7; max-width: 480px; }
         .bl-cta__actions { display: flex; flex-wrap: wrap; gap: 10px; }
         .bl-cta .bl-btn { border-color: #f4f1ea; color: #f4f1ea; }
@@ -564,7 +671,12 @@ export default function BlogListClient({ articles }) {
         .bl-cta .bl-btn--solid:hover { background: #fff; border-color: #fff; color: var(--ink); }
         .bl-end { height: 24px; }
 
-        @media (max-width: 640px) { .bl-wrap { padding-left: 18px; padding-right: 18px; } .bl-page { padding-top: 76px; } }
+        @media (max-width: 640px) {
+          .bl-wrap { padding-left: 18px; padding-right: 18px; }
+          .bl-page { padding-top: 76px; }
+          .bl-row-item__media { width: 80px; height: 70px; }
+          .bl-row-item__title { font-size: 16.5px; }
+        }
         .bl-page :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
         @media (prefers-reduced-motion: reduce) { .bl-page * { transition: none !important; } .bl-track { scroll-behavior: auto; } }
       `}</style>
@@ -581,7 +693,7 @@ export default function BlogListClient({ articles }) {
                         </p>
                     </header>
 
-                    {/* Toolbar */}
+                    {/* Toolbar: each topic leads to /blog/topic/[key] */}
                     <div className="bl-toolbar">
                         <nav className="bl-cats" aria-label="Topics">
                             {CATEGORIES.map((cat) => (
@@ -624,76 +736,67 @@ export default function BlogListClient({ articles }) {
                         </div>
                     ) : (
                         <>
-                            {/* 1. Sliding row: the 5 newest posts side by side */}
-                            {sliderArticles.length > 0 && (
-                                <section className="bl-section" style={{ marginTop: 48 }}>
-                                    <div className="bl-head">
-                                        <div>
-                                            <div className="bl-kicker"><b>Just published</b></div>
-                                            <h2 className="bl-h2">Latest articles</h2>
+                            {/* 1. Hero: lead story + latest articles column */}
+                            {lead && (
+                                <section className="bl-hero" aria-label="Top stories">
+                                    <div className="bl-hero__main">
+                                        <Lead article={lead} />
+                                        {heroUnder.length > 0 && (
+                                            <div className="bl-hero__under">
+                                                {heroUnder.map((a) => (
+                                                    <Row key={a.slug} article={a} />
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    {heroLatest.length > 0 && (
+                                        <div className="bl-hero__side">
+                                            <LatestList articles={heroLatest} />
                                         </div>
-                                        <span className="bl-head__note">Slide to see more</span>
+                                    )}
+                                </section>
+                            )}
+
+                            {/* 2. Sliding row */}
+                            {sliderArticles.length > 0 && (
+                                <section className="bl-block" aria-label="Trending">
+                                    <div className="bl-sechead">
+                                        <h2 className="bl-sechead__title">Trending now</h2>
+                                        <span className="bl-sechead__note">Slide to see more</span>
                                     </div>
                                     <Slider articles={sliderArticles} />
                                 </section>
                             )}
 
-                            {/* 2. Two posts standing alone */}
-                            {spotlightArticles.length > 0 && (
-                                <section className="bl-section">
-                                    <div className="bl-head">
-                                        <div>
-                                            <div className="bl-kicker">Don&apos;t miss</div>
-                                            <h2 className="bl-h2">In the spotlight</h2>
-                                        </div>
-                                        <span className="bl-head__note">Four reads worth your time</span>
-                                    </div>
-                                    <div className="bl-spot">
-                                        {spotlightArticles.map((a) => (
-                                            <FeatureCard key={a.slug} article={a} />
-                                        ))}
-                                    </div>
-                                </section>
-                            )}
+                            {/* 3. One section per topic */}
+                            {topicSections.map(({ cat, items }) => (
+                                <TopicSection key={cat.key} cat={cat} items={items} />
+                            ))}
 
-                            {/* 3. Compact "New Updates" list */}
-                            {updatesArticles.length > 0 && (
-                                <section className="bl-section">
-                                    <UpdatesBox articles={updatesArticles} />
-                                </section>
-                            )}
-
-                            {/* 4. Everything else, paginated */}
-                            {remainingArticles.length > 0 && (
-                                <section
-                                    id="bl-all"
-                                    className="bl-section"
-                                    style={searching ? { marginTop: 40 } : undefined}
-                                >
-                                    <div className="bl-head">
-                                        <div>
-                                            <div className="bl-kicker">Browse</div>
-                                            <h2 className="bl-h2">{searching ? "Search results" : "All articles"}</h2>
+                            {/* 4. Full archive, paginated (search results while searching) */}
+                            <section id="bl-all" className="bl-archive" aria-label="All articles">
+                                <div className="bl-sechead">
+                                    <h2 className="bl-sechead__title">
+                                        {searching ? "Search results" : "All articles"}
+                                    </h2>
+                                    <span className="bl-sechead__note">{archiveArticles.length} articles</span>
+                                </div>
+                                <div className="bl-row">
+                                    <div>
+                                        <div className="bl-grid">
+                                            {paginatedArticles.map((a) => (
+                                                <ArticleCard key={a.slug} article={a} />
+                                            ))}
                                         </div>
-                                        <span className="bl-head__note">{remainingArticles.length} articles</span>
+                                        <Pagination
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            onPageChange={handlePageChange}
+                                        />
                                     </div>
-                                    <div className="bl-row">
-                                        <div>
-                                            <div className="bl-grid">
-                                                {paginatedArticles.map((a) => (
-                                                    <ArticleCard key={a.slug} article={a} />
-                                                ))}
-                                            </div>
-                                            <Pagination
-                                                currentPage={currentPage}
-                                                totalPages={totalPages}
-                                                onPageChange={handlePageChange}
-                                            />
-                                        </div>
-                                        <Sidebar />
-                                    </div>
-                                </section>
-                            )}
+                                    <Sidebar />
+                                </div>
+                            </section>
                         </>
                     )}
 

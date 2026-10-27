@@ -365,7 +365,7 @@ export default function Navbar() {
                 <InstallBanner />
                 <div className="nb-inner">
                     <Link href="/" className="nb-brand" onClick={closeAll}>
-                        brown<em>.</em>dev
+                        Sir-AD<em>Blog</em>
                     </Link>
 
                     <nav className="nb-links" aria-label="Main">
@@ -450,7 +450,7 @@ export default function Navbar() {
                     <div className="nb-overlay" onClick={closeAll} />
                     <aside className="nb-drawer" aria-label="Navigation">
                         <div className="nb-drawer__head">
-                            <span className="nb-brand" style={{ fontSize: 19 }}>brown<em>.</em>dev</span>
+                            <span className="nb-brand" style={{ fontSize: 19 }}>Sir-AD<em></em>Blog</span>
                             <button className="nb-drawer__close" aria-label="Close menu" onClick={closeAll}>
                                 <X size={16} />
                             </button>
