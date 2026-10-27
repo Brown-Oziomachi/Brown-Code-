@@ -5,15 +5,17 @@ import ArticleClient from "./slug";
 import { articlesMeta } from "@/app/data/articlesMeta";
 import { getCategoryKey } from "@/lib/blogCategories";
 
+const allArticles = Array.isArray(articles) ? articles : [];
+
 export async function generateStaticParams() {
-  return articles.map((article) => ({
+  return allArticles.map((article) => ({
     slug: article.slug,
   }));
 }
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const article = articles.find((a) => a.slug === slug);
+  const article = allArticles.find((a) => a.slug === slug);
   if (!article) {
     return {
       title: "Article Not Found | Sir Brown AD",
@@ -73,7 +75,7 @@ export async function generateMetadata({ params }) {
 
 export default async function ArticlePage({ params }) {
   const { slug } = await params;
-  const article = articles.find((a) => a.slug === slug);
+  const article = allArticles.find((a) => a.slug === slug);
 
   if (!article) {
     notFound();
@@ -84,18 +86,19 @@ export default async function ArticlePage({ params }) {
   // with the most recent articles overall so the box is never sparse.
   // Only slug + title are sent down — no need for full article objects here.
   const currentCategory = getCategoryKey(article);
-  const sameCategory = articles
+  const sameCategory = allArticles
     .filter((a) => a.slug !== article.slug && getCategoryKey(a) === currentCategory)
     .sort((a, b) => (b.datePublished || "").localeCompare(a.datePublished || ""));
 
   const relatedArticles = sameCategory.slice(0, 3).map((a) => ({
     slug: a.slug,
     title: a.title,
+    image: a.image,
   }));
 
   if (relatedArticles.length < 3) {
     const usedSlugs = new Set([article.slug, ...relatedArticles.map((r) => r.slug)]);
-    const fallback = articles
+    const fallback = allArticles
       .filter((a) => !usedSlugs.has(a.slug))
       .sort((a, b) => (b.datePublished || "").localeCompare(a.datePublished || ""))
       .slice(0, 3 - relatedArticles.length)

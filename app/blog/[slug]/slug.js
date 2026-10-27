@@ -100,6 +100,25 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
   const router = useRouter();
   const progressRef = useRef(null);
 
+  const normalizeRelatedArticles = (value) => {
+    if (Array.isArray(value)) return value;
+    if (!value || typeof value !== "object") return [];
+
+    const candidates = [value.articles, value.relatedArticles, value.items, value.data];
+    for (const candidate of candidates) {
+      if (Array.isArray(candidate)) return candidate;
+      if (candidate && typeof candidate === "object") {
+        if (Array.isArray(candidate.articles)) return candidate.articles;
+        if (Array.isArray(candidate.items)) return candidate.items;
+        if (Array.isArray(candidate.data)) return candidate.data;
+      }
+    }
+
+    return [];
+  };
+
+  const safeRelatedArticles = useMemo(() => normalizeRelatedArticles(relatedArticles), [relatedArticles]);
+
   const [likeCount, setLikeCount] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
   const [likeLoading, setLikeLoading] = useState(false);
@@ -219,12 +238,12 @@ export default function ArticleClient({ article, relatedArticles = [] }) {
     });
 
     // "Also read" about a third of the way down
-    if (relatedArticles.length > 0) {
+    if (safeRelatedArticles.length > 0) {
       const insertAt = Math.min(Math.max(3, Math.floor(elements.length / 3)), elements.length);
-      elements.splice(insertAt, 0, <AlsoRead key="also-read" items={relatedArticles} />);
+      elements.splice(insertAt, 0, <AlsoRead key="also-read" items={safeRelatedArticles} />);
     }
     return elements;
-  }, [article, relatedArticles]);
+  }, [article, safeRelatedArticles]);
 
   if (!article) {
     return (
