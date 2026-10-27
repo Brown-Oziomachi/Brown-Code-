@@ -222,7 +222,7 @@ export default function Footer() {
                     <div className="ft-main">
                         <div className="ft-brand">
                             <Link href="/" className="ft-wordmark">
-                                Sir-AD<em>Blog</em>
+                                Sir-AD <em>Blog</em>
                             </Link>
                             <p className="ft-tagline">
                                 Full stack engineer and publisher in Abuja, Nigeria. I build secure web platforms for
