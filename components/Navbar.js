@@ -19,8 +19,9 @@ import { CATEGORIES } from "@/lib/blogCategories";
 
 const CHANNEL_URL = "https://whatsapp.com/channel/0029VbEGWFsC1FuAo5qoPh0q";
 
-// Image shown at the top of the mobile drawer (put the file in /public/images/)
-const DRAWER_IMAGE = "/banner.jpg";
+// Video shown at the top of the mobile drawer (file goes in /public/)
+const DRAWER_VIDEO = "/banner.mp4";
+const DRAWER_POSTER = "/banner.jpg"; // shown while the video loads
 
 // Topics shown in the Blog dropdown -> /blog/topic/<key>, same source as the blog page
 const blogTopics = CATEGORIES.map((c) => ({ slug: c.key, label: c.label }));
@@ -128,6 +129,7 @@ export default function Navbar() {
     const pathname = usePathname();
     const router = useRouter();
     const shellRef = useRef(null);
+    const videoRef = useRef(null);
 
     const [isScrolled, setIsScrolled] = useState(false);
     const [openMenu, setOpenMenu] = useState(null); // null | "services" | "utilities" | "news" | "blog"
@@ -178,6 +180,42 @@ export default function Navbar() {
     useEffect(() => {
         document.body.style.overflow = isDrawerOpen ? "hidden" : "";
         return () => { document.body.style.overflow = ""; };
+    }, [isDrawerOpen]);
+
+    // Download the drawer video in the background so it is cached before the menu opens
+    useEffect(() => {
+        const warm = document.createElement("video");
+        warm.preload = "auto";
+        warm.muted = true;
+        warm.src = DRAWER_VIDEO;
+        warm.load();
+        return () => { warm.removeAttribute("src"); warm.load(); };
+    }, []);
+
+    // Keep the drawer video playing
+    useEffect(() => {
+        if (!isDrawerOpen) return;
+        const v = videoRef.current;
+        if (!v) return;
+        v.muted = true;
+        v.defaultMuted = true;
+        const tryPlay = () => {
+            if (!v.paused) return;
+            const p = v.play();
+            if (p && p.catch) p.catch(() => { });
+        };
+        tryPlay();
+        // Retry while the file loads and while the drawer slides in
+        const timers = [150, 500, 1200, 2500].map((ms) => setTimeout(tryPlay, ms));
+        const events = ["loadedmetadata", "loadeddata", "canplay", "canplaythrough", "stalled"];
+        events.forEach((e) => v.addEventListener(e, tryPlay));
+        const onVisible = () => { if (!document.hidden) tryPlay(); };
+        document.addEventListener("visibilitychange", onVisible);
+        return () => {
+            timers.forEach(clearTimeout);
+            events.forEach((e) => v.removeEventListener(e, tryPlay));
+            document.removeEventListener("visibilitychange", onVisible);
+        };
     }, [isDrawerOpen]);
 
     const goToSection = (id) => {
@@ -440,6 +478,7 @@ export default function Navbar() {
 
         .nb-shell :focus-visible { outline: 2px solid var(--nb-ink); outline-offset: 2px; }
         @media (prefers-reduced-motion: reduce) { .nb-shell * { transition: none !important; animation: none !important; } }
+              .nb-drawer__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
       `}</style>
 
             {/* ── Bar ── */}
@@ -569,11 +608,28 @@ export default function Navbar() {
                 <>
                     <div className="nb-overlay" onClick={closeAll} />
                     <aside className="nb-drawer" aria-label="Navigation">
-                        {/* Image area */}
-                        <div
-                            className="nb-drawer__hero"
-                            style={{ backgroundImage: `url(${DRAWER_IMAGE}), linear-gradient(135deg, #2b3a42, #4b6472)` }}
-                        >
+                        {/* Video area */}
+                        <div className="nb-drawer__hero">
+                            <video
+                                ref={videoRef}
+                                className="nb-drawer__video"
+                                src={DRAWER_VIDEO}
+                                poster={DRAWER_POSTER}
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                preload="auto"
+                                aria-hidden="true"
+                                onCanPlay={(e) => e.currentTarget.play().catch(() => { })}
+                                onPause={(e) => {
+                                    if (!e.currentTarget.ended) e.currentTarget.play().catch(() => { });
+                                }}
+                                onEnded={(e) => {
+                                    e.currentTarget.currentTime = 0;
+                                    e.currentTarget.play().catch(() => { });
+                                }}
+                            />
                             <button className="nb-drawer__close" aria-label="Close menu" onClick={closeAll}>
                                 <X size={16} />
                             </button>
