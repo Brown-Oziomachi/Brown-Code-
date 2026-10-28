@@ -8,7 +8,7 @@ import {
     Globe, Layers, Server, Newspaper, TrendingUp, ExternalLink,
     Sparkles, ArrowUpRight, ArrowRight, MessageCircle,
     Home, User, FolderKanban, Quote, Mail, BookOpen, Image as ImageIcon,
-    Heart, Download,
+    Heart, Download, Search,
 } from "lucide-react";
 import { featuredServices } from "@/app/data/services";
 import InstallAppButton from "@/components/InstallAppButton";
@@ -236,7 +236,7 @@ export default function Navbar() {
     return (
         <div className="nb-shell" ref={shellRef}>
             <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Oswald:wght@600;700&display=swap');
 
         .nb-shell {
           --nb-bg: #ffffff; --nb-card: #ffffff; --nb-card-2: #f6f5f0;
@@ -479,14 +479,48 @@ export default function Navbar() {
         .nb-shell :focus-visible { outline: 2px solid var(--nb-ink); outline-offset: 2px; }
         @media (prefers-reduced-motion: reduce) { .nb-shell * { transition: none !important; animation: none !important; } }
               .nb-drawer__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-      `}</style>
+     
+                      /* ── Mobile top bar: blue strip + big wordmark ── */
+        .nb-strip, .nb-m-brand { display: none; }
+        @media (max-width: 1250px) {
+          body { padding-top: 28px; }
+         .nb-strip {
+  display: flex; align-items: center; gap: 12px; height: 28px; padding: 0 18px;
+  background: var(--nb-accent); color: var(--nb-on); overflow: hidden; transition: height 0.2s ease;
+}
+.nb-strip__bar { width: 1px; height: 14px; background: rgba(10,10,11,0.8); }
+          .nb-root--scrolled .nb-strip { height: 0; }
+          .nb-strip__a { font-family: var(--nb-serif); font-weight: 800; font-size: 14px; letter-spacing: 0.28em; }
+          .nb-strip__bar { width: 1px; height: 14px; background: rgba(255,255,255,0.8); }
+          .nb-strip__b { font-family: var(--nb-sans); font-weight: 600; font-size: 14px; }
+
+          .nb-brand--desk { display: none; }
+          .nb-m-brand { display: inline-flex; flex-direction: column; justify-content: center; text-decoration: none; color: #111; flex-shrink: 0; }
+          .nb-m-brand__cap { font-family: var(--nb-sans); font-size: 9px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; color: #111; line-height: 1.2; }
+          .nb-m-brand__word { font-family: 'Oswald', 'Inter', sans-serif; font-weight: 700; font-size: 34px; line-height: 1; letter-spacing: -0.01em; color: #111; }
+.nb-m-brand__word b { font-weight: 700; color: #111; background: var(--nb-accent); padding: 0 4px; }
+
+          .nb-right { gap: 18px; }
+.nb-icon { display: inline-flex; color: #111; }
+.nb-burger { border: none; width: auto; height: auto; padding: 4px; color: #111; }
+        }
+     `}</style>
 
             {/* ── Bar ── */}
             <header className={`nb-root${isScrolled ? " nb-root--scrolled" : ""}`}>
-                <InstallBanner />
+                               <InstallBanner />
+                <div className="nb-strip" aria-hidden="true">
+                    <span className="nb-strip__a">SIR-AD</span>
+                    <span className="nb-strip__bar" />
+                    <span className="nb-strip__b">Blog</span>
+                </div>
                 <div className="nb-inner">
-                    <Link href="/" className="nb-brand" onClick={closeAll}>
+                    <Link href="/" className="nb-brand nb-brand--desk" onClick={closeAll}>
                         Sir-AD<em>Blog</em>
+                    </Link>
+                    <Link href="/" className="nb-m-brand" onClick={closeAll}>
+                        <span className="nb-m-brand__cap">Full-stack developer, Abuja</span>
+                        <span className="nb-m-brand__word"><b>SIR-AD</b>BLOG</span>
                     </Link>
 
                     <nav className="nb-links" aria-label="Main">
@@ -564,13 +598,18 @@ export default function Navbar() {
                         </Link>
                     </nav>
 
-                    <div className="nb-right">
+                                     <div className="nb-right">
+                        <Link href="/blog" className="nb-icon" aria-label="Search articles" onClick={closeAll}>
+                            <Search size={24} />
+                        </Link>
                         <button
                             className="nb-burger"
                             aria-label="Open menu"
                             onClick={() => { setIsDrawerOpen(true); setOpenMenu(null); }}
                         >
-                            <Menu size={18} />
+                            <svg width="26" height="22" viewBox="0 0 26 22" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="square" aria-hidden="true">
+                                <path d="M2 3h22M8 11h16M2 19h22" />
+                            </svg>
                         </button>
                     </div>
                 </div>
