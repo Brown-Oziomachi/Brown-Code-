@@ -24,40 +24,7 @@ export default function ServicesSection({ mode = "home", showNav = true }) {
 
   return (
     <>
-{showNav && (
-  <header className="sv-nav">
-        <div className="sv-nav__inner">
-          <Link href="/" className="sv-nav__brand">
-            brown<em>.</em>dev
-          </Link>
-          <nav className="sv-nav__links" aria-label="Main">
-            <Link
-              href="/brown-code/hire-web-developer-abuja"
-              className="sv-nav__link sv-nav__hide"
-            >
-              Pricing
-            </Link>
-            <Link href="/portfolio" className="sv-nav__link sv-nav__hide">
-              Portfolio
-            </Link>
-            <Link href="/faq" className="sv-nav__link sv-nav__hide">
-              FAQ
-            </Link>
-            <Link href="/terms" className="sv-nav__link sv-nav__hide">
-              Terms
-            </Link>
-            <Link
-              href="https://github.com/sponsors/Brown-Oziomachi/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="sv-btn sv-btn--solid sv-btn--sm"
-            >
-              Sponsor
-            </Link>
-          </nav>
-        </div>
-      </header>
-      )}
+
       
       <section className="services-section" id="services">
         <div className="services-section__intro">

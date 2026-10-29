@@ -260,16 +260,6 @@ export default function ContactForm() {
             `}</style>
 
             <div className="ct-page">
-                <header className="ct-nav">
-                    <div className="ct-nav__inner">
-                        <Link href="/" className="ct-nav__brand">Sir-AD<em>Blog</em></Link>
-                        <nav className="ct-nav__links" aria-label="Main">
-                            <Link href="/bc/about" className="ct-nav__link ct-nav__hide">About</Link>
-                            <Link href="/portfolio" className="ct-nav__link ct-nav__hide">Portfolio</Link>
-                            <Link href="/blog" className="ct-nav__link">Blog</Link>
-                        </nav>
-                    </div>
-                </header>
 
                 <main className="ct-wrap">
                     {/* ── Header ── */}

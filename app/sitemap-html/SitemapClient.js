@@ -128,14 +128,6 @@ export default function SitemapClient() {
             `}</style>
 
             <div className="sm-page">
-                <header className="sm-nav">
-                    <div className="sm-nav__inner">
-                        <Link href="/" className="sm-nav__brand">brown<em>.</em>dev</Link>
-                        <Link href="/" className="sm-btn" style={{ padding: "8px 14px" }}>
-                            <ArrowLeft size={12} /> Home
-                        </Link>
-                    </div>
-                </header>
 
                 <main className="sm-wrap">
                     <header className="sm-head">

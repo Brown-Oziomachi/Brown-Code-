@@ -186,12 +186,6 @@ export default function FAQPage() {
             `}</style>
 
             <div className="faq-page">
-                <header className="faq-nav">
-                    <div className="faq-nav__inner">
-                        <Link href="/" className="faq-nav__brand">brown<em>.</em>dev</Link>
-                        <Link href="/" className="faq-btn faq-btn--sm"><ArrowLeft size={12} /> Home</Link>
-                    </div>
-                </header>
 
                 <main className="faq-wrap">
                     <header className="faq-head">

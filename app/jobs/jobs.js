@@ -173,19 +173,6 @@ export default function JobsClient() {
             `}</style>
 
             <div className="jp-page">
-                <header className="jp-nav">
-                    <div className="jp-nav__inner">
-                        <Link href="/" className="jp-nav__brand">brown<em>.</em>dev</Link>
-                        <nav className="jp-nav__links" aria-label="Main">
-                            <Link href="/bc/about" className="jp-nav__link jp-nav__hide">About</Link>
-                            <Link href="/portfolio" className="jp-nav__link jp-nav__link--on">Portfolio</Link>
-                            <Link href="/blog" className="jp-nav__link jp-nav__hide">Blog</Link>
-                            <Link href="/bc/contact" className="jp-btn jp-btn--solid jp-btn--sm">
-                                Start a project <ArrowRight size={12} />
-                            </Link>
-                        </nav>
-                    </div>
-                </header>
 
                 <main className="jp-wrap">
                     <header className="jp-masthead">

@@ -13,6 +13,7 @@ import {
 import { featuredServices } from "@/app/data/services";
 import InstallAppButton from "@/components/InstallAppButton";
 import InstallBanner from "./InstallBanner";
+import SearchSheet from "@/components/SearchSheet";
 import { CATEGORIES } from "@/lib/blogCategories";
 
 /* ── Data ─────────────────────────────────────────────── */
@@ -135,11 +136,13 @@ export default function Navbar() {
     const [openMenu, setOpenMenu] = useState(null); // null | "services" | "utilities" | "news" | "blog"
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [mobileSection, setMobileSection] = useState(null); // menu key or "blog"
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     const closeAll = () => {
         setOpenMenu(null);
         setIsDrawerOpen(false);
         setMobileSection(null);
+        setIsSearchOpen(false);
     };
 
     // Scroll state
@@ -500,7 +503,7 @@ export default function Navbar() {
 .nb-m-brand__word b { display: inline-block; line-height: 1; font-weight: 700; color: #111; background: var(--nb-accent); padding: 2px 4px; }
 
           .nb-right { gap: 18px; }
-.nb-icon { display: inline-flex; color: #111; }
+.nb-icon { display: inline-flex; color: #111; background: none; border: none; padding: 0; cursor: pointer; }
 .nb-burger { border: none; width: auto; height: auto; padding: 4px; color: #111; }
         }
      `}</style>
@@ -598,9 +601,14 @@ export default function Navbar() {
                     </nav>
 
                                      <div className="nb-right">
-                        <Link href="/blog" className="nb-icon" aria-label="Search articles" onClick={closeAll}>
+                        <button
+                            type="button"
+                            className="nb-icon"
+                            aria-label="Search articles"
+                            onClick={() => { setIsDrawerOpen(false); setOpenMenu(null); setIsSearchOpen(true); }}
+                        >
                             <Search size={24} />
-                        </Link>
+                        </button>
                         <button
                             className="nb-burger"
                             aria-label="Open menu"
@@ -794,6 +802,9 @@ export default function Navbar() {
                     </aside>
                 </>
             )}
+
+            {/* ── Search sheet (slides up from the bottom) ── */}
+            <SearchSheet open={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
         </div>
     );
 }

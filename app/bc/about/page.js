@@ -315,19 +315,7 @@ export default function AboutMePage() {
             `}</style>
 
             <div className="ab-page">
-                <header className="ab-nav">
-                    <div className="ab-nav__inner">
-                        <Link href="/" className="ab-nav__brand">Sir-AD<em>Blog</em></Link>
-                        <nav className="ab-nav__links" aria-label="Main">
-                            <Link href="/bc/about" className="ab-nav__link ab-nav__link--on">About</Link>
-                            <Link href="/portfolio" className="ab-nav__link ab-nav__hide">Portfolio</Link>
-                            <Link href="/blog" className="ab-nav__link ab-nav__hide">Blog</Link>
-                            <Link href="/bc/contact" className="ab-btn ab-btn--solid ab-btn--sm">
-                                Start a project <ArrowRight size={12} />
-                            </Link>
-                        </nav>
-                    </div>
-                </header>
+               
 
                 <main>
                     {/* ── HERO ── */}

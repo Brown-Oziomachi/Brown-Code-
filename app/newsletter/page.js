@@ -189,20 +189,6 @@ export default function NewsletterPage() {
             <style>{CSS}</style>
 
             <div className="nl-page">
-                <header className="nl-nav">
-                    <div className="nl-nav__inner">
-                        <Link href="/" className="nl-nav__brand">brown<em>.</em>dev</Link>
-                        <nav className="nl-nav__links" aria-label="Main">
-                            <Link href="/bc/about" className="nl-nav__link nl-nav__hide">About</Link>
-                            <Link href="/portfolio" className="nl-nav__link nl-nav__hide">Portfolio</Link>
-                            <Link href="/blog" className="nl-nav__link nl-nav__hide">Blog</Link>
-                            <Link href="/newsletter" className="nl-nav__link nl-nav__link--on">Newsletter</Link>
-                            <Link href="/bc/contact" className="nl-btn nl-btn--solid nl-btn--sm">
-                                Start a project <ArrowRight size={12} />
-                            </Link>
-                        </nav>
-                    </div>
-                </header>
 
                 <main>
                     {/* Hero + form */}

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-    ArrowRight, ArrowUpRight, Search, X, Mail, Heart,
+    ArrowRight, ArrowUpRight, Mail, Heart,
     ChevronLeft, ChevronRight, MessageCircle,
 } from "lucide-react";
 import Footer from "@/components/footer";
@@ -692,39 +692,6 @@ export default function BlogListClient({ articles }) {
                             Notes on tech, fraud awareness, business and faith across Africa, from the code up.
                         </p>
                     </header>
-
-                    {/* Toolbar: each topic leads to /blog/topic/[key] */}
-                    <div className="bl-toolbar">
-                        <nav className="bl-cats" aria-label="Topics">
-                            {CATEGORIES.map((cat) => (
-                                <Link key={cat.key} href={`/blog/topic/${cat.key}`}>
-                                    {cat.label}
-                                </Link>
-                            ))}
-                        </nav>
-                        <div>
-                            <div className="bl-search">
-                                <Search size={14} />
-                                <input
-                                    type="text"
-                                    placeholder="Search articles"
-                                    aria-label="Search articles"
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                                {searchTerm && (
-                                    <button onClick={() => setSearchTerm("")} aria-label="Clear search">
-                                        <X size={13} />
-                                    </button>
-                                )}
-                            </div>
-                            {debounced && (
-                                <p className="bl-count">
-                                    <b>{filteredArticles.length}</b> result{filteredArticles.length !== 1 ? "s" : ""}
-                                </p>
-                            )}
-                        </div>
-                    </div>
 
                     {filteredArticles.length === 0 ? (
                         <div className="bl-empty">

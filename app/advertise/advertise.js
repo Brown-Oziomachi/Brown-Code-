@@ -300,19 +300,6 @@ export default function AdvertiseClient() {
             `}</style>
 
             <div className="ad-page">
-                <header className="ad-nav">
-                    <div className="ad-nav__inner">
-                        <Link href="/" className="ad-nav__brand">brown<em>.</em>dev</Link>
-                        <nav className="ad-nav__links" aria-label="Main">
-                            <Link href="/portfolio" className="ad-nav__link ad-nav__hide">Portfolio</Link>
-                            <Link href="/bc/contact" className="ad-nav__link ad-nav__hide">Contact</Link>
-                            <Link href="/blog" className="ad-btn" style={{ padding: "8px 14px" }}>
-                                <ArrowLeft size={12} /> Blog
-                            </Link>
-                        </nav>
-                    </div>
-                </header>
-
                 <main>
                     {/* ── HERO ── */}
                     <section className="ad-hero">

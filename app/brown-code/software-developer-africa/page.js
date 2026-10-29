@@ -1,6 +1,5 @@
 import Footer from "@/components/footer";
 import Link from "next/link";
-import LandingNav from "@/components/landing/LandingNav";
 import "@/components/landing/landing.css";
 
 export const metadata = {
@@ -72,7 +71,6 @@ export default function WebDeveloperAfrica() {
     return (
         <div className="lp-page">
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-            <LandingNav />
 
             <main className="lp-wrap lp-hero">
                 <div className="lp-split">
