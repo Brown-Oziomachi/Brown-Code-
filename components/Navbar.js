@@ -491,14 +491,13 @@ export default function Navbar() {
 .nb-strip__bar { width: 1px; height: 14px; background: rgba(10,10,11,0.8); }
           .nb-root--scrolled .nb-strip { height: 0; }
           .nb-strip__a { font-family: var(--nb-serif); font-weight: 800; font-size: 14px; letter-spacing: 0.28em; }
-          .nb-strip__bar { width: 1px; height: 14px; background: rgba(255,255,255,0.8); }
           .nb-strip__b { font-family: var(--nb-sans); font-weight: 600; font-size: 14px; }
 
           .nb-brand--desk { display: none; }
           .nb-m-brand { display: inline-flex; flex-direction: column; justify-content: center; text-decoration: none; color: #111; flex-shrink: 0; }
-          .nb-m-brand__cap { font-family: var(--nb-sans); font-size: 9px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; color: #111; line-height: 1.2; }
+.nb-m-brand__cap { font-family: var(--nb-sans); font-size: 9px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; color: #111; line-height: 1.2; }
           .nb-m-brand__word { font-family: 'Oswald', 'Inter', sans-serif; font-weight: 700; font-size: 34px; line-height: 1; letter-spacing: -0.01em; color: #111; }
-.nb-m-brand__word b { font-weight: 700; color: #111; background: var(--nb-accent); padding: 0 4px; }
+.nb-m-brand__word b { display: inline-block; line-height: 1; font-weight: 700; color: #111; background: var(--nb-accent); padding: 2px 4px; }
 
           .nb-right { gap: 18px; }
 .nb-icon { display: inline-flex; color: #111; }
@@ -519,8 +518,8 @@ export default function Navbar() {
                         Sir-AD<em>Blog</em>
                     </Link>
                     <Link href="/" className="nb-m-brand" onClick={closeAll}>
-                        <span className="nb-m-brand__cap">Full-stack developer, Abuja</span>
                         <span className="nb-m-brand__word"><b>SIR-AD</b>BLOG</span>
+                        <span className="nb-m-brand__cap">Fraud awareness and web security</span>
                     </Link>
 
                     <nav className="nb-links" aria-label="Main">
