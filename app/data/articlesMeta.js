@@ -2163,5 +2163,21 @@ export const articlesMeta = {
             "Sir Brown AD",
         ],
     },
-
+    "write-cv-to-solve-problems-not-to-impress-nigeria": {
+        category: "career",
+        metaTitle: "Your CV Is Not About You: Write to Solve Problems | Sir Brown AD",
+        metaDescription: "Hiring managers scan CVs in seconds. Learn why most Nigerian CVs are skipped and a three-page structure that shows the employer you can solve their problem.",
+        keywords: [
+            "how to write a CV Nigeria",
+            "CV tips Nigeria",
+            "why employers reject CVs",
+            "how to get your CV noticed",
+            "problem solving CV",
+            "how to impress a hiring manager",
+            "job application tips Nigeria",
+            "CV mistakes to avoid",
+            "how to apply for jobs in Nigeria",
+            "Sir Brown AD",
+        ],
+    },
 };
