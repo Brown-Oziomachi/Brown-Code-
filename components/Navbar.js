@@ -25,7 +25,12 @@ const DRAWER_VIDEO = "/banner.mp4";
 const DRAWER_POSTER = "/banner.jpg"; // shown while the video loads
 
 // Topics shown in the Blog dropdown -> /blog/topic/<key>, same source as the blog page
-const blogTopics = CATEGORIES.map((c) => ({ slug: c.key, label: c.label }));
+const blogTopics = [
+    { slug: "web-security", label: "Web Security", href: "/blog/web-security" },
+    ...CATEGORIES
+        .filter((c) => c.key !== "web-security")
+        .map((c) => ({ slug: c.key, label: c.label, href: `/blog/topic/${c.key}` })),
+];
 
 const anchorItems = ["home", "about", "projects", "testimonials", "contact"];
 const linkItems = ["blog", "gallery", "tech-news"];
@@ -554,7 +559,7 @@ export default function Navbar() {
                                                 {blogTopics.map((t) => (
                                                     <Link
                                                         key={t.slug}
-                                                        href={`/blog/topic/${t.slug}`}
+                                                        href={t.href}
                                                         className="nb-blog__item"
                                                         onClick={closeAll}
                                                     >
@@ -714,7 +719,7 @@ export default function Navbar() {
                                                     {blogTopics.map((t) => (
                                                         <Link
                                                             key={t.slug}
-                                                            href={`/blog/topic/${t.slug}`}
+                                                            href={t.href}
                                                             className="nb-sub__link"
                                                             onClick={closeAll}
                                                         >
