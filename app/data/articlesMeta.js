@@ -2180,4 +2180,21 @@ export const articlesMeta = {
             "Sir Brown AD",
         ],
     },
+    "dom-and-xss-beginners-guide-web-security": {
+        category: "webdev",
+        metaTitle: "DOM and XSS Explained: A Beginner's Guide to Web Security | Sir Brown AD",
+        metaDescription: "Learn what the DOM is, how XSS attacks happen, and why textContent is safer than innerHTML. A plain-language web security guide with simple examples.",
+        keywords: [
+            "what is the DOM",
+            "what is XSS",
+            "cross site scripting explained",
+            "DOM based XSS",
+            "innerHTML vs textContent",
+            "how to prevent XSS",
+            "web security for beginners",
+            "OWASP Juice Shop practice",
+            "client side vs server side validation",
+            "Sir Brown AD",
+        ],
+    },
 };
