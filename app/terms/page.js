@@ -317,12 +317,6 @@ export default function TermsOfService() {
             `}</style>
 
             <div className="lg-page">
-                <header className="lg-nav">
-                    <div className="lg-nav__inner">
-                        <Link href="/" className="lg-nav__brand">brown<em>.</em>dev</Link>
-                        <Link href="/" className="lg-btn"><ArrowLeft size={12} /> Home</Link>
-                    </div>
-                </header>
 
                 <main className="lg-wrap">
                     <header className="lg-head">

@@ -121,7 +121,8 @@ export default function TopicPageClient({ topic, label, articles: topicArticles 
                     --teal: #0f6a63; --teal-dark: #0a4f49;
                     --sans: 'IBM Plex Sans', system-ui, sans-serif;
                     --mono: 'IBM Plex Mono', ui-monospace, monospace;
-                    background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh;
+                                       background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh;
+                    padding-top: 90px; /* room for the fixed site navbar */
                 }
                 .tp-page *, .tp-page *::before, .tp-page *::after { box-sizing: border-box; }
                 .tp-page h1, .tp-page h2, .tp-page h3, .tp-page p { margin: 0; }
@@ -147,7 +148,7 @@ export default function TopicPageClient({ topic, label, articles: topicArticles 
 
                 /* Category dropdown */
                 .tp-cats { position: relative; margin: 20px 0 8px; width: fit-content; }
-                .tp-cats--sticky { position: sticky; top: 60px; z-index: 50; margin: 0 0 8px; padding: 10px 0; background: var(--paper); }
+                .tp-cats--sticky { position: sticky; top: 76px; z-index: 50; margin: 0 0 8px; padding: 10px 0; background: var(--paper); }
                 .tp-cats__trigger { display: inline-flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 13px; font-weight: 600; color: #fff; background: var(--teal); border: 0; padding: 9px 14px; cursor: pointer; transition: background 0.15s; }
                 .tp-cats__trigger:hover { background: var(--teal-dark); }
                 .tp-cats__chev { transition: transform 0.2s ease; }
@@ -209,7 +210,8 @@ export default function TopicPageClient({ topic, label, articles: topicArticles 
                 @media (max-width: 900px) {
                     .tp-top { grid-template-columns: 1fr; gap: 28px; align-items: stretch; }
                 }
-                @media (max-width: 560px) {
+                               @media (max-width: 560px) {
+                    .tp-page { padding-top: 76px; }
                     .tp-wrap, .tp-nav__inner { padding-left: 18px; padding-right: 18px; }
                     .tp-head { padding-top: 30px; }
                     .tp-feat { flex-direction: column; align-items: stretch; }
@@ -223,14 +225,6 @@ export default function TopicPageClient({ topic, label, articles: topicArticles 
             `}</style>
 
             <div className="tp-page">
-                <header className="tp-nav">
-                    <div className="tp-nav__inner">
-                        <Link href="/" className="tp-nav__brand">Sir Brown <em>Blog</em></Link>
-                        <Link href="/blog" className="tp-btn">
-                            <ArrowLeft size={12} /> All articles
-                        </Link>
-                    </div>
-                </header>
 
                 <main className="tp-wrap">
                     <div className="tp-head">
