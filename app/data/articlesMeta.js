@@ -2197,4 +2197,18 @@ export const articlesMeta = {
             "Sir Brown AD",
         ],
     },
+    "how-to-spot-fake-transport-booking-sites-nigeria": {
+        category: "security",
+        metaTitle: "How to Spot a Fake Transport Booking Site in Nigeria (2026 Guide)",
+        metaDescription: "Scammers now clone Google listings, WhatsApp accounts and social pages of transport companies. Learn 8 red flags, a 5-step check, and what to do if you already paid.",
+        keywords: [
+            "fake transport booking site",
+            "bus ticket scam Nigeria",
+            "fake Google Maps listing scam",
+            "WhatsApp booking scam",
+            "how to avoid ticket fraud",
+            "GUO Transport fraud notice",
+            "Sir Brown AD",
+        ],
+    },
 };
