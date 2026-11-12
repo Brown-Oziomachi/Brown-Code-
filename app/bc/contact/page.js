@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
     Mail, User, Phone, Send, CheckCircle, ShieldAlert, CalendarDays,
-    MessageCircle, ArrowRight, ArrowUpRight, RotateCcw, Check,
+    MessageCircle, ArrowUpRight, RotateCcw, Check,
 } from "lucide-react";
 import Footer from "@/components/footer";
 
@@ -23,6 +22,13 @@ const TOPICS = [
 ];
 
 const EMPTY = { name: "", email: "", phone: "", topic: "", message: "" };
+
+const facts = [
+    ["Reply time", "Within 24 hours"],
+    ["Based in", "Abuja, Nigeria (remote)"],
+    ["Quote", "Free, no pressure"],
+    ["Status", "Open to projects"],
+];
 
 const WHAT_I_DO = [
     ["Websites and web apps", "Built from the interface to the database, so one person owns the whole thing."],
@@ -126,162 +132,172 @@ export default function ContactForm() {
     return (
         <>
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+                @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Noto+Serif:wght@400;500&family=Inter:wght@400;500;600&display=swap');
 
                 .ct-page {
-                    --paper: #ffffff; --paper-2: #f6f5f0; --card: #ffffff;
-                    --ink: #111111; --ink-2: #3f3f3f; --ink-3: #6f6f6f;
-                    --rule: #e4e2da; --rule-dark: #111111;
-                    --accent: #e8ff47; --on-accent: #0a0a0b; --danger: #b91c1c;
-                    --serif: 'Playfair Display', Georgia, serif;
+                    --bg: #ffffff; --bg-2: #f4f7fa; --card: #ffffff; --line: #dde3ea; --line-2: #b9c4cf;
+                    --hover: #eef3f7;
+                    --ink: #0f1720; --ink-2: #46505c; --ink-3: #6b7682;
+                    --blue: #0a84c6; --navy: #0a3d62; --navy-2: #0d5183; --on-blue: #04121c;
+                    --danger: #b91c1c;
+                    --head: 'Archivo', 'Inter', system-ui, sans-serif;
+                    --serif: 'Noto Serif', Georgia, serif;
                     --sans: 'Inter', system-ui, sans-serif;
-                    --mono: 'JetBrains Mono', 'Fira Code', monospace;
-                    background: var(--paper); color: var(--ink); font-family: var(--sans); min-height: 100vh;
+                    background: var(--bg); color: var(--ink-2); font-family: var(--sans); min-height: 100vh;
                 }
                 .ct-page *, .ct-page *::before, .ct-page *::after { box-sizing: border-box; }
                 .ct-page h1, .ct-page h2, .ct-page h3, .ct-page p, .ct-page ol { margin: 0; padding: 0; }
                 :where(.ct-page a) { color: inherit; text-decoration: none; }
-                .ct-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+                .ct-wrap { max-width: 1240px; margin: 0 auto; padding: 0 28px; }
+                .ct-section { padding-top: 96px; }
 
-                /* Nav */
-                .ct-nav { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.92); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-bottom: 1px solid var(--rule); }
-                .ct-nav__inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-                .ct-nav__brand { font-family: var(--serif); font-weight: 800; font-size: 21px; letter-spacing: -0.01em; }
-                .ct-nav__brand em { font-style: normal; background: var(--accent); padding: 0 3px; }
-                .ct-nav__links { display: flex; align-items: center; gap: 4px; }
-                .ct-nav__link { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); padding: 8px 12px; transition: color 0.15s; }
-                .ct-nav__link:hover { color: var(--ink); }
-                @media (max-width: 640px) { .ct-nav__hide { display: none; } }
+                /* Buttons */
+                .ct-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--head); font-size: 13px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; padding: 14px 22px; border: 1px solid var(--line-2); border-radius: 6px; background: transparent; color: var(--ink); cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+                .ct-btn:hover { background: var(--hover); border-color: var(--blue); }
+                .ct-btn--solid { background: var(--navy); border-color: var(--navy); color: #fff; }
+                .ct-btn--solid:hover { background: var(--navy-2); border-color: var(--navy-2); }
 
-                /* Header */
-                .ct-head { padding: 64px 0 40px; }
-                @media (max-width: 640px) { .ct-head { padding: 40px 0 28px; } }
-                .ct-kicker { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); padding: 5px 11px; margin-bottom: 20px; }
-                .ct-ping { position: relative; width: 8px; height: 8px; }
-                .ct-ping__ring { position: absolute; inset: 0; border-radius: 50%; background: var(--on-accent); opacity: 0.4; animation: ct-ping 1.6s ease-out infinite; }
-                .ct-ping__dot { position: absolute; inset: 1px; border-radius: 50%; background: var(--on-accent); }
-                @keyframes ct-ping { 0% { transform: scale(1); opacity: 0.4; } 100% { transform: scale(2.6); opacity: 0; } }
-                .ct-title { font-family: var(--serif); font-weight: 800; font-size: clamp(38px, 6.4vw, 76px); line-height: 1.02; letter-spacing: -0.025em; max-width: 880px; }
-                .ct-title em { font-style: italic; background: linear-gradient(transparent 62%, var(--accent) 62%); }
-                .ct-dek { margin-top: 22px; max-width: 600px; font-size: clamp(15px, 1.6vw, 18px); line-height: 1.7; font-weight: 300; color: var(--ink-2); }
-                .ct-promises { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 24px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
+                /* Section heads */
+                .ct-kicker { font-family: var(--head); font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+                .ct-h2 { font-family: var(--head); font-weight: 800; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; letter-spacing: -0.01em; color: var(--ink); text-transform: uppercase; }
+                .ct-head { padding-bottom: 22px; border-bottom: 1px solid var(--line); margin-bottom: 32px; }
+
+                /* Hero */
+                .ct-hero { padding-top: 72px; }
+                @media (max-width: 880px) { .ct-hero { padding-top: 40px; } }
+                .ct-hero__name { font-family: var(--head); font-weight: 800; font-size: clamp(44px, 8vw, 96px); line-height: 0.98; letter-spacing: -0.03em; color: var(--ink); max-width: 960px; }
+                .ct-hero__name span { color: var(--blue); }
+                .ct-hero__dek { margin-top: 24px; max-width: 600px; font-family: var(--serif); font-size: clamp(16px, 1.7vw, 19px); line-height: 1.8; color: var(--ink-2); }
+                .ct-promises { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 24px; font-family: var(--head); font-size: 13px; font-weight: 500; letter-spacing: 0.02em; color: var(--ink); }
                 .ct-promises span { display: inline-flex; align-items: center; gap: 8px; }
-                .ct-promises svg { background: var(--accent); color: var(--ink); padding: 2px; width: 17px; height: 17px; }
+                .ct-promises svg { color: var(--blue); }
+
+                .ct-facts { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 56px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+                @media (max-width: 800px) { .ct-facts { grid-template-columns: 1fr 1fr; } }
+                .ct-fact { padding: 20px 20px 20px 0; }
+                .ct-fact + .ct-fact { padding-left: 20px; border-left: 1px solid var(--line); }
+                @media (max-width: 800px) { .ct-fact:nth-child(3) { padding-left: 0; border-left: none; } .ct-fact:nth-child(n+3) { border-top: 1px solid var(--line); } }
+                .ct-fact__k { font-family: var(--head); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
+                .ct-fact__v { font-family: var(--head); font-size: 15px; font-weight: 500; line-height: 1.4; color: var(--ink); }
 
                 /* Layout */
-                .ct-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr); gap: 44px; align-items: start; padding-bottom: 56px; }
-                @media (max-width: 920px) { .ct-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; } }
+                .ct-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr); gap: 44px; align-items: start; padding-top: 56px; }
+                @media (max-width: 920px) { .ct-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; padding-top: 40px; } }
 
                 /* Form card */
-                .ct-card { border: 1.5px solid var(--ink); background: var(--card); }
-                .ct-card__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 28px; background: var(--ink); color: #f4f1ea; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; }
-                .ct-card__bar b { color: var(--accent); font-weight: 500; }
+                .ct-card { border: 1px solid var(--line); border-left: 4px solid var(--blue); border-radius: 8px; background: var(--card); overflow: hidden; }
+                .ct-card__bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 28px; background: var(--navy); color: #fff; font-family: var(--head); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+                .ct-card__bar b { color: #8fd4f7; font-weight: 600; }
                 .ct-form { padding: 28px; display: flex; flex-direction: column; gap: 22px; }
                 @media (max-width: 560px) { .ct-form { padding: 20px; } .ct-card__bar { padding: 12px 20px; } }
                 .ct-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
                 @media (max-width: 560px) { .ct-row { grid-template-columns: 1fr; } }
 
-                .ct-label { display: flex; align-items: baseline; gap: 8px; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
-                .ct-optional { font-family: var(--mono); font-size: 10px; font-weight: 400; color: var(--ink-3); }
+                .ct-label { display: flex; align-items: baseline; gap: 8px; font-family: var(--head); font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+                .ct-optional { font-family: var(--head); font-size: 10.5px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
                 .ct-input-wrap { position: relative; }
                 .ct-input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-3); display: flex; pointer-events: none; }
-                .ct-input, .ct-textarea { width: 100%; background: #fff; border: 1.5px solid #c9c6bc; color: var(--ink); font-family: var(--sans); font-size: 15px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
+                .ct-input, .ct-textarea { width: 100%; background: #fff; border: 1px solid var(--line-2); border-radius: 6px; color: var(--ink); font-family: var(--sans); font-size: 15px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
                 .ct-input { height: 50px; padding: 0 14px 0 42px; }
                 .ct-textarea { padding: 14px; line-height: 1.6; resize: vertical; min-height: 140px; }
-                .ct-input::placeholder, .ct-textarea::placeholder { color: #9a978f; }
+                .ct-input::placeholder, .ct-textarea::placeholder { color: #98a2ad; }
                 .ct-input:hover, .ct-textarea:hover { border-color: var(--ink-3); }
-                .ct-input:focus, .ct-textarea:focus { border-color: var(--ink); box-shadow: 4px 4px 0 var(--accent); }
+                .ct-input:focus, .ct-textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(10,132,198,0.15); }
                 .ct-input--err, .ct-textarea--err { border-color: var(--danger); }
                 .ct-err { display: flex; align-items: center; gap: 6px; margin-top: 7px; font-size: 12.5px; color: var(--danger); }
                 .ct-hint { margin-top: 7px; font-size: 12px; color: var(--ink-3); }
 
                 .ct-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-                .ct-chip { position: relative; cursor: pointer; font-size: 13.5px; padding: 10px 16px; border: 1.5px solid #c9c6bc; background: #fff; color: var(--ink-2); transition: background 0.15s, border-color 0.15s, color 0.15s; user-select: none; }
+                .ct-chip { position: relative; cursor: pointer; font-family: var(--head); font-size: 13px; font-weight: 500; padding: 10px 16px; border: 1px solid var(--line-2); border-radius: 6px; background: #fff; color: var(--ink-2); transition: background 0.15s, border-color 0.15s, color 0.15s; user-select: none; }
                 .ct-chip input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
-                .ct-chip:hover { border-color: var(--ink); color: var(--ink); }
-                .ct-chip--on { background: var(--accent); border-color: var(--ink); color: var(--on-accent); font-weight: 600; }
-                .ct-chip:focus-within { outline: 2px solid var(--ink); outline-offset: 2px; }
+                .ct-chip:hover { border-color: var(--blue); color: var(--ink); background: var(--hover); }
+                .ct-chip--on, .ct-chip--on:hover { background: var(--navy); border-color: var(--navy); color: #fff; }
+                .ct-chip:focus-within { outline: 2px solid var(--blue); outline-offset: 2px; }
 
                 .ct-actions { display: flex; flex-direction: column; gap: 10px; }
-                .ct-btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 52px; padding: 0 20px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; cursor: pointer; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); transition: background 0.15s, color 0.15s, transform 0.15s; }
-                .ct-btn:hover { background: var(--ink); color: #fff; transform: translateY(-1px); }
-                .ct-btn--solid { background: var(--accent); color: var(--on-accent); font-weight: 600; font-size: 13px; }
-                .ct-btn--solid:hover { background: var(--ink); color: var(--accent); }
+                .ct-actions .ct-btn { height: 52px; padding: 0 20px; }
                 .ct-or { display: flex; align-items: center; gap: 12px; font-size: 12px; color: var(--ink-3); }
-                .ct-or::before, .ct-or::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
-                .ct-note { font-size: 12.5px; line-height: 1.6; color: var(--ink-3); text-align: center; }
+                .ct-or::before, .ct-or::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+                .ct-note { font-family: var(--serif); font-size: 12.5px; line-height: 1.7; color: var(--ink-3); text-align: center; }
 
                 /* Success */
                 .ct-done { padding: 48px 28px 44px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
-                .ct-done__icon { width: 64px; height: 64px; background: var(--accent); border: 1.5px solid var(--ink); display: flex; align-items: center; justify-content: center; }
-                .ct-done__title { font-family: var(--serif); font-weight: 800; font-size: 30px; line-height: 1.15; }
-                .ct-done__text { font-size: 14.5px; line-height: 1.7; color: var(--ink-2); max-width: 420px; }
-                .ct-done__text b { color: var(--ink); font-weight: 600; }
+                .ct-done__icon { width: 64px; height: 64px; background: var(--navy); color: #8fd4f7; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+                .ct-done__title { font-family: var(--head); font-weight: 800; font-size: 28px; line-height: 1.15; color: var(--ink); text-transform: uppercase; }
+                .ct-done__text { font-family: var(--serif); font-size: 15px; line-height: 1.8; color: var(--ink-2); max-width: 420px; }
+                .ct-done__text b { color: var(--ink); font-weight: 500; }
                 .ct-done__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
-                .ct-done__actions .ct-btn { height: 46px; }
 
                 /* Side column */
-                .ct-side { display: flex; flex-direction: column; gap: 28px; }
-                @media (min-width: 921px) { .ct-side { position: sticky; top: 84px; } }
-                .ct-side__title { font-family: var(--serif); font-weight: 800; font-size: 20px; padding-top: 10px; border-top: 3px solid var(--ink); margin-bottom: 12px; }
+                .ct-side { display: flex; flex-direction: column; gap: 32px; }
+                @media (min-width: 921px) { .ct-side { position: sticky; top: 24px; } }
+                .ct-side__title { font-family: var(--head); font-weight: 800; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue); padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
 
                 .ct-direct { display: flex; flex-direction: column; gap: 10px; }
-                .ct-direct__item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1.5px solid var(--ink); background: #fff; transition: transform 0.2s, box-shadow 0.2s, background 0.15s; }
-                .ct-direct__item:hover { transform: translate(-3px, -3px); box-shadow: 4px 4px 0 var(--accent); }
-                .ct-direct__item--solid { background: var(--accent); }
-                .ct-direct__icon { width: 38px; height: 38px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--ink); color: var(--accent); }
-                .ct-direct__item--solid .ct-direct__icon { background: var(--ink); }
-                .ct-direct__label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); }
-                .ct-direct__val { font-size: 14px; font-weight: 600; word-break: break-word; }
+                .ct-direct__item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 8px; background: #fff; transition: border-color 0.2s, background 0.15s; }
+                .ct-direct__item:hover { border-color: var(--blue); background: var(--hover); }
+                .ct-direct__item--solid { background: var(--navy); border-color: var(--navy); }
+                .ct-direct__item--solid:hover { background: var(--navy-2); border-color: var(--navy-2); }
+                .ct-direct__icon { width: 38px; height: 38px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--navy); color: #8fd4f7; border-radius: 6px; }
+                .ct-direct__item--solid .ct-direct__icon { background: rgba(255,255,255,0.14); color: #fff; }
+                .ct-direct__label { font-family: var(--head); font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+                .ct-direct__val { font-family: var(--head); font-size: 14px; font-weight: 600; color: var(--ink); word-break: break-word; }
+                .ct-direct__item--solid .ct-direct__label { color: #8fd4f7; }
+                .ct-direct__item--solid .ct-direct__val { color: #fff; }
 
                 .ct-steps { list-style: none; counter-reset: step; }
-                .ct-step { counter-increment: step; display: grid; grid-template-columns: 40px 1fr; gap: 4px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
-                .ct-step::before { content: counter(step); font-family: var(--serif); font-weight: 800; font-size: 26px; line-height: 1; background: linear-gradient(transparent 60%, var(--accent) 60%); width: fit-content; height: fit-content; }
-                .ct-step b { display: block; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
-                .ct-step span { font-size: 13px; line-height: 1.6; color: var(--ink-2); }
+                .ct-step { counter-increment: step; display: grid; grid-template-columns: 44px 1fr; gap: 6px; padding: 16px 0; border-top: 1px solid var(--line); }
+                .ct-step::before { content: counter(step, decimal-leading-zero); font-family: var(--head); font-weight: 800; font-size: 24px; line-height: 1; color: var(--blue); }
+                .ct-step b { display: block; font-family: var(--head); font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+                .ct-step span { font-family: var(--serif); font-size: 13.5px; line-height: 1.7; color: var(--ink-2); }
 
                 /* What I do */
-                .ct-do { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--ink); margin-bottom: 40px; }
+                .ct-do { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
                 @media (max-width: 900px) { .ct-do { grid-template-columns: 1fr 1fr; } }
                 @media (max-width: 520px) { .ct-do { grid-template-columns: 1fr; } }
-                .ct-do__item { padding: 20px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
-                .ct-do__item b { display: block; font-family: var(--serif); font-weight: 800; font-size: 18px; line-height: 1.25; margin-bottom: 6px; }
-                .ct-do__item span { font-size: 13px; line-height: 1.65; color: var(--ink-3); }
+                .ct-do__item { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 22px; }
+                .ct-do__item b { display: block; font-family: var(--head); font-size: 17px; font-weight: 700; line-height: 1.25; color: var(--ink); padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+                .ct-do__item span { font-family: var(--serif); font-size: 14px; line-height: 1.75; color: var(--ink-2); }
 
                 /* Safety */
-                .ct-alert { display: flex; gap: 16px; padding: 22px 24px; background: var(--paper-2); border: 1px solid var(--ink); border-left: 5px solid var(--accent); margin-bottom: 72px; }
-                .ct-alert svg { flex-shrink: 0; margin-top: 2px; }
-                .ct-alert b { display: block; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-                .ct-alert p { font-size: 13.5px; line-height: 1.7; color: var(--ink-2); max-width: 820px; }
+                .ct-alert { display: flex; gap: 16px; padding: 24px 28px; background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--blue); border-radius: 8px; margin-top: 32px; margin-bottom: 72px; }
+                .ct-alert svg { flex-shrink: 0; margin-top: 2px; color: var(--blue); }
+                .ct-alert b { display: block; font-family: var(--head); font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+                .ct-alert p { font-family: var(--serif); font-size: 14.5px; line-height: 1.75; color: var(--ink-2); max-width: 820px; }
 
-                @media (max-width: 640px) { .ct-wrap, .ct-nav__inner { padding-left: 18px; padding-right: 18px; } }
-                .ct-page :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-                @media (prefers-reduced-motion: reduce) { .ct-page * { animation: none !important; transition: none !important; } }
+                @media (max-width: 640px) {
+                    .ct-wrap { padding-left: 18px; padding-right: 18px; }
+                    .ct-section { padding-top: 72px; }
+                }
+                .ct-page :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+                @media (prefers-reduced-motion: reduce) { .ct-page * { transition: none !important; } }
             `}</style>
 
             <div className="ct-page">
-
                 <main className="ct-wrap">
-                    {/* ── Header ── */}
-                    <header className="ct-head">
-                        <div className="ct-kicker">
-                            <span className="ct-ping">
-                                <span className="ct-ping__ring" />
-                                <span className="ct-ping__dot" />
-                            </span>
-                            Open to new projects
-                        </div>
-                        <h1 className="ct-title">
-                            Tell me what you&apos;re <em>building.</em>
+                    {/* ── Hero ── */}
+                    <header className="ct-hero">
+                        <div className="ct-kicker">Contact</div>
+                        <h1 className="ct-hero__name">
+                            Tell me what you&apos;re <span>building.</span>
                         </h1>
-                        <p className="ct-dek">
+                        <p className="ct-hero__dek">
                             Have a website, app, payment flow or article in mind? Send a few details and I&apos;ll reply with
                             a plan or a few questions.
                         </p>
                         <div className="ct-promises">
-                            <span><Check /> Free quote</span>
-                            <span><Check /> Reply within 24 hours</span>
-                            <span><Check /> You talk to the developer</span>
+                            <span><Check size={15} /> Free quote</span>
+                            <span><Check size={15} /> Reply within 24 hours</span>
+                            <span><Check size={15} /> You talk to the developer</span>
+                        </div>
+
+                        <div className="ct-facts">
+                            {facts.map(([k, v]) => (
+                                <div key={k} className="ct-fact">
+                                    <div className="ct-fact__k">{k}</div>
+                                    <div className="ct-fact__v">{v}</div>
+                                </div>
+                            ))}
                         </div>
                     </header>
 
@@ -442,28 +458,34 @@ export default function ContactForm() {
                     </div>
 
                     {/* ── What I help with ── */}
-                    <div className="ct-do">
-                        {WHAT_I_DO.map(([title, body]) => (
-                            <div key={title} className="ct-do__item">
-                                <b>{title}</b>
-                                <span>{body}</span>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* ── Safety notice ── */}
-                    <div className="ct-alert">
-                        <ShieldAlert size={20} />
-                        <div>
-                            <b>Watch out for impersonators</b>
-                            <p>
-                                I only take enquiries through this site, the booking link above and the WhatsApp number you
-                                reach from this page. I never approach clients through direct messages. If someone contacts
-                                you as Sir Brown AD from another link or account, check with me here before you reply or send
-                                any money.
-                            </p>
+                    <section className="ct-section">
+                        <div className="ct-head">
+                            <div className="ct-kicker">Services</div>
+                            <h2 className="ct-h2">What I help with</h2>
                         </div>
-                    </div>
+                        <div className="ct-do">
+                            {WHAT_I_DO.map(([title, body]) => (
+                                <div key={title} className="ct-do__item">
+                                    <b>{title}</b>
+                                    <span>{body}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* ── Safety notice ── */}
+                        <div className="ct-alert">
+                            <ShieldAlert size={20} />
+                            <div>
+                                <b>Watch out for impersonators</b>
+                                <p>
+                                    I only take enquiries through this site, the booking link above and the WhatsApp number you
+                                    reach from this page. I never approach clients through direct messages. If someone contacts
+                                    you as Sir Brown AD from another link or account, check with me here before you reply or send
+                                    any money.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
                 </main>
 
                 <Footer />
